@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.5</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.3.1" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Model\T_IJoinTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_IJoinTable.cs</LastGenOutput>
+    </None>
+    <None Update="Model\T_LightJoinTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_LightJoinTable.cs</LastGenOutput>
+    </None>
+    <None Update="Model\T_LightSelectJoin.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_LightSelectJoin.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Model\T_IJoinTable.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>T_IJoinTable.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Model\T_LightJoinTable.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>T_LightJoinTable.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Model\T_LightSelectJoin.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>T_LightSelectJoin.tt</DependentUpon>
+    </Compile>
+    <Compile Update="SR.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SR.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="SR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

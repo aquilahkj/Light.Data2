@@ -1,0 +1,355 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="System.Data"#>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Text.RegularExpressions"#>
+<# 
+	var MaxCount=9;
+
+	var InterFaceName="IJoinTable";
+
+#>
+using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using System.Threading;
+
+namespace Light.Data
+{
+
+<#
+    for(int i=1;i<=MaxCount;i++)
+    {
+#>
+	/// <summary>
+	/// Join table.
+	/// </summary>
+	public interface <#=InterFaceName#><<#=GetAll(i) #>>
+	{
+		/// <summary>
+		/// Reset the specified where expression
+		/// </summary>
+		<#=InterFaceName#><<#=GetAll(i) #>> WhereReset ();
+
+		/// <summary>
+		/// Set the specified where expression.
+		/// </summary>T1,
+		/// <param name="expression">Expression.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> Where (Expression<Func<<#=GetAll(i) #>, bool>> expression);
+
+		/// <summary>
+		/// Catch the specified where expression with and.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> WhereWithAnd (Expression<Func<<#=GetAll(i) #>, bool>> expression);
+
+		/// <summary>
+		/// Catch the specified where expression with or.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> WhereWithOr (Expression<Func<<#=GetAll(i) #>, bool>> expression);
+
+		/// <summary>
+		/// Catch the specified asc order by expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderByCatch<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
+
+		/// <summary>
+		/// Catch the specified desc order by expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderByDescendingCatch<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
+
+		/// <summary>
+		/// Set the specified asc order by expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderBy<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
+
+		/// <summary>
+		/// Set the specified desc order by expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderByDescending<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
+
+		/// <summary>
+		/// Reset the specified order by expression.
+		/// </summary>
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderByReset ();
+
+		/// <summary>
+		/// Set take datas count.
+		/// </summary>
+		/// <param name="count">Count.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> Take (int count);
+
+		/// <summary>
+		/// Set from datas index.
+		/// </summary>
+		/// <returns>JoinTable.</returns>
+		/// <param name="index">Index.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> Skip (int index);
+
+		/// <summary>
+		/// Set take datas range.
+		/// </summary>
+		/// <param name="from">From.</param>
+		/// <param name="to">To.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> Range (int from, int to);
+
+		/// <summary>
+		/// Reset take datas range.
+		/// </summary>
+		<#=InterFaceName#><<#=GetAll(i) #>> RangeReset ();
+
+		/// <summary>
+		/// Sets page size.
+		/// </summary>
+		/// <param name="page">Page.</param>
+		/// <param name="size">Size.</param>
+		<#=InterFaceName#><<#=GetAll(i) #>> PageSize (int page, int size);
+
+		/// <summary>
+		/// Set the SafeLevel.
+		/// </summary>
+		<#=InterFaceName#><<#=GetAll(i) #>> SafeMode (SafeLevel level);
+
+		/// <summary>
+		/// Sets the distinct.
+		/// </summary>
+		<#=InterFaceName#><<#=GetAll(i) #>> SetDistinct (bool distinct);
+
+		/// <summary>
+		/// Create Selector.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		ISelectJoin<K> Select<K> (Expression<Func<<#=GetAll(i) #>, K>> expression); //where K : class;
+
+		/// <summary>
+		/// Select fields data insert to the specified table K.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		int SelectInsert<K> (Expression<Func<<#=GetAll(i) #>, K>> expression) where K : class, new();
+
+		/// <summary>
+		/// Gets the datas count.
+		/// </summary>
+		/// <value>The count.</value>
+		int Count {
+			get;
+		}
+
+		/// <summary>
+		/// Gets the datas long count.
+		/// </summary>
+		/// <value>The long count.</value>
+		long LongCount {
+			get;
+		}
+
+		/// <summary>
+		/// Gets the datas count.
+		/// </summary>
+		/// <value>The count.</value>
+		Task<int> CountAsync();
+
+		/// <summary>
+		/// Gets the datas count.
+		/// </summary>
+		/// <value>The count.</value>
+		Task<int> CountAsync(CancellationToken cancellationToken);
+
+		/// <summary>
+		/// Gets the datas long count.
+		/// </summary>
+		/// <value>The long count.</value>
+		Task<long> LongCountAsync();
+
+		/// <summary>
+		/// Gets the datas long count.
+		/// </summary>
+		/// <value>The long count.</value>
+		Task<long> LongCountAsync(CancellationToken cancellationToken);
+
+		/// <summary>
+		/// Select fields data insert to the specified table K.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression) where K : class, new();
+
+		/// <summary>
+		/// Select fields data insert to the specified table K.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken) where K : class, new();
+
+<#if(i<MaxCount){#>
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+<# } #>
+
+	}
+<# } #>
+
+}
+
+
+<#+ 
+	const string PP="T";
+
+	public string GetAll(int max)
+	{
+		string ss=PP;
+		for(int i=1;i<=max;i++)
+		{
+			ss+=(", "+PP+i);
+		}
+		return ss;
+	}
+
+	public string GetMax(int max)
+	{
+		string ss=PP+max;
+		return ss;
+	}
+
+	public string GetAdd(int max)
+	{
+		string ss=PP+(max+1);
+		return ss;
+	}
+
+	public string GetPrev(int max)
+	{
+		string ss=PP;
+		for(int i=1;i<=max-1;i++)
+		{
+			ss+=(", "+PP+i);
+		}
+		return ss;
+	}
+
+	public string GetNext(int max)
+	{
+		string ss=PP;
+		for(int i=1;i<=max+1;i++)
+		{
+			ss+=(", "+PP+i);
+		}
+		return ss;
+	}
+
+
+#>

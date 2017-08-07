@@ -1,0 +1,81 @@
+﻿{
+  "lightData": {
+    "connections": [
+      {
+        "name": "test",
+        "connectionString": "Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;",
+        "providerName": "Light.Data.Mssql.MssqlProvider",
+        "configParams": [
+          {
+            "name": "test1",
+            "value": "test1_value"
+          },
+          {
+            "name": "test2",
+            "value": "test2_value"
+          }
+        ]
+      }
+    ]
+  },
+  "lightDataMapper": {
+    "dataTypes": [
+      {
+        "type": "Light.Data.Sample.TeUserLevel1,Light.Data.Sample",
+        "tableName": "Te_UserLevel",
+        "isEntityTable": true,
+        "configParams": [
+          {
+            "name": "test1",
+            "value": "test1_value"
+          },
+          {
+            "name": "test2",
+            "value": "test2_value"
+          }
+        ],
+        "dataFields": [
+          {
+            "fieldName": "Id",
+            "name": "Id",
+            "isNullable": false,
+            "isPrimaryKey": true,
+            "isIdentity": true,
+            "dbType": "int",
+            "dataOrder": 1,
+            "defaultValue": null
+          },
+          {
+            "fieldName": "LevelName",
+            "name": "LevelName",
+            "isNullable": false,
+            "defaultValue": null
+          },
+          {
+            "fieldName": "Status",
+            "name": "Status",
+            "isNullable": false,
+            "defaultValue": null
+          },
+          {
+            "fieldName": "Remark",
+            "name": "Remark",
+            "isNullable": true,
+            "defaultValue": null
+          }
+        ],
+        "relationFields": [
+          {
+            "fieldName": "Users",
+            "relationPairs": [
+              {
+                "masterKey": "Id",
+                "relateKey": "LevelId"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

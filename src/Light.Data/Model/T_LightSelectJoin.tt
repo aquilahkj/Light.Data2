@@ -1,0 +1,95 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="System.Data"#>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Text"#>
+<# 
+	var MaxCount=9;
+	var InterFaceName="IJoinTable";
+	var ClassFaceName="LightSelectJoin";
+
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
+namespace Light.Data
+{
+<# for(int i=1;i<=MaxCount;i++){ #>
+	/// <summary>
+	/// Join table.
+	/// </summary>		
+	class <#=ClassFaceName#><<#= GetAll(i) #>, K> : <#=ClassFaceName#><K>
+	{
+		public <#=ClassFaceName#> (DataContext context, Expression<Func<<#= GetAll(i) #>, K>> expression, List<IJoinModel> models, List<IMap> maps, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
+			:base(context, expression, models, maps, query, order, distinct, region, level)
+		{
+
+		}
+	}
+
+<# } #>
+}
+
+
+<#+ 
+	const string PP="T";
+
+	public string GetRaw()
+	{
+		return PP;
+	}
+
+	public string GetFirst()
+	{
+		return PP+0;
+	}
+
+	public string GetAll(int max)
+	{
+		string ss=PP;
+		for(int i=1;i<=max;i++)
+		{
+			ss+=(", "+PP+i);
+		}
+		return ss;
+	}
+
+	public string GetMax(int max)
+	{
+		string ss=PP+max;
+		return ss;
+	}
+
+	public string GetAdd(int max)
+	{
+		string ss=PP+(max+1);
+		return ss;
+	}
+
+	public string GetPrev(int max)
+	{
+		string ss=PP;
+		for(int i=1;i<=max-1;i++)
+		{
+			ss+=(", "+PP+i);
+		}
+		return ss;
+	}
+
+	public string GetNext(int max)
+	{
+		string ss=PP;
+		for(int i=1;i<=max+1;i++)
+		{
+			ss+=(", "+PP+i);
+		}
+		return ss;
+	}
+
+
+#>

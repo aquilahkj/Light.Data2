@@ -1,0 +1,84 @@
+﻿using System;
+
+namespace Light.Data
+{
+	/// <summary>
+	/// Data table config.
+	/// </summary>
+	class DataTableMapperConfig
+	{
+        ConfigParamSet _configParams;
+
+		/// <summary>
+		/// Gets or sets the extend parameters.
+		/// </summary>
+		/// <value>The extend parameters.</value>
+		public ConfigParamSet ConfigParams {
+			get {
+				return _configParams;
+			}
+			set {
+				_configParams = value;
+			}
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DataTableMapperConfig"/> class.
+		/// </summary>
+		/// <param name="dataType">Data type.</param>
+		public DataTableMapperConfig (Type dataType)
+		{
+			if (dataType == null) {
+				throw new ArgumentNullException (nameof (dataType));
+			}
+			_dataType = dataType;
+		}
+
+		Type _dataType;
+
+		/// <summary>
+		/// Gets the type of the data.
+		/// </summary>
+		/// <value>The type of the data.</value>
+		public Type DataType {
+			get {
+				return _dataType;
+			}
+
+			private set {
+				_dataType = value;
+			}
+		}
+		string _tableName;
+
+		/// <summary>
+		/// Gets or sets the name of the table.
+		/// </summary>
+		/// <value>The name of the table.</value>
+		public string TableName {
+			get {
+				return _tableName;
+			}
+
+			set {
+				_tableName = value;
+			}
+		}
+		bool _isEntityTable;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is entity table.
+		/// </summary>
+		/// <value>true</value>
+		/// <c>false</c>
+		public bool IsEntityTable {
+			get {
+				return _isEntityTable;
+			}
+
+			set {
+				_isEntityTable = value;
+			}
+		}
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"lightDataMapper": {
+		"dataTypes": [
+      {
+        "type": "Light.Data.Test.TeRelateMainConfig,Light.Data.Test",
+        "tableName": "Te_RelateMain_Config",
+        "isEntityTable": true,
+        "dataFields": [
+          {
+            "fieldName": "Id",
+            "isPrimaryKey": true,
+            "isIdentity": true,
+            "name": "Id"
+          },
+          {
+            "fieldName": "DecimalField",
+            "name": "DecimalField"
+          },
+          {
+            "fieldName": "DateTimeField",
+            "name": "DateTimeField"
+          },
+          {
+            "fieldName": "VarcharField",
+            "name": "VarcharField"
+          }
+        ],
+        "relationFields": [
+          {
+            "fieldName": "SubConfig",
+            "relationPairs": [
+              {
+                "masterKey": "Id",
+                "relateKey": "MainId"
+              }
+            ]
+          }
+        ]
+      },
+			{
+				"type": "Light.Data.Test.TeRelateSubConfig,Light.Data.Test",
+				"tableName": "Te_RelateSub_Config",
+				"isEntityTable": true,
+				"dataFields": [
+          {
+            "fieldName": "Id",
+            "isPrimaryKey": true,
+            "isIdentity": true,
+            "name": "Id"
+          },
+					{
+						"fieldName": "MainId",
+						"name": "MainId"
+					},
+					{
+						"fieldName": "DecimalField",
+						"name": "DecimalField"
+					},
+					{
+						"fieldName": "DateTimeField",
+						"name": "DateTimeField"
+					},
+					{
+						"fieldName": "VarcharField",
+						"name": "VarcharField"
+					}
+				]
+			}
+		]
+	}
+}
+

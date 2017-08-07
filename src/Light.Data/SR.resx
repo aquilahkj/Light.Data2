@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NoMappingField" xml:space="preserve">
+    <value>The type '{0}' does not have a mapping field</value>
+  </data>
+  <data name="ConfigDataFieldIsNotExists" xml:space="preserve">
+    <value>Config data type '{0}' field '{1} is not exists</value>
+  </data>
+  <data name="ConfigDataFieldNameIsNull" xml:space="preserve">
+    <value>Config data type '{0}' field '{1}' name is null</value>
+  </data>
+  <data name="ConfigDataFieldLoadError" xml:space="preserve">
+    <value>Config data type '{0}' field '{1}' value load error,reason:{2}</value>
+  </data>
+  <data name="ConfigDataTypeNameIsNull" xml:space="preserve">
+    <value>Config data type '{0}' name is null</value>
+  </data>
+  <data name="DataContextIsNotExists" xml:space="preserve">
+    <value>DataContext is not exists</value>
+  </data>
+  <data name="MultipleIdentityField" xml:space="preserve">
+    <value>The type '{0}' has multiple identity fields</value>
+  </data>
+  <data name="NoIdentityField" xml:space="preserve">
+    <value>The type '{0}' no identity field</value>
+  </data>
+  <data name="FieldNameIsInvalid" xml:space="preserve">
+    <value>The type '{0}' field '{1}' name is invalid</value>
+  </data>
+  <data name="IsNotDataTableMapping" xml:space="preserve">
+    <value>The type '{0}' is not data table mapping</value>
+  </data>
+  <data name="NotMatchPrimaryKeyField" xml:space="preserve">
+    <value>The type '{0}' primary keys is not match</value>
+  </data>
+  <data name="DataMappingUnsupportFieldType" xml:space="preserve">
+    <value>The type '{0}' field '{1}' error,unsupport field type '{2}'</value>
+  </data>
+  <data name="DataDefineUnsupportFieldType" xml:space="preserve">
+    <value>The define error,unsupport field type '{0}'</value>
+  </data>
+  <data name="DataMappingUnsupportIdentityFieldType" xml:space="preserve">
+    <value>The type '{0}' field '{1}' error,unsupport identity field type '{2}'</value>
+  </data>
+  <data name="NotContainNonPrimaryKeyFields" xml:space="preserve">
+    <value>The type '{0}' does not contain non-primary key fields</value>
+  </data>
+  <data name="UpdateFieldIsPrimaryKeyField" xml:space="preserve">
+    <value>The type '{0}' update field '{1}' is primary key</value>
+  </data>
+  <data name="CanNotFindTheSpecifiedField" xml:space="preserve">
+    <value>Can not find the specified field '{0}' in type '{1}'</value>
+  </data>
+  <data name="TypeIsNotDatabaseType" xml:space="preserve">
+    <value>The type {0} is not database type</value>
+  </data>
+  <data name="NotContainPrimaryKeyFields" xml:space="preserve">
+    <value>The type '{0}' does not contain primary key fields</value>
+  </data>
+  <data name="SelectFieldsCountNotEquidInsertFieldCount" xml:space="preserve">
+    <value>The select fields count not equid the insert field count</value>
+  </data>
+  <data name="SpecifiedConfigNotExists" xml:space="preserve">
+    <value>The specified config '{0}' is not exists</value>
+  </data>
+  <data name="NoDataEntityConfig" xml:space="preserve">
+    <value>The type '{0}' no data entity config</value>
+  </data>
+  <data name="NotContainNonIdentityKeyFields" xml:space="preserve">
+    <value>The type '{0}' does not contain non-identity key fields</value>
+  </data>
+  <data name="UnsupportPredicate" xml:space="preserve">
+    <value>Unsupport predicate '{0}' in '{1}' field expression</value>
+  </data>
+  <data name="DataFieldContentError" xml:space="preserve">
+    <value>Data field content error</value>
+  </data>
+  <data name="CanNotFindAliasNameViaSpecifiedPath" xml:space="preserve">
+    <value>Can not find alias name via specified path '{0}'</value>
+  </data>
+  <data name="RelationFieldError" xml:space="preserve">
+    <value>The type '{0}' relation field '{1}' error</value>
+  </data>
+  <data name="RelationFieldKeyNotMatch" xml:space="preserve">
+    <value>The type '{0}' relation field '{1}' key not match</value>
+  </data>
+  <data name="CanNotFindTheSpecifiedFieldViaPath" xml:space="preserve">
+    <value>Can not find specified field via path '{0}'</value>
+  </data>
+  <data name="ParseExpressionError" xml:space="preserve">
+    <value>Parse '{0}' expression '{1}' error,message:{2}</value>
+  </data>
+  <data name="EnumDefaultValueType" xml:space="preserve">
+    <value>The type '{0}' enum field '{1}' default value '{2}' error</value>
+  </data>
+  <data name="ConfigurationHasBeenInitialized" xml:space="preserve">
+    <value>The configuration has been initialized</value>
+  </data>
+  <data name="DataContextOptionsError" xml:space="preserve">
+    <value>The options of context error</value>
+  </data>
+  <data name="DefaultConfigNotExists" xml:space="preserve">
+    <value>The default config is not exists</value>
+  </data>
+  <data name="TransactionScopeHasBeenCreated" xml:space="preserve">
+    <value>The TransactionScope Has Been Created</value>
+  </data>
+</root>
