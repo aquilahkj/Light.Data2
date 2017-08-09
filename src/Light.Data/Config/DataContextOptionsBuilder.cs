@@ -3,13 +3,23 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-    public class DataContextOptionsBuilder
+    public class DataContextOptionsBuilder : DataContextOptionsBuilderBase<DataContextOptions>
     {
-        public DataContextOptions Build()
+
+    }
+
+    public class DataContextOptionsBuilder<TContext> : DataContextOptionsBuilderBase<DataContextOptions<TContext>> where TContext : DataContext
+    {
+
+    }
+
+    public abstract class DataContextOptionsBuilderBase<TOptions> where TOptions : DataContextOptions, new()
+    {
+        public TOptions Build()
         {
             if (_configName != null) {
                 var configOptions = DataContextConfiguration.GetOptions(_configName);
-                var options = new DataContextOptions() {
+                var options = new TOptions() {
                     Database = configOptions.Database,
                     Connection = configOptions.Connection,
                     CommandOutput = _commandOutput
@@ -30,7 +40,7 @@ namespace Light.Data
                 if (database == null) {
                     throw new LightDataException(SR.DataContextOptionsError);
                 }
-                var options = new DataContextOptions() {
+                var options = new TOptions() {
                     Connection = _connection,
                     Database = database,
                     CommandOutput = _commandOutput
@@ -42,91 +52,19 @@ namespace Light.Data
 
         Dictionary<string, object> _dict = new Dictionary<string, object>();
 
-        internal Dictionary<string, object> ParamDict {
-            get {
-                return _dict;
-            }
-        }
-
         string _configName;
-
-        public string ConfigName {
-            get {
-                return _configName;
-            }
-            set {
-                _configName = value;
-            }
-        }
-
-        ICommandOutput _commandOutput;
-
-        public ICommandOutput CommandOutput {
-            get {
-                return _commandOutput;
-            }
-            set {
-                _commandOutput = value;
-            }
-        }
 
         string _connection = null;
 
+        protected ICommandOutput _commandOutput;
+
         Func<string, ConfigParamSet, DatabaseProvider> _func = null;
-
-        internal void SetDataConfig(string connection, Func<string, ConfigParamSet, DatabaseProvider> func)
-        {
-            _connection = connection;
-            _func = func;
-        }
-    }
-
-    public class DataContextOptionsBuilder<TContext> where TContext : DataContext
-    {
-        public DataContextOptions<TContext> Build()
-        {
-            if (_configName != null) {
-                var configOptions = DataContextConfiguration.GetOptions(_configName);
-                var options = new DataContextOptions<TContext>() {
-                    Database = configOptions.Database,
-                    Connection = configOptions.Connection,
-                    CommandOutput = _commandOutput
-                };
-                return options;
-            }
-            else {
-                if (_func == null) {
-                    throw new LightDataException(SR.DataContextOptionsError);
-                }
-                var paramSet = new ConfigParamSet();
-                foreach (var item in _dict) {
-                    if (item.Value != null) {
-                        paramSet.SetParamValue(item.Key, item.Value.ToString());
-                    }
-                }
-                var database = _func(Guid.NewGuid().ToString("N"), paramSet);
-                if (database == null) {
-                    throw new LightDataException(SR.DataContextOptionsError);
-                }
-                var options = new DataContextOptions<TContext>() {
-                    Connection = _connection,
-                    Database = database,
-                    CommandOutput = _commandOutput
-                };
-                return options;
-            }
-        }
-
-
-        Dictionary<string, object> _dict = new Dictionary<string, object>();
 
         internal Dictionary<string, object> ParamDict {
             get {
                 return _dict;
             }
         }
-
-        string _configName;
 
         public string ConfigName {
             get {
@@ -136,8 +74,6 @@ namespace Light.Data
                 _configName = value;
             }
         }
-
-        ICommandOutput _commandOutput;
 
         public void SetCommandOutput(ICommandOutput output)
         {
@@ -164,14 +100,56 @@ namespace Light.Data
             _dict["timeout"] = timeout;
         }
 
-        string _connection = null;
-
-        Func<string, ConfigParamSet, DatabaseProvider> _func = null;
-
         internal void SetDataConfig(string connection, Func<string, ConfigParamSet, DatabaseProvider> func)
         {
             _connection = connection;
             _func = func;
         }
+
+        //protected T CreateDatabaseProvider<T>() where T : DataContextOptions, new()
+        //{
+        //    if (_func == null) {
+        //        throw new LightDataException(SR.DataContextOptionsError);
+        //    }
+        //    var paramSet = new ConfigParamSet();
+        //    foreach (var item in _dict) {
+        //        if (item.Value != null) {
+        //            paramSet.SetParamValue(item.Key, item.Value.ToString());
+        //        }
+        //    }
+        //    var database = _func(Guid.NewGuid().ToString("N"), paramSet);
+        //    if (database == null) {
+        //        throw new LightDataException(SR.DataContextOptionsError);
+        //    }
+        //    T options = new T() {
+        //        CommandOutput = _commandOutput,
+        //        Connection = _connection,
+        //        Database = database
+        //    };
+        //    return options;
+        //}
+
+        //protected T CreateDatabaseProvider<T>(DatabaseProvider database, string connection) where T : DataContextOptions, new()
+        //{
+        //    if (_func == null) {
+        //        throw new LightDataException(SR.DataContextOptionsError);
+        //    }
+        //    var paramSet = new ConfigParamSet();
+        //    foreach (var item in _dict) {
+        //        if (item.Value != null) {
+        //            paramSet.SetParamValue(item.Key, item.Value.ToString());
+        //        }
+        //    }
+        //    var database = _func(Guid.NewGuid().ToString("N"), paramSet);
+        //    if (database == null) {
+        //        throw new LightDataException(SR.DataContextOptionsError);
+        //    }
+        //    T options = new T() {
+        //        CommandOutput = _commandOutput,
+        //        Connection = _connection,
+        //        Database = database
+        //    };
+        //    return options;
+        //}
     }
 }

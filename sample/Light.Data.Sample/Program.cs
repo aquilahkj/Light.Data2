@@ -8,7 +8,24 @@ namespace Light.Data.Sample
     {
         static void Main(string[] args)
         {
-            Test2();
+            Test0();
+        }
+
+        static void Test0()
+        {
+            CommandOutput output = new CommandOutput();
+            output.UseConsoleOutput = true;
+            output.OutputFullCommand = true;
+
+
+            DataContext context = new DataContext("test");
+            context.SetCommanfOutput(output);
+            var list = context.Query<TeUser>().ToList();
+
+            foreach (var item in list) {
+                Console.WriteLine(item);
+            }
+            Console.Read();
         }
 
         static void Test1()
@@ -19,11 +36,10 @@ namespace Light.Data.Sample
 
             DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
             builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
-            builder.CommandOutput = output;
+            builder.SetCommandOutput(output);
             var options = builder.Build();
 
             DataContext context = new DataContext(options);
-            //context.SetCommanfOutput(output);
 
             var list = context.Query<TeUser>().ToList();
 

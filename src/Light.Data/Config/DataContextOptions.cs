@@ -32,7 +32,7 @@ namespace Light.Data
         }
 
 
-        internal DataContextOptions()
+        public DataContextOptions()
         {
 
         }
