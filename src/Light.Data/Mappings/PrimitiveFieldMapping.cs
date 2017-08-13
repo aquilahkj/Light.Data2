@@ -168,7 +168,17 @@ namespace Light.Data
                 return null;
             }
             else {
-                return value;
+                if (value is IConvertible ic) {
+                    if (ic.GetTypeCode() != _typeCode) {
+                        return Convert.ChangeType(value, _typeCode, null);
+                    }
+                    else {
+                        return value;
+                    }
+                }
+                else {
+                    return value;
+                }
             }
         }
 

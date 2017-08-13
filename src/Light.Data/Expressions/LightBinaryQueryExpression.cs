@@ -60,7 +60,7 @@ namespace Light.Data
                     sql = factory.CreateBooleanQuerySql(leftSql, ret, predicate, false);
                 }
                 else {
-                    string name = state.AddDataParameter(factory, right);
+                    string name = state.AddDataParameter(factory, leftInfo.ToParameter(right));
                     sql = factory.CreateSingleParamSql(leftSql, _predicate, name);
                 }
             }
@@ -95,7 +95,7 @@ namespace Light.Data
                     sql = factory.CreateBooleanQuerySql(rightSql, ret, predicate, true);
                 }
                 else {
-                    string name = state.AddDataParameter(factory, left);
+                    string name = state.AddDataParameter(factory, rightInfo.ToParameter(left));
                     sql = factory.CreateSingleParamSql(name, _predicate, rightSql);
                 }
             }

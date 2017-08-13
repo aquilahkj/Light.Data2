@@ -3,28 +3,35 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-    public class DataContextOptionsBuilder : DataContextOptionsBuilderBase<DataContextOptions>
+    public class DataContextOptionsBuilder : DataContextOptionsBuilderBase
     {
-
+        public DataContextOptions Build()
+        {
+            var options = new DataContextOptions();
+            BuildOptions(options);
+            return options;
+        }
     }
 
-    public class DataContextOptionsBuilder<TContext> : DataContextOptionsBuilderBase<DataContextOptions<TContext>> where TContext : DataContext
+    public class DataContextOptionsBuilder<TContext> : DataContextOptionsBuilderBase where TContext : DataContext
     {
-
+        public DataContextOptions<TContext> Build()
+        {
+            var options = new DataContextOptions<TContext>();
+            BuildOptions(options);
+            return options;
+        }
     }
 
-    public abstract class DataContextOptionsBuilderBase<TOptions> where TOptions : DataContextOptions, new()
+    public abstract class DataContextOptionsBuilderBase
     {
-        public TOptions Build()
+        protected void BuildOptions(DataContextOptions options)
         {
             if (_configName != null) {
                 var configOptions = DataContextConfiguration.GetOptions(_configName);
-                var options = new TOptions() {
-                    Database = configOptions.Database,
-                    Connection = configOptions.Connection,
-                    CommandOutput = _commandOutput
-                };
-                return options;
+                options.Database = configOptions.Database;
+                options.Connection = configOptions.Connection;
+                options.CommandOutput = _commandOutput;
             }
             else {
                 if (_func == null) {
@@ -40,15 +47,11 @@ namespace Light.Data
                 if (database == null) {
                     throw new LightDataException(SR.DataContextOptionsError);
                 }
-                var options = new TOptions() {
-                    Connection = _connection,
-                    Database = database,
-                    CommandOutput = _commandOutput
-                };
-                return options;
+                options.Connection = _connection;
+                options.Database = database;
+                options.CommandOutput = _commandOutput;
             }
         }
-
 
         Dictionary<string, object> _dict = new Dictionary<string, object>();
 
@@ -105,51 +108,5 @@ namespace Light.Data
             _connection = connection;
             _func = func;
         }
-
-        //protected T CreateDatabaseProvider<T>() where T : DataContextOptions, new()
-        //{
-        //    if (_func == null) {
-        //        throw new LightDataException(SR.DataContextOptionsError);
-        //    }
-        //    var paramSet = new ConfigParamSet();
-        //    foreach (var item in _dict) {
-        //        if (item.Value != null) {
-        //            paramSet.SetParamValue(item.Key, item.Value.ToString());
-        //        }
-        //    }
-        //    var database = _func(Guid.NewGuid().ToString("N"), paramSet);
-        //    if (database == null) {
-        //        throw new LightDataException(SR.DataContextOptionsError);
-        //    }
-        //    T options = new T() {
-        //        CommandOutput = _commandOutput,
-        //        Connection = _connection,
-        //        Database = database
-        //    };
-        //    return options;
-        //}
-
-        //protected T CreateDatabaseProvider<T>(DatabaseProvider database, string connection) where T : DataContextOptions, new()
-        //{
-        //    if (_func == null) {
-        //        throw new LightDataException(SR.DataContextOptionsError);
-        //    }
-        //    var paramSet = new ConfigParamSet();
-        //    foreach (var item in _dict) {
-        //        if (item.Value != null) {
-        //            paramSet.SetParamValue(item.Key, item.Value.ToString());
-        //        }
-        //    }
-        //    var database = _func(Guid.NewGuid().ToString("N"), paramSet);
-        //    if (database == null) {
-        //        throw new LightDataException(SR.DataContextOptionsError);
-        //    }
-        //    T options = new T() {
-        //        CommandOutput = _commandOutput,
-        //        Connection = _connection,
-        //        Database = database
-        //    };
-        //    return options;
-        //}
     }
 }

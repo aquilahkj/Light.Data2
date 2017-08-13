@@ -6547,6 +6547,80 @@ namespace Light.Data.Test
     }
 
 	/// <summary>
+    /// Te_ObjectField
+    /// </summary>
+    [DataTable("Te_ObjectField")]
+    public class TeObjectField 
+    {
+        #region "Data Property"
+        private int id;
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        /// <value></value>
+        [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+                return this.id; 
+            }
+            set { 
+                this.id = value; 
+            }
+        }
+        private string varcharField;
+
+        /// <summary>
+        /// VarcharField
+        /// </summary>
+        /// <value></value>
+        [DataField("VarcharField")]
+        public string VarcharField
+        {
+            get { 
+                return this.varcharField; 
+            }
+            set { 
+                this.varcharField = value; 
+            }
+        }
+        private ObjectType objectField;
+
+        /// <summary>
+        /// ObjectField
+        /// </summary>
+        /// <value></value>
+        [DataField("ObjectField")]
+        public ObjectType ObjectField
+        {
+            get { 
+                return this.objectField; 
+            }
+            set { 
+                this.objectField = value; 
+            }
+        }
+        private ObjectType objectFieldNull;
+
+        /// <summary>
+        /// ObjectFieldNull
+        /// </summary>
+        /// <value></value>
+        [DataField("ObjectFieldNull", IsNullable = true)]
+        public ObjectType ObjectFieldNull
+        {
+            get { 
+                return this.objectFieldNull; 
+            }
+            set { 
+                this.objectFieldNull = value; 
+            }
+        }
+        #endregion
+    }
+
+	/// <summary>
     /// Te_BaseField_Entity
     /// </summary>
     [DataTable("Te_BaseField_Entity")]

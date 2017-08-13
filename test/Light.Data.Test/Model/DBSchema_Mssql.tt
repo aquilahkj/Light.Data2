@@ -45,6 +45,7 @@
 	DbSetting.SetTable("Te_RelateF");
 	DbSetting.SetTable("Te_RelateCollection");
 	DbSetting.SetTable("Te_BaseFieldAggregateField_GroupBy");
+	DbSetting.SetTable("Te_ObjectField");
 	//DbSetting.SetTable("Te_BaseField_Config_Replace");
 
 	//设置需要生成的数据表,数据类型继承DataTableEntity
@@ -69,6 +70,8 @@
 	DbSetting.SetSpecifiedType("*.UInt64Field","ulong");
 	DbSetting.SetSpecifiedType("*.UInt64FieldNull","ulong");
 
+	DbSetting.SetSpecifiedType("*.ObjectField","ObjectType");
+	DbSetting.SetSpecifiedType("*.ObjectFieldNull","ObjectType");
 	//设置字段非空,设置"表名.字段名"指定表字段非空,设置"*.字段名"所有表符合字段名的都非空,设置"表名.*"指定表所有字段非空
 	DbSetting.SetNotNullField("Te_BaseField_NullMiniValue.*");
 
@@ -103,7 +106,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.DataCore;
+using Light.Data;
 
 namespace <#=namespaceName#>
 {
@@ -435,19 +438,20 @@ order by
 			{
 				this._dataType=dataType;
 			}
+			string tmpType=this._dataType;
             if(string.IsNullOrEmpty(this._columnComment))
             {
                 this._columnComment=this._columnName;
             }
-            string enumName;
-            if(DbSetting.GetSpecifiedType(this._tableName+"."+this._columnName, out enumName)){
-                this._dataType=enumName;
+            string specifiedName;
+            if(DbSetting.GetSpecifiedType(this._tableName+"."+this._columnName, out specifiedName)){
+                this._dataType=specifiedName;
             }
-			else if(DbSetting.GetSpecifiedType("*."+this._columnName, out enumName)){
-				this._dataType=enumName;
+			else if(DbSetting.GetSpecifiedType("*."+this._columnName, out specifiedName)){
+				this._dataType=specifiedName;
 			}
 
-            if (this._allowNull && !string.Equals(this._dataType, "string", StringComparison.InvariantCultureIgnoreCase)&& !string.Equals(this._dataType, "byte[]", StringComparison.InvariantCultureIgnoreCase))
+            if (this._allowNull && !string.Equals(tmpType, "string", StringComparison.InvariantCultureIgnoreCase)&& !string.Equals(tmpType, "byte[]", StringComparison.InvariantCultureIgnoreCase))
             {
                 this._dataType = string.Format("{0}?", this._dataType);
             }
