@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
-using System.Data;
 
 namespace Light.Data.Test
 {

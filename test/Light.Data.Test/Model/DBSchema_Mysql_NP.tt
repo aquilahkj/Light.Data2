@@ -363,19 +363,20 @@ order by
 			{
 				this._dataType=dataType;
 			}
+            string tmpType=this._dataType;
             if(string.IsNullOrEmpty(this._columnComment))
             {
                 this._columnComment=this._columnName;
             }
-            string enumName;
-            if(DbSetting.GetSpecifiedType(this._tableName+"."+this._columnName, out enumName)){
-                this._dataType=enumName;
+            string specifiedName;
+            if(DbSetting.GetSpecifiedType(this._tableName+"."+this._columnName, out specifiedName)){
+                this._dataType=specifiedName;
             }
-			else if(DbSetting.GetSpecifiedType("*."+this._columnName, out enumName)){
-				this._dataType=enumName;
+			else if(DbSetting.GetSpecifiedType("*."+this._columnName, out specifiedName)){
+				this._dataType=specifiedName;
 			}
 
-            if (this._allowNull && !string.Equals(this._dataType, "string", StringComparison.InvariantCultureIgnoreCase)&& !string.Equals(this._dataType, "byte[]", StringComparison.InvariantCultureIgnoreCase))
+            if (this._allowNull && !string.Equals(tmpType, "string", StringComparison.InvariantCultureIgnoreCase)&& !string.Equals(tmpType, "byte[]", StringComparison.InvariantCultureIgnoreCase))
             {
                 this._dataType = string.Format("{0}?", this._dataType);
             }

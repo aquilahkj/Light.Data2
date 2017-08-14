@@ -138,13 +138,22 @@ namespace Light.Data
 
         public DataContext(DataContextOptions options)
         {
+            if (options == null) {
+                throw new ArgumentNullException(nameof(options));
+            }
             Internal_DataContext(options);
         }
 
         internal void Internal_DataContext(DataContextOptions options)
         {
             this._options = options;
+            if (options.Database == null) {
+                throw new ArgumentNullException(nameof(options.Database));
+            }
             this._database = options.Database;
+            if (string.IsNullOrEmpty(options.Connection)) {
+                throw new ArgumentNullException(nameof(options.Connection));
+            }
             this._connectionString = options.Connection;
             this._output = options.CommandOutput;
         }

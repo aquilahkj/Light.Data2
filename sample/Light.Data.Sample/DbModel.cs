@@ -1873,14 +1873,14 @@ namespace Light.Data.Sample
                 this.tagName = value;
             }
         }
-        private string remark;
+        private TeUserLevel remark;
 
         /// <summary>
         /// Remark
         /// </summary>
         /// <value></value>
         [DataField("Remark", IsNullable = true)]
-        public string Remark {
+        public TeUserLevel Remark {
             get {
                 return this.remark;
             }

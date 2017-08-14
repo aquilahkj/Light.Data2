@@ -10,11 +10,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataContext(this IServiceCollection serviceCollection, Action<DataContextOptionsBuilder> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
         {
-            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            var builder = new DataContextOptionsBuilder();
             if (optionsAction != null) {
                 optionsAction(builder);
             }
-            DataContextOptions options = builder.Build();
+            var options = builder.Build();
             serviceCollection.AddSingleton(options);
             if (contextLifetime == ServiceLifetime.Transient) {
                 serviceCollection.AddTransient<DataContext>();
@@ -30,11 +30,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddDataContext<TContext>(this IServiceCollection serviceCollection, Action<DataContextOptionsBuilder<TContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped) where TContext : DataContext
         {
-            DataContextOptionsBuilder<TContext> builder = new DataContextOptionsBuilder<TContext>();
+            var builder = new DataContextOptionsBuilder<TContext>();
             if (optionsAction != null) {
                 optionsAction(builder);
             }
-            DataContextOptions<TContext> options = builder.Build();
+            var options = builder.Build();
             serviceCollection.AddSingleton(options);
             if (contextLifetime == ServiceLifetime.Transient) {
                 serviceCollection.AddTransient<TContext>();

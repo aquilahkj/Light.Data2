@@ -8,7 +8,24 @@ namespace Light.Data.Sample
     {
         static void Main(string[] args)
         {
-            Test2();
+            Test3();
+        }
+
+        static void Test0()
+        {
+            CommandOutput output = new CommandOutput();
+            output.UseConsoleOutput = true;
+            output.OutputFullCommand = true;
+
+
+            DataContext context = new DataContext("test");
+            context.SetCommanfOutput(output);
+            var list = context.Query<TeUser>().ToList();
+
+            foreach (var item in list) {
+                Console.WriteLine(item);
+            }
+            Console.Read();
         }
 
         static void Test1()
@@ -19,11 +36,10 @@ namespace Light.Data.Sample
 
             DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
             builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
-            builder.CommandOutput = output;
+            builder.SetCommandOutput(output);
             var options = builder.Build();
 
             DataContext context = new DataContext(options);
-            //context.SetCommanfOutput(output);
 
             var list = context.Query<TeUser>().ToList();
 
@@ -59,6 +75,62 @@ namespace Light.Data.Sample
             foreach (var item in list) {
                 Console.WriteLine(item);
             }
+            Console.Read();
+        }
+
+        static void Test3()
+        {
+            CommandOutput output = new CommandOutput();
+            output.UseConsoleOutput = true;
+            output.OutputFullCommand = true;
+
+
+            DataContext context = new DataContext("test");
+            context.SetCommanfOutput(output);
+            TeTagInfo taginfo = new TeTagInfo() {
+                GroupCode = "01",
+                TagCode = "02",
+                TagName = "aa",
+                Status = 1,
+                Remark = new TeUserLevel() {
+                    Id = 1,
+                    LevelName = "2",
+                    Status = 1,
+                }
+            };
+            TeTagInfo taginfo1 = new TeTagInfo() {
+                GroupCode = "01",
+                TagCode = "03",
+                TagName = "aa",
+                Status = 2,
+                Remark = null
+            };
+
+            context.TruncateTable<TeTagInfo>();
+
+            context.Insert(taginfo);
+            context.Insert(taginfo1);
+            var list = context.Query<TeTagInfo>().Where(x => x.Remark == taginfo.Remark).ToList();
+
+            foreach (var item in list) {
+                Console.WriteLine(item);
+            }
+
+            var agg = context.Query<TeTagInfo>().GroupBy(x => new {
+                Remark = x.Remark,
+                Count = Function.Count()
+            }).ToList();
+
+            var join = context.Query<TeTagInfo>().Select(x => new {
+                x.Remark,
+                x.Status
+            }).LeftJoin<TeUser>((x, y) => x.Status == y.Id).Select((x, y) => new {
+                x.Remark,
+                y.Id,
+                y.LevelId,
+                y.NickName
+            }).ToList();
+
             Console.Read();
         }
     }

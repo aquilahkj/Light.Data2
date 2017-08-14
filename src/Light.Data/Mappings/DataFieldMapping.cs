@@ -50,6 +50,10 @@ namespace Light.Data
                 if (code == TypeCode.Empty) {
                     throw new LightDataException(string.Format(SR.DataMappingUnsupportFieldType, property.DeclaringType, property.Name, type));
                 }
+                else if (code == TypeCode.Object) {
+                    ObjectFieldMapping objectFieldMapping = new ObjectFieldMapping(type, fieldName, indexName, mapping, config.IsNullable, config.DbType);
+                    fieldMapping = objectFieldMapping;
+                }
                 else {
                     PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping(type, fieldName, indexName, mapping, config.IsNullable, config.DbType, config.DefaultValue, config.IsIdentity, config.IsPrimaryKey);
                     fieldMapping = primitiveFieldMapping;
@@ -105,7 +109,8 @@ namespace Light.Data
                     return null;
                 }
                 else if (code == TypeCode.Object) {
-                    return null;
+                    ObjectFieldMapping objectFieldMapping = new ObjectFieldMapping(type, fieldName, indexName, mapping, isNullable, dbType);
+                    fieldMapping = objectFieldMapping;
                 }
                 else {
                     PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping(type, fieldName, indexName, mapping, isNullable, dbType, null, false, false);
