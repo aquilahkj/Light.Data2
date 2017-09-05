@@ -33,43 +33,43 @@
 ### 实体类特性
 
 ```csharp
- [DataTable("Te_User", IsEntityTable = true)]
- public partial class TeUser
- {
-	/// <summary>
-	/// Id
-	/// </summary>
-	/// <value></value>
-	[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
-        public int Id
-        {
-            get;
-            set;
-        }
+[DataTable("Te_User", IsEntityTable = true)]
+public class TeUser
+{
+    /// <summary>
+    /// Id
+    /// </summary>
+    /// <value></value>
+    [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+    public int Id
+    {
+        get;
+        set;
+    }
 
-	/// <summary>
-	/// Account
-	/// </summary>
-	/// <value></value>
-	[DataField("Account")]
-        public string Account
-        {
-            get;
-            set;
-        }
-        
-	/// <summary>
-	/// Telephone
-	/// </summary>
-	/// <value></value>
-	[DataField("Telephone", IsNullable = true)]
-        public string Telephone
-        {
-            get;
-            set;
-        }
-        ....
- }
+    /// <summary>
+    /// Account
+    /// </summary>
+    /// <value></value>
+    [DataField("Account")]
+    public string Account
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Telephone
+    /// </summary>
+    /// <value></value>
+    [DataField("Telephone", IsNullable = true)]
+    public string Telephone
+    {
+        get;
+        set;
+    }
+    ....
+}
 ```
 
 DataTable:指定对应数据表的表名
@@ -87,39 +87,39 @@ DataField:指定对应数据字段的字段名
 `Light.Data`支持使用json格式的配置文件进行对数据实体的映射配置, 用于对数据层的解耦, 数据层不需引用`Light.Data`类库进行类Attribute和字段Attribute标记, 如实体类可为
 
 ```csharp
- public partial class TeUser
- {
-	/// <summary>
-	/// Id
-	/// </summary>
-	/// <value></value>
-        public int Id
-        {
-            get;
-            set;
-        }
+public class TeUser
+{
+    /// <summary>
+    /// Id
+    /// </summary>
+    /// <value></value>
+    public int Id
+    {
+        get;
+        set;
+    }
 
-	/// <summary>
-	/// Account
-	/// </summary>
-	/// <value></value>
-        public string Account
-        {
-           get;
-           set;
-        }
-        
-	/// <summary>
-	/// Telephone
-	/// </summary>
-	/// <value></value>
-        public string Telephone
-        {
-           get;
-           set;
-        }
-        ....
- }
+    /// <summary>
+    /// Account
+    /// </summary>
+    /// <value></value>
+    public string Account
+    {
+       get;
+       set;
+    }
+    
+    /// <summary>
+    /// Telephone
+    /// </summary>
+    /// <value></value>
+    public string Telephone
+    {
+       get;
+       set;
+    }
+    ....
+}
 ```
 
 配置文件地址可通过在程序初始化时进行设置, 可设置多个
@@ -201,74 +201,73 @@ dataField 字段定义
 如数据库有主表和子表需要做关联查询, 可以把子表的映射以单体(一对一)或集合(一对多)作为主表映射类的一个属性, 就如主表的自有字段. 如有主表映射
 
 ```csharp
- [DataTable("Te_User", IsEntityTable = true)]
- public partial class TeUser
- {
-        [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
-        public int Id
-        {
-            get;
-            set;
-        }
+[DataTable("Te_User", IsEntityTable = true)]
+public class TeUser
+{
+    [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+    public int Id
+    {
+        get;
+        set;
+    }
 
-	[DataField("Account")]
-        public string Account
-        {
-            get;
-            set;
-        }
-        
-	[DataField("Telephone", IsNullable = true)]
-        public string Telephone
-        {
-            get;
-            set;
-        }
- }
+    [DataField("Account")]
+    public string Account
+    {
+        get;
+        set;
+    }
+    
+    [DataField("Telephone", IsNullable = true)]
+    public string Telephone
+    {
+        get;
+        set;
+    }
+}
 ```
 
 子表映射
 
 ```csharp
- [DataTable("Te_UserExtend", IsEntityTable = true)]
- public partial class TeUserExtend
- {
- 	[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
-        public int Id
-        {
-            get;
-            set;
-        }
+[DataTable("Te_UserExtend", IsEntityTable = true)]
+public class TeUserExtend
+{
+    [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+    public int Id
+    {
+        get;
+        set;
+    }
 
-	[DataField("MainId")]
-        public int MainId
-        {
-            get;
-            set;
-        }
-        
-	[DataField("Data", IsNullable = true)]
-        public string Data
-        {
-            get;
-            set;
-        }
- }
+    [DataField("MainId")]
+    public int MainId
+    {
+        get;
+        set;
+    }
+    
+    [DataField("Data", IsNullable = true)]
+    public string Data
+    {
+        get;
+        set;
+    }
+}
 ```
 
 继承`TeUser`新增一个类
 
 ```csharp
- public partial class TeUserAndExtend : TeUser
- {
-	[RelationField("Id", "MainId")]
-        public TeUserExtend Extend
-        {
-            get;
-            set;
-        }
- }
-
+public class TeUserAndExtend : TeUser
+{
+    [RelationField("Id", "MainId")]
+    public TeUserExtend Extend
+    {
+        get;
+        set;
+    }
+}
 ```
 
 通过Attribute`RelationField`把`TeUserExtend`作为一个名为`Extend`属性, 在查询`TeUserAndExtend`时, 会把对应关联相连的`TeUserExtend`内容也一并查出. `RelationField`的参数1是主表的关联字段属性名, 参数2是子表的关联字段属性名, 如有一组主表和子表有多组关联字段, 可以设置多组Attribute, 如
@@ -286,16 +285,15 @@ public TeUserExtend Extend
 如主表与子表是一对多关系, 属性类型需要使用`ICollection<T>`或`LCollection<T>`, T为子表类型, 以集合形式输出结果, 如
 
 ```csharp
- public partial class TeUserAndExtend : TeUser
- {
-	[RelationField("Id", "MainId")]
-        public ICollection<TeUserExtend> Extends
-        {
-            get;
-            set;
-        }
- }
-
+public class TeUserAndExtend : TeUser
+{
+    [RelationField("Id", "MainId")]
+    public ICollection<TeUserExtend> Extends
+    {
+        get;
+        set;
+    }
+}
 ```
 
 如不希望新增继承类, 也可以把子表类的属性直接放入主表类中, 但如果这样做, 在无论需不需查询子表内容的场景, 都会对子表数据进行查询, 降低查询效率. 同样, 关联属性也可以在配置文件中的`dataType`节点中进行配置, 关联字段节点为`relationFields`. 继承类的配置会默认继承基类的`dataFields`和`relationFields`配置, 如
@@ -336,79 +334,79 @@ relationPair 字段定义
 #### 一个主表类支持多个不同子表类做关联属性, 如
 
 ```csharp
-    public class TeRelateA_BC : TeRelateA
-    {
-        [RelationField("Id", "RelateAId")]
-        public TeRelateB RelateB {
-            get;
-            set;
-        }
-
-        [RelationField("Id", "RelateAId")]
-        public TeRelateC RelateC {
-            get;
-            set;
-        }
+public class TeRelateA_BC : TeRelateA
+{
+    [RelationField("Id", "RelateAId")]
+    public TeRelateB RelateB {
+        get;
+        set;
     }
-    
-    public class TeRelateA_B_Collection : TeRelateA
-    {
-        [RelationField("Id", "RelateAId")]
-        public TeRelateB RelateB {
-            get;
-            set;
-        }
 
-        [RelationField("Id", "RelateAId")]
-        public ICollection<TeRelateCollection> RelateCollection {
-            get;
-            set;
-        }
+    [RelationField("Id", "RelateAId")]
+    public TeRelateC RelateC {
+        get;
+        set;
     }
+}
+
+public class TeRelateA_B_Collection : TeRelateA
+{
+    [RelationField("Id", "RelateAId")]
+    public TeRelateB RelateB {
+        get;
+        set;
+    }
+
+    [RelationField("Id", "RelateAId")]
+    public ICollection<TeRelateCollection> RelateCollection {
+        get;
+        set;
+    }
+}
 ```
 
 #### 子表类下可以作为主表连接另外的子表, 如
 
 ```csharp
-    public class TeRelateA_BC : TeRelateA
-    {
-        [RelationField("Id", "RelateAId")]
-        public TeRelateB_C RelateB {
-            get;
-            set;
-        }
-   }
-
-    public class TeRelateB_C : TeRelateB
-    {
-        [RelationField("Id", "RelateBId")]
-        public TeRelateC RelateC {
-            get;
-            set;
-        }
+public class TeRelateA_BC : TeRelateA
+{
+    [RelationField("Id", "RelateAId")]
+    public TeRelateB_C RelateB {
+        get;
+        set;
     }
+
+
+public class TeRelateB_C : TeRelateB
+{
+    [RelationField("Id", "RelateBId")]
+    public TeRelateC RelateC {
+        get;
+        set;
+    }
+}
 ```
 
 #### 当两个表类互为主从时, 需确保双方的关联字段主从相反, 定义保持一致, 否则会出现错误
 
 ```csharp
-    public class TeRelateA_B_A : TeRelateA
-    {
-        [RelationField("Id", "RelateAId")]
-        public TeRelateB_A_B RelateB {
-            get;
-            set;
-        }
-    }
+ public class TeRelateA_B_A : TeRelateA
+ {
+     [RelationField("Id", "RelateAId")]
+     public TeRelateB_A_B RelateB {
+         get;
+         set;
+     }
+ }
 
-    public class TeRelateB_A_B : TeRelateB
-    {
-        [RelationField("RelateAId", "Id")]
-        public TeRelateA_B_A RelateA {
-            get;
-            set;
-        }
-    }
+ public class TeRelateB_A_B : TeRelateB
+ {
+     [RelationField("RelateAId", "Id")]
+     public TeRelateA_B_A RelateA {
+         get;
+         set;
+     }
+ }
 ```
 
 ### 实体类与配置生成模板
@@ -509,13 +507,13 @@ DataContext context = new DataContext("mssql");
 可继承DataContext创建指定DataContext类
 
 ```csharp
-    public class MyDataContext : DataContext
-    {
-        public MyDataContext() : base("mssql")
-        {
+ public class MyDataContext : DataContext
+ {
+     public MyDataContext() : base("mssql")
+     {
 
-        }
-    }
+     }
+ }
 ```
 
 ### DependencyInjection方式
@@ -524,44 +522,44 @@ DataContext context = new DataContext("mssql");
 继承`DataContext`创建参数为`DataContextOptions<T>`的指定`DataContext`类
 
 ```csharp
-    public class MyDataContext : DataContext
-    {
-        public MyDataContext(DataContextOptions<MyDataContext> options) : base(options)
-        {
+ public class MyDataContext : DataContext
+ {
+     public MyDataContext(DataContextOptions<MyDataContext> options) : base(options)
+     {
 
-        }
-    }
+     }
+ }
 ```
 
 在程序初始化时对`IServiceCollection`使用扩展静态函数`AddDataContext`加入对`DataContextOptionsBuilder<TContext>`的委托处理
 
 ```csharp
-     IServiceCollection service = new ServiceCollection();
-     service.AddDataContext<MyDataContext>(builder => {
-         builder.UseMssql(connectionString);
-         builder.SetTimeout(2000);
-         builder.SetVersion("11.0");
-     }, ServiceLifetime.Transient);
+ IServiceCollection service = new ServiceCollection();
+ service.AddDataContext<MyDataContext>(builder => {
+     builder.UseMssql(connectionString);
+     builder.SetTimeout(2000);
+     builder.SetVersion("11.0");
+ }, ServiceLifetime.Transient);
 ```
 
 直接调用
 
 ```csharp
-     var provider = service.BuildServiceProvider();
-     var context = provider.GetRequiredService<MyDataContext>();
+var provider = service.BuildServiceProvider();
+var context = provider.GetRequiredService<MyDataContext>();
 ```
 
 MVC依赖注入方式调用
 
 ```csharp
-    public class MyController : Controller
+public class MyController : Controller
+{
+    MyDataContext _context;
+    public MyController(MyDataContext context)
     {
-        MyDataContext _context;
-        public MyController(MyDataContext context)
-        {
-            _context = context;
-        }
+        _context = context;
     }
+}
 ```
 
 DataContextOptionsBuilder<TContext>主要方法
@@ -595,10 +593,10 @@ DataContextOptionsBuilder<TContext>也可通过使用ConfigName方法结合配�
 创建`CommandOutput`
 
 ```csharp
-    CommandOutput output = new CommandOutput();
-    output.Enable = true;
-    output.UseConsoleOutput = true;
-    output.OutputFullCommand = true;
+ CommandOutput output = new CommandOutput();
+ output.Enable = true;
+ output.UseConsoleOutput = true;
+ output.OutputFullCommand = true;
 ```
 
 CommandOutput 主要属性与事件
@@ -616,23 +614,23 @@ CommandOutput 主要属性与事件
 直接在`DataContext`设置输出接口
 
 ```csharp
-    DataContext context = new DataContext();
-    context.SetCommanfOutput(output);
+DataContext context = new DataContext();
+context.SetCommanfOutput(output);
 ```
 
 在`DataContextOptionsBuilder`设置输出接口, 用于依赖注入创建`DataCOntext`
 
 ```csharp
-    service.AddDataContext<TestContext>(builder => {
-    	builder.UseMssql(connectionString);
-    	builder.SetCommandOutput(output);
-    }, ServiceLifetime.Transient);
+service.AddDataContext<TestContext>(builder => {
+	builder.UseMssql(connectionString);
+	builder.SetCommandOutput(output);
+}, ServiceLifetime.Transient);
 ```
 
 执行查询方法
 
 ```csharp
-    var list = context.Query<TeUser>().Where(x => x.Id == 10).ToList();
+var list = context.Query<TeUser>().Where(x => x.Id == 10).ToList();
 ```
 
 SQL语句输出
@@ -669,21 +667,21 @@ command :
 设置别名并查询
 
 ```csharp
-   DataContext context = new DataContext();
-   //获取TeLog的对应表名Te_Log
-   var tableName = context.GetTableName<TeLog>();
-   //别名Te_Log_201709
-   var aliasName = tableName + "_201709";
-   //设置别名
-   context.SetAliasTableName<TeLog>(aliasName);
-   //查询表Te_Log_201709
-   var list = context.Query<TeLog>().ToList();
+DataContext context = new DataContext();
+//获取TeLog的对应表名Te_Log
+var tableName = context.GetTableName<TeLog>();
+//别名Te_Log_201709
+var aliasName = tableName + "_201709";
+//设置别名
+context.SetAliasTableName<TeLog>(aliasName);
+//查询表Te_Log_201709
+var list = context.Query<TeLog>().ToList();
 ```
 
 <h2 id="truncate"> 清空数据表(Truncate Table)</h2>
 
  ```csharp
-     context.TruncateTable<TeUser> (); 
+ context.TruncateTable<TeUser> (); 
  ```
  
  注意：该操作直接使用`truncate table`命令清空数据表.
@@ -693,54 +691,54 @@ command :
 自增ID会在Insert后自动赋值
 
 ```csharp
-    TeUser user = new TeUser ();
-    user.Account = "test";
-    user.Birthday = new DateTime (2001, 10, 20);
-    user.Email = "test@test.com";
-    user.Gender = GenderType.Female;
-    user.LevelId = 1;
-    user.NickName = "nicktest";
-    user.Password = "imtest";
-    user.RegTime = new DateTime (2015, 12, 30, 18, 0, 0);
-    user.Status = 1;
-    user.Telephone = "12345678";
-    user.HotRate = 1.0d;
-    context.Insert (user);
+TeUser user = new TeUser ();
+user.Account = "test";
+user.Birthday = new DateTime (2001, 10, 20);
+user.Email = "test@test.com";
+user.Gender = GenderType.Female;
+user.LevelId = 1;
+user.NickName = "nicktest";
+user.Password = "imtest";
+user.RegTime = new DateTime (2015, 12, 30, 18, 0, 0);
+user.Status = 1;
+user.Telephone = "12345678";
+user.HotRate = 1.0d;
+context.Insert (user);
 ```
 
 批量新增数据方法
 
 ```csharp
-    BatchInsert<T>(IEnumerable<T> datas)
+BatchInsert<T>(IEnumerable<T> datas)
 ```
 
 <h2 id="update">更新数据(Update Data)</h2>
 
 ```csharp
-    int id = 1;
-    TeUser user = context.SelectById<TeUser> (id);
-    user.Status = 2;
-    context.Update (user);
+int id = 1;
+TeUser user = context.SelectById<TeUser> (id);
+user.Status = 2;
+context.Update (user);
 ```
 
 批量更新数据方法
 
 ```csharp
-    BatchUpdate<T>(IEnumerable<T> datas)
+BatchUpdate<T>(IEnumerable<T> datas)
 ```
 
 <h2 id="delete">删除数据(Delete Data)</h2>
 
 ```csharp
-    int id = 1;
-    TeUser user = context.SelectById<TeUser> (id);
-    context.Delete (user);
+int id = 1;
+TeUser user = context.SelectById<TeUser> (id);
+context.Delete (user);
 ```
 
 批量删除数据方法
 
 ```csharp
-    BatchDelete<T>(IEnumerable<T> datas)
+BatchDelete<T>(IEnumerable<T> datas)
 ```
 
 <h2 id="transaction">事务处理(Transaction)</h2>
@@ -858,15 +856,15 @@ using (TransactionScope trans = context.TransactionScope ()) {
 通过自增ID查数据
 
 ```csharp
-    int id = 1;
-    TeUser user = context.SelectById<TeUser> (id);
+int id = 1;
+TeUser user = context.SelectById<TeUser> (id);
 ```
 
 通过主键查数据,若有多个主键,则全部主键值需全部输入
 
 ```csharp
-    int id = 1;
-    TeUser user = context.SelectByKey<TeUser> (id);
+int id = 1;
+TeUser user = context.SelectByKey<TeUser> (id);
 ```
 
 <h2 id="query_data">查询数据(Query Data)</h2>
@@ -907,13 +905,13 @@ IQuery主要查询用方法:
 #### 全查询
 
 ```csharp
-    List<TeUser> list = context.Query<TeUser> ().ToList ();
+List<TeUser> list = context.Query<TeUser> ().ToList ();
 ```
 
 #### 组合查询
 
 ```csharp
-    List<TeUser> list = context.Query<TeUser> ().Where (x => x.Id > 1).OrderBy (x => x.Id).Take(10).ToList ();
+List<TeUser> list = context.Query<TeUser> ().Where (x => x.Id > 1).OrderBy (x => x.Id).Take(10).ToList ();
 ```
 ### 条件查询(Where)
 
@@ -922,14 +920,14 @@ IQuery主要查询用方法:
 使用`IQuery<T>.Where(lambda)`方法加入查询条件,查询参数为Lambda表达式, 有Where, WhereWithAnd, WhereWithOr, WhereReset四个方法
 
 ```csharp
-    context.Query<T> ().Where(x => x.Id > 1)
+context.Query<T> ().Where(x => x.Id > 1)
 ```
 
 #### 普通条件查询
 
 ```csharp
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.Id >= 5 && x.Id <= 10).ToList ();
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Id < 5 || x.Id > 10).ToList ();
+ List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.Id >= 5 && x.Id <= 10).ToList ();
+ List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Id < 5 || x.Id > 10).ToList ();
 ```
 
 #### In条件查询
@@ -937,12 +935,12 @@ IQuery主要查询用方法:
 使用`List<T>.Contains`方法,not查询在条件前面加"!"号
 
 ```csharp
-    int [] arrayx = new int [] { 3, 5, 7 };
-    List<int> listx = new List<int> (arrayx);
-    //in
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => listx.Contains (x.Id)).ToList ();
-    //not in
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => ！listx.Contains (x.Id)).ToList ();
+int [] arrayx = new int [] { 3, 5, 7 };
+List<int> listx = new List<int> (arrayx);
+//in
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => listx.Contains (x.Id)).ToList ();
+//not in
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => ！listx.Contains (x.Id)).ToList ();
 ```
 
 #### Like条件查询
@@ -950,16 +948,16 @@ IQuery主要查询用方法:
 只支持string类型,使用`string.StartsWith`、`string.EndsWith`、`string.Contains`方法查询,可支持反向查,not查询在条件前面加"!"号
 
 ```csharp
-    //后模糊
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.Account.StartsWith ("test")).ToList ();
-    //前模糊
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Account.EndsWith ("1")).ToList ();
-    //前后模糊
-    List<TeUser> list3 = context.Query<TeUser> ().Where (x => x.Account.Contains ("es")).ToList ();
-    //反向查
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => "mytest2".EndsWith (x.Account)).ToList ();
-    //not 查
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => !x.Account.StartsWith ("test")).ToList ();
+//后模糊
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.Account.StartsWith ("test")).ToList ();
+//前模糊
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Account.EndsWith ("1")).ToList ();
+//前后模糊
+List<TeUser> list3 = context.Query<TeUser> ().Where (x => x.Account.Contains ("es")).ToList ();
+//反向查
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => "mytest2".EndsWith (x.Account)).ToList ();
+//not 查
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => !x.Account.StartsWith ("test")).ToList ();
 ```
 
 #### null查询
@@ -967,19 +965,19 @@ IQuery主要查询用方法:
 查询字段需为可空类型(如int?)或string类型
 
 ```csharp
-    //null查询
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.RefereeId == null).ToList ();
-    //非null查询
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.RefereeId != null).ToList ();
+ //null查询
+ List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.RefereeId == null).ToList ();
+ //非null查询
+ List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.RefereeId != null).ToList ();
 ```
 
 如非可空类型可用扩展查询方式`ExtendQuery.IsNull()`
 
 ```csharp
-    //null查询
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.IsNull (x.Id)).ToList ();
-    //非null查询
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.IsNull (x.Id)).ToList ();
+//null查询
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.IsNull (x.Id)).ToList ();
+//非null查询
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.IsNull (x.Id)).ToList ();
 ```
 
 #### 布尔值字段查询
@@ -987,32 +985,32 @@ IQuery主要查询用方法:
 查询字段需为布尔(boolean)类型
 
 ```csharp
-    //是查询
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag).ToList ();
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag == true).ToList ();
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag != false).ToList ();
-    //非查询
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => !x.DeleteFlag).ToList ();
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.DeleteFlag != true).ToList ();
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.DeleteFlag == false).ToList ();
+//是查询
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag).ToList ();
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag == true).ToList ();
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag != false).ToList ();
+//非查询
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => !x.DeleteFlag).ToList ();
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.DeleteFlag != true).ToList ();
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.DeleteFlag == false).ToList ();
 ```
 #### 跨表Exists查询
 
 固定条件查询
 
 ```csharp
-    //Exist查询
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Status == 1)).ToList ();
-    //Not Exist查询
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<TeUserLevel> (y => y.Status == 1)).ToList ();
+//Exist查询
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Status == 1)).ToList ();
+//Not Exist查询
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<TeUserLevel> (y => y.Status == 1)).ToList ();
 ```
 关联条件查询
 
 ```csharp
-    //Exist查询
-    List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
-    //Not Exist查询
-    List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
+//Exist查询
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
+//Not Exist查询
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
 ```
 
 ### 排序(OrderBy)
@@ -1022,19 +1020,19 @@ IQuery主要查询用方法:
 使用`IQuery.OrderBy(lambda)`方法加入查询条件,查询参数为Lambda表达式,有OrderBy, OrderByDescending, OrderByCatch, OrderByDescendingCatch,  OrderByReset, OrderByRandom六个方法
 
 ```csharp
-    context.Query<T> ().OrderBy(x => x.Id)
+context.Query<T> ().OrderBy(x => x.Id)
 ```
 
 #### 正向排序
 
 ```csharp
-    List<TeUser> list = context.Query<TeUser> ().OrderBy (x => x.Id).ToList ();
+List<TeUser> list = context.Query<TeUser> ().OrderBy (x => x.Id).ToList ();
 ```
 
 #### 反向排序
 
 ```csharp
-    List<TeUser> list = context.Query<TeUser> ().OrderByDescending (x => x.Id).ToList ();
+List<TeUser> list = context.Query<TeUser> ().OrderByDescending (x => x.Id).ToList ();
 ```
 
 ### 选择指定字段(Select)
@@ -1044,42 +1042,29 @@ IQuery主要查询用方法:
 使用`IQuery<T>.Select(lambda)`查询时指定字段输出新的结构类,支持匿名类输出,使用Lambda表达式中的new方式定义新结构类.
 
 ```csharp
-    List<TeUserSimple> users = context.Query<TeUser> ()
-                                      .Select (x => new TeUserSimple () {
-                                          Id = x.Id,
-                                          Account = x.Account,
-                                          LevelId = x.LevelId,
-                                          RegTime = x.RegTime
-                                       })
-                                      .ToList ();
+ var list = context.Query<TeUser> ()
+                   .Select (x => new TeUserSimple () {
+                       Id = x.Id,
+                       Account = x.Account,
+                       LevelId = x.LevelId,
+                       RegTime = x.RegTime
+                    })
+                   .ToList ();
 //匿名类
-    var users2 = context.Query<TeUser> ()
-                        .Select (x => new {
-                            x.Id,
-                            x.Account,
-                            x.LevelId,
-                            x.RegTime
-                         })
-                        .ToList ();
-```
-
-使用`IQuery<T>.Select(lambda)`查询时指定字段输出新的结构类,支持匿名类输出,使用Lambda表达式中的new方式定义新结构类.
-
-```csharp
-    List<TeUserSimple> users = context.Query<TeUser> ()
-                                      .Select (x => new TeUserSimple () {
-                                          Id = x.Id,
-                                          Account = x.Account,
-                                          LevelId = x.LevelId,
-                                          RegTime = x.RegTime
-                                       })
-    				      .ToList ();
+ var list = context.Query<TeUser> ()
+                   .Select (x => new {
+                       x.Id,
+                       x.Account,
+                       x.LevelId,
+                       x.RegTime
+                    })
+                   .ToList ();
 ```
 
 查询单字段列表
 
 ```csharp
-    List<int> list = context.Query<TeUser> ().Select (x => x.Id).ToList ();
+List<int> list = context.Query<TeUser> ().Select (x => x.Id).ToList ();
 ```
 
 ### 查询批量更新
@@ -1089,27 +1074,28 @@ IQuery主要查询用方法:
 使用`IQuery<T>.Update(lambda)`对查询数据进行批量更新操作, 以lambda表达式中的new方式定义数据的更新字段与更新内容, 左侧为更新字段名, 右侧为更新内容, 内容可为原字段, 返回结果为成功更新行数. 
 
 ```csharp
-    var result = context.Query<TeUser> ()
-                        .Update (x => new TeUser {
-                            LastLoginTime = DateTime.Now,
-                            Status = 2
-                         });
+var result = context.Query<TeUser> ()
+                    .Update (x => new TeUser {
+                        LastLoginTime = DateTime.Now,
+                        Status = 2
+                     });
 //更新内容为原字段
-    var result = context.Query<TeUser2> ()
-                        .Update (x => new TeUser2 {
-                            LastLoginTime = x.RecordTime,
-                            Status = x.Status + 1
-                         });
+var result = context.Query<TeUser2> ()
+                    .Update (x => new TeUser2 {
+                        LastLoginTime = x.RecordTime,
+                        Status = x.Status + 1
+                     });
 ```
 
 ### 查询批量删除
 
 ***
 
-使用`IQuery<T>.Delete()`对查询数据进行批量删除操作
+使用`IQuery<T>.Delete()`对查询数据进行批量删除操作, 返回结果为成功删除行数.
 
 ```csharp
-    context.Query<TeUser> ().Where(x => x.Id > 1).Delete();
+var result = context.Query<TeUser> ().Where(x => x.Id > 1)
+                    .Delete();
 ```
 
 ### 查询批量插入
@@ -1123,8 +1109,8 @@ IQuery主要查询用方法:
 使用`IQuery<T>.Insert<K>()`全数据插入,查询表T的字段必须与插入表K的字段一一对应,如果T与K有同位字段是自增字段,则插入时,K的自增字段数据为自增, 返回结果为成功插入行数.
 
 ```csharp
-    var result = context.Query<TeDataLog> ()
-    		        .Insert<TeDataLogHistory> ();
+var result = context.Query<TeDataLog> ()
+		    .Insert<TeDataLogHistory> ();
 ```
 
 #### 指定字段插入
@@ -1132,17 +1118,17 @@ IQuery主要查询用方法:
 使用`IQuery<T>.SelectInsert<K>(lambda)`选择指定字段举行插入, lambda表达式中的new方式定义数据的插入表字段与查询表选择字段, 左侧为插入表字段, 查询表选择字段, 字段可以为常量, 返回结果为成功插入行数.
 
 ```csharp
-    var result = context.Query<TeDataLog> ()
-                        .SelectInsert (x => new TeDataLogHistory () {
-                            Id = x.Id,
-                            UserId = x.UserId,
-                            ArticleId = x.ArticleId,
-                            RecordTime = x.RecordTime,
-                            Status = x.Status,
-                            Action = x.Action,
-                            RequestUrl = x.RequestUrl,
-                            CheckId = 3,
-                         });
+var result = context.Query<TeDataLog> ()
+                    .SelectInsert (x => new TeDataLogHistory () {
+                        Id = x.Id,
+                        UserId = x.UserId,
+                        ArticleId = x.ArticleId,
+                        RecordTime = x.RecordTime,
+                        Status = x.Status,
+                        Action = x.Action,
+                        RequestUrl = x.RequestUrl,
+                        CheckId = 3,
+                     });
 ```
 
 <h2 id="aggregate_data">汇总统计数据(Aggregate Data)</h2>
@@ -1199,52 +1185,52 @@ IQuery主要查询用方法:
 #### 数据行计数汇总
 
 ```csharp
-    //普通汇总
-    List<LevelIdAgg> list = context.Query<TeUser> ()
-                                   .Where (x => x.Id >= 5)
-                                   .GroupBy (x => new LevelIdAgg () {
-                                       LevelId = x.LevelId,
-                                       Data = Function.Count ()
-                                    })
-                                   .ToList ();
-    //使用匿名类汇总
-    var list = context.Query<TeUser> ()
-                      .Where (x => x.Id >= 5)
-                      .GroupBy (x => new {
-                          LevelId = x.LevelId,
-                          Data = Function.Count ()
-                       })
-    		      .ToList ();
-    //条件判断汇总
-    var list = context.Query<TeUser> ()
-                      .Where (x => x.Id >= 5)
-                      .GroupBy (x => new {
-                          LevelId = x.LevelId,
-                          Valid = Function.CountCondition (x.Status = 1),
-                          Invalid = Function.CountCondition (x.Status != 1)
-                       })
-                      .ToList ();
+//普通汇总
+var list = context.Query<TeUser> ()
+                  .Where (x => x.Id >= 5)
+                  .GroupBy (x => new LevelIdAgg () {
+                      LevelId = x.LevelId,
+                      Data = Function.Count ()
+                   })
+                  .ToList ();
+//使用匿名类汇总
+var list = context.Query<TeUser> ()
+                  .Where (x => x.Id >= 5)
+                  .GroupBy (x => new {
+                      LevelId = x.LevelId,
+                      Data = Function.Count ()
+                   })
+		  .ToList ();
+//条件判断汇总
+var list = context.Query<TeUser> ()
+                  .Where (x => x.Id >= 5)
+                  .GroupBy (x => new {
+                      LevelId = x.LevelId,
+                      Valid = Function.CountCondition (x.Status = 1),
+                      Invalid = Function.CountCondition (x.Status != 1)
+                   })
+                  .ToList ();
 ```
 
 #### 指定字段计数汇总
 
 ```csharp
-    //统计指定字段
-    List<LevelIdAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new LevelIdAgg () {
-                                       LevelId = x.LevelId,
-                                       Data = Function.Count (x.Area)
-                                    })
-    			       .ToList ();
-    //条件判断统计指定字段
-    var list = context.Query<TeUser> ()
-                      .Where (x => x.Id >= 5)
-                      .GroupBy (x => new {
-                          LevelId = x.LevelId,
-                          Valid = Function.Count (x.Status = 1 ? x.Area : null),
-                          Invalid = Function.Count (x.Status != 1 ? x.Area : null)
-                       })
-    		  .ToList ();
+//统计指定字段
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new LevelIdAgg () {
+                      LevelId = x.LevelId,
+                      Data = Function.Count (x.Area)
+                   })
+		  .ToList ();
+//条件判断统计指定字段
+var list = context.Query<TeUser> ()
+                  .Where (x => x.Id >= 5)
+                  .GroupBy (x => new {
+                      LevelId = x.LevelId,
+                      Valid = Function.Count (x.Status = 1 ? x.Area : null),
+                      Invalid = Function.Count (x.Status != 1 ? x.Area : null)
+                   })
+		  .ToList ();
 ```
 
 ### 汇总数据过滤(Having)
@@ -1252,13 +1238,13 @@ IQuery主要查询用方法:
 使用`IAggreate<K>.Having(lambda)`方法加入汇总条件,对汇总数据做二次过滤,查询参数为Lambda表达式,有Having,HavingWithAnd,HavingWithOr,HavingReset四个方法
 
 ```csharp
-    List<LevelIdAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new LevelIdAgg () {
-                                       LevelId = x.LevelId,
-                                       Data = Function.Sum (x.LoginTimes)
-                                    })
-                                   .Having (y => y.Data > 15)
-                                   .ToList ();
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new LevelIdAgg () {
+                      LevelId = x.LevelId,
+                      Data = Function.Sum (x.LoginTimes)
+                   })
+                  .Having (y => y.Data > 15)
+                  .ToList ();
 ```
 
 ### 汇总数据排序(OrderBy)
@@ -1266,22 +1252,22 @@ IQuery主要查询用方法:
 使用`IAggreate<K>.OrderBy(lambda)`方法加入汇总条件, 查询参数为Lambda表达式, 有OrderBy, OrderByDescending, OrderByCatch, OrderByDescendingCatch, OrderByReset, OrderByRandom六个方法
 
 ```csharp
-    //汇总字段排序
-    List<LevelIdAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new LevelIdAgg () {
-                                       LevelId = x.LevelId,
-                                       Data = Function.Count ()
-                                    })
-                                   .OrderBy (x => x.LevelId)
-                                   .ToList ();
-    //汇总结果排序
-    List<LevelIdAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new LevelIdAgg () {
-                                       LevelId = x.LevelId,
-                                       Data = Function.Count ()
-                                    })
-                                   .OrderBy (x => x.Data)
-                                   .ToList ();
+//汇总字段排序
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new LevelIdAgg () {
+                      LevelId = x.LevelId,
+                      Data = Function.Count ()
+                   })
+                  .OrderBy (x => x.LevelId)
+                  .ToList ();
+//汇总结果排序
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new LevelIdAgg () {
+                      LevelId = x.LevelId,
+                      Data = Function.Count ()
+                   })
+                  .OrderBy (x => x.Data)
+                  .ToList ();
 ```
 
 ### 汇总字段扩展
@@ -1292,46 +1278,46 @@ IQuery主要查询用方法:
 #### 日期类统计
 
 ```csharp
-    //Date统计
-    List<RegDateAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new RegDateAgg () {
-                                       RegDate = x.RegTime.Date,
-                                       Data = Function.Count ()
-    				    })
-    			           .ToList ();
-    //日期格式化统计
-    List<RegDateFormatAgg> list = context.Query<TeUser> ()
-    				         .GroupBy (x => new RegDateFormatAgg () {
-    					     RegDateFormat = x.RegTime.ToString("yyyy-MM-dd"),
-    					     Data = Function.Count ()
-    				          })
-					 .ToList ();	
-    //年统计
-    List<NumDataAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new NumDataAgg () {
-                                       Name = x.RegTime.Year,
-                                       Data = Function.Count ()
-                                    })
-				   .ToList ();	
+//Date统计
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new RegDateAgg () {
+                      RegDate = x.RegTime.Date,
+                      Data = Function.Count ()
+		   })
+		  .ToList ();
+//日期格式化统计
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new RegDateFormatAgg () {
+                      RegDateFormat = x.RegTime.ToString("yyyy-MM-dd"),
+                      Data = Function.Count ()
+                   })
+                  .ToList ();	
+//年统计
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new NumDataAgg () {
+                      Name = x.RegTime.Year,
+                      Data = Function.Count ()
+                   })
+                  .ToList ();	
 ```
 
 #### 字符串类统计
 
 ```csharp
-    //截取字符串统计
-    List<StringDataAgg> list = context.Query<TeUser> ()
-                                      .GroupBy (x => new StringDataAgg () {
-                                          Name = x.Account.Substring (0, 5),
-                                          Data = Function.Count ()
-                                       })
-    				      .ToList ();
-    //字符串长度统计
-    List<NumDataAgg> list = context.Query<TeUser> ()
-                                   .GroupBy (x => new NumDataAgg () {
-                                       Name = x.Account.Length,
-                                       Data = Function.Count ()
-    				    })
-				   .ToList ();
+//截取字符串统计
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new StringDataAgg () {
+                      Name = x.Account.Substring (0, 5),
+                      Data = Function.Count ()
+                   })
+		  .ToList ();
+//字符串长度统计
+var list = context.Query<TeUser> ()
+                  .GroupBy (x => new NumDataAgg () {
+                      Name = x.Account.Length,
+                      Data = Function.Count ()
+		   })
+		  .ToList ();
 ```
 
 <h2 id="join_table">表连接(Join Table)</h2>
@@ -1366,20 +1352,20 @@ IJoinTable主要查询方法
 ### 连表方法(Join Table Method)
 
 ```csharp
-    //内连接
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .ToList();
-		      
-    //左连接
-    var list = context.Query<TeUser> ()
-                      .LeftJoin<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .ToList();
-		      
-    //右连接
-    var list = context.Query<TeUser> ()
-                      .RightJoin<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .ToList();
+//内连接
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+	          .ToList();
+	      
+//左连接
+var list = context.Query<TeUser> ()
+                  .LeftJoin<TeUserExtend>((x,y) => x.Id == y.Id)
+	          .ToList();
+	      
+//右连接
+var list = context.Query<TeUser> ()
+                  .RightJoin<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .ToList();
 ```
 
 ### 连表类型(Join Table Type)
@@ -1387,57 +1373,58 @@ IJoinTable主要查询方法
 #### 基本表连接
 
 ```csharp
-    //表连接
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .ToList();
-    
-    //表连接+查询
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>(y => y.ExtendData != null, (x, y) => x.Id == y.Id)
-		      .ToList();
-    
-    //查询连接
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>(context.Query<TeUserExtend>().Where(y => y.ExtendData != null), (x,y) => x.Id == y.Id)
-		      .ToList();
+//表连接
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+	          .ToList();
+
+//表连接+查询
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>(y => y.ExtendData != null, (x, y) => x.Id == y.Id)
+	          .ToList();
+
+//查询连接
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>(context.Query<TeUserExtend>()
+		  .Where(y => y.ExtendData != null), (x,y) => x.Id == y.Id)
+	          .ToList();
 ```
 
 ##### 统计表连接
 
 ```csharp
-    //实体表连接统计结果
-    var list = context.Query<TeUser>()
-                      .Join(context.Query<TeUserSub>()
-           		         .GroupBy(x => new {
-                                     MId = x.MId,
-                                     Count = Function.Count(),
-                                  }), (x, y) => x.Id == y.MId
-		       )
-                      .Select((x, y) => new {
-    			   Id = x.Id,
-    			   Account = x.Account,
-    			   LevelId = x.LevelId,
-    			   MId = y.MId,
-    			   Count = y.Count,
-                       })
-		      .ToList();
-		      
-     //统计结果连接实体表             
-     var list = context.Query<TeMainTable>()
-                       .GroupBy(x => new {
-                           MId = x.MId,
-                           Count = Function.Count(),
-                        })
-                       .Join<TeSubTable>((x, y) => x.MId == y.Id)
-                       .Select((x, y) => new {
-      			   Id = y.Id,
-      			   Account = y.Account,
-      			   LevelId = y.LevelId,
-      			   MId = x.MId,
-      			   Count = x.Count,
-      			})
-		       .ToList();
+//实体表连接统计结果
+var list = context.Query<TeUser>()
+                  .Join(context.Query<TeUserSub>()
+                               .GroupBy(x => new {
+                                   MId = x.MId,
+                                   Count = Function.Count(),
+                                }), (x, y) => x.Id == y.MId
+	           )
+                  .Select((x, y) => new {
+			   Id = x.Id,
+			   Account = x.Account,
+			   LevelId = x.LevelId,
+			   MId = y.MId,
+			   Count = y.Count,
+                   })
+	          .ToList();
+	      
+//统计结果连接实体表             
+var list = context.Query<TeMainTable>()
+                  .GroupBy(x => new {
+                      MId = x.MId,
+                      Count = Function.Count(),
+                   })
+                  .Join<TeSubTable>((x, y) => x.MId == y.Id)
+                  .Select((x, y) => new {
+  		      Id = y.Id,
+  		      Account = y.Account,
+  		      LevelId = y.LevelId,
+  		      MId = x.MId,
+  		      Count = x.Count,
+  	           })
+		  .ToList();
 ```
 
 ### 条件查询(Where)
@@ -1447,16 +1434,16 @@ IJoinTable主要查询方法
 使用`IJoinTable<T,T1>.Where(lambda)`方法加入查询条件,查询参数为Lambda表达式, 有Where, WhereWithAnd, WhereWithOr, WhereReset四个方法
 
 ```csharp
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .Where((x,y) => x.Id > 1 && y.Status == 1 )
-		      .ToList();
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .Where((x,y) => x.Id > 1 && y.Status == 1 )
+		  .ToList();
 
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .Where((x,y) => x.Id > 1)
-		      .WhereWithAnd((x,y) => y.Status == 1 )
-		      .ToList();
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .Where((x,y) => x.Id > 1)
+		  .WhereWithAnd((x,y) => y.Status == 1 )
+		  .ToList();
 ```
 
 ### 排序(OrderBy)
@@ -1466,21 +1453,21 @@ IJoinTable主要查询方法
 使用`IJoinTable<T,T1>.OrderBy(lambda)`方法加入查询条件, 查询参数为Lambda表达式, 有OrderBy, OrderByDescending, OrderByCatch, OrderByDescendingCatch,  OrderByReset, OrderByRandom六个方法
 
 ```csharp
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .OrderBy((x,y) => x.Id)
-		      .ToList();
-    
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .OrderByDescending((x,y) => y.Date)
-		      .ToList();
-    
-    var list = context.Query<TeUser> ()
-                      .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		      .OrderBy((x,y) => x.Id)
-		      .OrderByDescendingCatch((x,y) => y.Date)
-		      .ToList();
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .OrderBy((x,y) => x.Id)
+		  .ToList();
+
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .OrderByDescending((x,y) => y.Date)
+		  .ToList();
+
+var list = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .OrderBy((x,y) => x.Id)
+		  .OrderByDescendingCatch((x,y) => y.Date)
+		  .ToList();
 ```
 
 ### 选择指定字段(Select)
@@ -1490,27 +1477,27 @@ IJoinTable主要查询方法
 使用`IJoinTable<T,T1>.Select(lambda)`查询时指定字段输出新的结构类, 支持匿名类输出, 使用Lambda表达式中的new方式定义新结构类.
 
 ```csharp
-    List<TeUserJoin> list = context.Query<TeUser> ()
-    				   .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-    				   .Select ((x,y) => new TeUserJoin () {
-    				       Id = x.Id,
-    				       Account = x.Account,
-    				       LevelId = x.LevelId,
-    				       RegTime = x.RegTime,
-    				       ExtendData = y.ExtendData
-				    })
-    				   .ToList ();
-    //匿名类
-    var users2 = context.Query<TeUser> ()
-    			.Join<TeUserExtend>((x,y) => x.Id == y.Id)
-    			.Select ((x,y) => new {
-    			    x.Id,
-    			    x.Account,
-    			    x.LevelId,
-    			    x.RegTime,
-    			    y.ExtendData
-			 })
-    			.ToList ();
+var list = context.Query<TeUser> ()
+	          .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+	          .Select ((x,y) => new TeUserJoin () {
+	              Id = x.Id,
+	              Account = x.Account,
+	              LevelId = x.LevelId,
+	              RegTime = x.RegTime,
+	              ExtendData = y.ExtendData
+		   })
+		  .ToList ();
+//匿名类
+var list = context.Query<TeUser> ()
+		  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .Select ((x,y) => new {
+		      x.Id,
+		      x.Account,
+		      x.LevelId,
+		      x.RegTime,
+		      y.ExtendData
+	           })
+		  .ToList ();
 ```
 
 ### 查询批量插入
@@ -1524,13 +1511,13 @@ IJoinTable主要查询方法
 使用`IQuery<T>.SelectInsert<K>(lambda)`选择指定字段举行插入, lambda表达式中的new方式定义数据的插入表字段与查询表选择字段, 左侧为插入表字段, 查询表选择字段, 字段可以为常量.
 
 ```csharp
-    var result = context.Query<TeUser> ()
-		        .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		        .SelectInsert ((x,y) => new TeUserJoin () {
-		            Id = x.Id,
-		            Account = x.Account,
-		            LevelId = x.LevelId,
-		            RegTime = x.RegTime,
-		            ExtendData = y.ExtendData 
-		         });
+var result = context.Query<TeUser> ()
+                    .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+                    .SelectInsert ((x,y) => new TeUserJoin () {
+                        Id = x.Id,
+                        Account = x.Account,
+                        LevelId = x.LevelId,
+                        RegTime = x.RegTime,
+                        ExtendData = y.ExtendData 
+                    });
 ```
