@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{610664E1-A8A2-4D43-9C95-C38134EFB98C}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Test", "test\Light.Data.Test\Light.Data.Test.csproj", "{369C8B8D-3AC5-4069-8C75-64759E81C6C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Sample", "sample\Light.Data.Sample\Light.Data.Sample.csproj", "{5B96B629-77CB-4C01-877D-07A0AFA4B9B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "template", "template", "{586CBA9C-9AC2-4DA6-9482-D6CB955F1298}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,5 +43,8 @@ Global
 		{F991D32F-4393-4B21-8AB1-17F41000036D} = {56C8D8B4-0FD9-4986-A25A-26590FC82352}
 		{369C8B8D-3AC5-4069-8C75-64759E81C6C5} = {610664E1-A8A2-4D43-9C95-C38134EFB98C}
 		{5B96B629-77CB-4C01-877D-07A0AFA4B9B5} = {1B6D7247-1D49-4DBF-8182-0A4ACE26FAB8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {968D3971-87BC-4D6C-9CCE-4FA5B7F744C3}
 	EndGlobalSection
 EndGlobal

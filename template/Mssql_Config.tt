@@ -1,5 +1,5 @@
 ﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
-<#@ output extension=".cs" #>
+<#@ output extension=".json" #>
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
@@ -13,79 +13,99 @@
 <#@ import namespace="System.Text.RegularExpressions"#>
 <# 
 	//设置命名空间
-    var namespaceName="Light.Data.Test";
+    var namespaceName="MyTest";
 	//设置数据库连接
-    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
+    var connection="Data Source=127.0.0.1;User ID=sa;Password=qwerty;Initial Catalog=MyTest;";
 	//设置需要生成的数据库
-    var dataBase="LightData_Test";
-	//设置是否使用LightData框架
-	var useLightData=false;
-	
+    var dataBase="MyTest";
+	//默认值使用字符串方式写入
+	DbSetting.SetDefaultValueStringMode(true);
 
-	//设置需要生成的数据表
-    DbSetting.SetTable("Te_BaseField_Config");
-	//DbSetting.SetTable("Te_RelateMain_Config");
-	//DbSetting.SetTable("Te_RelateSub_Config");
+	//DbSetting.SetTable(tableName)设置需要生成的数据表
+	//方法:DbSetting.SetTable(表名)
+    //DbSetting.SetTable("Te_BaseField");
 
-   //设置字段的Enum转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
-    DbSetting.SetSpecifiedType("*.EnumInt32_Field","EnumInt32Type");
-	DbSetting.SetSpecifiedType("*.EnumInt32_FieldNull","EnumInt32Type");
+	//设置需要生成的数据表,数据类型继承DataTableEntity
+	//方法:DbSetting.SetEntityTable(tableName);
+	//DbSetting.SetEntityTable("Te_BaseField_Entity");
 
+	//设置字段的指定类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
+	//方法:DbSetting.SetSpecifiedType(tableName.fieldName,typeName);
+    //DbSetting.SetSpecifiedType("*.EnumInt32Field","EnumInt32Type");
+	//DbSetting.SetSpecifiedType("Table1.EnumInt32FieldNull","EnumInt32Type");
+
+	//设置字段非空,设置"表名.字段名"指定表字段非空,设置"*.字段名"所有表符合字段名的都非空,设置"表名.*"指定表所有字段非空
+	//方法:DbSetting.SetNotNullField(tableName.fieldName);
+	//DbSetting.SetNotNullField("Te_BaseField_NullMiniValue.*");
+
+	//设置字段默认值,设置"表名.字段名"指定表字段使用默认值,设置"*.字段名"所有表符合字段名的都使用默认值
+	//方法:DbSetting.SetDefaultValue(tableName.fieldName,defaultValue);
+	//DbSetting.SetDefaultValue("*.NowFieldNull","DefaultTime.Now");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.BoolFieldNull","true");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.SbyteFieldNull","20");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DecimalFieldNull","20.5");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DateTimeField","2017-01-02 12:00:00");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.EnumInt32FieldNull","EnumInt32Type.Positive1");
 
 	var dbSchema= new DataBaseSchema(dataBase, connection);
     var tableList=dbSchema.GetTables();
 #>
-using System;
-using System.Collections.Generic;
-using System.Text;
-<# if(useLightData){ #>
-using Light.Data;
-<# } #>
-
-namespace <#=namespaceName#>
 {
+	"lightDataMapper": {
+		"dataTypes": [
 <#
-    foreach(Table table in tableList)
+	List<Table> list=tableList;
+	int j=0;
+    foreach(Table table in list)
     {
-        string tableName=table.TableName;
+		j++;
+		string tableName=table.TableName;
 #>
-	/// <summary>
-    /// <#=table.CommentText#>
-    /// </summary>
-<# if(useLightData){ #>
-    [DataTable("<#=tableName#>")]
-<# } #>
-    public class <#=StringUtil.ToPascalCase(tableName)#> <#=DbSetting.CheckEntity(tableName)?": DataTableEntity":""#>
-    {
-        #region "Data Property"
+			{
+				"type": "<#=namespaceName#>.<#=StringUtil.ToPascalCase(tableName)#>,<#=namespaceName#>",
+				"tableName": "<#=tableName#>",
+				"isEntityTable": true,
+				"dataFields": [
 <#
+		int i=0;
         foreach(Column c in table.Columns.Values)
         {
+			i++;
 #>
-        /// <summary>
-        /// <#=c.ColumnComment#>
-        /// </summary>
-        /// <value></value>
-<# if(useLightData){ #>
-        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #>)]
+					{
+						"fieldName": "<#=StringUtil.ToPascalCase(c.ColumnName)#>",
+<# if (c.AllowNull) { #>
+						"isNullable": true,
 <# } #>
-        public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
-        {
-            get;
-            set;
-        }
+<# if (c.IsPrimaryKey) { #>
+						"isPrimaryKey": true, 
+<# } #>
+<# if (c.IsIdentity) { #>
+						"isIdentity": true, 
+<# } #>
+<# if (c.DBType!=null) { #>
+						"dbType": "<#=c.DBType#>",
+<# } #>
+<# if (c.DefaultValue!=null) { #>
+						"defaultValue": <#=c.DefaultValue#>,
+<# } #>
+						"name": "<#=c.ColumnName#>"
+					}<# if (i<table.Columns.Count) { #>,
+<# } #>
 <#
         }
 #>
-        #endregion
-    }
 
+				]
+			}<# if (j<list.Count) { #>,
+<# } #>
 <#
     }
-   
 #>
+
+		]
+	}
 }
-
 <#+ 
 
     #region GetDataBaseSchema
@@ -370,7 +390,7 @@ order by
 			{
 				this._dataType=dataType;
 			}
-			string tmpType=this._dataType;
+            string tmpType=this._dataType;
             if(string.IsNullOrEmpty(this._columnComment))
             {
                 this._columnComment=this._columnName;

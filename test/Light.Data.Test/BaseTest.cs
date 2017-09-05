@@ -31,7 +31,7 @@ namespace Light.Data.Test
             commandOutput.OutputFullCommand = true;
             commandOutput.OnCommandOutput += CommandOutput_OnCommandOutput;
             //output.UseConsoleOutput = true;
-            context.SetCommanfOutput(commandOutput);
+            context.SetCommandOutput(commandOutput);
             this.output = output;
 
         }
@@ -39,14 +39,14 @@ namespace Light.Data.Test
         public DataContext CreateContext()
         {
             DataContext context = new DataContext("mssql");
-            context.SetCommanfOutput(commandOutput);
+            context.SetCommandOutput(commandOutput);
             return context;
         }
 
         public DataContext CreateContext(string configName)
         {
             DataContext context = new DataContext(configName);
-            context.SetCommanfOutput(commandOutput);
+            context.SetCommandOutput(commandOutput);
             return context;
         }
 

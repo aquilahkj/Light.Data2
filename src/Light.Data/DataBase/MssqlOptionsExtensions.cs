@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Light.Data;
+using Light.Data.Mssql;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Mssql
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MssqlOptionsExtensions
     {
@@ -25,10 +27,10 @@ namespace Light.Data.Mssql
             return builder;
         }
 
-        public static DataContextOptionsBuilder<TContext> SetVersion<TContext>(this DataContextOptionsBuilder<TContext> builder, int version) where TContext : DataContext
-        {
-            builder.ParamDict["version"] = version;
-            return builder;
-        }
+        //public static DataContextOptionsBuilder<TContext> SetVersion<TContext>(this DataContextOptionsBuilder<TContext> builder, string version) where TContext : DataContext
+        //{
+        //    builder.ParamDict["version"] = version;
+        //    return builder;
+        //}
     }
 }

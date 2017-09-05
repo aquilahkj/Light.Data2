@@ -103,6 +103,11 @@ namespace Light.Data
             _dict["timeout"] = timeout;
         }
 
+        public void SetVersion(string version)
+        {
+            _dict["version"] = version;
+        }
+
         internal void SetDataConfig(string connection, Func<string, ConfigParamSet, DatabaseProvider> func)
         {
             _connection = connection;

@@ -13,8 +13,6 @@ namespace Light.Data.Test
     public class TeBaseField 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -22,15 +20,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -38,15 +30,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -54,15 +40,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -70,15 +50,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -86,15 +60,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -102,15 +70,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -118,15 +80,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -134,15 +90,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -150,15 +100,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -166,15 +110,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -182,15 +120,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -198,15 +130,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -214,15 +140,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -230,15 +150,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -246,15 +160,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -262,15 +170,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -278,15 +180,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -294,15 +190,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -310,15 +200,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -326,15 +210,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -342,15 +220,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -358,15 +230,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -374,15 +240,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -390,15 +250,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -406,15 +260,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -422,15 +270,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -438,15 +280,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -454,15 +290,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -470,15 +300,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -486,15 +310,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -502,15 +320,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -518,15 +330,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -534,15 +340,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -550,15 +350,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -566,15 +360,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -582,15 +370,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -598,12 +380,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -615,8 +393,6 @@ namespace Light.Data.Test
     public class TeBaseFieldNoIdentity 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -624,15 +400,9 @@ namespace Light.Data.Test
         [DataField("Id", IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -640,15 +410,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -656,15 +420,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -672,15 +430,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -688,15 +440,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -704,12 +450,8 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -721,8 +463,6 @@ namespace Light.Data.Test
     public class TeBaseFieldExpression 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -730,15 +470,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -746,15 +480,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -762,15 +490,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -778,15 +500,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -794,15 +510,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -810,15 +520,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -826,15 +530,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -842,15 +540,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -858,15 +550,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -874,15 +560,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -890,15 +570,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -906,15 +580,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -922,15 +590,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -938,15 +600,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -954,15 +610,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -970,15 +620,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -986,15 +630,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -1002,15 +640,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -1018,15 +650,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -1034,15 +660,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -1050,15 +670,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -1066,15 +680,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -1082,15 +690,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -1098,15 +700,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -1114,15 +710,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -1130,15 +720,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -1146,15 +730,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -1162,15 +740,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -1178,15 +750,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -1194,15 +760,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -1210,15 +770,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -1226,15 +780,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -1242,12 +790,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -1259,8 +803,6 @@ namespace Light.Data.Test
     public class TeBaseFieldExpressionExtend 
     {
         #region "Data Property"
-        private int extendId;
-
         /// <summary>
         /// ExtendId
         /// </summary>
@@ -1268,15 +810,9 @@ namespace Light.Data.Test
         [DataField("ExtendId", IsIdentity = true, IsPrimaryKey = true)]
         public int ExtendId
         {
-            get { 
-                return this.extendId; 
-            }
-            set { 
-                this.extendId = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -1284,15 +820,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -1300,15 +830,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -1316,15 +840,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -1332,15 +850,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -1348,15 +860,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -1364,15 +870,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -1380,15 +880,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -1396,12 +890,8 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -1413,8 +903,6 @@ namespace Light.Data.Test
     public class TeBaseFieldSelectField 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -1422,15 +910,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -1438,15 +920,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -1454,15 +930,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -1470,15 +940,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -1486,15 +950,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -1502,15 +960,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -1518,15 +970,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -1534,15 +980,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -1550,15 +990,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -1566,15 +1000,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -1582,15 +1010,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -1598,15 +1020,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -1614,15 +1030,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -1630,15 +1040,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -1646,15 +1050,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -1662,15 +1060,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -1678,15 +1070,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -1694,15 +1080,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -1710,15 +1090,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -1726,15 +1100,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -1742,15 +1110,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -1758,15 +1120,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -1774,15 +1130,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -1790,15 +1140,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -1806,15 +1150,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -1822,15 +1160,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -1838,15 +1170,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -1854,15 +1180,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -1870,15 +1190,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -1886,15 +1200,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -1902,15 +1210,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -1918,15 +1220,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -1934,15 +1230,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -1950,15 +1240,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -1966,15 +1250,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -1982,15 +1260,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -1998,12 +1270,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -2015,8 +1283,6 @@ namespace Light.Data.Test
     public class TeBaseFieldAggregateField 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -2024,15 +1290,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -2040,15 +1300,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -2056,15 +1310,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -2072,15 +1320,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -2088,15 +1330,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -2104,15 +1340,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -2120,15 +1350,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -2136,15 +1360,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -2152,15 +1370,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -2168,15 +1380,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -2184,15 +1390,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -2200,15 +1400,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -2216,15 +1410,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -2232,15 +1420,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -2248,15 +1430,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -2264,15 +1440,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -2280,15 +1450,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -2296,15 +1460,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -2312,15 +1470,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -2328,15 +1480,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -2344,15 +1490,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -2360,15 +1500,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -2376,15 +1510,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -2392,15 +1520,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -2408,15 +1530,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -2424,15 +1540,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -2440,15 +1550,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -2456,15 +1560,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -2472,15 +1570,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -2488,15 +1580,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -2504,15 +1590,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -2520,15 +1600,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -2536,15 +1610,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -2552,15 +1620,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -2568,15 +1630,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -2584,15 +1640,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -2600,12 +1650,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -2617,8 +1663,6 @@ namespace Light.Data.Test
     public class TeBaseFieldSelectInsert 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -2626,15 +1670,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -2642,15 +1680,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -2658,15 +1690,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -2674,15 +1700,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -2690,15 +1710,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -2706,15 +1720,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -2722,15 +1730,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -2738,15 +1740,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -2754,15 +1750,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -2770,15 +1760,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -2786,15 +1770,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -2802,15 +1780,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -2818,15 +1790,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -2834,15 +1800,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -2850,15 +1810,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -2866,15 +1820,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -2882,15 +1830,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -2898,15 +1840,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -2914,15 +1850,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -2930,15 +1860,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -2946,15 +1870,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -2962,15 +1880,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -2978,15 +1890,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -2994,15 +1900,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -3010,15 +1910,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -3026,15 +1920,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -3042,15 +1930,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -3058,15 +1940,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -3074,15 +1950,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -3090,15 +1960,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -3106,15 +1970,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -3122,15 +1980,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -3138,15 +1990,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -3154,15 +2000,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -3170,15 +2010,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -3186,15 +2020,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -3202,12 +2030,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -3219,8 +2043,6 @@ namespace Light.Data.Test
     public class TeBaseFieldSelectInsertNoIdentity 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -3228,15 +2050,9 @@ namespace Light.Data.Test
         [DataField("Id", IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -3244,15 +2060,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -3260,15 +2070,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -3276,15 +2080,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -3292,15 +2090,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -3308,15 +2100,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -3324,15 +2110,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -3340,15 +2120,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -3356,15 +2130,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -3372,15 +2140,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -3388,15 +2150,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -3404,15 +2160,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -3420,15 +2170,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -3436,15 +2180,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -3452,15 +2190,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -3468,15 +2200,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -3484,15 +2210,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -3500,15 +2220,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -3516,15 +2230,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -3532,15 +2240,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -3548,15 +2250,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -3564,15 +2260,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -3580,15 +2270,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -3596,15 +2280,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -3612,15 +2290,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -3628,15 +2300,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -3644,15 +2310,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -3660,15 +2320,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -3676,15 +2330,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -3692,15 +2340,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -3708,15 +2350,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -3724,15 +2360,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -3740,15 +2370,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -3756,15 +2380,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -3772,15 +2390,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -3788,15 +2400,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -3804,12 +2410,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -3821,8 +2423,6 @@ namespace Light.Data.Test
     public class TeBaseFieldNullMiniValue 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -3830,15 +2430,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -3846,15 +2440,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull")]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -3862,15 +2450,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull")]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -3878,15 +2460,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull")]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -3894,15 +2470,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull")]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -3910,15 +2480,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull")]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -3926,15 +2490,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull")]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -3942,15 +2500,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull")]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -3958,15 +2510,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull")]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -3974,15 +2520,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull")]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -3990,15 +2530,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull")]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -4006,15 +2540,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull")]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -4022,15 +2550,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull")]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -4038,15 +2560,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", DefaultValue = "2017-01-02 12:00:00")]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -4054,15 +2570,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull")]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -4070,15 +2580,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull")]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -4086,15 +2590,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull")]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -4102,15 +2600,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull")]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -4118,12 +2610,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull")]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -4135,8 +2623,6 @@ namespace Light.Data.Test
     public class TeBaseFieldDefaultValue 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -4144,15 +2630,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -4160,15 +2640,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true, DefaultValue = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -4176,15 +2650,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true, DefaultValue = 20)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -4192,15 +2660,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true, DefaultValue = 20)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -4208,15 +2670,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true, DefaultValue = 20)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -4224,15 +2680,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true, DefaultValue = 20)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -4240,15 +2690,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true, DefaultValue = 20)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -4256,15 +2700,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true, DefaultValue = 20)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -4272,15 +2710,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true, DefaultValue = 20)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -4288,15 +2720,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true, DefaultValue = 20)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -4304,15 +2730,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true, DefaultValue = 20.5)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -4320,15 +2740,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true, DefaultValue = 20.5)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -4336,15 +2750,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true, DefaultValue = 20.5)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -4352,15 +2760,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true, DefaultValue = "2017-01-02 12:00:00")]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? nowFieldNull;
-
         /// <summary>
         /// NowFieldNull
         /// </summary>
@@ -4368,15 +2770,9 @@ namespace Light.Data.Test
         [DataField("NowFieldNull", IsNullable = true, DefaultValue = DefaultTime.Now)]
         public DateTime? NowFieldNull
         {
-            get { 
-                return this.nowFieldNull; 
-            }
-            set { 
-                this.nowFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? todayFieldNull;
-
         /// <summary>
         /// TodayFieldNull
         /// </summary>
@@ -4384,15 +2780,9 @@ namespace Light.Data.Test
         [DataField("TodayFieldNull", IsNullable = true, DefaultValue = DefaultTime.Today)]
         public DateTime? TodayFieldNull
         {
-            get { 
-                return this.todayFieldNull; 
-            }
-            set { 
-                this.todayFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -4400,15 +2790,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true, DefaultValue = "testtest")]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -4416,15 +2800,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true, DefaultValue = "testtest")]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -4432,15 +2810,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true, DefaultValue = EnumInt32Type.Positive1)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -4448,15 +2820,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true, DefaultValue = EnumInt64Type.Positive1)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -4464,15 +2830,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField", DefaultValue = "2017-01-02 12:00:00")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime nowField;
-
         /// <summary>
         /// NowField
         /// </summary>
@@ -4480,15 +2840,9 @@ namespace Light.Data.Test
         [DataField("NowField", DefaultValue = DefaultTime.Now)]
         public DateTime NowField
         {
-            get { 
-                return this.nowField; 
-            }
-            set { 
-                this.nowField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime todayField;
-
         /// <summary>
         /// TodayField
         /// </summary>
@@ -4496,12 +2850,8 @@ namespace Light.Data.Test
         [DataField("TodayField", DefaultValue = DefaultTime.Today)]
         public DateTime TodayField
         {
-            get { 
-                return this.todayField; 
-            }
-            set { 
-                this.todayField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -4513,8 +2863,6 @@ namespace Light.Data.Test
     public class TeBaseFieldAlias 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -4522,15 +2870,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -4538,15 +2880,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -4554,15 +2890,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -4570,15 +2900,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -4586,15 +2910,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -4602,15 +2920,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -4618,15 +2930,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -4634,15 +2940,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -4650,15 +2950,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -4666,15 +2960,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -4682,15 +2970,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -4698,15 +2980,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -4714,15 +2990,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -4730,15 +3000,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -4746,15 +3010,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -4762,15 +3020,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -4778,15 +3030,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -4794,15 +3040,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -4810,15 +3050,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -4826,15 +3060,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -4842,15 +3070,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -4858,15 +3080,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -4874,15 +3090,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -4890,15 +3100,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -4906,15 +3110,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -4922,15 +3120,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -4938,15 +3130,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -4954,15 +3140,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -4970,15 +3150,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -4986,15 +3160,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -5002,15 +3170,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -5018,15 +3180,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -5034,15 +3190,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -5050,15 +3200,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -5066,15 +3210,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -5082,15 +3220,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -5098,12 +3230,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5115,8 +3243,6 @@ namespace Light.Data.Test
     public class TeMainTable 
     {
         #region "Data Property"
-        private int mainId;
-
         /// <summary>
         /// MainId
         /// </summary>
@@ -5124,15 +3250,9 @@ namespace Light.Data.Test
         [DataField("MainId", IsIdentity = true, IsPrimaryKey = true)]
         public int MainId
         {
-            get { 
-                return this.mainId; 
-            }
-            set { 
-                this.mainId = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -5140,15 +3260,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -5156,15 +3270,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -5172,15 +3280,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -5188,15 +3290,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -5204,15 +3300,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -5220,15 +3310,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -5236,15 +3320,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -5252,15 +3330,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int subId;
-
         /// <summary>
         /// SubId
         /// </summary>
@@ -5268,12 +3340,8 @@ namespace Light.Data.Test
         [DataField("SubId")]
         public int SubId
         {
-            get { 
-                return this.subId; 
-            }
-            set { 
-                this.subId = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5285,8 +3353,6 @@ namespace Light.Data.Test
     public class TeSubTable 
     {
         #region "Data Property"
-        private int subId;
-
         /// <summary>
         /// SubId
         /// </summary>
@@ -5294,15 +3360,9 @@ namespace Light.Data.Test
         [DataField("SubId", IsIdentity = true, IsPrimaryKey = true)]
         public int SubId
         {
-            get { 
-                return this.subId; 
-            }
-            set { 
-                this.subId = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -5310,15 +3370,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -5326,15 +3380,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -5342,15 +3390,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -5358,15 +3400,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -5374,15 +3410,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -5390,15 +3420,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -5406,15 +3430,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -5422,12 +3440,8 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5439,8 +3453,6 @@ namespace Light.Data.Test
     public class TeJoinTableSelectInsert 
     {
         #region "Data Property"
-        private int mainId;
-
         /// <summary>
         /// MainId
         /// </summary>
@@ -5448,15 +3460,9 @@ namespace Light.Data.Test
         [DataField("MainId", IsPrimaryKey = true)]
         public int MainId
         {
-            get { 
-                return this.mainId; 
-            }
-            set { 
-                this.mainId = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -5464,15 +3470,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -5480,15 +3480,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int subId;
-
         /// <summary>
         /// SubId
         /// </summary>
@@ -5496,15 +3490,9 @@ namespace Light.Data.Test
         [DataField("SubId")]
         public int SubId
         {
-            get { 
-                return this.subId; 
-            }
-            set { 
-                this.subId = value; 
-            }
+            get;
+            set;
         }
-        private int subInt32Field;
-
         /// <summary>
         /// SubInt32Field
         /// </summary>
@@ -5512,15 +3500,9 @@ namespace Light.Data.Test
         [DataField("SubInt32Field")]
         public int SubInt32Field
         {
-            get { 
-                return this.subInt32Field; 
-            }
-            set { 
-                this.subInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? subInt32FieldNull;
-
         /// <summary>
         /// SubInt32FieldNull
         /// </summary>
@@ -5528,12 +3510,8 @@ namespace Light.Data.Test
         [DataField("SubInt32FieldNull", IsNullable = true)]
         public int? SubInt32FieldNull
         {
-            get { 
-                return this.subInt32FieldNull; 
-            }
-            set { 
-                this.subInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5545,8 +3523,6 @@ namespace Light.Data.Test
     public class TeRelateA 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -5554,15 +3530,9 @@ namespace Light.Data.Test
         [DataField("Id", IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateBId;
-
         /// <summary>
         /// RelateBId
         /// </summary>
@@ -5570,15 +3540,9 @@ namespace Light.Data.Test
         [DataField("RelateBId")]
         public int RelateBId
         {
-            get { 
-                return this.relateBId; 
-            }
-            set { 
-                this.relateBId = value; 
-            }
+            get;
+            set;
         }
-        private int relateCId;
-
         /// <summary>
         /// RelateCId
         /// </summary>
@@ -5586,15 +3550,9 @@ namespace Light.Data.Test
         [DataField("RelateCId")]
         public int RelateCId
         {
-            get { 
-                return this.relateCId; 
-            }
-            set { 
-                this.relateCId = value; 
-            }
+            get;
+            set;
         }
-        private int relateDId;
-
         /// <summary>
         /// RelateDId
         /// </summary>
@@ -5602,15 +3560,9 @@ namespace Light.Data.Test
         [DataField("RelateDId")]
         public int RelateDId
         {
-            get { 
-                return this.relateDId; 
-            }
-            set { 
-                this.relateDId = value; 
-            }
+            get;
+            set;
         }
-        private int relateEId;
-
         /// <summary>
         /// RelateEId
         /// </summary>
@@ -5618,15 +3570,9 @@ namespace Light.Data.Test
         [DataField("RelateEId")]
         public int RelateEId
         {
-            get { 
-                return this.relateEId; 
-            }
-            set { 
-                this.relateEId = value; 
-            }
+            get;
+            set;
         }
-        private int relateFId;
-
         /// <summary>
         /// RelateFId
         /// </summary>
@@ -5634,15 +3580,9 @@ namespace Light.Data.Test
         [DataField("RelateFId")]
         public int RelateFId
         {
-            get { 
-                return this.relateFId; 
-            }
-            set { 
-                this.relateFId = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -5650,15 +3590,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -5666,15 +3600,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -5682,12 +3610,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5699,8 +3623,6 @@ namespace Light.Data.Test
     public class TeRelateB 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -5708,15 +3630,9 @@ namespace Light.Data.Test
         [DataField("Id", IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateAId;
-
         /// <summary>
         /// RelateAId
         /// </summary>
@@ -5724,15 +3640,9 @@ namespace Light.Data.Test
         [DataField("RelateAId")]
         public int RelateAId
         {
-            get { 
-                return this.relateAId; 
-            }
-            set { 
-                this.relateAId = value; 
-            }
+            get;
+            set;
         }
-        private int relateCId;
-
         /// <summary>
         /// RelateCId
         /// </summary>
@@ -5740,15 +3650,9 @@ namespace Light.Data.Test
         [DataField("RelateCId")]
         public int RelateCId
         {
-            get { 
-                return this.relateCId; 
-            }
-            set { 
-                this.relateCId = value; 
-            }
+            get;
+            set;
         }
-        private int relateDId;
-
         /// <summary>
         /// RelateDId
         /// </summary>
@@ -5756,15 +3660,9 @@ namespace Light.Data.Test
         [DataField("RelateDId")]
         public int RelateDId
         {
-            get { 
-                return this.relateDId; 
-            }
-            set { 
-                this.relateDId = value; 
-            }
+            get;
+            set;
         }
-        private int relateEId;
-
         /// <summary>
         /// RelateEId
         /// </summary>
@@ -5772,15 +3670,9 @@ namespace Light.Data.Test
         [DataField("RelateEId")]
         public int RelateEId
         {
-            get { 
-                return this.relateEId; 
-            }
-            set { 
-                this.relateEId = value; 
-            }
+            get;
+            set;
         }
-        private int relateFId;
-
         /// <summary>
         /// RelateFId
         /// </summary>
@@ -5788,15 +3680,9 @@ namespace Light.Data.Test
         [DataField("RelateFId")]
         public int RelateFId
         {
-            get { 
-                return this.relateFId; 
-            }
-            set { 
-                this.relateFId = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -5804,15 +3690,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -5820,15 +3700,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -5836,12 +3710,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5853,8 +3723,6 @@ namespace Light.Data.Test
     public class TeRelateC 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -5862,15 +3730,9 @@ namespace Light.Data.Test
         [DataField("Id", IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateAId;
-
         /// <summary>
         /// RelateAId
         /// </summary>
@@ -5878,15 +3740,9 @@ namespace Light.Data.Test
         [DataField("RelateAId")]
         public int RelateAId
         {
-            get { 
-                return this.relateAId; 
-            }
-            set { 
-                this.relateAId = value; 
-            }
+            get;
+            set;
         }
-        private int relateBId;
-
         /// <summary>
         /// RelateBId
         /// </summary>
@@ -5894,15 +3750,9 @@ namespace Light.Data.Test
         [DataField("RelateBId")]
         public int RelateBId
         {
-            get { 
-                return this.relateBId; 
-            }
-            set { 
-                this.relateBId = value; 
-            }
+            get;
+            set;
         }
-        private int relateDId;
-
         /// <summary>
         /// RelateDId
         /// </summary>
@@ -5910,15 +3760,9 @@ namespace Light.Data.Test
         [DataField("RelateDId")]
         public int RelateDId
         {
-            get { 
-                return this.relateDId; 
-            }
-            set { 
-                this.relateDId = value; 
-            }
+            get;
+            set;
         }
-        private int relateEId;
-
         /// <summary>
         /// RelateEId
         /// </summary>
@@ -5926,15 +3770,9 @@ namespace Light.Data.Test
         [DataField("RelateEId")]
         public int RelateEId
         {
-            get { 
-                return this.relateEId; 
-            }
-            set { 
-                this.relateEId = value; 
-            }
+            get;
+            set;
         }
-        private int relateFId;
-
         /// <summary>
         /// RelateFId
         /// </summary>
@@ -5942,15 +3780,9 @@ namespace Light.Data.Test
         [DataField("RelateFId")]
         public int RelateFId
         {
-            get { 
-                return this.relateFId; 
-            }
-            set { 
-                this.relateFId = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -5958,12 +3790,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -5975,8 +3803,6 @@ namespace Light.Data.Test
     public class TeRelateD 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -5984,15 +3810,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateAId;
-
         /// <summary>
         /// RelateAId
         /// </summary>
@@ -6000,15 +3820,9 @@ namespace Light.Data.Test
         [DataField("RelateAId")]
         public int RelateAId
         {
-            get { 
-                return this.relateAId; 
-            }
-            set { 
-                this.relateAId = value; 
-            }
+            get;
+            set;
         }
-        private int relateBId;
-
         /// <summary>
         /// RelateBId
         /// </summary>
@@ -6016,15 +3830,9 @@ namespace Light.Data.Test
         [DataField("RelateBId")]
         public int RelateBId
         {
-            get { 
-                return this.relateBId; 
-            }
-            set { 
-                this.relateBId = value; 
-            }
+            get;
+            set;
         }
-        private int relateCId;
-
         /// <summary>
         /// RelateCId
         /// </summary>
@@ -6032,15 +3840,9 @@ namespace Light.Data.Test
         [DataField("RelateCId")]
         public int RelateCId
         {
-            get { 
-                return this.relateCId; 
-            }
-            set { 
-                this.relateCId = value; 
-            }
+            get;
+            set;
         }
-        private int relateEId;
-
         /// <summary>
         /// RelateEId
         /// </summary>
@@ -6048,15 +3850,9 @@ namespace Light.Data.Test
         [DataField("RelateEId")]
         public int RelateEId
         {
-            get { 
-                return this.relateEId; 
-            }
-            set { 
-                this.relateEId = value; 
-            }
+            get;
+            set;
         }
-        private int relateFId;
-
         /// <summary>
         /// RelateFId
         /// </summary>
@@ -6064,15 +3860,9 @@ namespace Light.Data.Test
         [DataField("RelateFId")]
         public int RelateFId
         {
-            get { 
-                return this.relateFId; 
-            }
-            set { 
-                this.relateFId = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -6080,12 +3870,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -6097,8 +3883,6 @@ namespace Light.Data.Test
     public class TeRelateE 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -6106,15 +3890,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateAId;
-
         /// <summary>
         /// RelateAId
         /// </summary>
@@ -6122,15 +3900,9 @@ namespace Light.Data.Test
         [DataField("RelateAId")]
         public int RelateAId
         {
-            get { 
-                return this.relateAId; 
-            }
-            set { 
-                this.relateAId = value; 
-            }
+            get;
+            set;
         }
-        private int relateBId;
-
         /// <summary>
         /// RelateBId
         /// </summary>
@@ -6138,15 +3910,9 @@ namespace Light.Data.Test
         [DataField("RelateBId")]
         public int RelateBId
         {
-            get { 
-                return this.relateBId; 
-            }
-            set { 
-                this.relateBId = value; 
-            }
+            get;
+            set;
         }
-        private int relateCId;
-
         /// <summary>
         /// RelateCId
         /// </summary>
@@ -6154,15 +3920,9 @@ namespace Light.Data.Test
         [DataField("RelateCId")]
         public int RelateCId
         {
-            get { 
-                return this.relateCId; 
-            }
-            set { 
-                this.relateCId = value; 
-            }
+            get;
+            set;
         }
-        private int relateDId;
-
         /// <summary>
         /// RelateDId
         /// </summary>
@@ -6170,15 +3930,9 @@ namespace Light.Data.Test
         [DataField("RelateDId")]
         public int RelateDId
         {
-            get { 
-                return this.relateDId; 
-            }
-            set { 
-                this.relateDId = value; 
-            }
+            get;
+            set;
         }
-        private int relateFId;
-
         /// <summary>
         /// RelateFId
         /// </summary>
@@ -6186,15 +3940,9 @@ namespace Light.Data.Test
         [DataField("RelateFId")]
         public int RelateFId
         {
-            get { 
-                return this.relateFId; 
-            }
-            set { 
-                this.relateFId = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -6202,12 +3950,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -6219,8 +3963,6 @@ namespace Light.Data.Test
     public class TeRelateF 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -6228,15 +3970,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateAId;
-
         /// <summary>
         /// RelateAId
         /// </summary>
@@ -6244,15 +3980,9 @@ namespace Light.Data.Test
         [DataField("RelateAId")]
         public int RelateAId
         {
-            get { 
-                return this.relateAId; 
-            }
-            set { 
-                this.relateAId = value; 
-            }
+            get;
+            set;
         }
-        private int relateBId;
-
         /// <summary>
         /// RelateBId
         /// </summary>
@@ -6260,15 +3990,9 @@ namespace Light.Data.Test
         [DataField("RelateBId")]
         public int RelateBId
         {
-            get { 
-                return this.relateBId; 
-            }
-            set { 
-                this.relateBId = value; 
-            }
+            get;
+            set;
         }
-        private int relateCId;
-
         /// <summary>
         /// RelateCId
         /// </summary>
@@ -6276,15 +4000,9 @@ namespace Light.Data.Test
         [DataField("RelateCId")]
         public int RelateCId
         {
-            get { 
-                return this.relateCId; 
-            }
-            set { 
-                this.relateCId = value; 
-            }
+            get;
+            set;
         }
-        private int relateDId;
-
         /// <summary>
         /// RelateDId
         /// </summary>
@@ -6292,15 +4010,9 @@ namespace Light.Data.Test
         [DataField("RelateDId")]
         public int RelateDId
         {
-            get { 
-                return this.relateDId; 
-            }
-            set { 
-                this.relateDId = value; 
-            }
+            get;
+            set;
         }
-        private int relateEId;
-
         /// <summary>
         /// RelateEId
         /// </summary>
@@ -6308,15 +4020,9 @@ namespace Light.Data.Test
         [DataField("RelateEId")]
         public int RelateEId
         {
-            get { 
-                return this.relateEId; 
-            }
-            set { 
-                this.relateEId = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -6324,12 +4030,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -6341,8 +4043,6 @@ namespace Light.Data.Test
     public class TeRelateCollection 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -6350,15 +4050,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int relateAId;
-
         /// <summary>
         /// RelateAId
         /// </summary>
@@ -6366,15 +4060,9 @@ namespace Light.Data.Test
         [DataField("RelateAId")]
         public int RelateAId
         {
-            get { 
-                return this.relateAId; 
-            }
-            set { 
-                this.relateAId = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -6382,12 +4070,8 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -6399,8 +4083,6 @@ namespace Light.Data.Test
     public class TeBaseFieldAggregateFieldGroupBy 
     {
         #region "Data Property"
-        private int keyData;
-
         /// <summary>
         /// KeyData
         /// </summary>
@@ -6408,15 +4090,9 @@ namespace Light.Data.Test
         [DataField("KeyData", IsPrimaryKey = true)]
         public int KeyData
         {
-            get { 
-                return this.keyData; 
-            }
-            set { 
-                this.keyData = value; 
-            }
+            get;
+            set;
         }
-        private int monthData;
-
         /// <summary>
         /// MonthData
         /// </summary>
@@ -6424,15 +4100,9 @@ namespace Light.Data.Test
         [DataField("MonthData", IsPrimaryKey = true)]
         public int MonthData
         {
-            get { 
-                return this.monthData; 
-            }
-            set { 
-                this.monthData = value; 
-            }
+            get;
+            set;
         }
-        private int countData;
-
         /// <summary>
         /// CountData
         /// </summary>
@@ -6440,15 +4110,9 @@ namespace Light.Data.Test
         [DataField("CountData")]
         public int CountData
         {
-            get { 
-                return this.countData; 
-            }
-            set { 
-                this.countData = value; 
-            }
+            get;
+            set;
         }
-        private int countFieldData;
-
         /// <summary>
         /// CountFieldData
         /// </summary>
@@ -6456,15 +4120,9 @@ namespace Light.Data.Test
         [DataField("CountFieldData")]
         public int CountFieldData
         {
-            get { 
-                return this.countFieldData; 
-            }
-            set { 
-                this.countFieldData = value; 
-            }
+            get;
+            set;
         }
-        private int countConditionData;
-
         /// <summary>
         /// CountConditionData
         /// </summary>
@@ -6472,15 +4130,9 @@ namespace Light.Data.Test
         [DataField("CountConditionData")]
         public int CountConditionData
         {
-            get { 
-                return this.countConditionData; 
-            }
-            set { 
-                this.countConditionData = value; 
-            }
+            get;
+            set;
         }
-        private int sumData;
-
         /// <summary>
         /// SumData
         /// </summary>
@@ -6488,15 +4140,9 @@ namespace Light.Data.Test
         [DataField("SumData")]
         public int SumData
         {
-            get { 
-                return this.sumData; 
-            }
-            set { 
-                this.sumData = value; 
-            }
+            get;
+            set;
         }
-        private double avgData;
-
         /// <summary>
         /// AvgData
         /// </summary>
@@ -6504,15 +4150,9 @@ namespace Light.Data.Test
         [DataField("AvgData")]
         public double AvgData
         {
-            get { 
-                return this.avgData; 
-            }
-            set { 
-                this.avgData = value; 
-            }
+            get;
+            set;
         }
-        private DateTime maxData;
-
         /// <summary>
         /// MaxData
         /// </summary>
@@ -6520,15 +4160,9 @@ namespace Light.Data.Test
         [DataField("MaxData")]
         public DateTime MaxData
         {
-            get { 
-                return this.maxData; 
-            }
-            set { 
-                this.maxData = value; 
-            }
+            get;
+            set;
         }
-        private DateTime minData;
-
         /// <summary>
         /// MinData
         /// </summary>
@@ -6536,12 +4170,8 @@ namespace Light.Data.Test
         [DataField("MinData")]
         public DateTime MinData
         {
-            get { 
-                return this.minData; 
-            }
-            set { 
-                this.minData = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -6553,8 +4183,6 @@ namespace Light.Data.Test
     public class TeObjectField 
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -6562,15 +4190,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -6578,15 +4200,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private ObjectType objectField;
-
         /// <summary>
         /// ObjectField
         /// </summary>
@@ -6594,15 +4210,9 @@ namespace Light.Data.Test
         [DataField("ObjectField")]
         public ObjectType ObjectField
         {
-            get { 
-                return this.objectField; 
-            }
-            set { 
-                this.objectField = value; 
-            }
+            get;
+            set;
         }
-        private ObjectType objectFieldNull;
-
         /// <summary>
         /// ObjectFieldNull
         /// </summary>
@@ -6610,12 +4220,8 @@ namespace Light.Data.Test
         [DataField("ObjectFieldNull", IsNullable = true)]
         public ObjectType ObjectFieldNull
         {
-            get { 
-                return this.objectFieldNull; 
-            }
-            set { 
-                this.objectFieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -6627,8 +4233,6 @@ namespace Light.Data.Test
     public class TeBaseFieldEntity : DataTableEntity
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -6636,15 +4240,9 @@ namespace Light.Data.Test
         [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private bool boolField;
-
         /// <summary>
         /// BoolField
         /// </summary>
@@ -6652,15 +4250,9 @@ namespace Light.Data.Test
         [DataField("BoolField")]
         public bool BoolField
         {
-            get { 
-                return this.boolField; 
-            }
-            set { 
-                this.boolField = value; 
-            }
+            get;
+            set;
         }
-        private bool? boolFieldNull;
-
         /// <summary>
         /// BoolFieldNull
         /// </summary>
@@ -6668,15 +4260,9 @@ namespace Light.Data.Test
         [DataField("BoolFieldNull", IsNullable = true)]
         public bool? BoolFieldNull
         {
-            get { 
-                return this.boolFieldNull; 
-            }
-            set { 
-                this.boolFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private sbyte sbyteField;
-
         /// <summary>
         /// SbyteField
         /// </summary>
@@ -6684,15 +4270,9 @@ namespace Light.Data.Test
         [DataField("SbyteField")]
         public sbyte SbyteField
         {
-            get { 
-                return this.sbyteField; 
-            }
-            set { 
-                this.sbyteField = value; 
-            }
+            get;
+            set;
         }
-        private sbyte? sbyteFieldNull;
-
         /// <summary>
         /// SbyteFieldNull
         /// </summary>
@@ -6700,15 +4280,9 @@ namespace Light.Data.Test
         [DataField("SbyteFieldNull", IsNullable = true)]
         public sbyte? SbyteFieldNull
         {
-            get { 
-                return this.sbyteFieldNull; 
-            }
-            set { 
-                this.sbyteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte byteField;
-
         /// <summary>
         /// ByteField
         /// </summary>
@@ -6716,15 +4290,9 @@ namespace Light.Data.Test
         [DataField("ByteField")]
         public byte ByteField
         {
-            get { 
-                return this.byteField; 
-            }
-            set { 
-                this.byteField = value; 
-            }
+            get;
+            set;
         }
-        private byte? byteFieldNull;
-
         /// <summary>
         /// ByteFieldNull
         /// </summary>
@@ -6732,15 +4300,9 @@ namespace Light.Data.Test
         [DataField("ByteFieldNull", IsNullable = true)]
         public byte? ByteFieldNull
         {
-            get { 
-                return this.byteFieldNull; 
-            }
-            set { 
-                this.byteFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private short int16Field;
-
         /// <summary>
         /// Int16Field
         /// </summary>
@@ -6748,15 +4310,9 @@ namespace Light.Data.Test
         [DataField("Int16Field")]
         public short Int16Field
         {
-            get { 
-                return this.int16Field; 
-            }
-            set { 
-                this.int16Field = value; 
-            }
+            get;
+            set;
         }
-        private short? int16FieldNull;
-
         /// <summary>
         /// Int16FieldNull
         /// </summary>
@@ -6764,15 +4320,9 @@ namespace Light.Data.Test
         [DataField("Int16FieldNull", IsNullable = true)]
         public short? Int16FieldNull
         {
-            get { 
-                return this.int16FieldNull; 
-            }
-            set { 
-                this.int16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ushort uInt16Field;
-
         /// <summary>
         /// UInt16Field
         /// </summary>
@@ -6780,15 +4330,9 @@ namespace Light.Data.Test
         [DataField("UInt16Field")]
         public ushort UInt16Field
         {
-            get { 
-                return this.uInt16Field; 
-            }
-            set { 
-                this.uInt16Field = value; 
-            }
+            get;
+            set;
         }
-        private ushort? uInt16FieldNull;
-
         /// <summary>
         /// UInt16FieldNull
         /// </summary>
@@ -6796,15 +4340,9 @@ namespace Light.Data.Test
         [DataField("UInt16FieldNull", IsNullable = true)]
         public ushort? UInt16FieldNull
         {
-            get { 
-                return this.uInt16FieldNull; 
-            }
-            set { 
-                this.uInt16FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -6812,15 +4350,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private int? int32FieldNull;
-
         /// <summary>
         /// Int32FieldNull
         /// </summary>
@@ -6828,15 +4360,9 @@ namespace Light.Data.Test
         [DataField("Int32FieldNull", IsNullable = true)]
         public int? Int32FieldNull
         {
-            get { 
-                return this.int32FieldNull; 
-            }
-            set { 
-                this.int32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private uint uInt32Field;
-
         /// <summary>
         /// UInt32Field
         /// </summary>
@@ -6844,15 +4370,9 @@ namespace Light.Data.Test
         [DataField("UInt32Field")]
         public uint UInt32Field
         {
-            get { 
-                return this.uInt32Field; 
-            }
-            set { 
-                this.uInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private uint? uInt32FieldNull;
-
         /// <summary>
         /// UInt32FieldNull
         /// </summary>
@@ -6860,15 +4380,9 @@ namespace Light.Data.Test
         [DataField("UInt32FieldNull", IsNullable = true)]
         public uint? UInt32FieldNull
         {
-            get { 
-                return this.uInt32FieldNull; 
-            }
-            set { 
-                this.uInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private long int64Field;
-
         /// <summary>
         /// Int64Field
         /// </summary>
@@ -6876,15 +4390,9 @@ namespace Light.Data.Test
         [DataField("Int64Field")]
         public long Int64Field
         {
-            get { 
-                return this.int64Field; 
-            }
-            set { 
-                this.int64Field = value; 
-            }
+            get;
+            set;
         }
-        private long? int64FieldNull;
-
         /// <summary>
         /// Int64FieldNull
         /// </summary>
@@ -6892,15 +4400,9 @@ namespace Light.Data.Test
         [DataField("Int64FieldNull", IsNullable = true)]
         public long? Int64FieldNull
         {
-            get { 
-                return this.int64FieldNull; 
-            }
-            set { 
-                this.int64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private ulong uInt64Field;
-
         /// <summary>
         /// UInt64Field
         /// </summary>
@@ -6908,15 +4410,9 @@ namespace Light.Data.Test
         [DataField("UInt64Field")]
         public ulong UInt64Field
         {
-            get { 
-                return this.uInt64Field; 
-            }
-            set { 
-                this.uInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private ulong? uInt64FieldNull;
-
         /// <summary>
         /// UInt64FieldNull
         /// </summary>
@@ -6924,15 +4420,9 @@ namespace Light.Data.Test
         [DataField("UInt64FieldNull", IsNullable = true)]
         public ulong? UInt64FieldNull
         {
-            get { 
-                return this.uInt64FieldNull; 
-            }
-            set { 
-                this.uInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private float floatField;
-
         /// <summary>
         /// FloatField
         /// </summary>
@@ -6940,15 +4430,9 @@ namespace Light.Data.Test
         [DataField("FloatField")]
         public float FloatField
         {
-            get { 
-                return this.floatField; 
-            }
-            set { 
-                this.floatField = value; 
-            }
+            get;
+            set;
         }
-        private float? floatFieldNull;
-
         /// <summary>
         /// FloatFieldNull
         /// </summary>
@@ -6956,15 +4440,9 @@ namespace Light.Data.Test
         [DataField("FloatFieldNull", IsNullable = true)]
         public float? FloatFieldNull
         {
-            get { 
-                return this.floatFieldNull; 
-            }
-            set { 
-                this.floatFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -6972,15 +4450,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private double? doubleFieldNull;
-
         /// <summary>
         /// DoubleFieldNull
         /// </summary>
@@ -6988,15 +4460,9 @@ namespace Light.Data.Test
         [DataField("DoubleFieldNull", IsNullable = true)]
         public double? DoubleFieldNull
         {
-            get { 
-                return this.doubleFieldNull; 
-            }
-            set { 
-                this.doubleFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private decimal decimalField;
-
         /// <summary>
         /// DecimalField
         /// </summary>
@@ -7004,15 +4470,9 @@ namespace Light.Data.Test
         [DataField("DecimalField")]
         public decimal DecimalField
         {
-            get { 
-                return this.decimalField; 
-            }
-            set { 
-                this.decimalField = value; 
-            }
+            get;
+            set;
         }
-        private decimal? decimalFieldNull;
-
         /// <summary>
         /// DecimalFieldNull
         /// </summary>
@@ -7020,15 +4480,9 @@ namespace Light.Data.Test
         [DataField("DecimalFieldNull", IsNullable = true)]
         public decimal? DecimalFieldNull
         {
-            get { 
-                return this.decimalFieldNull; 
-            }
-            set { 
-                this.decimalFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -7036,15 +4490,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime? dateTimeFieldNull;
-
         /// <summary>
         /// DateTimeFieldNull
         /// </summary>
@@ -7052,15 +4500,9 @@ namespace Light.Data.Test
         [DataField("DateTimeFieldNull", IsNullable = true)]
         public DateTime? DateTimeFieldNull
         {
-            get { 
-                return this.dateTimeFieldNull; 
-            }
-            set { 
-                this.dateTimeFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -7068,15 +4510,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharFieldNull;
-
         /// <summary>
         /// VarcharFieldNull
         /// </summary>
@@ -7084,15 +4520,9 @@ namespace Light.Data.Test
         [DataField("VarcharFieldNull", IsNullable = true)]
         public string VarcharFieldNull
         {
-            get { 
-                return this.varcharFieldNull; 
-            }
-            set { 
-                this.varcharFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private string textField;
-
         /// <summary>
         /// TextField
         /// </summary>
@@ -7100,15 +4530,9 @@ namespace Light.Data.Test
         [DataField("TextField")]
         public string TextField
         {
-            get { 
-                return this.textField; 
-            }
-            set { 
-                this.textField = value; 
-            }
+            get;
+            set;
         }
-        private string textFieldNull;
-
         /// <summary>
         /// TextFieldNull
         /// </summary>
@@ -7116,15 +4540,9 @@ namespace Light.Data.Test
         [DataField("TextFieldNull", IsNullable = true)]
         public string TextFieldNull
         {
-            get { 
-                return this.textFieldNull; 
-            }
-            set { 
-                this.textFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataField;
-
         /// <summary>
         /// BigDataField
         /// </summary>
@@ -7132,15 +4550,9 @@ namespace Light.Data.Test
         [DataField("BigDataField")]
         public byte[] BigDataField
         {
-            get { 
-                return this.bigDataField; 
-            }
-            set { 
-                this.bigDataField = value; 
-            }
+            get;
+            set;
         }
-        private byte[] bigDataFieldNull;
-
         /// <summary>
         /// BigDataFieldNull
         /// </summary>
@@ -7148,15 +4560,9 @@ namespace Light.Data.Test
         [DataField("BigDataFieldNull", IsNullable = true)]
         public byte[] BigDataFieldNull
         {
-            get { 
-                return this.bigDataFieldNull; 
-            }
-            set { 
-                this.bigDataFieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -7164,15 +4570,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type? enumInt32FieldNull;
-
         /// <summary>
         /// EnumInt32FieldNull
         /// </summary>
@@ -7180,15 +4580,9 @@ namespace Light.Data.Test
         [DataField("EnumInt32FieldNull", IsNullable = true)]
         public EnumInt32Type? EnumInt32FieldNull
         {
-            get { 
-                return this.enumInt32FieldNull; 
-            }
-            set { 
-                this.enumInt32FieldNull = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type enumInt64Field;
-
         /// <summary>
         /// EnumInt64Field
         /// </summary>
@@ -7196,15 +4590,9 @@ namespace Light.Data.Test
         [DataField("EnumInt64Field")]
         public EnumInt64Type EnumInt64Field
         {
-            get { 
-                return this.enumInt64Field; 
-            }
-            set { 
-                this.enumInt64Field = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt64Type? enumInt64FieldNull;
-
         /// <summary>
         /// EnumInt64FieldNull
         /// </summary>
@@ -7212,12 +4600,8 @@ namespace Light.Data.Test
         [DataField("EnumInt64FieldNull", IsNullable = true)]
         public EnumInt64Type? EnumInt64FieldNull
         {
-            get { 
-                return this.enumInt64FieldNull; 
-            }
-            set { 
-                this.enumInt64FieldNull = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }
@@ -7229,8 +4613,6 @@ namespace Light.Data.Test
     public class TeBaseFieldNoIdentityEntity : DataTableEntity
     {
         #region "Data Property"
-        private int id;
-
         /// <summary>
         /// Id
         /// </summary>
@@ -7238,15 +4620,9 @@ namespace Light.Data.Test
         [DataField("Id", IsPrimaryKey = true)]
         public int Id
         {
-            get { 
-                return this.id; 
-            }
-            set { 
-                this.id = value; 
-            }
+            get;
+            set;
         }
-        private int int32Field;
-
         /// <summary>
         /// Int32Field
         /// </summary>
@@ -7254,15 +4630,9 @@ namespace Light.Data.Test
         [DataField("Int32Field")]
         public int Int32Field
         {
-            get { 
-                return this.int32Field; 
-            }
-            set { 
-                this.int32Field = value; 
-            }
+            get;
+            set;
         }
-        private double doubleField;
-
         /// <summary>
         /// DoubleField
         /// </summary>
@@ -7270,15 +4640,9 @@ namespace Light.Data.Test
         [DataField("DoubleField")]
         public double DoubleField
         {
-            get { 
-                return this.doubleField; 
-            }
-            set { 
-                this.doubleField = value; 
-            }
+            get;
+            set;
         }
-        private string varcharField;
-
         /// <summary>
         /// VarcharField
         /// </summary>
@@ -7286,15 +4650,9 @@ namespace Light.Data.Test
         [DataField("VarcharField")]
         public string VarcharField
         {
-            get { 
-                return this.varcharField; 
-            }
-            set { 
-                this.varcharField = value; 
-            }
+            get;
+            set;
         }
-        private DateTime dateTimeField;
-
         /// <summary>
         /// DateTimeField
         /// </summary>
@@ -7302,15 +4660,9 @@ namespace Light.Data.Test
         [DataField("DateTimeField")]
         public DateTime DateTimeField
         {
-            get { 
-                return this.dateTimeField; 
-            }
-            set { 
-                this.dateTimeField = value; 
-            }
+            get;
+            set;
         }
-        private EnumInt32Type enumInt32Field;
-
         /// <summary>
         /// EnumInt32Field
         /// </summary>
@@ -7318,12 +4670,8 @@ namespace Light.Data.Test
         [DataField("EnumInt32Field")]
         public EnumInt32Type EnumInt32Field
         {
-            get { 
-                return this.enumInt32Field; 
-            }
-            set { 
-                this.enumInt32Field = value; 
-            }
+            get;
+            set;
         }
         #endregion
     }

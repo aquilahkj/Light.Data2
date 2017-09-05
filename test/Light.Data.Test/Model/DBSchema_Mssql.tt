@@ -19,8 +19,8 @@
     var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
 	//设置需要生成的数据库
     var dataBase="LightData_Test";
-
-	
+	//设置是否使用LightData框架
+	var useLightData=true;
 
 	//设置需要生成的数据表
     DbSetting.SetTable("Te_BaseField");
@@ -106,7 +106,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+<# if(useLightData){ #>
 using Light.Data;
+<# } #>
 
 namespace <#=namespaceName#>
 {
@@ -118,7 +120,9 @@ namespace <#=namespaceName#>
 	/// <summary>
     /// <#=table.CommentText#>
     /// </summary>
+<# if(useLightData){ #>
     [DataTable("<#=tableName#>")]
+<# } #>
     public class <#=StringUtil.ToPascalCase(tableName)#> <#=DbSetting.CheckEntity(tableName)?": DataTableEntity":""#>
     {
         #region "Data Property"
@@ -126,21 +130,17 @@ namespace <#=namespaceName#>
         foreach(Column c in table.Columns.Values)
         {
 #>
-        private <#=c.DataType#> <#=StringUtil.ToCamelCase(c.ColumnName)#>;
-
         /// <summary>
         /// <#=c.ColumnComment#>
         /// </summary>
         /// <value></value>
+<# if(useLightData){ #>
         [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #>)]
+<# } #>
         public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
         {
-            get { 
-                return this.<#=StringUtil.ToCamelCase(c.ColumnName)#>; 
-            }
-            set { 
-                this.<#=StringUtil.ToCamelCase(c.ColumnName)#> = value; 
-            }
+            get;
+            set;
         }
 <#
         }

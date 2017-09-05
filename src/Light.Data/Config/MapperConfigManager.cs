@@ -35,10 +35,8 @@ namespace Light.Data
 
         public static DataFieldMapperConfig LoadDataFieldConfig(Type type, PropertyInfo pi)
         {
-            if (DataMapperConfiguration.TryGetSetting(type, out DataTableMapperSetting setting)) {
-                var fieldMapConfig = setting.GetDataFieldMapConfig(pi.Name);
-                if (fieldMapConfig != null)
-                    return fieldMapConfig;
+            if (DataMapperConfiguration.TryGetDataFieldConfig(type, pi.Name, out DataFieldMapperConfig mapperConfig)) {
+                return mapperConfig;
             }
 
             var attributes = AttributeCore.GetPropertyAttributes<DataFieldAttribute>(pi, true);
@@ -62,11 +60,10 @@ namespace Light.Data
 
         public static RelationFieldMapConfig LoadRelationDataFieldConfig(Type type, PropertyInfo pi)
         {
-            if (DataMapperConfiguration.TryGetSetting(type, out DataTableMapperSetting setting)) {
-                var fieldMapConfig = setting.GetRelationFieldMapConfig(pi.Name);
-                if (fieldMapConfig != null)
-                    return fieldMapConfig;
+            if (DataMapperConfiguration.TryGetRelateFieldConfig(type, pi.Name, out RelationFieldMapConfig mapperConfig)) {
+                return mapperConfig;
             }
+
             var relationAttributes = AttributeCore.GetPropertyAttributes<RelationFieldAttribute>(pi, true);
             if (relationAttributes.Length > 0) {
                 RelationFieldMapConfig rfConfig = new RelationFieldMapConfig(pi.Name);

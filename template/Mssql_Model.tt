@@ -3,6 +3,7 @@
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
+
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>
 <#@ import namespace="System.Collections.Generic"#>
@@ -13,24 +14,39 @@
 <#@ import namespace="System.Text.RegularExpressions"#>
 <# 
 	//设置命名空间
-    var namespaceName="Light.Data.Test";
+    var namespaceName="MyTest";
 	//设置数据库连接
-    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
+    var connection="Data Source=127.0.0.1;User ID=sa;Password=qwerty;Initial Catalog=MyTest;";
 	//设置需要生成的数据库
-    var dataBase="LightData_Test";
+    var dataBase="MyTest";
 	//设置是否使用LightData框架
-	var useLightData=false;
-	
+	var useLightData=true;
 
-	//设置需要生成的数据表
-    DbSetting.SetTable("Te_BaseField_Config");
-	//DbSetting.SetTable("Te_RelateMain_Config");
-	//DbSetting.SetTable("Te_RelateSub_Config");
+	//DbSetting.SetTable(tableName)设置需要生成的数据表
+	//方法:DbSetting.SetTable(表名)
+    //DbSetting.SetTable("Te_BaseField");
 
-   //设置字段的Enum转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
-    DbSetting.SetSpecifiedType("*.EnumInt32_Field","EnumInt32Type");
-	DbSetting.SetSpecifiedType("*.EnumInt32_FieldNull","EnumInt32Type");
+	//设置需要生成的数据表,数据类型继承DataTableEntity
+	//方法:DbSetting.SetEntityTable(tableName);
+	//DbSetting.SetEntityTable("Te_BaseField_Entity");
 
+	//设置字段的指定类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
+	//方法:DbSetting.SetSpecifiedType(tableName.fieldName,typeName);
+    //DbSetting.SetSpecifiedType("*.EnumInt32Field","EnumInt32Type");
+	//DbSetting.SetSpecifiedType("Table1.EnumInt32FieldNull","EnumInt32Type");
+
+	//设置字段非空,设置"表名.字段名"指定表字段非空,设置"*.字段名"所有表符合字段名的都非空,设置"表名.*"指定表所有字段非空
+	//方法:DbSetting.SetNotNullField(tableName.fieldName);
+	//DbSetting.SetNotNullField("Te_BaseField_NullMiniValue.*");
+
+	//设置字段默认值,设置"表名.字段名"指定表字段使用默认值,设置"*.字段名"所有表符合字段名的都使用默认值
+	//方法:DbSetting.SetDefaultValue(tableName.fieldName,defaultValue);
+	//DbSetting.SetDefaultValue("*.NowFieldNull","DefaultTime.Now");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.BoolFieldNull","true");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.SbyteFieldNull","20");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DecimalFieldNull","20.5");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DateTimeField","2017-01-02 12:00:00");
+	//DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.EnumInt32FieldNull","EnumInt32Type.Positive1");
 
 	var dbSchema= new DataBaseSchema(dataBase, connection);
     var tableList=dbSchema.GetTables();

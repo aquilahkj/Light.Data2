@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Test
+namespace Light.Data.Sample
 {
     public class TeRelateMainConfig
     {

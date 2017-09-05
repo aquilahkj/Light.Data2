@@ -10,25 +10,35 @@ namespace Light.Data.Mssql
         public MssqlProvider(string configName, ConfigParamSet configParams)
             : base(configName, configParams)
         {
-          
             string version = configParams.GetParamValue("version");
-            if (version != null && int.TryParse(version, out int v)) {
-                if (v >= 11) {
-                    _factory = new MssqlCommandFactory_2012();
-                } else if (v >= 10) {
-                    _factory = new MssqlCommandFactory_2008();
+            MssqlCommandFactory mssqlCommandFactory = null;
+            if (!string.IsNullOrWhiteSpace(version)) {
+                string[] arr = version.Split('.');
+                string vc;
+                if(arr.Length>1) {
+                    vc = string.Concat(arr[0].Trim(), ".", arr[1].Trim());
                 }
                 else {
-                    _factory = new MssqlCommandFactory();
+                    vc = arr[0].Trim();
                 }
-            } else {
-                _factory = new MssqlCommandFactory();
+                if(decimal.TryParse(vc, out decimal v)) {
+                    if (v >= 11) {
+                        mssqlCommandFactory = new MssqlCommandFactory_2012();
+                    }
+                    else if (v >= 10) {
+                        mssqlCommandFactory = new MssqlCommandFactory_2008();
+                    }
+                    else {
+                        mssqlCommandFactory = new MssqlCommandFactory();
+                    }
+                }
             }
+            _factory = mssqlCommandFactory ?? new MssqlCommandFactory_2008();
         }
 
         #region IDatabase 成员
 
-       
+
 
         public override DbConnection CreateConnection()
         {
@@ -69,21 +79,27 @@ namespace Light.Data.Mssql
             };
             if (value == null) {
                 sp.Value = DBNull.Value;
-            } else if (value is SByte) {
+            }
+            else if (value is SByte) {
                 sp.Value = Convert.ToInt16(value);
-            } else if (value is UInt16) {
+            }
+            else if (value is UInt16) {
                 sp.Value = Convert.ToInt32(value);
-            } else if (value is UInt32) {
+            }
+            else if (value is UInt32) {
                 sp.Value = Convert.ToInt64(value);
-            } else if (value is UInt64) {
+            }
+            else if (value is UInt64) {
                 sp.Value = Convert.ToDecimal(value);
-            } else {
+            }
+            else {
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                if (ParseSqlDbType(dbType, out SqlDbType sqltype)) {
-                    sp.SqlDbType = sqltype;
-                } else if (Utility.ParseDbType(dbType, out DbType dType)) {
+                //if (ParseSqlDbType(dbType, out System.Data.SqlDbType sqltype)) {
+                //    sp.SqlDbType = sqltype;
+                //} else 
+                if (Utility.ParseDbType(dbType, out DbType dType)) {
                     sp.DbType = dType;
                 }
                 if (Utility.ParseSize(dbType, out int size)) {
@@ -100,25 +116,25 @@ namespace Light.Data.Mssql
 
         #endregion
 
-        private static bool ParseSqlDbType(string dbType, out SqlDbType type)
-        {
-            type = SqlDbType.VarChar;
-            int index = dbType.IndexOf('(');
-            string typeString;
-            if (index < 0) {
-                typeString = dbType;
-            } else if (index == 0) {
-                return false;
-            } else {
-                typeString = dbType.Substring(0, index);
-            }
-            try {
-                type = (SqlDbType)Enum.Parse(typeof(SqlDbType), typeString, true);
-                return true;
-            } catch {
-                return false;
-            }
-        }
+        //private static bool ParseSqlDbType(string dbType, out SqlDbType type)
+        //{
+        //    type = SqlDbType.VarChar;
+        //    int index = dbType.IndexOf('(');
+        //    string typeString;
+        //    if (index < 0) {
+        //        typeString = dbType;
+        //    } else if (index == 0) {
+        //        return false;
+        //    } else {
+        //        typeString = dbType.Substring(0, index);
+        //    }
+        //    try {
+        //        type = (SqlDbType)Enum.Parse(typeof(SqlDbType), typeString, true);
+        //        return true;
+        //    } catch {
+        //        return false;
+        //    }
+        //}
     }
 }
 

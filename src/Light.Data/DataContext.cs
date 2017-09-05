@@ -92,10 +92,10 @@ namespace Light.Data
         protected ICommandOutput _output;
 
         /// <summary>
-        /// Sets the commanf output.
+        /// Sets the command output.
         /// </summary>
         /// <param name="output">Output.</param>
-        public void SetCommanfOutput(ICommandOutput output)
+        public void SetCommandOutput(ICommandOutput output)
         {
             if (output != null) {
                 this._output = output;
@@ -2572,7 +2572,7 @@ namespace Light.Data
                 }
                 finally {
                     DateTime endTime = DateTime.Now;
-                    OutputCommand(nameof(QueryDataDefineListAsync), dbcommand, SafeLevel.None, false, start, size, startTime, endTime, success, result, exceptionMessage);
+                    OutputCommand(nameof(QueryDataDefineList), dbcommand, SafeLevel.None, false, start, size, startTime, endTime, success, result, exceptionMessage);
                 }
             }
         }
@@ -2630,7 +2630,7 @@ namespace Light.Data
                 }
                 finally {
                     DateTime endTime = DateTime.Now;
-                    OutputCommand(nameof(QueryDataDefineSingle), dbcommand, SafeLevel.None, false, start, 1, startTime, endTime, success, result, exceptionMessage);
+                    OutputCommand(nameof(QueryDataDefineSingleAsync), dbcommand, SafeLevel.None, false, start, 1, startTime, endTime, success, result, exceptionMessage);
                 }
             }
         }

@@ -2,7 +2,7 @@
   "lightDataMapper": {
     "dataTypes": [
       {
-        "type": "Light.Data.Test.TeRelateMainConfig,Light.Data.Test",
+        "type": "Light.Data.Sample.TeRelateMainConfig,Light.Data.Sample",
         "tableName": "Te_RelateMain_Config",
         "isEntityTable": true,
         "dataFields": [
@@ -38,7 +38,7 @@
         ]
       },
       {
-        "type": "Light.Data.Test.TeRelateSubConfig,Light.Data.Test",
+        "type": "Light.Data.Sample.TeRelateSubConfig,Light.Data.Sample",
         "tableName": "Te_RelateSub_Config",
         "isEntityTable": true,
         "dataFields": [
@@ -67,7 +67,7 @@
         ]
       },
       {
-        "type": "Light.Data.Test.TeRelateMainBaseConfig,Light.Data.Test",
+        "type": "Light.Data.Sample.TeRelateMainBaseConfig,Light.Data.Sample",
         "tableName": "Te_RelateMain_Config",
         "isEntityTable": true,
         "dataFields": [
@@ -92,7 +92,7 @@
         ]
       },
       {
-        "type": "Light.Data.Test.TeRelateMainExtendConfig,Light.Data.Test",
+        "type": "Light.Data.Sample.TeRelateMainExtendConfig,Light.Data.Sample",
         "tableName": "Te_RelateMain_Config",
         "isEntityTable": true,
         "relationFields": [

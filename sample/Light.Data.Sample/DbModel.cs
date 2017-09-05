@@ -17,7 +17,7 @@ namespace Light.Data.Sample
         High
     }
 
-    [DataTable("Te_AreaInfo")]
+    [DataTable("Te_AreaInfo", IsEntityTable = true)]
     public class TeAreaInfo
     {
         #region "Data Property"

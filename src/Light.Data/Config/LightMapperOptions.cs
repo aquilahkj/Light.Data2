@@ -14,7 +14,7 @@ namespace Light.Data
 
 		public string TableName { get; set; }
 
-		public bool IsEntityTable { get; set; }
+		public bool? IsEntityTable { get; set; }
 
 		public DataFieldSection[] DataFields { get; set; }
 

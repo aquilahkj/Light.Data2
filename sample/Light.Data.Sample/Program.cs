@@ -1,5 +1,4 @@
 ﻿using System;
-using Light.Data.Mssql;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Light.Data.Sample
@@ -8,23 +7,26 @@ namespace Light.Data.Sample
     {
         static void Main(string[] args)
         {
-            Test3();
+            DataMapperConfiguration.AddConfigFilePath("lightdata.json");
+            DataMapperConfiguration.AddConfigFilePath("mapper_relate.json");
+            Test0();
         }
 
         static void Test0()
         {
             CommandOutput output = new CommandOutput();
+            output.Enable = true;
             output.UseConsoleOutput = true;
             output.OutputFullCommand = true;
 
 
             DataContext context = new DataContext("test");
-            context.SetCommanfOutput(output);
-            var list = context.Query<TeUser>().ToList();
+            context.SetCommandOutput(output);
+            var list = context.Query<TeUser>().Where(x => x.Id == 10).ToList();
 
-            foreach (var item in list) {
-                Console.WriteLine(item);
-            }
+            //foreach (var item in list) {
+            //    Console.WriteLine(item);
+            //}
             Console.Read();
         }
 
@@ -60,6 +62,7 @@ namespace Light.Data.Sample
                 builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
                 builder.SetCommandOutput(output);
                 builder.SetTimeout(2000);
+                builder.SetVersion("11.0");
             }, ServiceLifetime.Transient);
 
 
@@ -86,7 +89,7 @@ namespace Light.Data.Sample
 
 
             DataContext context = new DataContext("test");
-            context.SetCommanfOutput(output);
+            context.SetCommandOutput(output);
             TeTagInfo taginfo = new TeTagInfo() {
                 GroupCode = "01",
                 TagCode = "02",
@@ -133,5 +136,20 @@ namespace Light.Data.Sample
 
             Console.Read();
         }
+
+        static void Test4()
+        {
+            CommandOutput output = new CommandOutput();
+            output.UseConsoleOutput = true;
+            output.OutputFullCommand = true;
+
+
+            DataContext context = new DataContext("test_extend");
+            context.SetCommandOutput(output);
+
+            var list = context.Query<TeRelateMainExtendConfig>().ToList();
+            Console.WriteLine(list.Count);
+        }
+
     }
 }

@@ -42,6 +42,32 @@ namespace Light.Data.Test
             return list;
         }
 
+        List<TeRelateMainExtendConfig> CreateMainTableListExtend(int count)
+        {
+            List<TeRelateMainExtendConfig> list = new List<TeRelateMainExtendConfig>();
+            DateTime now = DateTime.Now;
+            DateTime d = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
+            for (int i = 1; i <= count; i++) {
+                int x = i % 5 == 0 ? -1 : 1;
+                TeRelateMainExtendConfig item = new TeRelateMainExtendConfig();
+                item.DecimalField = (decimal)((i % 26) * 0.1 * x);
+                item.DateTimeField = d.AddMinutes(i * 2);
+                item.VarcharField = "testtest" + item.DecimalField;
+                list.Add(item);
+            }
+            return list;
+        }
+
+        List<TeRelateMainExtendConfig> CreateAndInsertMainTableListExtend(int count)
+        {
+            var list = CreateMainTableListExtend(count);
+            commandOutput.Enable = false;
+            context.TruncateTable<TeRelateMainExtendConfig>();
+            context.BatchInsert(list);
+            commandOutput.Enable = true;
+            return list;
+        }
+
         List<TeRelateSubConfig> CreateSubTableList(int count)
         {
             List<TeRelateSubConfig> list = new List<TeRelateSubConfig>();
@@ -142,6 +168,30 @@ namespace Light.Data.Test
                               }).OrderByDescending(x => x.Id).ToList();
 
                 var listAc = context.Query<TeRelateMainConfig>().OrderByDescending(x => x.Id).ToList();
+                AssertExtend.StrictEqual(listEx, listAc);
+            }
+        }
+
+
+        [Fact]
+        public void TestCase_Config_Relate_Extend()
+        {
+            var listA = CreateAndInsertMainTableListExtend(10);
+            var listB = CreateAndInsertSubTableList(5);
+
+            {
+                var listEx = (from x in listA
+                              join y in listB on x.Id equals y.MainId into ps
+                              from p in ps.DefaultIfEmpty()
+                              select new TeRelateMainExtendConfig {
+                                  Id = x.Id,
+                                  DecimalField = x.DecimalField,
+                                  DateTimeField = x.DateTimeField,
+                                  VarcharField = x.VarcharField,
+                                  SubConfig = p
+                              }).OrderByDescending(x => x.Id).ToList();
+
+                var listAc = context.Query<TeRelateMainExtendConfig>().OrderByDescending(x => x.Id).ToList();
                 AssertExtend.StrictEqual(listEx, listAc);
             }
         }

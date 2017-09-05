@@ -7,6 +7,9 @@ namespace Light.Data
 	{
 		string action;
 
+        /// <summary>
+        /// Get command action name
+        /// </summary>
 		public string Action {
 			get {
 				return action;
@@ -19,6 +22,9 @@ namespace Light.Data
 
 		string command;
 
+        /// <summary>
+        /// Get sql command text
+        /// </summary>
 		public string Command {
 			get {
 				return command;
@@ -31,6 +37,9 @@ namespace Light.Data
 
 		IDataParameter[] datas;
 
+        /// <summary>
+        /// Get sql parameters
+        /// </summary>
 		public IDataParameter[] Datas {
 			get {
 				return datas;
@@ -43,6 +52,9 @@ namespace Light.Data
 
 		CommandType commandType;
 
+        /// <summary>
+        /// Get sql command type, text or stored procedure
+        /// </summary>
 		public CommandType CommandType {
 			get {
 				return commandType;
@@ -55,6 +67,9 @@ namespace Light.Data
 
 		bool isTransaction;
 
+        /// <summary>
+        /// Get the action is use transaction
+        /// </summary>
 		public bool IsTransaction {
 			get {
 				return isTransaction;
@@ -67,6 +82,9 @@ namespace Light.Data
 
 		SafeLevel level;
 
+        /// <summary>
+        /// Get the action safe level
+        /// </summary>
 		public SafeLevel Level {
 			get {
 				return level;
@@ -79,7 +97,10 @@ namespace Light.Data
 
 		DateTime startTime;
 
-		public DateTime StartTime {
+        /// <summary>
+        /// Get the action start time
+        /// </summary>
+        public DateTime StartTime {
 			get {
 				return startTime;
 			}
@@ -91,6 +112,9 @@ namespace Light.Data
 
 		DateTime endTime;
 
+        /// <summary>
+        /// Get the action end time
+        /// </summary>
 		public DateTime EndTime {
 			get {
 				return endTime;
@@ -103,6 +127,9 @@ namespace Light.Data
 
 		int start;
 
+        /// <summary>
+        /// get data query region offset
+        /// </summary>
 		public int Start {
 			get {
 				return start;
@@ -115,6 +142,9 @@ namespace Light.Data
 
 		int size;
 
+        /// <summary>
+        /// get data query region max size
+        /// </summary>
 		public int Size {
 			get {
 				return size;
@@ -127,6 +157,9 @@ namespace Light.Data
 
 		bool success;
 
+        /// <summary>
+        /// Get the action is success
+        /// </summary>
 		public bool Success {
 			get {
 				return success;
@@ -139,6 +172,9 @@ namespace Light.Data
 
 		string exceptionMessage;
 
+        /// <summary>
+        /// If the action throw exception, get the exception message
+        /// </summary>
 		public string ExceptionMessage {
 			get {
 				return exceptionMessage;
@@ -151,6 +187,9 @@ namespace Light.Data
 
 		object result;
 
+        /// <summary>
+        /// Get the action result
+        /// </summary>
 		public object Result {
 			get {
 				return result;

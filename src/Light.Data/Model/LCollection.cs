@@ -42,7 +42,7 @@ namespace Light.Data
         {
             if (list == null) {
                 DataContext context = new DataContext(options);
-                context.SetCommanfOutput(output);
+                context.SetCommandOutput(output);
                 list = context.QueryCollectionRelateData<T>(query, owner, fieldPaths);
                 context.Dispose();
             }

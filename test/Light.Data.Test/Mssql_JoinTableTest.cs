@@ -340,6 +340,57 @@ namespace Light.Data.Test
         }
 
         [Fact]
+        public void TestCase_JoinQuery()
+        {
+            List<TeMainTable> listMain = CreateAndInsertMainTableList(10, 10);
+            List<TeSubTable> listSub = CreateAndInsertSubTableList(10);
+
+            var listEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new {
+                MainId = x.MainId,
+                Int32Field = x.Int32Field,
+                Int32FieldNull = x.Int32FieldNull,
+                DecimalField = x.DecimalField,
+                DecimalFieldNull = x.DecimalFieldNull,
+                DateTimeField = x.DateTimeField,
+                DateTimeFieldNull = x.DateTimeFieldNull,
+                VarcharField = x.VarcharField,
+                VarcharFieldNull = x.VarcharFieldNull,
+                SubId = x.SubId,
+                SubInt32Field = y.Int32Field,
+                SubInt32FieldNull = y.Int32FieldNull,
+                SubDecimalField = y.DecimalField,
+                SubDecimalFieldNull = y.DecimalFieldNull,
+                SubDateTimeField = y.DateTimeField,
+                SubDateTimeFieldNull = y.DateTimeFieldNull,
+                SubVarcharField = y.VarcharField,
+                SubVarcharFieldNull = y.VarcharFieldNull,
+            }).ToList();
+
+            var listAc = context.Query<TeMainTable>().Join<TeSubTable>(context.Query<TeSubTable>(), (x, y) => x.SubId == y.SubId).Select(
+                (x, y) => new {
+                    MainId = x.MainId,
+                    Int32Field = x.Int32Field,
+                    Int32FieldNull = x.Int32FieldNull,
+                    DecimalField = x.DecimalField,
+                    DecimalFieldNull = x.DecimalFieldNull,
+                    DateTimeField = x.DateTimeField,
+                    DateTimeFieldNull = x.DateTimeFieldNull,
+                    VarcharField = x.VarcharField,
+                    VarcharFieldNull = x.VarcharFieldNull,
+                    SubId = x.SubId,
+                    SubInt32Field = y.Int32Field,
+                    SubInt32FieldNull = y.Int32FieldNull,
+                    SubDecimalField = y.DecimalField,
+                    SubDecimalFieldNull = y.DecimalFieldNull,
+                    SubDateTimeField = y.DateTimeField,
+                    SubDateTimeFieldNull = y.DateTimeFieldNull,
+                    SubVarcharField = y.VarcharField,
+                    SubVarcharFieldNull = y.VarcharFieldNull,
+                }).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+        }
+
+        [Fact]
         public void TestCase_JoinBase()
         {
             List<TeMainTable> listMain = CreateAndInsertMainTableList(10, 10);
@@ -1158,6 +1209,8 @@ namespace Light.Data.Test
                 }).ElementAtAsync(5);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
+
+
 
         [Fact]
         public void TestCase_LeftJoin_SubEntity()

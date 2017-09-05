@@ -15,7 +15,7 @@ namespace Light.Data
         static bool initialed;
 
         static Dictionary<Type, DataTableMapperSetting> settingDict = new Dictionary<Type, DataTableMapperSetting>();
-        
+
         public static void AddConfigFilePath(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -63,7 +63,7 @@ namespace Light.Data
                             var setting = new DataTableMapperSetting(dataTableMap);
 
                             dataTableMap.TableName = typeConfig.TableName;
-                            dataTableMap.IsEntityTable = typeConfig.IsEntityTable;
+                            dataTableMap.IsEntityTable = typeConfig.IsEntityTable.HasValue ? typeConfig.IsEntityTable.Value : true;
                             var configParam = new ConfigParamSet();
                             var paramConfigs = typeConfig.ConfigParams;
                             if (paramConfigs != null && paramConfigs.Length > 0) {
@@ -207,6 +207,41 @@ namespace Light.Data
         {
             CheckData();
             return settingDict.TryGetValue(type, out setting);
+
+        }
+
+        internal static bool TryGetDataFieldConfig(Type type, string fieldName, out DataFieldMapperConfig config)
+        {
+            while (true) {
+                if (settingDict.TryGetValue(type, out DataTableMapperSetting setting)) {
+                    config = setting.GetDataFieldMapConfig(fieldName);
+                    if (config != null) {
+                        return true;
+                    }
+                }
+                type = type.BaseType;
+                if (type.Equals(typeof(object)) || type.Equals(null)) {
+                    config = null;
+                    return false;
+                }
+            }
+        }
+
+        internal static bool TryGetRelateFieldConfig(Type type, string fieldName, out RelationFieldMapConfig config)
+        {
+            while (true) {
+                if (settingDict.TryGetValue(type, out DataTableMapperSetting setting)) {
+                    config = setting.GetRelationFieldMapConfig(fieldName);
+                    if (config != null) {
+                        return true;
+                    }
+                }
+                type = type.BaseType;
+                if (type.Equals(typeof(object)) || type.Equals(null)) {
+                    config = null;
+                    return false;
+                }
+            }
         }
     }
 }
