@@ -3003,6 +3003,9 @@ namespace Light.Data
             CheckStatus();
             _isCreateTrans = false;
             if (_transaction != null) {
+                if(_transaction.ExecuteFlag) {
+                    _transaction.Rollback();
+                }
                 _transaction.Dispose();
                 _transaction = null;
             }

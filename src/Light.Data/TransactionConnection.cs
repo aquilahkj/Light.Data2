@@ -22,7 +22,15 @@ namespace Light.Data
 			}
 		}
 
-		public SafeLevel Level {
+        bool _executeFlag;
+
+        public bool ExecuteFlag {
+            get {
+                return _executeFlag;
+            }
+        }
+
+        public SafeLevel Level {
 			get {
 				return _level;
 			}
@@ -95,6 +103,7 @@ namespace Light.Data
 				command.Transaction = _transaction;
 			}
 			command.Connection = _connection;
+            _executeFlag = true;
 		}
 
 		/// <summary>
@@ -112,8 +121,8 @@ namespace Light.Data
 		public void Commit()
 		{
 			if (_transaction != null) {
-				_transaction.Commit();
-			}
+                _executeFlag = false;
+                _transaction.Commit();            }
 		}
 
 		/// <summary>
@@ -123,7 +132,8 @@ namespace Light.Data
 		{
 			if (_transaction != null) {
 				try {
-					_transaction.Rollback();
+                    _executeFlag = false;
+                    _transaction.Rollback();
 				}
 				catch {
 

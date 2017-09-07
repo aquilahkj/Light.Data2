@@ -1,122 +1,94 @@
 ﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
-<#@ output extension=".json" #>
+<#@ output extension=".cs" #>
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
+<#@ assembly name="MySql.Data"  #>
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Data.SqlClient"#>
+<#@ import namespace="MySql.Data.MySqlClient"#>
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
 <# 
-	//设置命名空间
-    var namespaceName="Light.Data.Test";
-	//设置数据库连接
-    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
-	//设置需要生成的数据库
-    var dataBase="LightData_Test";
+    //设置命名空间
+    var namespaceName = "Light.Data.Mysql.Test";
+    //设置数据库连接
+    var connection = "server=192.168.210.1;Port=3306;User Id=root;password=qwerty;Allow Zero Datetime=True;charset=utf8;";
+    //设置需要生成的数据库
+    var dataBase = "LightData_Test";
+    //设置是否使用LightData框架
+    var useLightData = true;
 
-	
-	DbSetting.SetDefaultValueStringMode(true);
-	//设置需要生成的数据表
+    //设置需要生成的数据表
     DbSetting.SetTable("Te_BaseField_Config");
-	DbSetting.SetTable("Te_BaseField_Config_Replace");
 	//DbSetting.SetTable("Te_RelateMain_Config");
 	//DbSetting.SetTable("Te_RelateSub_Config");
 
-	//设置需要生成的数据表,数据类型继承DataTableEntity
-	//DbSetting.SetEntityTable("Te_BaseField_Entity");
+   //设置字段的转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
+    DbSetting.SetSpecifiedType("*.EnumInt32_Field","EnumInt32Type");
+	DbSetting.SetSpecifiedType("*.EnumInt32_FieldNull","EnumInt32Type");
 
-	//设置字段的转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
-    //DbSetting.SetSpecifiedType("*.EnumInt32Field","EnumInt32Type");
 
-	//设置字段非空,设置"表名.字段名"指定表字段非空,设置"*.字段名"所有表符合字段名的都非空,设置"表名.*"指定表所有字段非空
-	//DbSetting.SetNotNullField("Te_BaseField_NullMiniValue.*");
-
-	//设置字段默认值,设置"表名.字段名"指定表字段使用默认值,设置"*.字段名"所有表符合字段名的都使用默认值
-	DbSetting.SetDefaultValue("*.Now_FieldNull","DefaultTime.Now");
-	DbSetting.SetDefaultValue("*.Today_FieldNull","DefaultTime.Today");
-	DbSetting.SetDefaultValue("*.Now_Field","DefaultTime.Now");
-	DbSetting.SetDefaultValue("*.Today_Field","DefaultTime.Today");
-
-	DbSetting.SetDefaultValue("Te_BaseField_Config.Int32_FieldNull","20");
-	DbSetting.SetDefaultValue("Te_BaseField_Config.Decimal_FieldNull","20.5");
-	DbSetting.SetDefaultValue("Te_BaseField_Config.DateTime_Field","2017-01-02 12:00:00");
-	DbSetting.SetDefaultValue("Te_BaseField_Config.DateTime_FieldNull","2017-01-02 12:00:00");
-	DbSetting.SetDefaultValue("Te_BaseField_Config.Varchar_FieldNull","testtest");
-	DbSetting.SetDefaultValue("Te_BaseField_Config.EnumInt32_FieldNull","EnumInt32Type.Positive1");
-
-	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.Int32_FieldNull","30");
-	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.Decimal_FieldNull","30.5");
-	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.DateTime_Field","2017-01-03 12:00:00");
-	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.DateTime_FieldNull","2017-01-03 12:00:00");
-	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.Varchar_FieldNull","testtest2");
-	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.EnumInt32_FieldNull","EnumInt32Type.Positive2");
-
-	var dbSchema= new DataBaseSchema(dataBase, connection);
-    var tableList=dbSchema.GetTables();
+    var dbSchema = new DataBaseSchema(dataBase, connection);
+    var tableList = dbSchema.GetTables();
 #>
+using System;
+using System.Collections.Generic;
+using System.Text;
+<# if(useLightData){ #>
+using Light.Data;
+<# } #>
+
+namespace <#=namespaceName#>
 {
-	"lightDataMapper": {
-		"dataTypes": [
 <#
-	List<Table> list=tableList;
-	int j=0;
-    foreach(Table table in list)
+    foreach(Table table in tableList)
     {
-		j++;
-		string tableName=table.TableName;
+        string tableName=table.TableName;
 #>
-			{
-				"type": "<#=namespaceName#>.<#=StringUtil.ToPascalCase(tableName)#>,<#=namespaceName#>",
-				"tableName": "<#=tableName#>",
-				"isEntityTable": true,
-				"dataFields": [
+	/// <summary>
+    /// <#=table.CommentText#>
+    /// </summary>
+<# if(useLightData){ #>
+    [DataTable("<#=tableName#>")]
+<# } #>
+    public class <#=StringUtil.ToPascalCase(tableName)#> <#=DbSetting.CheckEntity(tableName)?": DataTableEntity":""#>
+    {
+        #region "Data Property"
 <#
-		int i=0;
         foreach(Column c in table.Columns.Values)
         {
-			i++;
 #>
-					{
-						"fieldName": "<#=StringUtil.ToPascalCase(c.ColumnName)#>",
-<# if (c.AllowNull) { #>
-						"isNullable": true,
+        /// <summary>
+        /// <#=c.ColumnComment#>
+        /// </summary>
+        /// <value></value>
+<# if(useLightData){ #>
+        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #>)]
 <# } #>
-<# if (c.IsPrimaryKey) { #>
-						"isPrimaryKey": true, 
-<# } #>
-<# if (c.IsIdentity) { #>
-						"isIdentity": true, 
-<# } #>
-<# if (c.DBType!=null) { #>
-						"dbType": "<#=c.DBType#>",
-<# } #>
-<# if (c.DefaultValue!=null) { #>
-						"defaultValue": <#=c.DefaultValue#>,
-<# } #>
-						"name": "<#=c.ColumnName#>"
-					}<# if (i<table.Columns.Count) { #>,
-<# } #>
+	    public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
+        {
+            get;
+            set;
+        }
 <#
         }
 #>
+        #endregion
+    }
 
-				]
-			}<# if (j<list.Count) { #>,
-<# } #>
 <#
     }
+   
 #>
-
-		]
-	}
 }
+
 <#+ 
-    #region GetDataBaseSchema
+
+        #region GetDataBaseSchema
 
     public class DataBaseSchema
     {
@@ -130,78 +102,36 @@
         {
             this._dataBaseName = dataBaseName;
             this._connectionString = connectionString;
+            //this._conn = new SqlConnection(connectionString);
             this._dict = new Dictionary<string, Table>();
         }
 
         public List<Table> GetTables()
         {
-            string tableCommandText = @"SELECT A.name as TableName,A.object_id as TableCode, C.value as CommentText FROM sys.tables A left JOIN sys.extended_properties C ON C.major_id = A.object_id  and minor_id=0 WHERE A.name = N'{0}'";
+            string tableCommandText = @"select TABLE_NAME as TableName,TABLE_COMMENT as CommentText from information_schema.TABLES where TABLE_SCHEMA='{0}' and TABLE_NAME='{1}'";
 
             string columnCommandText = @"
-	with indexcte as(
-	select
-		ic.column_id,
-		ic.index_column_id,
-		ic.object_id
-	from
-		{0}.sys.indexes idx
-	inner join {0}.sys.index_columns ic on idx.index_id = ic.index_id
-	and idx.object_id = ic.object_id
-	where
-		idx.object_id = object_id('{0}.dbo.{1}')
-	and idx.is_primary_key = 1
-) select
-	colm.column_id ColumnId,
-	cast(
-		case
-		when indexcte.column_id is null then
-			0
-		else
-			1
-		end as bit
-	) ColumnKey,
-	cast(colm.max_length as int) bytelength,
-	(
-		case
-		when systype.name = 'nvarchar'
-		and colm.max_length > 0 then
-			colm.max_length / 2
-		when systype.name = 'nchar'
-		and colm.max_length > 0 then
-			colm.max_length / 2
-		when systype.name = 'ntext'
-		and colm.max_length > 0 then
-			colm.max_length / 2
-		else
-			colm.max_length
-		end
-	) MaxLength,
-	colm.name ColumnName,
-	systype.name DataType,
-	colm.is_identity IsIdentity,
-	colm.is_nullable AllowNull,
-	cast(colm.precision as int) Precision,
-	cast(colm.scale as int) Scale,
-	prop.value ColumnComment
-from
-	{0}.sys.columns colm
-inner join {0}.sys.types systype on colm.system_type_id = systype.system_type_id
-and colm.user_type_id = systype.user_type_id
-left join {0}.sys.extended_properties prop on colm.object_id = prop.major_id
-and colm.column_id = prop.minor_id
-left join indexcte on colm.column_id = indexcte.column_id
-and colm.object_id = indexcte.object_id
-where
-	colm.object_id = object_id('{0}.dbo.{1}')
-order by
-	colm.column_id";
+select 
+ORDINAL_POSITION as 'ColumnId',
+case when COLUMN_KEY='PRI' then 1 else 0 end as 'ColumnKey',
+CHARACTER_MAXIMUM_LENGTH AS 'MaxLength',
+COLUMN_NAME AS 'ColumnName',
+DATA_TYPE AS 'DataType',
+case when EXTRA='auto_increment' then 1 else 0 end as 'IsIdentity',
+case when IS_NULLABLE='YES' then 1 else 0 end as 'AllowNull',
+NUMERIC_PRECISION as 'Precision',
+NUMERIC_SCALE as 'Scale',
+COLUMN_COMMENT as 'ColumnComment',
+COLUMN_TYPE AS 'ColumnType'
+from information_schema.COLUMNS where TABLE_SCHEMA='{0}' and TABLE_NAME='{1}'
+order by ORDINAL_POSITION";
             List<Table> tables = new List<Table>();
             foreach (string tableName in DbSetting.GetTables()) {
-                string tableCommandStr = String.Format(tableCommandText, tableName);
-                SqlConnection tableConn = new SqlConnection(_connectionString);
+                string tableCommandStr = String.Format(tableCommandText, this._dataBaseName, tableName);
+                MySqlConnection tableConn = new MySqlConnection(_connectionString);
                 tableConn.Open();
-                SqlCommand tableCommand = new SqlCommand(tableCommandStr, tableConn);
-                SqlDataAdapter tableAd = new SqlDataAdapter(tableCommand);
+                MySqlCommand tableCommand = new MySqlCommand(tableCommandStr, tableConn);
+                MySqlDataAdapter tableAd = new MySqlDataAdapter(tableCommand);
                 DataSet tableDs = new DataSet();
                 tableAd.Fill(tableDs);
                 DataTable tableColumns = tableDs.Tables[0];
@@ -210,12 +140,11 @@ order by
                     continue;
                 }
                 string tableComment = Convert.ToString(tableColumns.Rows[0]["CommentText"]);
-                string tableCode = Convert.ToString(tableColumns.Rows[0]["TableCode"]);
                 string columnCommandStr = String.Format(columnCommandText, this._dataBaseName, tableName);
-                SqlConnection columnConn = new SqlConnection(_connectionString);
+                MySqlConnection columnConn = new MySqlConnection(_connectionString);
                 columnConn.Open();
-                SqlCommand columnCommand = new SqlCommand(columnCommandStr, tableConn);
-                SqlDataAdapter columnAd = new SqlDataAdapter(columnCommand);
+                MySqlCommand columnCommand = new MySqlCommand(columnCommandStr, tableConn);
+                MySqlDataAdapter columnAd = new MySqlDataAdapter(columnCommand);
                 DataSet columnDs = new DataSet();
                 columnAd.Fill(columnDs);
                 DataTable columnColumns = columnDs.Tables[0];
@@ -311,42 +240,34 @@ order by
             this._lowerColumnName = string.Format("{0}{1}", this._columnName[0].ToString().ToLower(), this._columnName.Substring(1));
             this._upColumnName = string.Format("{0}{1}", this._columnName[0].ToString().ToUpper(), this._columnName.Substring(1));
             this._columnComment = dataRow["ColumnComment"].ToString();
-
+            string columnType = dataRow["ColumnType"].ToString();
             string dataType = dataRow["DataType"].ToString();
             this._rawType = dataType;
             if (dataType.Equals("bit", StringComparison.InvariantCultureIgnoreCase)) {
                 this._dataType = "bool";
             }
             else if (dataType.Equals("datetime", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("datetime2", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("smalldatetime", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("time", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("timestamp", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("date", StringComparison.InvariantCultureIgnoreCase)
                 ) {
                 this._dataType = "DateTime";
             }
-            else if (dataType.Equals("datetimeoffset", StringComparison.InvariantCultureIgnoreCase)) {
-                this._dataType = "DateTimeOffset";
-            }
             else if (dataType.Equals("decimal", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("money", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("smallmoney", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("numeric", StringComparison.InvariantCultureIgnoreCase)) {
+                || dataType.Equals("money", StringComparison.InvariantCultureIgnoreCase)) {
                 this._dataType = "decimal";
             }
-            else if (dataType.Equals("float", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("double", StringComparison.InvariantCultureIgnoreCase)) {
                 this._dataType = "double";
             }
-            else if (dataType.Equals("real", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("float", StringComparison.InvariantCultureIgnoreCase)) {
                 this._dataType = "float";
             }
             else if (dataType.Equals("char", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("nchar", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("varchar", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("nvarchar", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("text", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("ntext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("tinytext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("mediumtext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("longtext", StringComparison.InvariantCultureIgnoreCase)
                 ) {
                 this._dataType = "string";
             }
@@ -354,26 +275,24 @@ order by
                 this._dataType = "short";
             }
             else if (dataType.Equals("tinyint", StringComparison.InvariantCultureIgnoreCase)) {
-                this._dataType = "byte";
+                this._dataType = "sbyte";
             }
-            else if (dataType.Equals("int", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("mediumint", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("int", StringComparison.InvariantCultureIgnoreCase)
+                ) {
                 this._dataType = "int";
             }
             else if (dataType.Equals("bigint", StringComparison.InvariantCultureIgnoreCase)) {
                 this._dataType = "long";
             }
-            else if (dataType.Equals("binary", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("varbinary", StringComparison.InvariantCultureIgnoreCase)
-            ) {
+            else {
                 this._dataType = "byte[]";
             }
-            else {
-                this._dataType = dataType;
-            }
-            string tmpType = this._dataType;
+			string tmpType=this._dataType;
             if (string.IsNullOrEmpty(this._columnComment)) {
                 this._columnComment = this._columnName;
             }
+
             string specifiedName;
             if (DbSetting.GetSpecifiedType(this._tableName + "." + this._columnName, out specifiedName)) {
                 this._dataType = specifiedName;
@@ -381,8 +300,17 @@ order by
             else if (DbSetting.GetSpecifiedType("*." + this._columnName, out specifiedName)) {
                 this._dataType = specifiedName;
             }
+            else if (columnType.Contains("unsigned")) {
+                if (this._dataType == "int" || this._dataType == "short" || this._dataType == "long") {
+                    this._dataType = string.Format("u{0}", this._dataType);
+                }
+                else if (this._dataType == "sbyte") {
+                    this._dataType = "byte";
+                }
+            }
 
-            if (this._allowNull && !string.Equals(tmpType, "string", StringComparison.InvariantCultureIgnoreCase) && !string.Equals(tmpType, "byte[]", StringComparison.InvariantCultureIgnoreCase)) {
+			if (this._allowNull && !string.Equals(tmpType, "string", StringComparison.InvariantCultureIgnoreCase)&& !string.Equals(tmpType, "byte[]", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = string.Format("{0}?", this._dataType);
             }
 
@@ -633,6 +561,7 @@ order by
             return sb.ToString();
         }
 
+
         public static string ToCamelCase(string name)
         {
             StringBuilder sb = new StringBuilder();
@@ -660,5 +589,4 @@ order by
             return sb.ToString();
         }
     }
-    
 #>

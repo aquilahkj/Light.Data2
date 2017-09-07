@@ -143,6 +143,9 @@ namespace Light.Data
                                     DateTime dt = (DateTime)data.Value;
                                     value = string.Concat("'", dt.ToString("yyyy-MM-dd HH:mm:ss"), "'");
                                 }
+                                else if(data.Value is byte[]) {
+                                    value = "null";
+                                }
                                 else {
                                     value = data.Value.ToString();
                                 }

@@ -1,25 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>    
+  <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Light.Data\Light.Data.csproj" />
+    <ProjectReference Include="..\..\src\Light.Data.Mysql\Light.Data.Mysql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Config\mapper.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>mapper.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Config\mapper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -31,31 +33,30 @@
     <None Update="lightdata.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Model\DBSchema_Mssql.tt">
+    <None Update="Model\DBSchema_Mysql.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DBSchema_Mssql.cs</LastGenOutput>
+      <LastGenOutput>DBSchema_Mysql.cs</LastGenOutput>
     </None>
-    <None Update="Model\DBSchema_Mssql_NP.tt">
+    <None Update="Model\DBSchema_Mysql_NP.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DBSchema_Mssql_NP.cs</LastGenOutput>
+      <LastGenOutput>DBSchema_Mysql_NP.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Model\DBSchema_Mssql.cs">
+    <Compile Update="Model\DBSchema_Mysql.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>DBSchema_Mssql.tt</DependentUpon>
+      <DependentUpon>DBSchema_Mysql.tt</DependentUpon>
     </Compile>
-    <Compile Update="Model\DBSchema_Mssql_NP.cs">
+    <Compile Update="Model\DBSchema_Mysql_NP.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>DBSchema_Mssql_NP.tt</DependentUpon>
+      <DependentUpon>DBSchema_Mysql_NP.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

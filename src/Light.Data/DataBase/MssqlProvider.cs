@@ -98,7 +98,8 @@ namespace Light.Data.Mssql
             if (!string.IsNullOrEmpty(dbType)) {
                 //if (ParseSqlDbType(dbType, out System.Data.SqlDbType sqltype)) {
                 //    sp.SqlDbType = sqltype;
-                //} else 
+                //}
+                //else
                 if (Utility.ParseDbType(dbType, out DbType dType)) {
                     sp.DbType = dType;
                 }
@@ -116,22 +117,25 @@ namespace Light.Data.Mssql
 
         #endregion
 
-        //private static bool ParseSqlDbType(string dbType, out SqlDbType type)
+        //private static bool ParseSqlDbType(string dbType, out System.Data.SqlDbType type)
         //{
         //    type = SqlDbType.VarChar;
         //    int index = dbType.IndexOf('(');
         //    string typeString;
         //    if (index < 0) {
         //        typeString = dbType;
-        //    } else if (index == 0) {
+        //    }
+        //    else if (index == 0) {
         //        return false;
-        //    } else {
+        //    }
+        //    else {
         //        typeString = dbType.Substring(0, index);
         //    }
         //    try {
         //        type = (SqlDbType)Enum.Parse(typeof(SqlDbType), typeString, true);
         //        return true;
-        //    } catch {
+        //    }
+        //    catch {
         //        return false;
         //    }
         //}

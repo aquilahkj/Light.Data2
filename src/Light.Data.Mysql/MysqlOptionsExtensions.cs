@@ -1,5 +1,5 @@
 ﻿using Light.Data;
-using Light.Data.Mssql;
+using Light.Data.Mysql;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,21 +7,21 @@ using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class MssqlOptionsExtensions
+    public static class MysqlOptionsExtensions
     {
-        public static DataContextOptionsBuilder UseMssql(this DataContextOptionsBuilder builder, string connection)
+        public static DataContextOptionsBuilder UseMysql(this DataContextOptionsBuilder builder, string connection)
         {
             builder.SetDataConfig(connection, (configName, configParams) => {
-                MssqlProvider database = new MssqlProvider(configName, configParams);
+                MysqlProvider database = new MysqlProvider(configName, configParams);
                 return database;
             });
             return builder;
         }
 
-        public static DataContextOptionsBuilder<TContext> UseMssql<TContext>(this DataContextOptionsBuilder<TContext> builder, string connection) where TContext : DataContext
+        public static DataContextOptionsBuilder<TContext> UseMysql<TContext>(this DataContextOptionsBuilder<TContext> builder, string connection) where TContext : DataContext
         {
             builder.SetDataConfig(connection, (configName, configParams) => {
-                MssqlProvider database = new MssqlProvider(configName, configParams);
+                MysqlProvider database = new MysqlProvider(configName, configParams);
                 return database;
             });
             return builder;

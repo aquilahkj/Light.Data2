@@ -3,17 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>False</SignAssembly>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Description>The light weight object relational mapping framework</Description>
+    <Description>The light weight object relational mapping framework for sqlserver</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Authors>Aquila Huang</Authors>
-    <PackageTags>Database, Data, ORM, ADO.NET</PackageTags>
+    <PackageTags>Database, Data, ORM, ADO.NET, SQLSERVER</PackageTags>
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.2.0</FileVersion>
+    <FileVersion>2.0.2.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

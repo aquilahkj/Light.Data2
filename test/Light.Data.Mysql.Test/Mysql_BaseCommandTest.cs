@@ -6,11 +6,11 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 
-namespace Light.Data.Test
+namespace Light.Data.Mysql.Test
 {
-    public class Mssql_BaseCommandTest : BaseTest
+    public class Mysql_BaseCommandTest : BaseTest
     {
-        public Mssql_BaseCommandTest(ITestOutputHelper output) : base(output)
+        public Mysql_BaseCommandTest(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -1062,7 +1062,7 @@ namespace Light.Data.Test
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select top 1 * from Te_BaseField";
+            sql = "select * from Te_BaseField limit 1";
             executor = context.CreateSqlStringExecutor(sql);
             var itemAc = executor.QueryFirst<TeBaseField>();
             var itemEx = list.First();
@@ -1116,7 +1116,7 @@ namespace Light.Data.Test
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select top 1 * from Te_BaseField";
+            sql = "select * from Te_BaseField limit 1";
             executor = context.CreateSqlStringExecutor(sql);
             var itemAc = await executor.QueryFirstAsync<TeBaseField>();
             var itemEx = list.First();
@@ -1695,40 +1695,6 @@ namespace Light.Data.Test
             context.ResetAliasTableName<TeBaseField>();
             AssertExtend.Equal(item, ac2);
         }
-
-        #region version
-        [Fact]
-        public void TestCase_BulkInsert_Ver2008()
-        {
-            DataContext context = CreateContext("mssql_2008");
-            const int count = 33;
-            var listEx = CreateBaseFieldTableList(count);
-            List<TeBaseField> listAc;
-            context.TruncateTable<TeBaseField>();
-            var retInsert = context.BatchInsert(listEx);
-            Assert.Equal(count, retInsert);
-            listAc = context.Query<TeBaseField>().ToList();
-            AssertExtend.Equal(listEx, listAc);
-            DateTime d = GetNow();
-            listEx.ForEach(x => {
-                x.DateTimeField = d;
-                x.DateTimeFieldNull = null;
-                x.Int32Field = 2;
-                x.Int32FieldNull = null;
-                x.DoubleField = 2.0d;
-                x.DoubleFieldNull = null;
-                x.VarcharField = "abc";
-                x.VarcharFieldNull = null;
-                x.EnumInt32Field = EnumInt32Type.Zero;
-                x.EnumInt32FieldNull = null;
-                x.EnumInt64Field = EnumInt64Type.Zero;
-                x.EnumInt64FieldNull = null;
-            });
-            var retUpdate = context.BatchUpdate(listEx);
-        }
-
-
-        #endregion
     }
 
 

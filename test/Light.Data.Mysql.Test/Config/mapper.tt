@@ -3,19 +3,20 @@
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
+<#@ assembly name="MySql.Data"  #>
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Data.SqlClient"#>
+<#@ import namespace="MySql.Data.MySqlClient"#>
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
 <# 
 	//设置命名空间
-    var namespaceName="Light.Data.Test";
+    var namespaceName="Light.Data.Mysql.Test";
 	//设置数据库连接
-    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
+    var connection="server=192.168.210.1;Port=3306;User Id=root;password=qwerty;Allow Zero Datetime=True;charset=utf8;";
 	//设置需要生成的数据库
     var dataBase="LightData_Test";
 
@@ -63,7 +64,14 @@
 	"lightDataMapper": {
 		"dataTypes": [
 <#
-	List<Table> list=tableList;
+	List<Table> list=new List<Table>();
+	foreach(Table table in tableList)
+    {
+		if(DbSetting.CheckTable(table.TableName))
+        {
+            list.Add(table);
+        }
+	}
 	int j=0;
     foreach(Table table in list)
     {
@@ -115,7 +123,9 @@
 		]
 	}
 }
+
 <#+ 
+
     #region GetDataBaseSchema
 
     public class DataBaseSchema
@@ -124,114 +134,74 @@
 
         Dictionary<string, Table> _dict = null;
 
-        string _connectionString;
+		string _connectionString;
 
         public DataBaseSchema(string dataBaseName, string connectionString)
         {
             this._dataBaseName = dataBaseName;
-            this._connectionString = connectionString;
+			this._connectionString = connectionString;
+            //this._conn = new SqlConnection(connectionString);
             this._dict = new Dictionary<string, Table>();
         }
 
         public List<Table> GetTables()
         {
-            string tableCommandText = @"SELECT A.name as TableName,A.object_id as TableCode, C.value as CommentText FROM sys.tables A left JOIN sys.extended_properties C ON C.major_id = A.object_id  and minor_id=0 WHERE A.name = N'{0}'";
+			string tableCommandText=@"select TABLE_NAME as TableName,TABLE_COMMENT as CommentText from information_schema.TABLES where TABLE_SCHEMA='{0}' and TABLE_NAME='{1}'";
 
             string columnCommandText = @"
-	with indexcte as(
-	select
-		ic.column_id,
-		ic.index_column_id,
-		ic.object_id
-	from
-		{0}.sys.indexes idx
-	inner join {0}.sys.index_columns ic on idx.index_id = ic.index_id
-	and idx.object_id = ic.object_id
-	where
-		idx.object_id = object_id('{0}.dbo.{1}')
-	and idx.is_primary_key = 1
-) select
-	colm.column_id ColumnId,
-	cast(
-		case
-		when indexcte.column_id is null then
-			0
-		else
-			1
-		end as bit
-	) ColumnKey,
-	cast(colm.max_length as int) bytelength,
-	(
-		case
-		when systype.name = 'nvarchar'
-		and colm.max_length > 0 then
-			colm.max_length / 2
-		when systype.name = 'nchar'
-		and colm.max_length > 0 then
-			colm.max_length / 2
-		when systype.name = 'ntext'
-		and colm.max_length > 0 then
-			colm.max_length / 2
-		else
-			colm.max_length
-		end
-	) MaxLength,
-	colm.name ColumnName,
-	systype.name DataType,
-	colm.is_identity IsIdentity,
-	colm.is_nullable AllowNull,
-	cast(colm.precision as int) Precision,
-	cast(colm.scale as int) Scale,
-	prop.value ColumnComment
-from
-	{0}.sys.columns colm
-inner join {0}.sys.types systype on colm.system_type_id = systype.system_type_id
-and colm.user_type_id = systype.user_type_id
-left join {0}.sys.extended_properties prop on colm.object_id = prop.major_id
-and colm.column_id = prop.minor_id
-left join indexcte on colm.column_id = indexcte.column_id
-and colm.object_id = indexcte.object_id
-where
-	colm.object_id = object_id('{0}.dbo.{1}')
-order by
-	colm.column_id";
-            List<Table> tables = new List<Table>();
-            foreach (string tableName in DbSetting.GetTables()) {
-                string tableCommandStr = String.Format(tableCommandText, tableName);
-                SqlConnection tableConn = new SqlConnection(_connectionString);
-                tableConn.Open();
-                SqlCommand tableCommand = new SqlCommand(tableCommandStr, tableConn);
-                SqlDataAdapter tableAd = new SqlDataAdapter(tableCommand);
-                DataSet tableDs = new DataSet();
-                tableAd.Fill(tableDs);
-                DataTable tableColumns = tableDs.Tables[0];
-                tableConn.Close();
-                if (tableColumns.Rows.Count == 0) {
-                    continue;
-                }
-                string tableComment = Convert.ToString(tableColumns.Rows[0]["CommentText"]);
-                string tableCode = Convert.ToString(tableColumns.Rows[0]["TableCode"]);
-                string columnCommandStr = String.Format(columnCommandText, this._dataBaseName, tableName);
-                SqlConnection columnConn = new SqlConnection(_connectionString);
-                columnConn.Open();
-                SqlCommand columnCommand = new SqlCommand(columnCommandStr, tableConn);
-                SqlDataAdapter columnAd = new SqlDataAdapter(columnCommand);
-                DataSet columnDs = new DataSet();
-                columnAd.Fill(columnDs);
-                DataTable columnColumns = columnDs.Tables[0];
-                tableConn.Close();
-
-                Table table = new Table(_dataBaseName, tableName);
-                if (String.IsNullOrEmpty(tableComment)) {
-                    tableComment = tableName;
-                }
-                table.CommentText = tableComment;
-                foreach (DataRow item in columnColumns.Rows) {
-                    table.SetColumn(item);
-                }
-                tables.Add(table);
-            }
-            return tables;
+select 
+ORDINAL_POSITION as 'ColumnId',
+case when COLUMN_KEY='PRI' then 1 else 0 end as 'ColumnKey',
+CHARACTER_MAXIMUM_LENGTH AS 'MaxLength',
+COLUMN_NAME AS 'ColumnName',
+DATA_TYPE AS 'DataType',
+case when EXTRA='auto_increment' then 1 else 0 end as 'IsIdentity',
+case when IS_NULLABLE='YES' then 1 else 0 end as 'AllowNull',
+NUMERIC_PRECISION as 'Precision',
+NUMERIC_SCALE as 'Scale',
+COLUMN_COMMENT as 'ColumnComment',
+COLUMN_TYPE AS 'ColumnType'
+from information_schema.COLUMNS where TABLE_SCHEMA='{0}' and TABLE_NAME='{1}'
+order by ORDINAL_POSITION";
+			List<Table> tables=new List<Table>();
+			foreach(string tableName in DbSetting.GetTables())
+			{
+				string tableCommandStr=String.Format(tableCommandText,this._dataBaseName,tableName);
+				MySqlConnection tableConn=new MySqlConnection(_connectionString);
+				tableConn.Open();
+				MySqlCommand tableCommand = new MySqlCommand(tableCommandStr, tableConn);
+				MySqlDataAdapter tableAd = new MySqlDataAdapter(tableCommand);
+				DataSet tableDs = new DataSet();
+				tableAd.Fill(tableDs);
+				DataTable tableColumns = tableDs.Tables[0];
+				tableConn.Close();
+				if(tableColumns.Rows.Count==0){
+					continue;
+				}
+				string tableComment=Convert.ToString(tableColumns.Rows[0]["CommentText"]);
+				string columnCommandStr=String.Format(columnCommandText,this._dataBaseName,tableName);
+				MySqlConnection columnConn=new MySqlConnection(_connectionString);
+				columnConn.Open();
+				MySqlCommand columnCommand = new MySqlCommand(columnCommandStr, tableConn);
+				MySqlDataAdapter columnAd = new MySqlDataAdapter(columnCommand);
+				DataSet columnDs = new DataSet();
+				columnAd.Fill(columnDs);
+				DataTable columnColumns = columnDs.Tables[0];
+				tableConn.Close();
+	
+				Table table = new Table(_dataBaseName, tableName);
+				if(String.IsNullOrEmpty(tableComment))
+				{
+					tableComment=tableName;
+				}
+				table.CommentText=tableComment;
+				foreach (DataRow item in columnColumns.Rows)
+				{
+					table.SetColumn(item);
+				}
+				tables.Add(table);
+			}
+			return tables;
         }
     }
 
@@ -245,32 +215,41 @@ order by
         }
 
         string _dataBaseName = null;
-        public string DataBaseName {
-            get {
+        public string DataBaseName
+        {
+            get
+            {
                 return this._dataBaseName;
             }
         }
-        string _commentText = null;
-        public string CommentText {
-            set {
-                this._commentText = value;
-            }
-            get {
+		string _commentText = null;
+		public string CommentText
+        {
+			set
+			{
+				this._commentText=value;
+			}
+            get
+            {
                 return this._commentText;
             }
         }
 
 
         string _tableName = null;
-        public string TableName {
-            get {
+        public string TableName
+        {
+            get
+            {
                 return this._tableName;
             }
         }
 
         Dictionary<string, Column> _columns = null;
-        public Dictionary<string, Column> Columns {
-            get {
+        public Dictionary<string, Column> Columns
+        {
+            get
+            {
                 return this._columns;
             }
         }
@@ -279,7 +258,8 @@ order by
         {
             string columnName = dataRow["ColumnName"].ToString();
             Column column = null;
-            if (!this._columns.TryGetValue(columnName, out column)) {
+            if (!this._columns.TryGetValue(columnName, out column))
+            {
                 column = new Column(this, dataRow);
             }
             this._columns[columnName] = column;
@@ -289,7 +269,8 @@ order by
         {
             column = null;
             Dictionary<string, Column> dict = this._columns;
-            if (dict != null) {
+            if (dict != null)
+            {
                 return dict.TryGetValue(columnName, out column);
             }
             return false;
@@ -311,65 +292,66 @@ order by
             this._lowerColumnName = string.Format("{0}{1}", this._columnName[0].ToString().ToLower(), this._columnName.Substring(1));
             this._upColumnName = string.Format("{0}{1}", this._columnName[0].ToString().ToUpper(), this._columnName.Substring(1));
             this._columnComment = dataRow["ColumnComment"].ToString();
-
+			string columnType = dataRow["ColumnType"].ToString();
             string dataType = dataRow["DataType"].ToString();
             this._rawType = dataType;
-            if (dataType.Equals("bit", StringComparison.InvariantCultureIgnoreCase)) {
+            if (dataType.Equals("bit", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = "bool";
             }
             else if (dataType.Equals("datetime", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("datetime2", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("smalldatetime", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("time", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("timestamp", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("date", StringComparison.InvariantCultureIgnoreCase)
-                ) {
+                )
+            {
                 this._dataType = "DateTime";
             }
-            else if (dataType.Equals("datetimeoffset", StringComparison.InvariantCultureIgnoreCase)) {
-                this._dataType = "DateTimeOffset";
-            }
             else if (dataType.Equals("decimal", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("money", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("smallmoney", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("numeric", StringComparison.InvariantCultureIgnoreCase)) {
+                || dataType.Equals("money", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = "decimal";
             }
-            else if (dataType.Equals("float", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("double", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = "double";
             }
-            else if (dataType.Equals("real", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("float", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = "float";
             }
             else if (dataType.Equals("char", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("nchar", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("varchar", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("nvarchar", StringComparison.InvariantCultureIgnoreCase)
                 || dataType.Equals("text", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("ntext", StringComparison.InvariantCultureIgnoreCase)
-                ) {
+                || dataType.Equals("tinytext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("mediumtext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("longtext", StringComparison.InvariantCultureIgnoreCase)
+                )
+            {
                 this._dataType = "string";
             }
-            else if (dataType.Equals("smallint", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("smallint", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = "short";
             }
-            else if (dataType.Equals("tinyint", StringComparison.InvariantCultureIgnoreCase)) {
-                this._dataType = "byte";
+            else if (dataType.Equals("tinyint", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "sbyte";
             }
-            else if (dataType.Equals("int", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("mediumint", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("int", StringComparison.InvariantCultureIgnoreCase)
+                )
+            {
                 this._dataType = "int";
             }
-            else if (dataType.Equals("bigint", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (dataType.Equals("bigint", StringComparison.InvariantCultureIgnoreCase))
+            {
                 this._dataType = "long";
             }
-            else if (dataType.Equals("binary", StringComparison.InvariantCultureIgnoreCase)
-                || dataType.Equals("varbinary", StringComparison.InvariantCultureIgnoreCase)
-            ) {
+            else
+            {
                 this._dataType = "byte[]";
             }
-            else {
-                this._dataType = dataType;
-            }
+
             string tmpType = this._dataType;
             if (string.IsNullOrEmpty(this._columnComment)) {
                 this._columnComment = this._columnName;
@@ -381,148 +363,200 @@ order by
             else if (DbSetting.GetSpecifiedType("*." + this._columnName, out specifiedName)) {
                 this._dataType = specifiedName;
             }
+            else if(columnType.Contains("unsigned"))
+            {
+                if(this._dataType=="int"||this._dataType=="short"||this._dataType=="long"){
+                    this._dataType=string.Format("u{0}", this._dataType);
+                }
+                else if(this._dataType=="sbyte"){
+                    this._dataType="byte";
+                }
+            }
 
-            if (this._allowNull && !string.Equals(tmpType, "string", StringComparison.InvariantCultureIgnoreCase) && !string.Equals(tmpType, "byte[]", StringComparison.InvariantCultureIgnoreCase)) {
+			if (this._allowNull && !string.Equals(tmpType, "string", StringComparison.InvariantCultureIgnoreCase) && !string.Equals(tmpType, "byte[]", StringComparison.InvariantCultureIgnoreCase)) {
                 this._dataType = string.Format("{0}?", this._dataType);
             }
 
-            string defaultValue;
-            if (DbSetting.GetDefaultValue(this._tableName + "." + this._columnName, out defaultValue) || DbSetting.GetDefaultValue("*." + this._columnName, out defaultValue)) {
-                if (DbSetting.GetDefaultValueStringMode()) {
-                    this._defaultValue = "\"" + defaultValue + "\"";
-                }
-                else if (this._dataType == "string") {
-                    this._defaultValue = "\"" + defaultValue + "\"";
-                }
-                else if (this._dataType == "DateTime" || this._dataType == "DateTime?") {
-                    if (defaultValue == "DefaultTime.Now" || defaultValue == "DefaultTime.Today") {
-                        this._defaultValue = defaultValue;
-                    }
-                    else {
-                        this._defaultValue = "\"" + defaultValue + "\"";
-                    }
-                }
-                else {
-                    this._defaultValue = defaultValue;
-                }
+			string defaultValue;
+            if(DbSetting.GetDefaultValue(this._tableName+"."+this._columnName, out defaultValue) || DbSetting.GetDefaultValue("*."+this._columnName, out defaultValue)){
+				if(DbSetting.GetDefaultValueStringMode())
+				{
+					this._defaultValue="\""+defaultValue+"\"";
+				}
+				else if(this._dataType=="string")
+				{
+					this._defaultValue="\""+defaultValue+"\"";
+				}
+				else if(this._dataType=="DateTime" || this._dataType=="DateTime?")
+				{
+					if(defaultValue=="DefaultTime.Now" || defaultValue=="DefaultTime.Today" )
+					{
+						this._defaultValue=defaultValue;
+					}
+					else
+					{
+						this._defaultValue="\""+defaultValue+"\"";
+					}
+				}
+				else
+				{
+					this._defaultValue=defaultValue;
+				}
             }
 
             this._isPrimaryKey = Convert.ToBoolean(dataRow["ColumnKey"]);
             this._isIdentity = Convert.ToBoolean(dataRow["IsIdentity"]);
 
             int maxLength = 0;
-            if (int.TryParse(dataRow["MaxLength"].ToString(), out maxLength)) {
+            if (int.TryParse(dataRow["MaxLength"].ToString(), out maxLength))
+            {
                 this._maxLength = maxLength;
             }
 
-            if (this._allowNull) {
-                if (DbSetting.CheckNotNullField(this._tableName + "." + this._columnName) || DbSetting.CheckNotNullField(this._tableName + ".*") || DbSetting.CheckNotNullField("*." + this._columnName)) {
-                    this._allowNull = false;
-                }
-            }
+			if(this._allowNull)
+			{
+				if(DbSetting.CheckNotNullField(this._tableName+"."+this._columnName)||DbSetting.CheckNotNullField(this._tableName+".*")|| DbSetting.CheckNotNullField("*."+this._columnName))
+				{
+					this._allowNull=false;
+				}
+			}
         }
 
         string _dataBaseName = null;
-        public string DataBaseName {
-            get {
+        public string DataBaseName
+        {
+            get
+            {
                 return this._dataBaseName;
             }
         }
 
         Table _table = null;
-        public Table Table {
-            get {
+        public Table Table
+        {
+            get
+            {
                 return this._table;
             }
         }
 
         string _tableName = null;
-        public string TableName {
-            get {
+        public string TableName
+        {
+            get
+            {
                 return this._tableName;
             }
         }
 
         string _columnName = null;
-        public string ColumnName {
-            get {
+        public string ColumnName
+        {
+            get
+            {
                 return this._columnName;
             }
         }
 
         string _columnComment = null;
-        public string ColumnComment {
-            get {
+        public string ColumnComment
+        {
+            get
+            {
                 return this._columnComment;
             }
         }
 
         public string _defaultValue = null;
-        public string DefaultValue {
-            get {
+        public string DefaultValue
+        {
+            get
+            {
                 return this._defaultValue;
             }
         }
 
         bool _allowNull = false;
-        public bool AllowNull {
-            get {
+        public bool AllowNull
+        {
+            get
+            {
                 return this._allowNull;
             }
         }
 
         string _rawType = null;
-        public string RawType {
-            get {
+        public string RawType
+        {
+            get
+            {
                 return this._rawType;
             }
         }
 
         string _dataType = null;
-        public string DataType {
-            get {
+        public string DataType
+        {
+            get
+            {
                 return this._dataType;
             }
         }
 
         string _dbType = null;
-        public string DBType {
-            get {
+        public string DBType
+        {
+            get
+            {
                 return this._dbType;
             }
         }
 
         int? _maxLength = null;
-        public int? MaxLength {
-            get {
+        public int? MaxLength
+        {
+            get
+            {
                 return this._maxLength;
             }
         }
 
+        #region Key
+
         bool _isPrimaryKey = false;
-        public bool IsPrimaryKey {
-            get {
+        public bool IsPrimaryKey
+        {
+            get
+            {
                 return this._isPrimaryKey;
             }
         }
 
         bool _isIdentity = false;
-        public bool IsIdentity {
-            get {
+        public bool IsIdentity
+        {
+            get
+            {
                 return this._isIdentity;
             }
         }
 
+        #endregion
+
         string _upColumnName = null;
-        public string UpColumnName {
-            get {
+        public string UpColumnName
+        {
+            get
+            {
                 return this._upColumnName;
             }
         }
 
         string _lowerColumnName = null;
-        public string LowerColumnName {
-            get {
+        public string LowerColumnName
+        {
+            get
+            {
                 return this._lowerColumnName;
             }
         }
@@ -532,31 +566,31 @@ order by
 
     public static class DbSetting
     {
-        static bool defaultValueStringMode = false;
-        static Dictionary<string, string> specifiedDict = new Dictionary<string, string>();
-        static Dictionary<string, string> defaultValueDict = new Dictionary<string, string>();
-        static HashSet<string> tableHash = new HashSet<string>();
-        static HashSet<string> notnullFieldHash = new HashSet<string>();
-        static HashSet<string> entityHash = new HashSet<string>();
+        static bool defaultValueStringMode=false;
+        static Dictionary<string,string> specifiedDict=new Dictionary<string,string>();
+		static Dictionary<string,string> defaultValueDict=new Dictionary<string,string>();
+        static HashSet<string> tableHash=new HashSet<string>();
+		static HashSet<string> notnullFieldHash=new HashSet<string>();
+		static HashSet<string> entityHash=new HashSet<string>();
 
-        public static void SetSpecifiedType(string filedName, string specifiedType)
+        public static void SetSpecifiedType(string filedName,string specifiedType)
         {
-            specifiedDict[filedName] = specifiedType;
+            specifiedDict[filedName]=specifiedType;
         }
 
-        public static bool GetSpecifiedType(string fieldName, out string specifiedType)
+        public static bool GetSpecifiedType(string fieldName,out string specifiedType)
         {
-            return specifiedDict.TryGetValue(fieldName, out specifiedType);
+            return specifiedDict.TryGetValue(fieldName,out specifiedType);
         }
 
-        public static void SetDefaultValue(string filedName, string value)
+		public static void SetDefaultValue(string filedName,string value)
         {
-            defaultValueDict[filedName] = value;
+            defaultValueDict[filedName]=value;
         }
 
-        public static bool GetDefaultValue(string fieldName, out string value)
+        public static bool GetDefaultValue(string fieldName,out string value)
         {
-            return defaultValueDict.TryGetValue(fieldName, out value);
+            return defaultValueDict.TryGetValue(fieldName,out value);
         }
 
 
@@ -567,20 +601,22 @@ order by
 
         public static bool CheckTable(string table)
         {
-            if (tableHash.Count > 0) {
+            if(tableHash.Count>0)
+            {
                 return tableHash.Contains(table);
             }
-            else {
+            else
+            {
                 return true;
             }
         }
 
-        public static string[] GetTables()
-        {
-            return tableHash.ToArray();
-        }
+		public static string[] GetTables()
+		{
+			return tableHash.ToArray();
+		}
 
-        public static void SetNotNullField(string field)
+		public static void SetNotNullField(string field)
         {
             notnullFieldHash.Add(field);
         }
@@ -590,9 +626,9 @@ order by
             return notnullFieldHash.Contains(field);
         }
 
-        public static void SetEntityTable(string table)
+		public static void SetEntityTable(string table)
         {
-            tableHash.Add(table);
+			tableHash.Add(table);
             entityHash.Add(table);
         }
 
@@ -601,30 +637,35 @@ order by
             return entityHash.Contains(table);
         }
 
-        public static bool GetDefaultValueStringMode()
-        {
-            return defaultValueStringMode;
-        }
+		public static bool GetDefaultValueStringMode()
+		{
+			return defaultValueStringMode;
+		}
 
-        public static void SetDefaultValueStringMode(bool mode)
+		public static void SetDefaultValueStringMode(bool mode)
         {
-            defaultValueStringMode = mode;
+			defaultValueStringMode=mode;
         }
     }
+
 
     public static class StringUtil
     {
         public static string ToPascalCase(string name)
         {
             StringBuilder sb = new StringBuilder();
-            string[] parts = name.Split(new char[] { '_' });
-            foreach (string part in parts) {
-                if (part.Length > 0) {
+            string[] parts = name.Split(new char[]{'_'});
+            foreach (string part in parts)
+            {
+                if (part.Length > 0)
+                {
                     sb.Append(Char.ToUpper(part[0]));
-                    if (part.Length > 1) {
-                        string o = part.Substring(1);
-                        if (o == o.ToUpper()) {
-                            o = o.ToLower();
+                    if (part.Length > 1)
+                    {
+                        string o=part.Substring(1);
+                        if(o==o.ToUpper())
+                        {
+                            o=o.ToLower();
                         }
                         sb.Append(o);
                     }
@@ -633,25 +674,32 @@ order by
             return sb.ToString();
         }
 
+      
         public static string ToCamelCase(string name)
         {
             StringBuilder sb = new StringBuilder();
-            string[] parts = name.Split(new char[] { '_' });
-            bool f = false;
-            foreach (string part in parts) {
-                if (part.Length > 0) {
-                    if (!f) {
+            string[] parts = name.Split(new char[]{'_'});
+            bool f=false;
+            foreach (string part in parts)
+            {
+                if (part.Length > 0)
+                {
+                    if(!f)
+                    {
                         sb.Append(Char.ToLower(part[0]));
-                        f = true;
+                        f=true;
                     }
-                    else {
+                    else
+                    {
                         sb.Append(Char.ToUpper(part[0]));
                     }
 
-                    if (part.Length > 1) {
-                        string o = part.Substring(1);
-                        if (o == o.ToUpper()) {
-                            o = o.ToLower();
+                    if (part.Length > 1)
+                    {
+                        string o=part.Substring(1);
+                        if(o==o.ToUpper())
+                        {
+                            o=o.ToLower();
                         }
                         sb.Append(o);
                     }
@@ -660,5 +708,4 @@ order by
             return sb.ToString();
         }
     }
-    
 #>
