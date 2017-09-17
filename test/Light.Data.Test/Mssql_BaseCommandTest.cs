@@ -75,6 +75,25 @@ namespace Light.Data.Test
         }
 
         [Fact]
+        public void TestCase_Specified_Context()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
+
+            List<TeBaseField> listEx = list;
+            DataContext context1 = CreateBuilderContextByConnection();
+            List<TeBaseField> listAc1 = context1.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc1);
+
+            DataContext context2 = CreateBuilderContextByConfig();
+            List<TeBaseField> listAc2 = context2.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc2);
+
+            DataContext context3 = CreateBuilderContextByConfig();
+            List<TeBaseField> listAc3 = context3.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc3);
+        }
+
+        [Fact]
         public async Task TestCase_TruncateTable_Async()
         {
             List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
@@ -98,7 +117,7 @@ namespace Light.Data.Test
             TeBaseField[] arrayAc = context.Query<TeBaseField>().ToArray();
             AssertExtend.StrictEqual(arrayEx, arrayAc);
         }
-
+        
         [Fact]
         public async Task TestCase_Query_Async()
         {

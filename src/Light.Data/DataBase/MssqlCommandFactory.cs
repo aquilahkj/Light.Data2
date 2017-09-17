@@ -51,12 +51,22 @@ namespace Light.Data.Mssql
 
         public override string CreateDataFieldSql(string fieldName)
         {
-            return string.Format("[{0}]", fieldName);
+            if (_strictMode) {
+                return string.Format("[{0}]", fieldName);
+            }
+            else {
+                return base.CreateDataFieldSql(fieldName);
+            }
         }
 
         public override string CreateDataTableSql(string tableName)
         {
-            return string.Format("[{0}]", tableName);
+            if (_strictMode) {
+                return string.Format("[{0}]", tableName);
+            }
+            else {
+                return base.CreateDataTableSql(tableName);
+            }
         }
 
         public override string CreateAvgSql(object fieldName, bool isDistinct)

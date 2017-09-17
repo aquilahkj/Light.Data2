@@ -27,6 +27,7 @@
 * [查询数据](#query_data)
 * [汇总统计数据](#aggregate_data)
 * [表连接](#join_table)
+* [执行SQL语句](#sql_command)
 
 <h2 id="object_mapping"> 对象映射(Object Mapping)</h2>
 
@@ -482,11 +483,13 @@ providerName 对应数据库种类的类名
 
 | 参数名 | 数据格式 | 说明 |
 |:------|:------|:------|
-| timeout | int | 执行语句超时时间，单位毫秒，默认60000 |
-| batchInsertCount | int | 批量新增数据每组语句块处理数，默认10 |
-| batchUpdateCount | int | 批量更新数据每组语句块处理数，默认10 |
-| batchDeleteCount | int | 批量删除数据每组语句块处理数，默认10 |
-| version | string | 对应的数据库版本
+| timeout | int | 执行语句超时时间, 单位毫秒, 默认60000 |
+| batchInsertCount | int | 批量新增数据每组语句块处理数, 默认10 |
+| batchUpdateCount | int | 批量更新数据每组语句块处理数, 默认10 |
+| batchDeleteCount | int | 批量删除数据每组语句块处理数, 默认10 |
+| strictMode | bool | 生成语句时是否对表名和字段名做专门处理, 如MSSQL的表名和字段加上[ ], 避免表名和字段因使用了保留关键字名而导致错误, 默认为ture |
+| version | string | 对应的数据库版本 |
+
 
 SqlServer version 功能列表
 
@@ -569,11 +572,12 @@ DataContextOptionsBuilder<TContext>主要方法
 | UseMssql(string connectionString) | 设置数据库为SqlServer时的连接字符串 |
 | UseMysql(string connectionString) | 设置数据库为Mysql时的连接字符串, 需nuget安装Light.Data.Mysql类库 |
 | UsePostgre(string connectionString) | 设置数据库为Postgre时的连接字符串, 需nuget安装Light.Data.Postgre类库 |
-| SetTimeout(int timeout) | 设置执行语句超时时间，单位毫秒，默认60000 |
-| SetBatchInsertCount(int timeout) | 设置批量新增数据每组语句块处理数，默认10 |
-| SetBatchUpdateCount(int timeout) | 设置批量更新数据每组语句块处理数，默认10 |
-| SetBatchDeleteCount(int timeout) | 设置批量删除数据每组语句块处理数，默认10 |
+| SetTimeout(int timeout) | 设置执行语句超时时间, 单位毫秒, 默认60000 |
+| SetBatchInsertCount(int timeout) | 设置批量新增数据每组语句块处理数, 默认10 |
+| SetBatchUpdateCount(int timeout) | 设置批量更新数据每组语句块处理数, 默认10 |
+| SetBatchDeleteCount(int timeout) | 设置批量删除数据每组语句块处理数, 默认10 |
 | SetVersion(string version) | 设置对应的数据库版本 |
+| SetStrictMode(bool strictMode) | 生成语句时是否对表名和字段名做专门处理, 如MSSQL的表名和字段加上[ ], 避免表名和字段因使用了保留关键字名而导致错误, 默认为ture |
 | SetCommandOutput(ICommandOutput output) | 设置SQL语句输出 |
 
 DataContextOptionsBuilder<TContext>也可通过使用ConfigName方法结合配置文件读取配置节的配置, 再做自定义设置. 
@@ -1200,7 +1204,7 @@ var list = context.Query<TeUser> ()
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
-		  .ToList ();
+                  .ToList ();
 //条件判断汇总
 var list = context.Query<TeUser> ()
                   .Where (x => x.Id >= 5)
@@ -1230,7 +1234,7 @@ var list = context.Query<TeUser> ()
                       Valid = Function.Count (x.Status = 1 ? x.Area : null),
                       Invalid = Function.Count (x.Status != 1 ? x.Area : null)
                    })
-		  .ToList ();
+                  .ToList ();
 ```
 
 ### 汇总数据过滤(Having)
@@ -1283,8 +1287,8 @@ var list = context.Query<TeUser> ()
                   .GroupBy (x => new RegDateAgg () {
                       RegDate = x.RegTime.Date,
                       Data = Function.Count ()
-		   })
-		  .ToList ();
+                   })
+                  .ToList ();
 //日期格式化统计
 var list = context.Query<TeUser> ()
                   .GroupBy (x => new RegDateFormatAgg () {
@@ -1310,19 +1314,19 @@ var list = context.Query<TeUser> ()
                       Name = x.Account.Substring (0, 5),
                       Data = Function.Count ()
                    })
-		  .ToList ();
+                  .ToList ();
 //字符串长度统计
 var list = context.Query<TeUser> ()
                   .GroupBy (x => new NumDataAgg () {
                       Name = x.Account.Length,
                       Data = Function.Count ()
-		   })
-		  .ToList ();
+                   })
+                  .ToList ();
 ```
 
 <h2 id="join_table">表连接(Join Table)</h2>
 
-使用`IQuery<T>.Join<T1>(on_lambda,T1_where_lambda)`表连接查询数据, `on_lambda`表达式中的表T和表T1的on关联表达式, 如`T.Id==T1.Id`, `T1_where_lambda`表达式中表T1的where查询. 函数返回`IJoinTable<T,T1>`接口, 用于表连接结果查询后续处理.支持LeftJoin(左连接)和RightJoin(右连接), 最多支持10个表连接. 同时支持IQuery(查询结果)与ISelect(字段选择查询)与IAggregate(数据汇总)的连接.通过`Select`方法选择指定的字段输出数据.
+使用`IQuery<T>.Join<T1>(on_lambda,T1_where_lambda)`表连接查询数据, `on_lambda`表达式中的表T和表T1的on关联表达式, 如`T.Id==T1.Id`, `T1_where_lambda`表达式中表T1的where查询. 函数返回`IJoinTable<T,T1>`接口, 用于表连接结果查询后续处理.支持LeftJoin(左连接)和RightJoin(右连接), 最多支持10个表连接. 同时支持IQuery(查询结果)与ISelect(字段选择查询)与IAggregate(数据汇总)的连接. 通过`Select`方法选择指定的字段输出数据.
 
 IJoinTable主要查询方法
 
@@ -1353,19 +1357,16 @@ IJoinTable主要查询方法
 
 ```csharp
 //内连接
-var list = context.Query<TeUser> ()
-                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-	          .ToList();
+var join = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id);
 	      
 //左连接
-var list = context.Query<TeUser> ()
-                  .LeftJoin<TeUserExtend>((x,y) => x.Id == y.Id)
-	          .ToList();
+var join = context.Query<TeUser> ()
+                  .LeftJoin<TeUserExtend>((x,y) => x.Id == y.Id);
 	      
 //右连接
-var list = context.Query<TeUser> ()
-                  .RightJoin<TeUserExtend>((x,y) => x.Id == y.Id)
-		  .ToList();
+var join = context.Query<TeUser> ()
+                  .RightJoin<TeUserExtend>((x,y) => x.Id == y.Id);
 ```
 
 ### 连表类型(Join Table Type)
@@ -1374,57 +1375,38 @@ var list = context.Query<TeUser> ()
 
 ```csharp
 //表连接
-var list = context.Query<TeUser> ()
-                  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-	          .ToList();
+var join = context.Query<TeUser> ()
+                  .Join<TeUserExtend>((x,y) => x.Id == y.Id);
 
 //表连接+查询
-var list = context.Query<TeUser> ()
-                  .Join<TeUserExtend>(y => y.ExtendData != null, (x, y) => x.Id == y.Id)
-	          .ToList();
+var join = context.Query<TeUser> ()
+                  .Join<TeUserExtend>(y => y.ExtendData != null, (x, y) => x.Id == y.Id);
 
 //查询连接
-var list = context.Query<TeUser> ()
+var join = context.Query<TeUser> ()
                   .Join<TeUserExtend>(context.Query<TeUserExtend>()
-		  .Where(y => y.ExtendData != null), (x,y) => x.Id == y.Id)
-	          .ToList();
+                  .Where(y => y.ExtendData != null), (x,y) => x.Id == y.Id);
 ```
 
 ##### 统计表连接
 
 ```csharp
 //实体表连接统计结果
-var list = context.Query<TeUser>()
+var join = context.Query<TeUser>()
                   .Join(context.Query<TeUserSub>()
                                .GroupBy(x => new {
                                    MId = x.MId,
                                    Count = Function.Count(),
                                 }), (x, y) => x.Id == y.MId
-	           )
-                  .Select((x, y) => new {
-			   Id = x.Id,
-			   Account = x.Account,
-			   LevelId = x.LevelId,
-			   MId = y.MId,
-			   Count = y.Count,
-                   })
-	          .ToList();
+                   );
 	      
 //统计结果连接实体表             
-var list = context.Query<TeMainTable>()
+var join = context.Query<TeMainTable>()
                   .GroupBy(x => new {
                       MId = x.MId,
                       Count = Function.Count(),
                    })
-                  .Join<TeSubTable>((x, y) => x.MId == y.Id)
-                  .Select((x, y) => new {
-  		      Id = y.Id,
-  		      Account = y.Account,
-  		      LevelId = y.LevelId,
-  		      MId = x.MId,
-  		      Count = x.Count,
-  	           })
-		  .ToList();
+                  .Join<TeSubTable>((x, y) => x.MId == y.Id);
 ```
 
 ### 条件查询(Where)
@@ -1436,14 +1418,12 @@ var list = context.Query<TeMainTable>()
 ```csharp
 var list = context.Query<TeUser> ()
                   .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		  .Where((x,y) => x.Id > 1 && y.Status == 1 )
-		  .ToList();
+                  .Where((x,y) => x.Id > 1 && y.Status == 1 );
 
 var list = context.Query<TeUser> ()
                   .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		  .Where((x,y) => x.Id > 1)
-		  .WhereWithAnd((x,y) => y.Status == 1 )
-		  .ToList();
+                  .Where((x,y) => x.Id > 1)
+                  .WhereWithAnd((x,y) => y.Status == 1 );
 ```
 
 ### 排序(OrderBy)
@@ -1453,28 +1433,25 @@ var list = context.Query<TeUser> ()
 使用`IJoinTable<T,T1>.OrderBy(lambda)`方法加入查询条件, 查询参数为Lambda表达式, 有OrderBy, OrderByDescending, OrderByCatch, OrderByDescendingCatch,  OrderByReset, OrderByRandom六个方法
 
 ```csharp
-var list = context.Query<TeUser> ()
+var join = context.Query<TeUser> ()
                   .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		  .OrderBy((x,y) => x.Id)
-		  .ToList();
+                  .OrderBy((x,y) => x.Id);
 
-var list = context.Query<TeUser> ()
+var join = context.Query<TeUser> ()
                   .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		  .OrderByDescending((x,y) => y.Date)
-		  .ToList();
+                  .OrderByDescending((x,y) => y.Date)
 
-var list = context.Query<TeUser> ()
+var join = context.Query<TeUser> ()
                   .Join<TeUserExtend>((x,y) => x.Id == y.Id)
-		  .OrderBy((x,y) => x.Id)
-		  .OrderByDescendingCatch((x,y) => y.Date)
-		  .ToList();
+                  .OrderBy((x,y) => x.Id)
+                  .OrderByDescendingCatch((x,y) => y.Date);
 ```
 
 ### 选择指定字段(Select)
 
 ***
 
-使用`IJoinTable<T,T1>.Select(lambda)`查询时指定字段输出新的结构类, 支持匿名类输出, 使用Lambda表达式中的new方式定义新结构类.
+使用`IJoinTable<T,T1>.Select(lambda)`查询时指定字段输出新的结构类, 支持匿名类输出, 使用Lambda表达式中的new方式定义新结构类. 生成`ISelectJoin<K>`接口输出数据. 
 
 ```csharp
 var list = context.Query<TeUser> ()
@@ -1485,8 +1462,8 @@ var list = context.Query<TeUser> ()
 	              LevelId = x.LevelId,
 	              RegTime = x.RegTime,
 	              ExtendData = y.ExtendData
-		   })
-		  .ToList ();
+	           })
+	          .ToList ();
 //匿名类
 var list = context.Query<TeUser> ()
 		  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
@@ -1496,9 +1473,35 @@ var list = context.Query<TeUser> ()
 		      x.LevelId,
 		      x.RegTime,
 		      y.ExtendData
-	           })
+		   })
+		  .ToList ();
+		  
+var list = context.Query<TeUser> ()
+		  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .Select ((x,y) => new {
+		      Mian = x,
+		      ExtendEntity = y
+		   })
 		  .ToList ();
 ```
+
+当某个连接表的所有字段在输出无数据(即为null), 如果对应字段类型是`int`,`decimal`,`DateTime`等值类型, 框架会赋予该类型的默认值, 如果对应字段类型直接为某个连接表的对应类型, 如
+
+```csharp
+var list = context.Query<TeUser> ()
+		  .Join<TeUserExtend>((x,y) => x.Id == y.Id)
+		  .Select ((x,y) => new {
+		      x.Id,
+		      x.Account,
+		      x.LevelId,
+		      x.RegTime,
+		      ExtendEntity = y
+		   })
+		  .ToList ();
+```
+
+对应的`ExtendEntity`字段则会生成一个`TeUserExtend`的默认对象. 
+如果业务需要在输出无数据时`ExtendEntity`需要为null, 则可以在`ISelectJoin<K>`输出数据前调用`NoDataSetEntityNull(int index)`方法做设置, index为连接数据表顺序的下标, 以0开始. 设置后当该连接表无数据输出, 对应字段会设置为null, 但如果同时对该连接表的某个字段单独输出, 需要避免空引用的错误. 
 
 ### 查询批量插入
 
@@ -1520,4 +1523,101 @@ var result = context.Query<TeUser> ()
                         RegTime = x.RegTime,
                         ExtendData = y.ExtendData 
                     });
+```
+
+<h2 id="sql_command">执行SQL语句(Execute Sql Command)</h2>
+当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建
+
+| 方法 | 说明 |
+|:------|:------|
+| CreateSqlStringExecutor | 创建SQL语句的执行器 |
+| CreateStoreProcedureExecutor | 创建存储过程的执行器 |
+
+`SqlExecutor`主要方法
+
+| 方法 | 说明 |
+|:------|:------|
+| ExecuteNonQuery | 执行语句或存储过程并返回受影响的行数 |
+| ExecuteScalar | 执行语句或存储过程执行查询并返回由查询返回的结果集中的第一行的第一列 |
+| Query\<T\> | 执行语句或存储过程, 返回IEnumable\<T\>类型的枚举, T的字段需要与语句或存储过程的返回字段一致 |
+| QueryList\<T\> | 执行语句或存储过程, 返回List\<T\>类型的列表, T的字段需要与语句或存储过程的返回字段一致 |
+| QueryArray\<T\> | 执行语句或存储过程, 返回T[]类型的数组, T的字段需要与语句或存储过程的返回字段一致 |
+
+使用无参ExecuteNonQuery
+
+```csharp
+var sql = "update Te_User set NickName='abc' where Id=5";
+var executor = context.CreateSqlStringExecutor(sql);
+var ret = executor.ExecuteNonQuery();
+```
+
+使用有参ExecuteNonQuery
+
+```csharp
+var sql = "update Te_User set NickName=@P2 where Id=@P1";
+var ps = new DataParameter[2];
+ps[0] = new DataParameter("P1", 5);
+ps[1] = new DataParameter("P2", "abc");
+var executor = context.CreateSqlStringExecutor(sql, ps);
+var ret = executor.ExecuteNonQuery();
+```
+
+使用无参ExecuteScalar
+
+```csharp
+var sql = "select count(1) from Te_User where Id<=5";
+var executor = context.CreateSqlStringExecutor(sql);
+var ret = executor. ExecuteScalar();
+```
+
+使用有参ExecuteScalar
+
+```csharp
+var sql = "select count(1) from Te_User where Id<=@P1";
+var ps = new DataParameter[1];
+ps[0] = new DataParameter("P1", 5);
+var executor = context.CreateSqlStringExecutor(sql, ps);
+var ret = executor.ExecuteScalar();
+```
+
+使用无参QueryList
+
+```csharp
+var sql = "select * from Te_User where Id>5 and Id<8";
+var executor = context.CreateSqlStringExecutor(sql);
+var list = executor.QueryList<TeUser>();
+```
+
+使用有参QueryList
+
+```csharp
+var sql = "select * from Te_User where Id>@P1 and Id<=@P2";
+var ps = new DataParameter[2];
+ps[0] = new DataParameter("P1", 5);
+ps[1] = new DataParameter("P2", 8);
+var executor = context.CreateSqlStringExecutor(sql, ps);
+var list = executor.QueryList<TeUser>();
+```
+
+存储过程
+
+```csharp
+var sp = "mysp";
+var ps = new DataParameter[2];
+ps[0] = new DataParameter("P1", 5);
+ps[1] = new DataParameter("P2", 8);
+var executor = context.CreateStoreProcedureExecutor(sp, ps);
+var list = executor.QueryList<TeUser>();
+```
+
+Out参数的存储过程
+
+```csharp
+var sp = "mysp_out";
+var ps = new DataParameter[2];
+ps[0] = new DataParameter("P1", 5);
+ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+var executor = context.CreateStoreProcedureExecutor(sp, ps);
+var ret = executor.ExecuteNonQuery();
+var outvalue = ps[1].OutputValue;
 ```

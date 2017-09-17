@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Light.Data.Mysql.Test
+namespace Light.Data.Postgre.Test
 {
-    public class Mysql_BaseFieldDefaultValue : BaseTest
+    public class Postgre_BaseFieldDefaultValue : BaseTest
     {
-        public Mysql_BaseFieldDefaultValue(ITestOutputHelper output) : base(output)
+        public Postgre_BaseFieldDefaultValue(ITestOutputHelper output) : base(output)
         {
         }
 

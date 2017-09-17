@@ -8,12 +8,12 @@
     <Description>The light weight object relational mapping framework for sqlserver</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Authors>Aquila Huang</Authors>
-    <PackageTags>Database, Data, ORM, ADO.NET, SQLSERVER</PackageTags>
+    <PackageTags>Database, Data, ORM, ADO.NET, SQL, SQLSERVER</PackageTags>
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.2.1</FileVersion>
+    <FileVersion>2.0.2.2</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

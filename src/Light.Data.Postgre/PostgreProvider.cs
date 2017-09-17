@@ -1,38 +1,38 @@
 ﻿using System;
 using System.Data;
+using Npgsql;
 using System.Data.Common;
-using MySql.Data.MySqlClient;
 
-namespace Light.Data.Mysql
+namespace Light.Data.Postgre
 {
-    class MysqlProvider : DatabaseProvider
+    class PostgreProvider : DatabaseProvider
     {
-        public MysqlProvider(string configName, ConfigParamSet configParams)
+        public PostgreProvider(string configName, ConfigParamSet configParams)
             : base(configName, configParams)
         {
-            _factory = new MysqlCommandFactory();
+             _factory = new PostgreCommandFactory();
             string strictMode = configParams.GetParamValue("strictMode");
             if (strictMode != null) {
                 if (bool.TryParse(strictMode, out bool value))
                     _factory.SetStrictMode(value);
             }
         }
-
-        #region IDatabase 成员
+        
+        #region implemented abstract members of Database
 
         public override DbConnection CreateConnection()
         {
-            return new MySqlConnection();
+            return new NpgsqlConnection();
         }
 
         public override DbConnection CreateConnection(string connectionString)
         {
-            return new MySqlConnection(connectionString);
+            return new NpgsqlConnection(connectionString);
         }
 
         public override DbCommand CreateCommand(string sql)
         {
-            MySqlCommand command = new MySqlCommand() {
+            NpgsqlCommand command = new NpgsqlCommand {
                 CommandText = sql,
                 CommandTimeout = CommandTimeout
             };
@@ -41,7 +41,7 @@ namespace Light.Data.Mysql
 
         public override DbCommand CreateCommand()
         {
-            MySqlCommand command = new MySqlCommand() {
+            NpgsqlCommand command = new NpgsqlCommand {
                 CommandTimeout = CommandTimeout
             };
             return command;
@@ -50,22 +50,31 @@ namespace Light.Data.Mysql
         public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction)
         {
             string parameterName = name;
-            if (!parameterName.StartsWith("?", StringComparison.Ordinal)) {
-                parameterName = "?" + parameterName;
+            if (!parameterName.StartsWith(":", StringComparison.Ordinal)) {
+                parameterName = ":" + parameterName;
             }
-            MySqlParameter sp = new MySqlParameter() {
+            NpgsqlParameter sp = new NpgsqlParameter() {
                 ParameterName = parameterName,
                 Direction = direction
             };
             if (value == null) {
                 sp.Value = DBNull.Value;
             }
+            else if (value is UInt16) {
+                sp.Value = Convert.ToInt32(value);
+            }
+            else if (value is UInt32) {
+                sp.Value = Convert.ToInt64(value);
+            }
+            else if (value is UInt64) {
+                sp.Value = Convert.ToDecimal(value);
+            }
             else {
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                //if (ParseSqlDbType(dbType, out MySqlDbType sqltype)) {
-                //    sp.MySqlDbType = sqltype;
+                //if (ParseSqlDbType(dbType, out NpgsqlDbType sqltype)) {
+                //    sp.NpgsqlDbType = sqltype;
                 //}
                 //else 
                 if (Utility.ParseDbType(dbType, out DbType dType)) {
@@ -78,18 +87,18 @@ namespace Light.Data.Mysql
             return sp;
         }
 
-        public override void FormatStoredProcedureParameter(IDataParameter dataParameter)
+        public override void FormatStoredProcedureParameter(IDataParameter dataParmeter)
         {
-            if (dataParameter.ParameterName.StartsWith("?", StringComparison.Ordinal)) {
-                dataParameter.ParameterName = dataParameter.ParameterName.TrimStart('?');
+            if (dataParmeter.ParameterName.StartsWith(":", StringComparison.Ordinal)) {
+                dataParmeter.ParameterName = dataParmeter.ParameterName.TrimStart(':');
             }
         }
 
         #endregion
 
-        //bool ParseSqlDbType(string dbType, out MySqlDbType type)
+        //bool ParseSqlDbType(string dbType, out NpgsqlDbType type)
         //{
-        //    type = MySqlDbType.VarChar;
+        //    type = NpgsqlDbType.Varchar;
         //    int index = dbType.IndexOf('(');
         //    string typeString = string.Empty;
         //    if (index < 0) {
@@ -105,3 +114,4 @@ namespace Light.Data.Mysql
         //}
     }
 }
+

@@ -6,11 +6,11 @@ using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Light.Data.Mysql.Test
+namespace Light.Data.Postgre.Test
 {
-    public class Mysql_BaseFieldSelectTest : BaseTest
+    public class Postgre_BaseFieldSelectTest : BaseTest
     {
-        public Mysql_BaseFieldSelectTest(ITestOutputHelper output) : base(output)
+        public Postgre_BaseFieldSelectTest(ITestOutputHelper output) : base(output)
         {
         }
 

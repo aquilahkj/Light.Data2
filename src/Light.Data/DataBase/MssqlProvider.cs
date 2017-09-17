@@ -34,6 +34,11 @@ namespace Light.Data.Mssql
                 }
             }
             _factory = mssqlCommandFactory ?? new MssqlCommandFactory_2008();
+            string strictMode = configParams.GetParamValue("strictMode");
+            if (strictMode != null) {
+                if (bool.TryParse(strictMode, out bool value))
+                    _factory.SetStrictMode(value);
+            }
         }
 
         #region IDatabase 成员

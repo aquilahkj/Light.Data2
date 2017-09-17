@@ -6,9 +6,9 @@ using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Light.Data.Test
+namespace Light.Data.Postgre.Test
 {
-    public class Mssql_BaseFieldAggregateTest : BaseTest
+    public class Postgre_BaseFieldAggregateTest : BaseTest
     {
         class BytesEqualityComparer : IEqualityComparer<byte[]>
         {
@@ -16,12 +16,10 @@ namespace Light.Data.Test
             {
                 if (x == null && y == null) {
                     return true;
-                }
-                else if (x != null && y != null) {
+                } else if (x != null && y != null) {
                     if (x.Length != y.Length) {
                         return false;
-                    }
-                    else {
+                    } else {
                         for (int i = 0; i < x.Length; i++) {
                             if (x[i] != y[i]) {
                                 return false;
@@ -29,8 +27,7 @@ namespace Light.Data.Test
                         }
                         return true;
                     }
-                }
-                else {
+                } else {
                     return false;
                 }
             }
@@ -45,9 +42,10 @@ namespace Light.Data.Test
             }
         }
 
-        public Mssql_BaseFieldAggregateTest(ITestOutputHelper output) : base(output)
+        public Postgre_BaseFieldAggregateTest(ITestOutputHelper output) : base(output)
         {
         }
+
 
         #region base test
         List<TeBaseFieldAggregateField> CreateBaseFieldTableList(int count)
@@ -3015,144 +3013,5 @@ namespace Light.Data.Test
         }
         #endregion
 
-        [Fact]
-        public void TestCase_Aggregate_GroupBy_TakeSkip_Ver2012()
-        {
-            DataContext context = CreateContext("mssql_2012");
-            const int tol = 21;
-            const int cnt = 8;
-            List<TeBaseFieldAggregateField> list = CreateAndInsertBaseFieldTableList(45);
-
-            int times = tol / cnt;
-            times++;
-
-            for (int i = 0; i < times; i++) {
-                {
-                    var ex = list.GroupBy(x => x.Int32Field).Select(g => new {
-                        KeyData = g.Key,
-                        Count = g.Count(),
-                        CountField = g.Count(x => x.Int32FieldNull != null),
-                        CountCondition = g.Count(x => x.Int16Field > 10),
-                        Sum = g.Sum(x => x.ByteField),
-                        Avg = g.Average(x => x.Int64Field),
-                        Max = g.Max(x => x.DateTimeField),
-                        Min = g.Min(x => x.DateTimeField),
-                    }).OrderBy(x => x.KeyData).Skip(cnt * i).ToList();
-
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
-                        KeyData = x.Int32Field,
-                        Count = Function.Count(),
-                        CountField = Function.Count(x.Int32FieldNull),
-                        CountCondition = Function.CountCondition(x.Int16Field > 10),
-                        Sum = Function.Sum(x.ByteField),
-                        Avg = Function.Avg(x.Int64Field),
-                        Max = Function.Max(x.DateTimeField),
-                        Min = Function.Min(x.DateTimeField),
-                    }).Skip(cnt * i).ToList();
-                    AssertExtend.StrictEqual(ex, ac);
-                }
-
-                {
-                    var ex = list.GroupBy(x => x.Int32Field).Select(g => new {
-                        KeyData = g.Key,
-                        Count = g.Count(),
-                        CountField = g.Count(x => x.Int32FieldNull != null),
-                        CountCondition = g.Count(x => x.Int16Field > 10),
-                        Sum = g.Sum(x => x.ByteField),
-                        Avg = g.Average(x => x.Int64Field),
-                        Max = g.Max(x => x.DateTimeField),
-                        Min = g.Min(x => x.DateTimeField),
-                    }).OrderBy(x => x.KeyData).Take(cnt * i).ToList();
-
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
-                        KeyData = x.Int32Field,
-                        Count = Function.Count(),
-                        CountField = Function.Count(x.Int32FieldNull),
-                        CountCondition = Function.CountCondition(x.Int16Field > 10),
-                        Sum = Function.Sum(x.ByteField),
-                        Avg = Function.Avg(x.Int64Field),
-                        Max = Function.Max(x.DateTimeField),
-                        Min = Function.Min(x.DateTimeField),
-                    }).Take(cnt * i).ToList();
-                    AssertExtend.StrictEqual(ex, ac);
-                }
-
-                {
-                    var ex = list.GroupBy(x => x.Int32Field).Select(g => new {
-                        KeyData = g.Key,
-                        Count = g.Count(),
-                        CountField = g.Count(x => x.Int32FieldNull != null),
-                        CountCondition = g.Count(x => x.Int16Field > 10),
-                        Sum = g.Sum(x => x.ByteField),
-                        Avg = g.Average(x => x.Int64Field),
-                        Max = g.Max(x => x.DateTimeField),
-                        Min = g.Min(x => x.DateTimeField),
-                    }).OrderBy(x => x.KeyData).Skip(cnt * i).Take(cnt).ToList();
-
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
-                        KeyData = x.Int32Field,
-                        Count = Function.Count(),
-                        CountField = Function.Count(x.Int32FieldNull),
-                        CountCondition = Function.CountCondition(x.Int16Field > 10),
-                        Sum = Function.Sum(x.ByteField),
-                        Avg = Function.Avg(x.Int64Field),
-                        Max = Function.Max(x.DateTimeField),
-                        Min = Function.Min(x.DateTimeField),
-                    }).Skip(cnt * i).Take(cnt).ToList();
-                    AssertExtend.StrictEqual(ex, ac);
-                }
-            }
-
-            {
-                var ex = list.GroupBy(x => x.Int32Field).Select(g => new {
-                    KeyData = g.Key,
-                    Count = g.Count(),
-                    CountField = g.Count(x => x.Int32FieldNull != null),
-                    CountCondition = g.Count(x => x.Int16Field > 10),
-                    Sum = g.Sum(x => x.ByteField),
-                    Avg = g.Average(x => x.Int64Field),
-                    Max = g.Max(x => x.DateTimeField),
-                    Min = g.Min(x => x.DateTimeField),
-                }).OrderBy(x => x.KeyData).Where(x => x.KeyData > cnt).Take(cnt).ToList();
-
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
-                    KeyData = x.Int32Field,
-                    Count = Function.Count(),
-                    CountField = Function.Count(x.Int32FieldNull),
-                    CountCondition = Function.CountCondition(x.Int16Field > 10),
-                    Sum = Function.Sum(x.ByteField),
-                    Avg = Function.Avg(x.Int64Field),
-                    Max = Function.Max(x.DateTimeField),
-                    Min = Function.Min(x.DateTimeField),
-                }).OrderBy(x => x.KeyData).Having(x => x.KeyData > cnt).Take(cnt).ToList();
-                AssertExtend.StrictEqual(ex, ac);
-            }
-
-            {
-                var ex = list.GroupBy(x => x.Int32Field).Select(g => new {
-                    KeyData = g.Key,
-                    Count = g.Count(),
-                    CountField = g.Count(x => x.Int32FieldNull != null),
-                    CountCondition = g.Count(x => x.Int16Field > 10),
-                    Sum = g.Sum(x => x.ByteField),
-                    Avg = g.Average(x => x.Int64Field),
-                    Max = g.Max(x => x.DateTimeField),
-                    Min = g.Min(x => x.DateTimeField),
-                }).OrderByDescending(x => x.KeyData).Take(cnt).ToList();
-
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
-                    KeyData = x.Int32Field,
-                    Count = Function.Count(),
-                    CountField = Function.Count(x.Int32FieldNull),
-                    CountCondition = Function.CountCondition(x.Int16Field > 10),
-                    Sum = Function.Sum(x.ByteField),
-                    Avg = Function.Avg(x.Int64Field),
-                    Max = Function.Max(x.DateTimeField),
-                    Min = Function.Min(x.DateTimeField),
-                }).OrderByDescending(x => x.KeyData).Take(cnt).ToList();
-                AssertExtend.StrictEqual(ex, ac);
-            }
-
-        }
     }
 }

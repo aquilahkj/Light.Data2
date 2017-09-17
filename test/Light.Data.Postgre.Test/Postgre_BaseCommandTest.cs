@@ -6,11 +6,11 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 
-namespace Light.Data.Mysql.Test
+namespace Light.Data.Postgre.Test
 {
-    public class Mysql_BaseCommandTest : BaseTest
+    public class Postgre_BaseCommandTest : BaseTest
     {
-        public Mysql_BaseCommandTest(ITestOutputHelper output) : base(output)
+        public Postgre_BaseCommandTest(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -1044,34 +1044,34 @@ namespace Light.Data.Mysql.Test
             SqlExecutor executor;
             DataParameter[] ps;
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = executor.QueryList<TeBaseField>();
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = executor.QueryList<TeBaseField>(5, 3);
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField where Id>5 and Id<=8";
+            sql = "select * from \"Te_BaseField\" where \"Id\">5 and \"Id\"<=8";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = executor.QueryList<TeBaseField>();
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField where Id>@P1 and Id<=@P2";
+            sql = "select * from \"Te_BaseField\" where \"Id\">@P1 and \"Id\"<=@P2";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 8);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 8);
             executor = context.CreateSqlStringExecutor(sql, ps);
             listAc = executor.QueryList<TeBaseField>();
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
@@ -1081,7 +1081,7 @@ namespace Light.Data.Mysql.Test
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField limit 1";
+            sql = "select * from \"Te_BaseField\" limit 1";
             executor = context.CreateSqlStringExecutor(sql);
             var itemAc = executor.QueryFirst<TeBaseField>();
             var itemEx = list.First();
@@ -1098,34 +1098,34 @@ namespace Light.Data.Mysql.Test
             SqlExecutor executor;
             DataParameter[] ps;
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = await executor.QueryListAsync<TeBaseField>();
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = await executor.QueryListAsync<TeBaseField>(5, 3);
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField where Id>5 and Id<=8";
+            sql = "select * from \"Te_BaseField\" where \"Id\">5 and \"Id\"<=8";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = await executor.QueryListAsync<TeBaseField>();
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField where Id>@P1 and Id<=@P2";
+            sql = "select * from \"Te_BaseField\" where \"Id\">@P1 and \"Id\"<=@P2";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 8);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 8);
             executor = context.CreateSqlStringExecutor(sql, ps);
             listAc = await executor.QueryListAsync<TeBaseField>();
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
@@ -1135,7 +1135,7 @@ namespace Light.Data.Mysql.Test
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField limit 1";
+            sql = "select * from \"Te_BaseField\" limit 1";
             executor = context.CreateSqlStringExecutor(sql);
             var itemAc = await executor.QueryFirstAsync<TeBaseField>();
             var itemEx = list.First();
@@ -1152,35 +1152,35 @@ namespace Light.Data.Mysql.Test
             SqlExecutor executor;
             DataParameter[] ps;
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = new List<TeBaseField>();
             listAc.AddRange(executor.Query<TeBaseField>());
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = new List<TeBaseField>(executor.QueryList<TeBaseField>(5, 3));
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField where Id>5 and Id<=8";
+            sql = "select * from \"Te_BaseField\" where \"Id\">5 and \"Id\"<=8";
             executor = context.CreateSqlStringExecutor(sql);
             listAc = new List<TeBaseField>(executor.QueryList<TeBaseField>());
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField where Id>@P1 and Id<=@P2";
+            sql = "select * from \"Te_BaseField\" where \"Id\">@P1 and \"Id\"<=@P2";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 8);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 8);
             executor = context.CreateSqlStringExecutor(sql, ps);
             listAc = new List<TeBaseField>(executor.QueryList<TeBaseField>());
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField";
+            sql = "select * from \"Te_BaseField\"";
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
@@ -1203,7 +1203,7 @@ namespace Light.Data.Mysql.Test
             DataParameter[] ps;
 
             itemEx = list[0];
-            sql = "update Te_BaseField set VarcharField='abc' where Id=" + itemEx.Id;
+            sql = "update \"Te_BaseField\" set \"VarcharField\"='abc' where \"Id\"=" + itemEx.Id;
             executor = context.CreateSqlStringExecutor(sql);
             ret = executor.ExecuteNonQuery();
             Assert.Equal(1, ret);
@@ -1212,10 +1212,10 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(itemEx, itemAc);
 
             itemEx = list[1];
-            sql = "update Te_BaseField set VarcharField=@P2 where Id=@P1";
+            sql = "update \"Te_BaseField\" set \"VarcharField\"=@P2 where \"Id\"=@P1";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", itemEx.Id);
-            ps[1] = new DataParameter("P2", "bcd");
+            ps[0] = new DataParameter("p1", itemEx.Id);
+            ps[1] = new DataParameter("p2", "bcd");
             executor = context.CreateSqlStringExecutor(sql, ps);
             ret = executor.ExecuteNonQuery();
             Assert.Equal(1, ret);
@@ -1224,10 +1224,10 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(itemEx, itemAc);
 
             itemEx = list[2];
-            sql = "update Te_BaseField set VarcharField=@P2 where Id=@P1";
+            sql = "update \"Te_BaseField\" set \"VarcharField\"=@P2 where \"Id\"=@P1";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", itemEx.Id);
-            ps[1] = new DataParameter("P2", "cdf");
+            ps[0] = new DataParameter("p1", itemEx.Id);
+            ps[1] = new DataParameter("p2", "cdf");
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql, ps);
@@ -1252,7 +1252,7 @@ namespace Light.Data.Mysql.Test
             DataParameter[] ps;
 
             itemEx = list[0];
-            sql = "update Te_BaseField set VarcharField='abc' where Id=" + itemEx.Id;
+            sql = "update \"Te_BaseField\" set \"VarcharField\"='abc' where \"Id\"=" + itemEx.Id;
             executor = context.CreateSqlStringExecutor(sql);
             ret = await executor.ExecuteNonQueryAsync();
             Assert.Equal(1, ret);
@@ -1261,10 +1261,10 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(itemEx, itemAc);
 
             itemEx = list[1];
-            sql = "update Te_BaseField set VarcharField=@P2 where Id=@P1";
+            sql = "update \"Te_BaseField\" set \"VarcharField\"=@P2 where \"Id\"=@P1";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", itemEx.Id);
-            ps[1] = new DataParameter("P2", "bcd");
+            ps[0] = new DataParameter("p1", itemEx.Id);
+            ps[1] = new DataParameter("p2", "bcd");
             executor = context.CreateSqlStringExecutor(sql, ps);
             ret = await executor.ExecuteNonQueryAsync();
             Assert.Equal(1, ret);
@@ -1273,10 +1273,10 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(itemEx, itemAc);
 
             itemEx = list[2];
-            sql = "update Te_BaseField set VarcharField=@P2 where Id=@P1";
+            sql = "update \"Te_BaseField\" set \"VarcharField\"=@P2 where \"Id\"=@P1";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", itemEx.Id);
-            ps[1] = new DataParameter("P2", "cdf");
+            ps[0] = new DataParameter("p1", itemEx.Id);
+            ps[1] = new DataParameter("p2", "cdf");
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql, ps);
@@ -1298,19 +1298,19 @@ namespace Light.Data.Mysql.Test
             DataParameter[] ps;
             int ac;
 
-            sql = "select count(1) from Te_BaseField";
+            sql = "select count(1) from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             ac = Convert.ToInt32(executor.ExecuteScalar());
             Assert.Equal(list.Count, ac);
 
-            sql = "select count(1) from Te_BaseField where Id<=@P1";
+            sql = "select count(1) from \"Te_BaseField\" where \"Id\"<=@P1";
             ps = new DataParameter[1];
-            ps[0] = new DataParameter("P1", 5);
+            ps[0] = new DataParameter("p1", 5);
             executor = context.CreateSqlStringExecutor(sql, ps);
             ac = Convert.ToInt32(executor.ExecuteScalar());
             Assert.Equal(5, ac);
 
-            sql = "select count(1) from Te_BaseField";
+            sql = "select count(1) from \"Te_BaseField\"";
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
@@ -1329,19 +1329,19 @@ namespace Light.Data.Mysql.Test
             DataParameter[] ps;
             int ac;
 
-            sql = "select count(1) from Te_BaseField";
+            sql = "select count(1) from \"Te_BaseField\"";
             executor = context.CreateSqlStringExecutor(sql);
             ac = Convert.ToInt32(await executor.ExecuteScalarAsync());
             Assert.Equal(list.Count, ac);
 
-            sql = "select count(1) from Te_BaseField where Id<=@P1";
+            sql = "select count(1) from \"Te_BaseField\" where \"Id\"<=@P1";
             ps = new DataParameter[1];
-            ps[0] = new DataParameter("P1", 5);
+            ps[0] = new DataParameter("p1", 5);
             executor = context.CreateSqlStringExecutor(sql, ps);
             ac = Convert.ToInt32(await executor.ExecuteScalarAsync());
             Assert.Equal(5, ac);
 
-            sql = "select count(1) from Te_BaseField";
+            sql = "select count(1) from \"Te_BaseField\"";
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
@@ -1361,16 +1361,16 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest7";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             executor.ExecuteNonQuery();
             Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
 
             sql = "sptest7";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -1390,16 +1390,16 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest7";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             await executor.ExecuteNonQueryAsync();
             Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
 
             sql = "sptest7";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -1433,8 +1433,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest2";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 8);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 8);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             listAc = executor.QueryList<TeBaseField>();
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
@@ -1481,8 +1481,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest2";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 8);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 8);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             listAc = await executor.QueryListAsync<TeBaseField>();
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
@@ -1530,8 +1530,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest2";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 8);
+            ps[0] = new DataParameter("p1", 5);
+            ps[1] = new DataParameter("p2", 8);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             listAc = new List<TeBaseField>(executor.QueryList<TeBaseField>());
             listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
@@ -1566,8 +1566,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest4";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 2);
-            ps[1] = new DataParameter("P2", "bcd");
+            ps[0] = new DataParameter("p1", 2);
+            ps[1] = new DataParameter("p2", "bcd");
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             executor.ExecuteNonQuery();
             user = context.SelectById<TeBaseField>(2);
@@ -1576,8 +1576,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest4";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 3);
-            ps[1] = new DataParameter("P2", "abc");
+            ps[0] = new DataParameter("p1", 3);
+            ps[1] = new DataParameter("p2", "abc");
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -1607,8 +1607,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest4";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 2);
-            ps[1] = new DataParameter("P2", "bcd");
+            ps[0] = new DataParameter("p1", 2);
+            ps[1] = new DataParameter("p2", "bcd");
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             await executor.ExecuteNonQueryAsync();
             user = context.SelectById<TeBaseField>(2);
@@ -1617,8 +1617,8 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest4";
             ps = new DataParameter[2];
-            ps[0] = new DataParameter("P1", 3);
-            ps[1] = new DataParameter("P2", "abc");
+            ps[0] = new DataParameter("p1", 3);
+            ps[1] = new DataParameter("p2", "abc");
             using (var trans = context.CreateTransactionScope()) {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -1646,7 +1646,7 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest6";
             ps = new DataParameter[1];
-            ps[0] = new DataParameter("P1", 5);
+            ps[0] = new DataParameter("p1", 5);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             ac = Convert.ToInt32(executor.ExecuteScalar());
             Assert.Equal(5, ac);
@@ -1677,7 +1677,7 @@ namespace Light.Data.Mysql.Test
 
             sql = "sptest6";
             ps = new DataParameter[1];
-            ps[0] = new DataParameter("P1", 5);
+            ps[0] = new DataParameter("p1", 5);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             ac = Convert.ToInt32(await executor.ExecuteScalarAsync());
             Assert.Equal(5, ac);

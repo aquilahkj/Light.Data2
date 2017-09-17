@@ -66,6 +66,13 @@ namespace Light.Data
             InitialPredicate();
         }
 
+        protected bool _strictMode = true;
+
+        public void SetStrictMode(bool strictMode)
+        {
+            _strictMode = strictMode;
+        }
+
         internal virtual string Null {
             get {
                 return "null";
@@ -123,10 +130,12 @@ namespace Light.Data
                         updateFields.Add(fm);
                     }
                     columnFields = updateFields;
-                } else {
+                }
+                else {
                     columnFields = mapping.NoPrimaryKeyFields;
                 }
-            } else {
+            }
+            else {
                 columnFields = mapping.NoPrimaryKeyFields;
             }
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
@@ -201,7 +210,8 @@ namespace Light.Data
                 state.UseFieldAlias = true;
                 queryString = string.Format(" having {0}", query.CreateSqlString(this, isFullField, state));
                 state.UseFieldAlias = false;
-            } else {
+            }
+            else {
                 queryString = string.Format(" having {0}", query.CreateSqlString(this, isFullField, state));
             }
             return queryString;
@@ -238,7 +248,8 @@ namespace Light.Data
             string select;
             if (selector == null) {
                 select = "*";
-            } else {
+            }
+            else {
                 select = selector.CreateSelectString(this, false, state);
             }
             if (distinct) {
@@ -259,20 +270,23 @@ namespace Light.Data
                 if (query != null) {
                     if (query.MutliQuery) {
                         mainQuery = query;
-                    } else {
+                    }
+                    else {
                         subQuery = query;
                     }
                 }
                 if (order != null) {
                     if (order.MutliOrder) {
                         mainOrder = order;
-                    } else {
+                    }
+                    else {
                         subOrder = order;
                     }
                 }
                 List<IJoinModel> models = relationMap.CreateJoinModels(subQuery, subOrder);
                 commandData = CreateSelectJoinTableCommand(selector, models, mainQuery, mainOrder, distinct, region, state);
-            } else {
+            }
+            else {
                 commandData = CreateSelectCommand(mapping, selector, query, order, distinct, region, state);
             }
             return commandData;
@@ -443,22 +457,27 @@ namespace Light.Data
                     if (insertTableMapping.FieldCount == selectTableEntityMapping.FieldCount && insertTableMapping.IdentityField.PositionOrder == selectTableEntityMapping.IdentityField.PositionOrder) {
                         insertFields = insertTableMapping.NoIdentityFields;
                         selectFields = selectTableEntityMapping.NoIdentityFields;
-                    } else {
-                        throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
                     }
-                } else {
-                    if (insertTableMapping.FieldCount == selectMapping.FieldCount + 1) {
-                        insertFields = insertTableMapping.NoIdentityFields;
-                        selectFields = selectMapping.DataEntityFields;
-                    } else {
+                    else {
                         throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
                     }
                 }
-            } else {
+                else {
+                    if (insertTableMapping.FieldCount == selectMapping.FieldCount + 1) {
+                        insertFields = insertTableMapping.NoIdentityFields;
+                        selectFields = selectMapping.DataEntityFields;
+                    }
+                    else {
+                        throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
+                    }
+                }
+            }
+            else {
                 if (insertTableMapping.FieldCount == selectMapping.FieldCount) {
                     insertFields = insertTableMapping.DataEntityFields;
                     selectFields = selectMapping.DataEntityFields;
-                } else {
+                }
+                else {
                     throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
                 }
             }
@@ -614,10 +633,12 @@ namespace Light.Data
                             updateFields.Add(fm);
                         }
                         columnFields = updateFields;
-                    } else {
+                    }
+                    else {
                         columnFields = mapping.NoPrimaryKeyFields;
                     }
-                } else {
+                }
+                else {
                     columnFields = mapping.NoPrimaryKeyFields;
                 }
                 int updateLen = columnFields.Count;
@@ -689,7 +710,8 @@ namespace Light.Data
             if (!string.IsNullOrEmpty(sql)) {
                 CommandData command = new CommandData(sql);
                 return command;
-            } else {
+            }
+            else {
                 return null;
             }
         }
@@ -715,7 +737,8 @@ namespace Light.Data
             string op = GetQueryPredicate(predicate);
             if (!isReverse) {
                 sb.AppendFormat("{0}{2}{1}", fieldName, name, op);
-            } else {
+            }
+            else {
                 sb.AppendFormat("{1}{2}{0}", fieldName, name, op);
             }
             return sb.ToString();
@@ -727,7 +750,8 @@ namespace Light.Data
             string op = GetQueryPredicate(predicate);
             if (!isReverse) {
                 sb.AppendFormat("{0}{2}{1}", fieldName, relationFieldName, op);
-            } else {
+            }
+            else {
                 sb.AppendFormat("{1}{2}{0}", fieldName, relationFieldName, op);
             }
             return sb.ToString();
@@ -790,7 +814,8 @@ namespace Light.Data
         {
             if (!isReverse) {
                 return string.Format("{0}{2}{1}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
-            } else {
+            }
+            else {
                 return string.Format("{1}{2}{0}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
             }
         }
@@ -824,14 +849,16 @@ namespace Light.Data
                 if (i > 0) {
                     if (isNot) {
                         sb.Append(" and ");
-                    } else {
+                    }
+                    else {
                         sb.Append(" or ");
                     }
                 }
                 if (!isReverse) {
                     string value1 = CreateMatchSql(item, starts, ends);
                     sb.AppendFormat("{0} {2}like {1}", fieldName, value1, isNot ? "not " : string.Empty);
-                } else {
+                }
+                else {
                     sb.AppendFormat("{1} {2}like {0}", fieldName, item, isNot ? "not " : string.Empty);
                 }
                 i++;
@@ -867,7 +894,8 @@ namespace Light.Data
         {
             if (mapping.IdentityField != null) {
                 return "select @@Identity;";
-            } else {
+            }
+            else {
                 return string.Empty;
             }
         }
@@ -971,7 +999,8 @@ namespace Light.Data
         {
             if (state.TryGetAliasTableName(mapping, out string name)) {
                 return CreateDataTableSql(name);
-            } else {
+            }
+            else {
                 return CreateDataTableSql(mapping.TableName);
             }
         }
@@ -1100,7 +1129,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}+{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}+{1})", value, field);
             }
         }
@@ -1109,7 +1139,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}+{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}+{1})", value, field);
             }
         }
@@ -1118,7 +1149,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}-{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}-{1})", value, field);
             }
         }
@@ -1127,7 +1159,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}*{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}*{1})", value, field);
             }
         }
@@ -1136,7 +1169,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}/{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}/{1})", value, field);
             }
         }
@@ -1145,7 +1179,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}%{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}%{1})", value, field);
             }
         }
@@ -1154,7 +1189,8 @@ namespace Light.Data
         {
             if (forward) {
                 return string.Format("({0}^{1})", field, value);
-            } else {
+            }
+            else {
                 return string.Format("({0}^{1})", value, field);
             }
         }
@@ -1319,7 +1355,8 @@ namespace Light.Data
         {
             if (!name.StartsWith("@", StringComparison.Ordinal)) {
                 return "@" + name;
-            } else {
+            }
+            else {
                 return name;
             }
         }

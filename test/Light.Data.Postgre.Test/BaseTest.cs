@@ -7,7 +7,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Light.Data.Mysql.Test
+namespace Light.Data.Postgre.Test
 {
     public abstract class BaseTest
     {
@@ -28,7 +28,7 @@ namespace Light.Data.Mysql.Test
 
         protected BaseTest(ITestOutputHelper output)
         {
-            context = new DataContext("mysql");
+            context = new DataContext("postgre");
             commandOutput.OutputFullCommand = true;
             commandOutput.OnCommandOutput += CommandOutput_OnCommandOutput;
             //output.UseConsoleOutput = true;
@@ -40,7 +40,7 @@ namespace Light.Data.Mysql.Test
         public DataContext CreateBuilderContextByConnection()
         {
             DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
-            builder.UseMysql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
+            builder.UsePostgre("Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
             DataContext context = new DataContext(options);
@@ -50,7 +50,7 @@ namespace Light.Data.Mysql.Test
         public DataContext CreateBuilderContextByConfig()
         {
             DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
-            builder.ConfigName = "mysql";
+            builder.ConfigName = "postgre";
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
             DataContext context = new DataContext(options);
@@ -61,7 +61,7 @@ namespace Light.Data.Mysql.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder => {
-                builder.UseMssql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
+                builder.UseMssql("Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
             }, ServiceLifetime.Transient);
@@ -72,7 +72,7 @@ namespace Light.Data.Mysql.Test
 
         public DataContext CreateContext()
         {
-            DataContext context = new DataContext("mysql");
+            DataContext context = new DataContext("postgre");
             context.SetCommandOutput(commandOutput);
             return context;
         }

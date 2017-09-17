@@ -1,35 +1,48 @@
 ﻿using System;
-using System.Collections;
+using System.Text;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
+using System.Collections;
 
-namespace Light.Data.Mysql
+namespace Light.Data.Postgre
 {
-    class MysqlCommandFactory : CommandFactory
+    class PostgreCommandFactory : CommandFactory
     {
 
         DateTimeFormater dateTimeFormater = new DateTimeFormater();
 
-        readonly string defaultDateTime = "%Y-%m-%d %H:%i:%S";
+        readonly string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
 
-        public MysqlCommandFactory()
+        public PostgreCommandFactory()
         {
-            dateTimeFormater.YearFormat = "%Y";
-            dateTimeFormater.MonthFormat = "%m";
-            dateTimeFormater.DayFormat = "%d";
-            dateTimeFormater.HourFormat = "%H";
-            dateTimeFormater.MinuteFormat = "%i";
-            dateTimeFormater.SecondFormat = "%S";
+            _strictMode = true;
+            dateTimeFormater.YearFormat = "YYYY";
+            dateTimeFormater.MonthFormat = "MM";
+            dateTimeFormater.DayFormat = "DD";
+            dateTimeFormater.HourFormat = "HH";
+            dateTimeFormater.MinuteFormat = "MI";
+            dateTimeFormater.SecondFormat = "SS";
+        }
 
-            _havingAlias = true;
-            _orderbyAlias = true;
+        public override CommandData CreateTruncateTableCommand(DataTableEntityMapping mapping, CreateSqlState state)
+        {
+            CommandData data = base.CreateTruncateTableCommand(mapping, state);
+            if (mapping.IdentityField != null) {
+                string restartSeq = string.Format("alter sequence \"{0}\" restart;", GetIndentitySeq(mapping, state));
+                data.CommandText += restartSeq;
+            }
+            return data;
+        }
+
+        public override string CreateBooleanQuerySql(object fieldName, bool isTrue)
+        {
+            return string.Format("{0}={1}", fieldName, isTrue ? "true" : "false");
         }
 
         public override string CreateDataFieldSql(string fieldName)
         {
             if (_strictMode) {
-                return string.Format("`{0}`", fieldName);
+                return string.Format("\"{0}\"", fieldName);
             }
             else {
                 return base.CreateDataFieldSql(fieldName);
@@ -39,10 +52,20 @@ namespace Light.Data.Mysql
         public override string CreateDataTableSql(string tableName)
         {
             if (_strictMode) {
-                return string.Format("`{0}`", tableName);
+                return string.Format("\"{0}\"", tableName);
             }
             else {
                 return base.CreateDataTableSql(tableName);
+            }
+        }
+
+        public override string CreateDividedSql(object field, object value, bool forward)
+        {
+            if (forward) {
+                return string.Format("({0}::float/{1})", field, value);
+            }
+            else {
+                return string.Format("({0}/{1}::float)", value, field);
             }
         }
 
@@ -54,7 +77,7 @@ namespace Light.Data.Mysql
                     command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
                 }
                 else {
-                    command.CommandText = string.Format("{0} limit {1},{2}", command.CommandText, region.Start, region.Size);
+                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
                 }
                 command.InnerPage = true;
             }
@@ -69,7 +92,7 @@ namespace Light.Data.Mysql
                     command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
                 }
                 else {
-                    command.CommandText = string.Format("{0} limit {1},{2}", command.CommandText, region.Start, region.Size);
+                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
                 }
                 command.InnerPage = true;
             }
@@ -84,7 +107,7 @@ namespace Light.Data.Mysql
                     command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
                 }
                 else {
-                    command.CommandText = string.Format("{0} limit {1},{2}", command.CommandText, region.Start, region.Size);
+                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
                 }
                 command.InnerPage = true;
             }
@@ -116,10 +139,6 @@ namespace Light.Data.Mysql
             int end = start + batchCount;
             if (end > totalCount) {
                 end = totalCount;
-            }
-
-            if (end == totalCount && start != totalCount - 1) {
-                end = totalCount - 1;
             }
 
             totalSql.AppendFormat("{0}values", insertSql);
@@ -169,48 +188,75 @@ namespace Light.Data.Mysql
 
         public override string CreateRandomOrderBySql(DataEntityMapping mapping, string aliasName, bool fullFieldName)
         {
-            return "rand()";
+            return "random()";
         }
 
         protected override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
         {
             if (mapping.IdentityField != null) {
-                return "select last_insert_id();";
+                return string.Format("select currval('\"{0}\"');", GetIndentitySeq(mapping, state));
             }
             else {
                 return string.Empty;
             }
         }
 
+        private static string GetIndentitySeq(DataTableEntityMapping mapping, CreateSqlState state)
+        {
+            if (mapping.IdentityField == null) {
+                throw new LightDataException(SR.NoIdentityField);
+            }
+            string seq;
+            string postgreIdentity = mapping.ExtentParams.GetParamValue("PostgreIdentitySeq");
+            if (!string.IsNullOrEmpty(postgreIdentity)) {
+                seq = postgreIdentity;
+            }
+            else {
+                if (!state.TryGetAliasTableName(mapping, out string name)) {
+                    name = mapping.TableName;
+                }
+                seq = string.Format("{0}_{1}_seq", name, mapping.IdentityField.Name);
+            }
+            return seq;
+        }
+
         public override string CreateMatchSql(object field, bool starts, bool ends)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("concat(");
             if (starts) {
-                sb.AppendFormat("'{0}',", _wildcards);
+                sb.AppendFormat("'{0}'||", _wildcards);
             }
             sb.Append(field);
             if (ends) {
-                sb.AppendFormat(",'{0}'", _wildcards);
+                sb.AppendFormat("||'{0}'", _wildcards);
             }
-            sb.Append(")");
             return sb.ToString();
+        }
+
+        public override string CreateBooleanQuerySql(object field, bool isTrue, bool isEqual, bool isReverse)
+        {
+            if (!isReverse) {
+                return string.Format("{0}{2}{1}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
+            }
+            else {
+                return string.Format("{1}{2}{0}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
+            }
         }
 
         public override string CreateConcatSql(params object[] values)
         {
-            string value1 = string.Join(",", values);
-            string sql = string.Format("concat({0})", value1);
+            string value1 = string.Join("||", values);
+            string sql = string.Format("({0})", value1);
             return sql;
         }
 
         public override string CreateDualConcatSql(object field, object value, bool forward)
         {
             if (forward) {
-                return string.Format("concat({0},{1})", field, value);
+                return string.Format("({0}||{1})", field, value);
             }
             else {
-                return string.Format("concat({0},{1})", value, field);
+                return string.Format("({0}||{1})", value, field);
             }
         }
 
@@ -228,57 +274,137 @@ namespace Light.Data.Mysql
             else {
                 sqlformat = dateTimeFormater.FormatData(format);
             }
-            return string.Format("date_format({0},'{1}')", field, sqlformat);
+            return string.Format("to_char({0},'{1}')", field, sqlformat);
+        }
+
+        public override string CreateTruncateSql(object field)
+        {
+            return string.Format("trunc({0}::numeric)", field);
         }
 
         public override string CreateLogSql(object field)
         {
-            return string.Format("ln({0})", field);
+            return string.Format("ln({0}::numeric)", field);
+        }
+
+        public override string CreateLogSql(object field, object value)
+        {
+            return string.Format("log({1}::numeric,{0}::numeric)", field, value);
+        }
+
+        public override string CreateLog10Sql(object field)
+        {
+            return string.Format("log({0}::numeric)", field);
+        }
+
+        public override string CreateExpSql(object field)
+        {
+            return string.Format("exp({0}::numeric)", field);
+        }
+
+        public override string CreatePowSql(object field, object value)
+        {
+            return string.Format("power({0}::numeric,{1}::numeric)", field, value);
+        }
+
+        public override string CreateSinSql(object field)
+        {
+            return string.Format("sin({0}::numeric)", field);
+        }
+
+        public override string CreateCosSql(object field)
+        {
+            return string.Format("cos({0}::numeric)", field);
+        }
+
+        public override string CreateAsinSql(object field)
+        {
+            return string.Format("asin({0}::numeric)", field);
+        }
+
+        public override string CreateAcosSql(object field)
+        {
+            return string.Format("acos({0}::numeric)", field);
+        }
+
+        public override string CreateTanSql(object field)
+        {
+            return string.Format("tan({0}::numeric)", field);
+        }
+
+        public override string CreateAtanSql(object field)
+        {
+            return string.Format("atan({0}::numeric)", field);
+        }
+
+        public override string CreateAtan2Sql(object field, object value)
+        {
+            return string.Format("atan2({0}::numeric,{1}::numeric)", field, value);
+        }
+
+        public override string CreateCeilingSql(object field)
+        {
+            return string.Format("ceiling({0}::numeric)", field);
+        }
+
+        public override string CreateFloorSql(object field)
+        {
+            return string.Format("floor({0}::numeric)", field);
+        }
+
+        public override string CreateRoundSql(object field, object value)
+        {
+            return string.Format("round({0}::numeric,{1}::int4)", field, value);
+        }
+
+        public override string CreateSqrtSql(object field)
+        {
+            return string.Format("Sqrt({0}::numeric)", field);
         }
 
         public override string CreateYearSql(object field)
         {
-            return string.Format("year({0})", field);
+            return string.Format("extract(year from {0})::int4", field);
         }
 
         public override string CreateMonthSql(object field)
         {
-            return string.Format("month({0})", field);
+            return string.Format("extract(month from {0})::int4", field);
         }
 
         public override string CreateDaySql(object field)
         {
-            return string.Format("day({0})", field);
+            return string.Format("extract(day from {0})::int4", field);
         }
 
         public override string CreateHourSql(object field)
         {
-            return string.Format("hour({0})", field);
+            return string.Format("extract(hour from {0})::int4", field);
         }
 
         public override string CreateMinuteSql(object field)
         {
-            return string.Format("minute({0})", field);
+            return string.Format("extract(minute from {0})::int4", field);
         }
 
         public override string CreateSecondSql(object field)
         {
-            return string.Format("second({0})", field);
+            return string.Format("extract(second from {0})::int4", field);
         }
 
         public override string CreateWeekSql(object field)
         {
-            return string.Format("week({0},7)", field);
+            return string.Format("extract(week from {0})::int4", field);
         }
 
         public override string CreateWeekDaySql(object field)
         {
-            return string.Format("dayofweek({0})-1", field);
+            return string.Format("extract(dow from {0})::int4", field);
         }
 
         public override string CreateYearDaySql(object field)
         {
-            return string.Format("dayofyear({0})", field);
+            return string.Format("extract(doy from {0})::int4", field);
         }
 
         public override string CreateLengthSql(object field)
@@ -289,20 +415,20 @@ namespace Light.Data.Mysql
         public override string CreateSubStringSql(object field, object start, object size)
         {
             if (object.Equals(size, null)) {
-                return string.Format("substring({0},{1}+1)", field, start);
+                return string.Format("substr({0},{1}+1)", field, start);
             }
             else {
-                return string.Format("substring({0},{1}+1,{2})", field, start, size);
+                return string.Format("substr({0},{1}+1,{2})", field, start, size);
             }
         }
 
         public override string CreateIndexOfSql(object field, object value, object startIndex)
         {
             if (object.Equals(startIndex, null)) {
-                return string.Format("locate({1},{0})-1", field, value);
+                return string.Format("strpos({0},{1})-1", field, value);
             }
             else {
-                return string.Format("locate({1},{0},{2}+1)-1", field, value, startIndex);
+                return string.Format("(case when strpos(substr({0},{2}+1),{1})>0 then strpos(substr({0},{2}+1),{1})+{2}-1 else -1 end)", field, value, startIndex);
             }
         }
 
@@ -326,35 +452,17 @@ namespace Light.Data.Mysql
             return string.Format("trim({0})", field);
         }
 
-        public override string CreatePowerSql(object field, object value, bool forward)
-        {
-            if (forward) {
-                return string.Format("power({0},{1})", field, value);
-            }
-            else {
-                return string.Format("power({0},{1})", value, field);
-            }
-        }
-
-        public override string CreatePowerSql(object left, object right)
-        {
-            return string.Format("power({0},{1})", left, right);
-        }
-
-        public override string CreateLogSql(object field, object value)
-        {
-            return string.Format("log({1},{0})", field, value);
-        }
-
         public override string CreateDataBaseTimeSql()
         {
-            return "now()";
+            return "current_time";
         }
 
         public override string CreateParamName(string name)
         {
-            if (!name.StartsWith("?", StringComparison.Ordinal)) {
-                return "?" + name;
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            if (!name.StartsWith(":", StringComparison.Ordinal)) {
+                return ":" + name;
             }
             else {
                 return name;

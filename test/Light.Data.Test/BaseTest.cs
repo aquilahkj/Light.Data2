@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Light.Data.Test
 {
@@ -36,6 +37,39 @@ namespace Light.Data.Test
 
         }
 
+        public DataContext CreateBuilderContextByConnection()
+        {
+            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
+            builder.SetCommandOutput(commandOutput);
+            var options = builder.Build();
+            DataContext context = new DataContext(options);
+            return context;
+        }
+
+        public DataContext CreateBuilderContextByConfig()
+        {
+            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            builder.ConfigName = "mssql";
+            builder.SetCommandOutput(commandOutput);
+            var options = builder.Build();
+            DataContext context = new DataContext(options);
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDi()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(builder => {
+                builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
+                builder.SetCommandOutput(commandOutput);
+                builder.SetTimeout(2000);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
         public DataContext CreateContext()
         {
             DataContext context = new DataContext("mssql");
@@ -60,6 +94,14 @@ namespace Light.Data.Test
             DateTime now = DateTime.Now;
             DateTime d = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
             return d;
+        }
+    }
+
+    public class TestContext : DataContext
+    {
+        public TestContext(DataContextOptions<TestContext> options) : base(options)
+        {
+
         }
     }
 }

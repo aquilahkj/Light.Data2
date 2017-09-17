@@ -15,38 +15,32 @@ namespace Light.Data
                 return configName;
             }
         }
-        
+
         protected DatabaseProvider(string configName, ConfigParamSet configParams)
         {
             this.configName = configName;
             string batchInsertCount = configParams.GetParamValue("batchInsertCount");
             if (batchInsertCount != null) {
-                int.TryParse(batchInsertCount, out int value);
-                if (value > 0)
+                if (int.TryParse(batchInsertCount, out int value) && value > 0)
                     _batchInsertCount = value;
             }
 
             string batchUpdateCount = configParams.GetParamValue("batchUpdateCount");
             if (batchUpdateCount != null) {
-                int.TryParse(batchUpdateCount, out int value);
-                if (value > 0)
+                if (int.TryParse(batchUpdateCount, out int value) && value > 0)
                     _batchUpdateCount = value;
             }
 
             string batchDeleteCount = configParams.GetParamValue("batchDeleteCount");
             if (batchDeleteCount != null) {
-                int.TryParse(batchDeleteCount, out int value);
-                if (value > 0)
+                if (int.TryParse(batchDeleteCount, out int value) && value > 0)
                     _batchDeleteCount = value;
             }
 
             string timeout = configParams.GetParamValue("timeout");
             if (timeout != null) {
-                int.TryParse(timeout, out int value);
-                if (value >= 1000)
+                if (int.TryParse(batchInsertCount, out int value) && value > 0)
                     _commandTimeout = value;
-                else
-                    _commandTimeout = 1000;
             }
         }
 
@@ -111,6 +105,17 @@ namespace Light.Data
                 }
             }
         }
+
+        //bool _strictMode = true;
+
+        //public bool StrictMode {
+        //    get {
+        //        return _strictMode;
+        //    }
+        //    set {
+        //        _strictMode = value;
+        //    }
+        //}
 
         int _batchInsertCount;
 

@@ -1,0 +1,113 @@
+{
+  "lightDataMapper": {
+    "dataTypes": [
+      {
+        "type": "Light.Data.Postgre.Test.TeRelateMainConfig,Light.Data.Postgre.Test",
+        "tableName": "Te_RelateMain_Config",
+        "isEntityTable": true,
+        "dataFields": [
+          {
+            "fieldName": "Id",
+            "isPrimaryKey": true,
+            "isIdentity": true,
+            "name": "Id"
+          },
+          {
+            "fieldName": "DecimalField",
+            "name": "DecimalField"
+          },
+          {
+            "fieldName": "DateTimeField",
+            "name": "DateTimeField"
+          },
+          {
+            "fieldName": "VarcharField",
+            "name": "VarcharField"
+          }
+        ],
+        "relationFields": [
+          {
+            "fieldName": "SubConfig",
+            "relationPairs": [
+              {
+                "masterKey": "Id",
+                "relateKey": "MainId"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Light.Data.Postgre.Test.TeRelateSubConfig,Light.Data.Postgre.Test",
+        "tableName": "Te_RelateSub_Config",
+        "isEntityTable": true,
+        "dataFields": [
+          {
+            "fieldName": "Id",
+            "isPrimaryKey": true,
+            "isIdentity": true,
+            "name": "Id"
+          },
+          {
+            "fieldName": "MainId",
+            "name": "MainId"
+          },
+          {
+            "fieldName": "DecimalField",
+            "name": "DecimalField"
+          },
+          {
+            "fieldName": "DateTimeField",
+            "name": "DateTimeField"
+          },
+          {
+            "fieldName": "VarcharField",
+            "name": "VarcharField"
+          }
+        ]
+      },
+      {
+        "type": "Light.Data.Postgre.Test.TeRelateMainBaseConfig,Light.Data.Postgre.Test",
+        "tableName": "Te_RelateMain_Config",
+        "isEntityTable": true,
+        "dataFields": [
+          {
+            "fieldName": "Id",
+            "isPrimaryKey": true,
+            "isIdentity": true,
+            "name": "Id"
+          },
+          {
+            "fieldName": "DecimalField",
+            "name": "DecimalField"
+          },
+          {
+            "fieldName": "DateTimeField",
+            "name": "DateTimeField"
+          },
+          {
+            "fieldName": "VarcharField",
+            "name": "VarcharField"
+          }
+        ]
+      },
+      {
+        "type": "Light.Data.Postgre.Test.TeRelateMainExtendConfig,Light.Data.Postgre.Test",
+        "tableName": "Te_RelateMain_Config",
+        "isEntityTable": true,
+        "relationFields": [
+          {
+            "fieldName": "SubConfig",
+            "relationPairs": [
+              {
+                "masterKey": "Id",
+                "relateKey": "MainId"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+

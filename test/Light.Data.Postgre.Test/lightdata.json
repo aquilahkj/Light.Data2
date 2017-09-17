@@ -1,0 +1,17 @@
+﻿{
+  "lightData": {
+    "connections": [
+      {
+        "name": "postgre",
+        "connectionString": "Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;",
+        "providerName": "Light.Data.Postgre.PostgreProvider,Light.Data.Postgre",
+        "configParams": [
+          {
+            "name": "strictMode",
+            "value": "true"
+          }
+        ]
+      }
+    ]
+  }
+}

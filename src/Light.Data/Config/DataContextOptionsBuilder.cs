@@ -108,6 +108,11 @@ namespace Light.Data
             _dict["version"] = version;
         }
 
+        public void SetStrictMode(bool strictMode)
+        {
+            _dict["strictMode"] = strictMode;
+        }
+
         internal void SetDataConfig(string connection, Func<string, ConfigParamSet, DatabaseProvider> func)
         {
             _connection = connection;
