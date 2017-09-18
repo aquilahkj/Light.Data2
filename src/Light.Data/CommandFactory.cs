@@ -61,6 +61,38 @@ namespace Light.Data
             return _queryCollectionPredicateDict[predicate];
         }
 
+        protected OrderExpression CreatePrimaryKeyOrderExpression(DataEntityMapping mapping)
+        {
+            OrderExpression order = null;
+            if (mapping is DataTableEntityMapping tableMapping && tableMapping.HasPrimaryKey) {
+                foreach (DataFieldMapping fieldMapping in tableMapping.PrimaryKeyFields) {
+                    DataFieldOrderExpression keyOrder = new DataFieldOrderExpression(new DataFieldInfo(fieldMapping), OrderType.ASC);
+                    order = OrderExpression.Catch(order, keyOrder);
+                }
+            }
+            return order;
+        }
+
+        protected OrderExpression CreateGroupByOrderExpression(AggregateGroupBy groupBy)
+        {
+            OrderExpression order = null;
+            if (groupBy != null && groupBy.FieldCount > 0) {
+                order = new DataFieldOrderExpression(groupBy[0], OrderType.ASC);
+            }
+            return order;
+        }
+
+        protected OrderExpression CreateJoinModelListOrderExpression(List<IJoinModel> modelList)
+        {
+            OrderExpression order = null;
+            foreach (IJoinModel model in modelList) {
+                if (model.Order != null) {
+                    order = OrderExpression.Catch(order, model.Order.CreateAliasTableNameOrder(model.AliasTableName));
+                }
+            }
+            return order;
+        }
+
         protected CommandFactory()
         {
             InitialPredicate();
@@ -321,6 +353,10 @@ namespace Light.Data
             if (distinct) {
                 selectString = "distinct " + selectString;
             }
+            OrderExpression subOrder = CreateJoinModelListOrderExpression(modelList);
+            if (subOrder != null) {
+                order = OrderExpression.Catch(subOrder, order);
+            }
             CommandData commandData = CreateSelectJoinTableBaseCommand(selectString, modelList, query, order, region, state);
             return commandData;
         }
@@ -328,8 +364,6 @@ namespace Light.Data
         public virtual CommandData CreateSelectJoinTableBaseCommand(string customSelect, List<IJoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
         {
             StringBuilder tables = new StringBuilder();
-            OrderExpression totalOrder = null;
-            QueryExpression totalQuery = null;
             foreach (IJoinModel model in modelList) {
                 if (model.Connect != null) {
                     tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
@@ -339,20 +373,15 @@ namespace Light.Data
                 if (model.Connect != null && model.Connect.On != null) {
                     tables.Append(GetOnString(model.Connect.On, state));
                 }
-                if (model.Order != null) {
-                    totalOrder &= model.Order.CreateAliasTableNameOrder(model.AliasTableName);
-                }
             }
-            totalQuery &= query;
-            totalOrder &= order;
-            StringBuilder sql = new StringBuilder();
 
+            StringBuilder sql = new StringBuilder();
             sql.AppendFormat("select {0} from {1}", customSelect, tables);
-            if (totalQuery != null) {
-                sql.Append(GetQueryString(totalQuery, true, state));
+            if (query != null) {
+                sql.Append(GetQueryString(query, true, state));
             }
-            if (totalOrder != null) {
-                sql.Append(GetOrderString(totalOrder, true, state));
+            if (order != null) {
+                sql.Append(GetOrderString(order, true, state));
             }
             CommandData command = new CommandData(sql.ToString());
             return command;
