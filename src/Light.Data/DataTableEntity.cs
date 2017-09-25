@@ -9,37 +9,22 @@ namespace Light.Data
     /// </summary>
     public class DataTableEntity : DataEntity
     {
-        /// <summary>
-        /// 是否已经读取数据
-        /// </summary>
-        bool _hasLoadData;
-
-        /// <summary>
-        /// 是否允许记录update字段
-        /// </summary>
-        bool _allowNotifyUpdateField;
+        object[] rawKeys = null;
 
         /// <summary>
         /// 保存数据
         /// </summary>
         public int Save()
         {
-            if (Context != null) {
-                int ret;
-                DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
-                if (_hasLoadData) {
-                    ret = Context.Update(mapping, this);
-                    Clear();
-                }
-                else {
-                    ret = Context.Insert(mapping, this);
-                    _hasLoadData = true;
-                }
-                return ret;
+            DataContext context = GetContext();
+            int ret;
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+            if (rawKeys != null) {
+                ret = context.Update(mapping, this);
+            } else {
+                ret = context.Insert(mapping, this);
             }
-            else {
-                throw new LightDataException(SR.DataContextIsNotExists);
-            }
+            return ret;
         }
 
         /// <summary>
@@ -55,23 +40,15 @@ namespace Light.Data
         /// </summary>
         public async Task<int> SaveAsync(CancellationToken cancellationToken)
         {
-            if (Context != null) {
-                int ret;
-                DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
-                if (_hasLoadData) {
-                    ret = await Context.UpdateAsync(mapping, this, cancellationToken);
-                    Clear();
-                }
-                else {
-                    ret = await Context.InsertAsync(mapping, this, cancellationToken);
-                    Clear();
-                    _hasLoadData = true;
-                }
-                return ret;
+            DataContext context = GetContext();
+            int ret;
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+            if (rawKeys != null) {
+                ret = await context.UpdateAsync(mapping, this, cancellationToken);
+            } else {
+                ret = await context.InsertAsync(mapping, this, cancellationToken);
             }
-            else {
-                throw new LightDataException(SR.DataContextIsNotExists);
-            }
+            return ret;
         }
 
         /// <summary>
@@ -79,17 +56,15 @@ namespace Light.Data
         /// </summary>
         public int Erase()
         {
-            if (Context != null) {
-                int ret;
+            DataContext context = GetContext();
+            int ret;
+            if (rawKeys != null) {
                 DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
-                ret = Context.Delete(mapping, this);
-                Clear();
-                _hasLoadData = false;
-                return ret;
+                ret = context.Delete(mapping, this);
+            } else {
+                ret = 0;
             }
-            else {
-                throw new LightDataException(SR.DataContextIsNotExists);
-            }
+            return ret;
         }
 
         /// <summary>
@@ -105,17 +80,15 @@ namespace Light.Data
         /// </summary>
         public async Task<int> EraseAsync(CancellationToken cancellationToken)
         {
-            if (Context != null) {
-                int ret;
+            DataContext context = GetContext();
+            int ret;
+            if (rawKeys != null) {
                 DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
-                ret = await Context.DeleteAsync(mapping, this, cancellationToken);
-                Clear();
-                _hasLoadData = false;
-                return ret;
+                ret = await context.DeleteAsync(mapping, this, cancellationToken);
+            } else {
+                ret = 0;
             }
-            else {
-                throw new LightDataException(SR.DataContextIsNotExists);
-            }
+            return ret;
         }
 
         /// <summary>
@@ -123,14 +96,13 @@ namespace Light.Data
         /// </summary>
         HashSet<string> _updateFields;
 
-
         /// <summary>
         /// 更新字段
         /// </summary>
         /// <param name="fieldName">字段名字</param>
         protected void UpdateDataNotify(string fieldName)
         {
-            if (_allowNotifyUpdateField) {
+            if (rawKeys != null) {
                 if (_updateFields == null) {
                     _updateFields = new HashSet<string>();
                 }
@@ -144,13 +116,12 @@ namespace Light.Data
                 string[] array = new string[_updateFields.Count];
                 _updateFields.CopyTo(array);
                 return array;
-            }
-            else {
+            } else {
                 return null;
             }
         }
 
-        private void Clear()
+        internal void ClearUpdateFields()
         {
             if (_updateFields != null) {
                 _updateFields.Clear();
@@ -158,13 +129,29 @@ namespace Light.Data
             }
         }
 
-        /// <summary>
-        /// 读取数据完成
-        /// </summary>
-        internal override void LoadDataComplete()
+        internal void SetRawPrimaryKeys(object[] keys)
         {
-            _hasLoadData = true;
-            _allowNotifyUpdateField = true;
+            rawKeys = keys;
         }
+
+        internal void ClearRawPrimaryKeys()
+        {
+            rawKeys = null;
+        }
+
+        internal object[] GetRawPrimaryKeys()
+        {
+            return rawKeys;
+        }
+
+
+        ///// <summary>
+        ///// 读取数据完成
+        ///// </summary>
+        //internal override void LoadDataComplete()
+        //{
+        //    _hasLoadData = true;
+        //    _allowNotifyUpdateField = true;
+        //}
     }
 }

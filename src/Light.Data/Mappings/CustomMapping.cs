@@ -10,7 +10,7 @@ namespace Light.Data
 		{
 		}
 
-		public abstract object CreateJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName);
+		public abstract object LoadAliasJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName);
 	}
 }
 

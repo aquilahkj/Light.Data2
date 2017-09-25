@@ -6,6 +6,7 @@ using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Light.Data.Mysql.Test
 {
@@ -39,7 +40,7 @@ namespace Light.Data.Mysql.Test
 
         public DataContext CreateBuilderContextByConnection()
         {
-            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            var builder = new DataContextOptionsBuilder<DataContext>();
             builder.UseMysql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
@@ -49,10 +50,10 @@ namespace Light.Data.Mysql.Test
 
         public DataContext CreateBuilderContextByConfig()
         {
-            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            var builder = new DataContextOptionsConfigurator<DataContext>();
             builder.ConfigName = "mysql";
             builder.SetCommandOutput(commandOutput);
-            var options = builder.Build();
+            var options = builder.Create(DataContextConfiguration.Global);
             DataContext context = new DataContext(options);
             return context;
         }
@@ -61,9 +62,63 @@ namespace Light.Data.Mysql.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder => {
-                builder.UseMssql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
+                builder.UseMysql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigSpecified()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(configuration.GetSection("lightData"), config => {
+                config.ConfigName = "app";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigSpecifiedDefault()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(configuration.GetSection("lightData"), config => {
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigGlobal()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(DataContextConfiguration.Global, config => {
+                config.ConfigName = "mysql";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigGlobalDefault()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(DataContextConfiguration.Global, config => {
+                config.SetCommandOutput(commandOutput);
             }, ServiceLifetime.Transient);
             var provider = service.BuildServiceProvider();
             TestContext context = provider.GetRequiredService<TestContext>();

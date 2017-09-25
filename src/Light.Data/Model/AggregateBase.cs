@@ -101,7 +101,7 @@ namespace Light.Data
 
         public abstract IAggregate<K> Take(int count);
 
-        public abstract int SelectInsert<P>(Expression<Func<K, P>> expression) where P : class;
+        public abstract int SelectInsert<P>(Expression<Func<K, P>> expression); //where P : class, new();
 
         public abstract List<K> ToList();
 

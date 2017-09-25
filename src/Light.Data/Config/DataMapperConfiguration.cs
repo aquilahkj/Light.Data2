@@ -66,9 +66,9 @@ namespace Light.Data
                             dataTableMap.IsEntityTable = typeConfig.IsEntityTable.HasValue ? typeConfig.IsEntityTable.Value : true;
                             var configParam = new ConfigParamSet();
                             var paramConfigs = typeConfig.ConfigParams;
-                            if (paramConfigs != null && paramConfigs.Length > 0) {
-                                foreach (ConfigParamSection paramConfig in paramConfigs) {
-                                    configParam.SetParamValue(paramConfig.Name, paramConfig.Value);
+                            if (paramConfigs != null && paramConfigs.Count > 0) {
+                                foreach (var paramConfig in paramConfigs) {
+                                    configParam.SetParamValue(paramConfig.Value, paramConfig.Value);
                                 }
                             }
                             dataTableMap.ConfigParams = configParam;
@@ -212,6 +212,7 @@ namespace Light.Data
 
         internal static bool TryGetDataFieldConfig(Type type, string fieldName, out DataFieldMapperConfig config)
         {
+            CheckData();
             while (true) {
                 if (settingDict.TryGetValue(type, out DataTableMapperSetting setting)) {
                     config = setting.GetDataFieldMapConfig(fieldName);
@@ -229,6 +230,7 @@ namespace Light.Data
 
         internal static bool TryGetRelateFieldConfig(Type type, string fieldName, out RelationFieldMapConfig config)
         {
+            CheckData();
             while (true) {
                 if (settingDict.TryGetValue(type, out DataTableMapperSetting setting)) {
                     config = setting.GetRelationFieldMapConfig(fieldName);

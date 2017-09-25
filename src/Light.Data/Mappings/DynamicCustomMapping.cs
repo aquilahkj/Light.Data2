@@ -95,7 +95,7 @@ namespace Light.Data
             return item;
         }
 
-        public override object CreateJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+        public override object LoadAliasJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
         {
             object[] args = new object[this._fieldList.Count];
             int index = 0;

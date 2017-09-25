@@ -152,7 +152,7 @@ namespace Light.Data.Test
             item1.EnumInt32FieldNull = null;
             item1.EnumInt64Field = EnumInt64Type.Zero;
             item1.EnumInt64FieldNull = null;
-            var retUpdate = item1.Save(); ;
+            var retUpdate = item1.Save();
             Assert.Equal(1, item1.Id);
             Assert.Equal(1, retUpdate);
             var item3 = context.SelectById<TeBaseFieldEntity>(item1.Id);
@@ -186,7 +186,7 @@ namespace Light.Data.Test
             item1.EnumInt32FieldNull = null;
             item1.EnumInt64Field = EnumInt64Type.Zero;
             item1.EnumInt64FieldNull = null;
-            var retUpdate = await item1.SaveAsync(); ;
+            var retUpdate = await item1.SaveAsync();
             Assert.Equal(1, item1.Id);
             Assert.Equal(1, retUpdate);
             var item3 = await context.SelectByIdAsync<TeBaseFieldEntity>(item1.Id);
@@ -195,6 +195,42 @@ namespace Light.Data.Test
             Assert.Equal(1, item1.Id);
             Assert.Equal(1, retDelete);
             var item4 = await context.SelectByIdAsync<TeBaseFieldEntity>(item1.Id);
+            Assert.Null(item4);
+        }
+
+        [Fact]
+        public void TestCase_CUD_Single_NoIdentity_Key()
+        {
+            context.TruncateTable<TeBaseFieldNoIdentityEntity>();
+            var item1 = context.CreateNew<TeBaseFieldNoIdentityEntity>();
+            item1.Id = 0;
+            item1.Int32Field = 1;
+            item1.DoubleField = 0.1;
+            item1.VarcharField = "level1";
+            item1.DateTimeField = GetNow();
+            item1.EnumInt32Field = EnumInt32Type.Positive1;
+            var retInsert = item1.Save();
+            Assert.Equal(0, item1.Id);
+            Assert.Equal(1, retInsert);
+            var item2 = context.SelectByKey<TeBaseFieldNoIdentityEntity>(item1.Id);
+            AssertExtend.StrictEqual(item1, item2);
+            item1.Id = 1;
+            item1.DateTimeField = GetNow();
+            item1.Int32Field = 2;
+            item1.VarcharField = "level2";
+            item1.DoubleField = 0.2;
+            item1.EnumInt32Field = EnumInt32Type.Negative1;
+            var retUpdate = item1.Save();
+            Assert.Equal(0, item2.Id);
+            Assert.Equal(1, retUpdate);
+            var item3 = context.SelectByKey<TeBaseFieldNoIdentityEntity>(item1.Id);
+            AssertExtend.StrictEqual(item1, item3);
+            var itemn = context.SelectByKey<TeBaseFieldNoIdentityEntity>(0);
+            Assert.Null(itemn);
+            var retDelete = item1.Erase();
+            Assert.Equal(1, item3.Id);
+            Assert.Equal(1, retDelete);
+            var item4 = context.SelectByKey<TeBaseFieldNoIdentityEntity>(item1.Id);
             Assert.Null(item4);
         }
 

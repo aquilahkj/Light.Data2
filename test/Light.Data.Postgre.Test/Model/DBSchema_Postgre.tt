@@ -106,7 +106,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-<# if(useLightData){ #>
+<# if(useLightData || DbSetting.HasEntityTable){ #>
 using Light.Data;
 <# } #>
 
@@ -117,8 +117,7 @@ namespace <#=namespaceName#>
     {
         string tableName=table.TableName;
 #>
-	
-    /// <summary>
+	/// <summary>
     /// <#=table.CommentText#>
     /// </summary>
 <# if(useLightData){ #>
@@ -131,6 +130,28 @@ namespace <#=namespaceName#>
         foreach(Column c in table.Columns.Values)
         {
 #>
+<# if(DbSetting.CheckEntity(tableName)){ #>
+        private <#=c.DataType#> <#=StringUtil.ToCamelCase(c.ColumnName)#>;
+
+		/// <summary>
+		/// <#=c.ColumnComment#>
+		/// </summary>
+		/// <value></value>
+<# if(useLightData){ #>
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #>)]
+<# } #>
+        public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
+        {
+            get { 
+            	return this.<#=StringUtil.ToCamelCase(c.ColumnName)#>; 
+            }
+            set { 
+            	this.<#=StringUtil.ToCamelCase(c.ColumnName)#> = value; 
+				base.UpdateDataNotify(nameof(<#=StringUtil.ToPascalCase(c.ColumnName)#>));
+            }
+        }
+
+<# } else { #>
         /// <summary>
         /// <#=c.ColumnComment#>
         /// </summary>
@@ -143,6 +164,7 @@ namespace <#=namespaceName#>
             get;
             set;
         }
+<# } #>
 <#
         }
 #>
@@ -151,7 +173,6 @@ namespace <#=namespaceName#>
 
 <#
     }
-   
 #>
 }
 
@@ -676,6 +697,14 @@ on a.table_name=b.table_name and a.column_name=b.column_name
         {
             return entityHash.Contains(table);
         }
+
+		public static bool HasEntityTable
+		{
+			get
+			{
+				return entityHash.Count>0;
+			}
+		}
 
 		public static bool GetDefaultValueStringMode()
 		{

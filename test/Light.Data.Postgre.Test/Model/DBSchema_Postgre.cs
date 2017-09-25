@@ -5,8 +5,7 @@ using Light.Data;
 
 namespace Light.Data.Postgre.Test
 {
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField
     /// </summary>
     [DataTable("Te_BaseField")]
@@ -386,8 +385,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldNoIdentity
     /// </summary>
     [DataTable("Te_BaseFieldNoIdentity")]
@@ -457,8 +455,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldExpression
     /// </summary>
     [DataTable("Te_BaseFieldExpression")]
@@ -798,8 +795,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldExpression_Extend
     /// </summary>
     [DataTable("Te_BaseFieldExpression_Extend")]
@@ -899,8 +895,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldSelectField
     /// </summary>
     [DataTable("Te_BaseFieldSelectField")]
@@ -1280,8 +1275,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldAggregateField
     /// </summary>
     [DataTable("Te_BaseFieldAggregateField")]
@@ -1661,8 +1655,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_SelectInsert
     /// </summary>
     [DataTable("Te_BaseField_SelectInsert")]
@@ -2042,8 +2035,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_SelectInsert_NoIdentity
     /// </summary>
     [DataTable("Te_BaseField_SelectInsert_NoIdentity")]
@@ -2423,8 +2415,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_NullMiniValue
     /// </summary>
     [DataTable("Te_BaseField_NullMiniValue")]
@@ -2624,8 +2615,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_DefaultValue
     /// </summary>
     [DataTable("Te_BaseField_DefaultValue")]
@@ -2865,8 +2855,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_Alias
     /// </summary>
     [DataTable("Te_BaseField_Alias")]
@@ -3246,8 +3235,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_MainTable
     /// </summary>
     [DataTable("Te_MainTable")]
@@ -3357,8 +3345,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_SubTable
     /// </summary>
     [DataTable("Te_SubTable")]
@@ -3458,8 +3445,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_JoinTable_SelectInsert
     /// </summary>
     [DataTable("Te_JoinTable_SelectInsert")]
@@ -3529,8 +3515,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateA
     /// </summary>
     [DataTable("Te_RelateA")]
@@ -3630,8 +3615,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateB
     /// </summary>
     [DataTable("Te_RelateB")]
@@ -3731,8 +3715,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateC
     /// </summary>
     [DataTable("Te_RelateC")]
@@ -3812,8 +3795,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateD
     /// </summary>
     [DataTable("Te_RelateD")]
@@ -3893,8 +3875,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateE
     /// </summary>
     [DataTable("Te_RelateE")]
@@ -3974,8 +3955,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateF
     /// </summary>
     [DataTable("Te_RelateF")]
@@ -4055,8 +4035,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_RelateCollection
     /// </summary>
     [DataTable("Te_RelateCollection")]
@@ -4096,8 +4075,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldAggregateField_GroupBy
     /// </summary>
     [DataTable("Te_BaseFieldAggregateField_GroupBy")]
@@ -4197,8 +4175,7 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_ObjectField
     /// </summary>
     [DataTable("Te_ObjectField")]
@@ -4248,455 +4225,797 @@ namespace Light.Data.Postgre.Test
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_Entity
     /// </summary>
     [DataTable("Te_BaseField_Entity")]
     public class TeBaseFieldEntity : DataTableEntity
     {
         #region "Data Property"
-        /// <summary>
-        /// Id
-        /// </summary>
-        /// <value></value>
-        [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
-	    public int Id
+        private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
         {
-            get;
-            set;
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+				base.UpdateDataNotify(nameof(Id));
+            }
         }
-        /// <summary>
-        /// BoolField
-        /// </summary>
-        /// <value></value>
-        [DataField("BoolField")]
-	    public bool BoolField
+
+        private bool boolField;
+
+		/// <summary>
+		/// BoolField
+		/// </summary>
+		/// <value></value>
+		[DataField("BoolField")]
+        public bool BoolField
         {
-            get;
-            set;
+            get { 
+            	return this.boolField; 
+            }
+            set { 
+            	this.boolField = value; 
+				base.UpdateDataNotify(nameof(BoolField));
+            }
         }
-        /// <summary>
-        /// BoolFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("BoolFieldNull", IsNullable = true)]
-	    public bool? BoolFieldNull
+
+        private bool? boolFieldNull;
+
+		/// <summary>
+		/// BoolFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("BoolFieldNull", IsNullable = true)]
+        public bool? BoolFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.boolFieldNull; 
+            }
+            set { 
+            	this.boolFieldNull = value; 
+				base.UpdateDataNotify(nameof(BoolFieldNull));
+            }
         }
-        /// <summary>
-        /// SbyteField
-        /// </summary>
-        /// <value></value>
-        [DataField("SbyteField")]
-	    public sbyte SbyteField
+
+        private sbyte sbyteField;
+
+		/// <summary>
+		/// SbyteField
+		/// </summary>
+		/// <value></value>
+		[DataField("SbyteField")]
+        public sbyte SbyteField
         {
-            get;
-            set;
+            get { 
+            	return this.sbyteField; 
+            }
+            set { 
+            	this.sbyteField = value; 
+				base.UpdateDataNotify(nameof(SbyteField));
+            }
         }
-        /// <summary>
-        /// SbyteFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("SbyteFieldNull", IsNullable = true)]
-	    public sbyte? SbyteFieldNull
+
+        private sbyte? sbyteFieldNull;
+
+		/// <summary>
+		/// SbyteFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("SbyteFieldNull", IsNullable = true)]
+        public sbyte? SbyteFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.sbyteFieldNull; 
+            }
+            set { 
+            	this.sbyteFieldNull = value; 
+				base.UpdateDataNotify(nameof(SbyteFieldNull));
+            }
         }
-        /// <summary>
-        /// ByteField
-        /// </summary>
-        /// <value></value>
-        [DataField("ByteField")]
-	    public byte ByteField
+
+        private byte byteField;
+
+		/// <summary>
+		/// ByteField
+		/// </summary>
+		/// <value></value>
+		[DataField("ByteField")]
+        public byte ByteField
         {
-            get;
-            set;
+            get { 
+            	return this.byteField; 
+            }
+            set { 
+            	this.byteField = value; 
+				base.UpdateDataNotify(nameof(ByteField));
+            }
         }
-        /// <summary>
-        /// ByteFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("ByteFieldNull", IsNullable = true)]
-	    public byte? ByteFieldNull
+
+        private byte? byteFieldNull;
+
+		/// <summary>
+		/// ByteFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("ByteFieldNull", IsNullable = true)]
+        public byte? ByteFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.byteFieldNull; 
+            }
+            set { 
+            	this.byteFieldNull = value; 
+				base.UpdateDataNotify(nameof(ByteFieldNull));
+            }
         }
-        /// <summary>
-        /// Int16Field
-        /// </summary>
-        /// <value></value>
-        [DataField("Int16Field")]
-	    public short Int16Field
+
+        private short int16Field;
+
+		/// <summary>
+		/// Int16Field
+		/// </summary>
+		/// <value></value>
+		[DataField("Int16Field")]
+        public short Int16Field
         {
-            get;
-            set;
+            get { 
+            	return this.int16Field; 
+            }
+            set { 
+            	this.int16Field = value; 
+				base.UpdateDataNotify(nameof(Int16Field));
+            }
         }
-        /// <summary>
-        /// Int16FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("Int16FieldNull", IsNullable = true)]
-	    public short? Int16FieldNull
+
+        private short? int16FieldNull;
+
+		/// <summary>
+		/// Int16FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("Int16FieldNull", IsNullable = true)]
+        public short? Int16FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.int16FieldNull; 
+            }
+            set { 
+            	this.int16FieldNull = value; 
+				base.UpdateDataNotify(nameof(Int16FieldNull));
+            }
         }
-        /// <summary>
-        /// UInt16Field
-        /// </summary>
-        /// <value></value>
-        [DataField("UInt16Field")]
-	    public ushort UInt16Field
+
+        private ushort uInt16Field;
+
+		/// <summary>
+		/// UInt16Field
+		/// </summary>
+		/// <value></value>
+		[DataField("UInt16Field")]
+        public ushort UInt16Field
         {
-            get;
-            set;
+            get { 
+            	return this.uInt16Field; 
+            }
+            set { 
+            	this.uInt16Field = value; 
+				base.UpdateDataNotify(nameof(UInt16Field));
+            }
         }
-        /// <summary>
-        /// UInt16FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("UInt16FieldNull", IsNullable = true)]
-	    public ushort? UInt16FieldNull
+
+        private ushort? uInt16FieldNull;
+
+		/// <summary>
+		/// UInt16FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("UInt16FieldNull", IsNullable = true)]
+        public ushort? UInt16FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.uInt16FieldNull; 
+            }
+            set { 
+            	this.uInt16FieldNull = value; 
+				base.UpdateDataNotify(nameof(UInt16FieldNull));
+            }
         }
-        /// <summary>
-        /// Int32Field
-        /// </summary>
-        /// <value></value>
-        [DataField("Int32Field")]
-	    public int Int32Field
+
+        private int int32Field;
+
+		/// <summary>
+		/// Int32Field
+		/// </summary>
+		/// <value></value>
+		[DataField("Int32Field")]
+        public int Int32Field
         {
-            get;
-            set;
+            get { 
+            	return this.int32Field; 
+            }
+            set { 
+            	this.int32Field = value; 
+				base.UpdateDataNotify(nameof(Int32Field));
+            }
         }
-        /// <summary>
-        /// Int32FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("Int32FieldNull", IsNullable = true)]
-	    public int? Int32FieldNull
+
+        private int? int32FieldNull;
+
+		/// <summary>
+		/// Int32FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("Int32FieldNull", IsNullable = true)]
+        public int? Int32FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.int32FieldNull; 
+            }
+            set { 
+            	this.int32FieldNull = value; 
+				base.UpdateDataNotify(nameof(Int32FieldNull));
+            }
         }
-        /// <summary>
-        /// UInt32Field
-        /// </summary>
-        /// <value></value>
-        [DataField("UInt32Field")]
-	    public uint UInt32Field
+
+        private uint uInt32Field;
+
+		/// <summary>
+		/// UInt32Field
+		/// </summary>
+		/// <value></value>
+		[DataField("UInt32Field")]
+        public uint UInt32Field
         {
-            get;
-            set;
+            get { 
+            	return this.uInt32Field; 
+            }
+            set { 
+            	this.uInt32Field = value; 
+				base.UpdateDataNotify(nameof(UInt32Field));
+            }
         }
-        /// <summary>
-        /// UInt32FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("UInt32FieldNull", IsNullable = true)]
-	    public uint? UInt32FieldNull
+
+        private uint? uInt32FieldNull;
+
+		/// <summary>
+		/// UInt32FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("UInt32FieldNull", IsNullable = true)]
+        public uint? UInt32FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.uInt32FieldNull; 
+            }
+            set { 
+            	this.uInt32FieldNull = value; 
+				base.UpdateDataNotify(nameof(UInt32FieldNull));
+            }
         }
-        /// <summary>
-        /// Int64Field
-        /// </summary>
-        /// <value></value>
-        [DataField("Int64Field")]
-	    public long Int64Field
+
+        private long int64Field;
+
+		/// <summary>
+		/// Int64Field
+		/// </summary>
+		/// <value></value>
+		[DataField("Int64Field")]
+        public long Int64Field
         {
-            get;
-            set;
+            get { 
+            	return this.int64Field; 
+            }
+            set { 
+            	this.int64Field = value; 
+				base.UpdateDataNotify(nameof(Int64Field));
+            }
         }
-        /// <summary>
-        /// Int64FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("Int64FieldNull", IsNullable = true)]
-	    public long? Int64FieldNull
+
+        private long? int64FieldNull;
+
+		/// <summary>
+		/// Int64FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("Int64FieldNull", IsNullable = true)]
+        public long? Int64FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.int64FieldNull; 
+            }
+            set { 
+            	this.int64FieldNull = value; 
+				base.UpdateDataNotify(nameof(Int64FieldNull));
+            }
         }
-        /// <summary>
-        /// UInt64Field
-        /// </summary>
-        /// <value></value>
-        [DataField("UInt64Field")]
-	    public ulong UInt64Field
+
+        private ulong uInt64Field;
+
+		/// <summary>
+		/// UInt64Field
+		/// </summary>
+		/// <value></value>
+		[DataField("UInt64Field")]
+        public ulong UInt64Field
         {
-            get;
-            set;
+            get { 
+            	return this.uInt64Field; 
+            }
+            set { 
+            	this.uInt64Field = value; 
+				base.UpdateDataNotify(nameof(UInt64Field));
+            }
         }
-        /// <summary>
-        /// UInt64FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("UInt64FieldNull", IsNullable = true)]
-	    public ulong? UInt64FieldNull
+
+        private ulong? uInt64FieldNull;
+
+		/// <summary>
+		/// UInt64FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("UInt64FieldNull", IsNullable = true)]
+        public ulong? UInt64FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.uInt64FieldNull; 
+            }
+            set { 
+            	this.uInt64FieldNull = value; 
+				base.UpdateDataNotify(nameof(UInt64FieldNull));
+            }
         }
-        /// <summary>
-        /// FloatField
-        /// </summary>
-        /// <value></value>
-        [DataField("FloatField")]
-	    public float FloatField
+
+        private float floatField;
+
+		/// <summary>
+		/// FloatField
+		/// </summary>
+		/// <value></value>
+		[DataField("FloatField")]
+        public float FloatField
         {
-            get;
-            set;
+            get { 
+            	return this.floatField; 
+            }
+            set { 
+            	this.floatField = value; 
+				base.UpdateDataNotify(nameof(FloatField));
+            }
         }
-        /// <summary>
-        /// FloatFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("FloatFieldNull", IsNullable = true)]
-	    public float? FloatFieldNull
+
+        private float? floatFieldNull;
+
+		/// <summary>
+		/// FloatFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("FloatFieldNull", IsNullable = true)]
+        public float? FloatFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.floatFieldNull; 
+            }
+            set { 
+            	this.floatFieldNull = value; 
+				base.UpdateDataNotify(nameof(FloatFieldNull));
+            }
         }
-        /// <summary>
-        /// DoubleField
-        /// </summary>
-        /// <value></value>
-        [DataField("DoubleField")]
-	    public double DoubleField
+
+        private double doubleField;
+
+		/// <summary>
+		/// DoubleField
+		/// </summary>
+		/// <value></value>
+		[DataField("DoubleField")]
+        public double DoubleField
         {
-            get;
-            set;
+            get { 
+            	return this.doubleField; 
+            }
+            set { 
+            	this.doubleField = value; 
+				base.UpdateDataNotify(nameof(DoubleField));
+            }
         }
-        /// <summary>
-        /// DoubleFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("DoubleFieldNull", IsNullable = true)]
-	    public double? DoubleFieldNull
+
+        private double? doubleFieldNull;
+
+		/// <summary>
+		/// DoubleFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("DoubleFieldNull", IsNullable = true)]
+        public double? DoubleFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.doubleFieldNull; 
+            }
+            set { 
+            	this.doubleFieldNull = value; 
+				base.UpdateDataNotify(nameof(DoubleFieldNull));
+            }
         }
-        /// <summary>
-        /// DecimalField
-        /// </summary>
-        /// <value></value>
-        [DataField("DecimalField")]
-	    public decimal DecimalField
+
+        private decimal decimalField;
+
+		/// <summary>
+		/// DecimalField
+		/// </summary>
+		/// <value></value>
+		[DataField("DecimalField")]
+        public decimal DecimalField
         {
-            get;
-            set;
+            get { 
+            	return this.decimalField; 
+            }
+            set { 
+            	this.decimalField = value; 
+				base.UpdateDataNotify(nameof(DecimalField));
+            }
         }
-        /// <summary>
-        /// DecimalFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("DecimalFieldNull", IsNullable = true)]
-	    public decimal? DecimalFieldNull
+
+        private decimal? decimalFieldNull;
+
+		/// <summary>
+		/// DecimalFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("DecimalFieldNull", IsNullable = true)]
+        public decimal? DecimalFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.decimalFieldNull; 
+            }
+            set { 
+            	this.decimalFieldNull = value; 
+				base.UpdateDataNotify(nameof(DecimalFieldNull));
+            }
         }
-        /// <summary>
-        /// DateTimeField
-        /// </summary>
-        /// <value></value>
-        [DataField("DateTimeField")]
-	    public DateTime DateTimeField
+
+        private DateTime dateTimeField;
+
+		/// <summary>
+		/// DateTimeField
+		/// </summary>
+		/// <value></value>
+		[DataField("DateTimeField")]
+        public DateTime DateTimeField
         {
-            get;
-            set;
+            get { 
+            	return this.dateTimeField; 
+            }
+            set { 
+            	this.dateTimeField = value; 
+				base.UpdateDataNotify(nameof(DateTimeField));
+            }
         }
-        /// <summary>
-        /// DateTimeFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("DateTimeFieldNull", IsNullable = true)]
-	    public DateTime? DateTimeFieldNull
+
+        private DateTime? dateTimeFieldNull;
+
+		/// <summary>
+		/// DateTimeFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("DateTimeFieldNull", IsNullable = true)]
+        public DateTime? DateTimeFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.dateTimeFieldNull; 
+            }
+            set { 
+            	this.dateTimeFieldNull = value; 
+				base.UpdateDataNotify(nameof(DateTimeFieldNull));
+            }
         }
-        /// <summary>
-        /// VarcharField
-        /// </summary>
-        /// <value></value>
-        [DataField("VarcharField")]
-	    public string VarcharField
+
+        private string varcharField;
+
+		/// <summary>
+		/// VarcharField
+		/// </summary>
+		/// <value></value>
+		[DataField("VarcharField")]
+        public string VarcharField
         {
-            get;
-            set;
+            get { 
+            	return this.varcharField; 
+            }
+            set { 
+            	this.varcharField = value; 
+				base.UpdateDataNotify(nameof(VarcharField));
+            }
         }
-        /// <summary>
-        /// VarcharFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("VarcharFieldNull", IsNullable = true)]
-	    public string VarcharFieldNull
+
+        private string varcharFieldNull;
+
+		/// <summary>
+		/// VarcharFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("VarcharFieldNull", IsNullable = true)]
+        public string VarcharFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.varcharFieldNull; 
+            }
+            set { 
+            	this.varcharFieldNull = value; 
+				base.UpdateDataNotify(nameof(VarcharFieldNull));
+            }
         }
-        /// <summary>
-        /// TextField
-        /// </summary>
-        /// <value></value>
-        [DataField("TextField")]
-	    public string TextField
+
+        private string textField;
+
+		/// <summary>
+		/// TextField
+		/// </summary>
+		/// <value></value>
+		[DataField("TextField")]
+        public string TextField
         {
-            get;
-            set;
+            get { 
+            	return this.textField; 
+            }
+            set { 
+            	this.textField = value; 
+				base.UpdateDataNotify(nameof(TextField));
+            }
         }
-        /// <summary>
-        /// TextFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("TextFieldNull", IsNullable = true)]
-	    public string TextFieldNull
+
+        private string textFieldNull;
+
+		/// <summary>
+		/// TextFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("TextFieldNull", IsNullable = true)]
+        public string TextFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.textFieldNull; 
+            }
+            set { 
+            	this.textFieldNull = value; 
+				base.UpdateDataNotify(nameof(TextFieldNull));
+            }
         }
-        /// <summary>
-        /// BigDataField
-        /// </summary>
-        /// <value></value>
-        [DataField("BigDataField")]
-	    public byte[] BigDataField
+
+        private byte[] bigDataField;
+
+		/// <summary>
+		/// BigDataField
+		/// </summary>
+		/// <value></value>
+		[DataField("BigDataField")]
+        public byte[] BigDataField
         {
-            get;
-            set;
+            get { 
+            	return this.bigDataField; 
+            }
+            set { 
+            	this.bigDataField = value; 
+				base.UpdateDataNotify(nameof(BigDataField));
+            }
         }
-        /// <summary>
-        /// BigDataFieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("BigDataFieldNull", IsNullable = true)]
-	    public byte[] BigDataFieldNull
+
+        private byte[] bigDataFieldNull;
+
+		/// <summary>
+		/// BigDataFieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("BigDataFieldNull", IsNullable = true)]
+        public byte[] BigDataFieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.bigDataFieldNull; 
+            }
+            set { 
+            	this.bigDataFieldNull = value; 
+				base.UpdateDataNotify(nameof(BigDataFieldNull));
+            }
         }
-        /// <summary>
-        /// EnumInt32Field
-        /// </summary>
-        /// <value></value>
-        [DataField("EnumInt32Field")]
-	    public EnumInt32Type EnumInt32Field
+
+        private EnumInt32Type enumInt32Field;
+
+		/// <summary>
+		/// EnumInt32Field
+		/// </summary>
+		/// <value></value>
+		[DataField("EnumInt32Field")]
+        public EnumInt32Type EnumInt32Field
         {
-            get;
-            set;
+            get { 
+            	return this.enumInt32Field; 
+            }
+            set { 
+            	this.enumInt32Field = value; 
+				base.UpdateDataNotify(nameof(EnumInt32Field));
+            }
         }
-        /// <summary>
-        /// EnumInt32FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("EnumInt32FieldNull", IsNullable = true)]
-	    public EnumInt32Type? EnumInt32FieldNull
+
+        private EnumInt32Type? enumInt32FieldNull;
+
+		/// <summary>
+		/// EnumInt32FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("EnumInt32FieldNull", IsNullable = true)]
+        public EnumInt32Type? EnumInt32FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.enumInt32FieldNull; 
+            }
+            set { 
+            	this.enumInt32FieldNull = value; 
+				base.UpdateDataNotify(nameof(EnumInt32FieldNull));
+            }
         }
-        /// <summary>
-        /// EnumInt64Field
-        /// </summary>
-        /// <value></value>
-        [DataField("EnumInt64Field")]
-	    public EnumInt64Type EnumInt64Field
+
+        private EnumInt64Type enumInt64Field;
+
+		/// <summary>
+		/// EnumInt64Field
+		/// </summary>
+		/// <value></value>
+		[DataField("EnumInt64Field")]
+        public EnumInt64Type EnumInt64Field
         {
-            get;
-            set;
+            get { 
+            	return this.enumInt64Field; 
+            }
+            set { 
+            	this.enumInt64Field = value; 
+				base.UpdateDataNotify(nameof(EnumInt64Field));
+            }
         }
-        /// <summary>
-        /// EnumInt64FieldNull
-        /// </summary>
-        /// <value></value>
-        [DataField("EnumInt64FieldNull", IsNullable = true)]
-	    public EnumInt64Type? EnumInt64FieldNull
+
+        private EnumInt64Type? enumInt64FieldNull;
+
+		/// <summary>
+		/// EnumInt64FieldNull
+		/// </summary>
+		/// <value></value>
+		[DataField("EnumInt64FieldNull", IsNullable = true)]
+        public EnumInt64Type? EnumInt64FieldNull
         {
-            get;
-            set;
+            get { 
+            	return this.enumInt64FieldNull; 
+            }
+            set { 
+            	this.enumInt64FieldNull = value; 
+				base.UpdateDataNotify(nameof(EnumInt64FieldNull));
+            }
         }
+
         #endregion
     }
 
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseFieldNoIdentity_Entity
     /// </summary>
     [DataTable("Te_BaseFieldNoIdentity_Entity")]
     public class TeBaseFieldNoIdentityEntity : DataTableEntity
     {
         #region "Data Property"
-        /// <summary>
-        /// Id
-        /// </summary>
-        /// <value></value>
-        [DataField("Id", IsPrimaryKey = true)]
-	    public int Id
+        private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsPrimaryKey = true)]
+        public int Id
         {
-            get;
-            set;
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+				base.UpdateDataNotify(nameof(Id));
+            }
         }
-        /// <summary>
-        /// Int32Field
-        /// </summary>
-        /// <value></value>
-        [DataField("Int32Field")]
-	    public int Int32Field
+
+        private int int32Field;
+
+		/// <summary>
+		/// Int32Field
+		/// </summary>
+		/// <value></value>
+		[DataField("Int32Field")]
+        public int Int32Field
         {
-            get;
-            set;
+            get { 
+            	return this.int32Field; 
+            }
+            set { 
+            	this.int32Field = value; 
+				base.UpdateDataNotify(nameof(Int32Field));
+            }
         }
-        /// <summary>
-        /// DoubleField
-        /// </summary>
-        /// <value></value>
-        [DataField("DoubleField")]
-	    public double DoubleField
+
+        private double doubleField;
+
+		/// <summary>
+		/// DoubleField
+		/// </summary>
+		/// <value></value>
+		[DataField("DoubleField")]
+        public double DoubleField
         {
-            get;
-            set;
+            get { 
+            	return this.doubleField; 
+            }
+            set { 
+            	this.doubleField = value; 
+				base.UpdateDataNotify(nameof(DoubleField));
+            }
         }
-        /// <summary>
-        /// VarcharField
-        /// </summary>
-        /// <value></value>
-        [DataField("VarcharField")]
-	    public string VarcharField
+
+        private string varcharField;
+
+		/// <summary>
+		/// VarcharField
+		/// </summary>
+		/// <value></value>
+		[DataField("VarcharField")]
+        public string VarcharField
         {
-            get;
-            set;
+            get { 
+            	return this.varcharField; 
+            }
+            set { 
+            	this.varcharField = value; 
+				base.UpdateDataNotify(nameof(VarcharField));
+            }
         }
-        /// <summary>
-        /// DateTimeField
-        /// </summary>
-        /// <value></value>
-        [DataField("DateTimeField")]
-	    public DateTime DateTimeField
+
+        private DateTime dateTimeField;
+
+		/// <summary>
+		/// DateTimeField
+		/// </summary>
+		/// <value></value>
+		[DataField("DateTimeField")]
+        public DateTime DateTimeField
         {
-            get;
-            set;
+            get { 
+            	return this.dateTimeField; 
+            }
+            set { 
+            	this.dateTimeField = value; 
+				base.UpdateDataNotify(nameof(DateTimeField));
+            }
         }
-        /// <summary>
-        /// EnumInt32Field
-        /// </summary>
-        /// <value></value>
-        [DataField("EnumInt32Field")]
-	    public EnumInt32Type EnumInt32Field
+
+        private EnumInt32Type enumInt32Field;
+
+		/// <summary>
+		/// EnumInt32Field
+		/// </summary>
+		/// <value></value>
+		[DataField("EnumInt32Field")]
+        public EnumInt32Type EnumInt32Field
         {
-            get;
-            set;
+            get { 
+            	return this.enumInt32Field; 
+            }
+            set { 
+            	this.enumInt32Field = value; 
+				base.UpdateDataNotify(nameof(EnumInt32Field));
+            }
         }
+
         #endregion
     }
 

@@ -139,7 +139,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<<#=GetAll(i) #>, K>> expression) where K : class, new();
+		int SelectInsert<K> (Expression<Func<<#=GetAll(i) #>, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -186,14 +186,14 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression) where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken) where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken); //where K : class, new();
 
 <#if(i<MaxCount){#>
 		/// <summary>

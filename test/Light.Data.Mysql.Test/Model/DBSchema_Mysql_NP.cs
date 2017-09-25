@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data;
 
 namespace Light.Data.Mysql.Test
 {
 	/// <summary>
     /// Te_BaseField_Config
     /// </summary>
-    [DataTable("Te_BaseField_Config")]
     public class TeBaseFieldConfig 
     {
         #region "Data Property"
@@ -16,7 +14,6 @@ namespace Light.Data.Mysql.Test
         /// Id
         /// </summary>
         /// <value></value>
-        [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
 	    public int Id
         {
             get;
@@ -26,7 +23,6 @@ namespace Light.Data.Mysql.Test
         /// Int32_Field
         /// </summary>
         /// <value></value>
-        [DataField("Int32_Field")]
 	    public int Int32Field
         {
             get;
@@ -36,7 +32,6 @@ namespace Light.Data.Mysql.Test
         /// Int32_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("Int32_FieldNull", IsNullable = true)]
 	    public int? Int32FieldNull
         {
             get;
@@ -46,7 +41,6 @@ namespace Light.Data.Mysql.Test
         /// Decimal_Field
         /// </summary>
         /// <value></value>
-        [DataField("Decimal_Field")]
 	    public decimal DecimalField
         {
             get;
@@ -56,7 +50,6 @@ namespace Light.Data.Mysql.Test
         /// Decimal_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("Decimal_FieldNull", IsNullable = true)]
 	    public decimal? DecimalFieldNull
         {
             get;
@@ -66,7 +59,6 @@ namespace Light.Data.Mysql.Test
         /// DateTime_Field
         /// </summary>
         /// <value></value>
-        [DataField("DateTime_Field")]
 	    public DateTime DateTimeField
         {
             get;
@@ -76,7 +68,6 @@ namespace Light.Data.Mysql.Test
         /// DateTime_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("DateTime_FieldNull", IsNullable = true)]
 	    public DateTime? DateTimeFieldNull
         {
             get;
@@ -86,7 +77,6 @@ namespace Light.Data.Mysql.Test
         /// Varchar_Field
         /// </summary>
         /// <value></value>
-        [DataField("Varchar_Field")]
 	    public string VarcharField
         {
             get;
@@ -96,7 +86,6 @@ namespace Light.Data.Mysql.Test
         /// Varchar_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("Varchar_FieldNull", IsNullable = true)]
 	    public string VarcharFieldNull
         {
             get;
@@ -106,7 +95,6 @@ namespace Light.Data.Mysql.Test
         /// Now_Field
         /// </summary>
         /// <value></value>
-        [DataField("Now_Field")]
 	    public DateTime NowField
         {
             get;
@@ -116,7 +104,6 @@ namespace Light.Data.Mysql.Test
         /// Now_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("Now_FieldNull", IsNullable = true)]
 	    public DateTime? NowFieldNull
         {
             get;
@@ -126,7 +113,6 @@ namespace Light.Data.Mysql.Test
         /// Today_Field
         /// </summary>
         /// <value></value>
-        [DataField("Today_Field")]
 	    public DateTime TodayField
         {
             get;
@@ -136,7 +122,6 @@ namespace Light.Data.Mysql.Test
         /// Today_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("Today_FieldNull", IsNullable = true)]
 	    public DateTime? TodayFieldNull
         {
             get;
@@ -146,7 +131,6 @@ namespace Light.Data.Mysql.Test
         /// EnumInt32_Field
         /// </summary>
         /// <value></value>
-        [DataField("EnumInt32_Field")]
 	    public EnumInt32Type EnumInt32Field
         {
             get;
@@ -156,7 +140,6 @@ namespace Light.Data.Mysql.Test
         /// EnumInt32_FieldNull
         /// </summary>
         /// <value></value>
-        [DataField("EnumInt32_FieldNull", IsNullable = true)]
 	    public EnumInt32Type? EnumInt32FieldNull
         {
             get;

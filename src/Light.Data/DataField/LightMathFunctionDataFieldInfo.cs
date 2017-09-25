@@ -132,7 +132,7 @@ namespace Light.Data
 		//		LambdaMathFunctionDataFieldInfo target = info as LambdaMathFunctionDataFieldInfo;
 		//		if (!Object.Equals (target, null)) {
 		//			return this._function == target._function
-		//				       && Utility.EnumableObjectEquals (this._values, target._values); ;
+		//				       && Utility.EnumableObjectEquals (this._values, target._values);
 		//		}
 		//		else {
 		//			return false;

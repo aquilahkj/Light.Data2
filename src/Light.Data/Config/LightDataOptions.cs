@@ -1,13 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LightDataOptions
-	{
+	public class LightDataOptions
+    {
 		public ConnectionSection[] Connections { get; set; }
-	}
+    }
 
-	class ConnectionSection
+	public class ConnectionSection
 	{
 		public string Name { get; set; }
 
@@ -15,6 +17,6 @@ namespace Light.Data
 
 		public string ProviderName { get; set; }
 
-		public ConfigParamSection[] ConfigParams { get; set; }
-	}
+        public Dictionary<string,string> ConfigParams { get; set; }
+    }
 }
