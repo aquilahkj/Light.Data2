@@ -13,7 +13,7 @@
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.3.0</FileVersion>
+    <FileVersion>2.0.3.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
