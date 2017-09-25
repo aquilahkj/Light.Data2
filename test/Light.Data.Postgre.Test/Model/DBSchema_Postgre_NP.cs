@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Light.Data.Postgre.Test
 {
-	
-    /// <summary>
+	/// <summary>
     /// Te_BaseField_Config
     /// </summary>
     public class TeBaseFieldConfig 

@@ -14,7 +14,7 @@ namespace Light.Data.Test
         /// Id
         /// </summary>
         /// <value></value>
-        public int Id
+	    public int Id
         {
             get;
             set;
@@ -23,7 +23,7 @@ namespace Light.Data.Test
         /// Int32_Field
         /// </summary>
         /// <value></value>
-        public int Int32Field
+	    public int Int32Field
         {
             get;
             set;
@@ -32,7 +32,7 @@ namespace Light.Data.Test
         /// Int32_FieldNull
         /// </summary>
         /// <value></value>
-        public int? Int32FieldNull
+	    public int? Int32FieldNull
         {
             get;
             set;
@@ -41,7 +41,7 @@ namespace Light.Data.Test
         /// Decimal_Field
         /// </summary>
         /// <value></value>
-        public decimal DecimalField
+	    public decimal DecimalField
         {
             get;
             set;
@@ -50,7 +50,7 @@ namespace Light.Data.Test
         /// Decimal_FieldNull
         /// </summary>
         /// <value></value>
-        public decimal? DecimalFieldNull
+	    public decimal? DecimalFieldNull
         {
             get;
             set;
@@ -59,7 +59,7 @@ namespace Light.Data.Test
         /// DateTime_Field
         /// </summary>
         /// <value></value>
-        public DateTime DateTimeField
+	    public DateTime DateTimeField
         {
             get;
             set;
@@ -68,7 +68,7 @@ namespace Light.Data.Test
         /// DateTime_FieldNull
         /// </summary>
         /// <value></value>
-        public DateTime? DateTimeFieldNull
+	    public DateTime? DateTimeFieldNull
         {
             get;
             set;
@@ -77,7 +77,7 @@ namespace Light.Data.Test
         /// Varchar_Field
         /// </summary>
         /// <value></value>
-        public string VarcharField
+	    public string VarcharField
         {
             get;
             set;
@@ -86,7 +86,7 @@ namespace Light.Data.Test
         /// Varchar_FieldNull
         /// </summary>
         /// <value></value>
-        public string VarcharFieldNull
+	    public string VarcharFieldNull
         {
             get;
             set;
@@ -95,7 +95,7 @@ namespace Light.Data.Test
         /// Now_Field
         /// </summary>
         /// <value></value>
-        public DateTime NowField
+	    public DateTime NowField
         {
             get;
             set;
@@ -104,7 +104,7 @@ namespace Light.Data.Test
         /// Now_FieldNull
         /// </summary>
         /// <value></value>
-        public DateTime? NowFieldNull
+	    public DateTime? NowFieldNull
         {
             get;
             set;
@@ -113,7 +113,7 @@ namespace Light.Data.Test
         /// Today_Field
         /// </summary>
         /// <value></value>
-        public DateTime TodayField
+	    public DateTime TodayField
         {
             get;
             set;
@@ -122,7 +122,7 @@ namespace Light.Data.Test
         /// Today_FieldNull
         /// </summary>
         /// <value></value>
-        public DateTime? TodayFieldNull
+	    public DateTime? TodayFieldNull
         {
             get;
             set;
@@ -131,7 +131,7 @@ namespace Light.Data.Test
         /// EnumInt32_Field
         /// </summary>
         /// <value></value>
-        public EnumInt32Type EnumInt32Field
+	    public EnumInt32Type EnumInt32Field
         {
             get;
             set;
@@ -140,7 +140,7 @@ namespace Light.Data.Test
         /// EnumInt32_FieldNull
         /// </summary>
         /// <value></value>
-        public EnumInt32Type? EnumInt32FieldNull
+	    public EnumInt32Type? EnumInt32FieldNull
         {
             get;
             set;

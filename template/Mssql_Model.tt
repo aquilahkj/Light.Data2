@@ -54,7 +54,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-<# if(useLightData){ #>
+<# if(useLightData || DbSetting.HasEntityTable){ #>
 using Light.Data;
 <# } #>
 
@@ -589,6 +589,14 @@ order by
         {
             return entityHash.Contains(table);
         }
+		
+		public static bool HasEntityTable
+		{
+			get
+			{
+				return entityHash.Count>0;
+			}
+		}
 
         public static bool GetDefaultValueStringMode()
         {

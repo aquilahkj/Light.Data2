@@ -6,6 +6,7 @@ using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Light.Data.Test
 {
@@ -39,7 +40,7 @@ namespace Light.Data.Test
 
         public DataContext CreateBuilderContextByConnection()
         {
-            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            var builder = new DataContextOptionsBuilder<DataContext>();
             builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
@@ -49,10 +50,10 @@ namespace Light.Data.Test
 
         public DataContext CreateBuilderContextByConfig()
         {
-            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            var builder = new DataContextOptionsConfigurator<DataContext>();
             builder.ConfigName = "mssql";
             builder.SetCommandOutput(commandOutput);
-            var options = builder.Build();
+            var options = builder.Create(DataContextConfiguration.Global);
             DataContext context = new DataContext(options);
             return context;
         }
@@ -64,6 +65,61 @@ namespace Light.Data.Test
                 builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+
+        public TestContext CreateBuilderContextByDiConfigSpecified()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(configuration.GetSection("lightData"), config => {
+                config.ConfigName = "app";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigSpecifiedDefault()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(configuration.GetSection("lightData"), config => {
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigGlobal()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(DataContextConfiguration.Global, config => {
+                config.ConfigName = "mssql";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextByDiConfigGlobalDefault()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>(DataContextConfiguration.Global, config => {
+                config.SetCommandOutput(commandOutput);
             }, ServiceLifetime.Transient);
             var provider = service.BuildServiceProvider();
             TestContext context = provider.GetRequiredService<TestContext>();

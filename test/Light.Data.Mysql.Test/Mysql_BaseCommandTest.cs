@@ -88,9 +88,25 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> listAc2 = context2.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc2);
 
-            DataContext context3 = CreateBuilderContextByConfig();
+            DataContext context3 = CreateBuilderContextByDi();
             List<TeBaseField> listAc3 = context3.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc3);
+
+            DataContext context4 = CreateBuilderContextByDiConfigSpecified();
+            List<TeBaseField> listAc4 = context4.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc4);
+
+            DataContext context5 = CreateBuilderContextByDiConfigSpecifiedDefault();
+            List<TeBaseField> listAc5 = context5.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc5);
+
+            DataContext context6 = CreateBuilderContextByDiConfigGlobal();
+            List<TeBaseField> listAc6 = context6.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc6);
+
+            DataContext context7 = CreateBuilderContextByDiConfigGlobalDefault();
+            List<TeBaseField> listAc7 = context7.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc7);
         }
 
         [Fact]
