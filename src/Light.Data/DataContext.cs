@@ -68,8 +68,7 @@ namespace Light.Data
             if (_aliasTableDict == null) {
                 name = null;
                 return false;
-            }
-            else {
+            } else {
                 return _aliasTableDict.TryGetValue(mapping, out name);
             }
         }
@@ -99,8 +98,7 @@ namespace Light.Data
         {
             if (output != null) {
                 this._output = output;
-            }
-            else {
+            } else {
                 this._output = _options.CommandOutput;
             }
         }
@@ -110,7 +108,7 @@ namespace Light.Data
         /// </summary>
         public DataContext()
         {
-            DataContextOptions options = DataContextConfiguration.DefaultOptions;
+            DataContextOptions options = DataContextConfiguration.Global.DefaultOptions;
             Internal_DataContext(options);
         }
 
@@ -120,7 +118,7 @@ namespace Light.Data
         /// <param name="configName">Config name.</param>
         public DataContext(string configName)
         {
-            DataContextOptions options = DataContextConfiguration.GetOptions(configName);
+            DataContextOptions options = DataContextConfiguration.Global.GetOptions(configName);
             Internal_DataContext(options);
         }
 
@@ -193,8 +191,7 @@ namespace Light.Data
             int result;
             if (exists) {
                 result = Update(mapping, data);
-            }
-            else {
+            } else {
                 result = Insert(mapping, data);
             }
             return result;
@@ -240,8 +237,7 @@ namespace Light.Data
             int result;
             if (exists) {
                 result = await UpdateAsync(mapping, data, cancellationToken);
-            }
-            else {
+            } else {
                 result = await InsertAsync(mapping, data, cancellationToken);
             }
             return result;
@@ -307,6 +303,11 @@ namespace Light.Data
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 mapping.IdentityField.Handler.Set(data, id);
             }
+            if (mapping.IsDataTableEntity) {
+                DataTableEntity tableEntity = data as DataTableEntity;
+                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                tableEntity.ClearUpdateFields();
+            }
             return rInt;
         }
 
@@ -337,6 +338,11 @@ namespace Light.Data
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 mapping.IdentityField.Handler.Set(data, id);
             }
+            if (mapping.IsDataTableEntity) {
+                DataTableEntity tableEntity = data as DataTableEntity;
+                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                tableEntity.ClearUpdateFields();
+            }
             return rInt;
         }
 
@@ -358,6 +364,11 @@ namespace Light.Data
             CommandData commandData = _database.Factory.CreateUpdateCommand(mapping, data, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default);
+            }
+            if(mapping.IsDataTableEntity) {
+                DataTableEntity tableEntity = data as DataTableEntity;
+                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                tableEntity.ClearUpdateFields();
             }
             return rInt;
         }
@@ -391,6 +402,11 @@ namespace Light.Data
             CommandData commandData = _database.Factory.CreateUpdateCommand(mapping, data, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
+            }
+            if (mapping.IsDataTableEntity) {
+                DataTableEntity tableEntity = data as DataTableEntity;
+                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                tableEntity.ClearUpdateFields();
             }
             return rInt;
         }
@@ -436,6 +452,11 @@ namespace Light.Data
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default);
             }
+            if (mapping.IsDataTableEntity) {
+                DataTableEntity tableEntity = data as DataTableEntity;
+                tableEntity.ClearRawPrimaryKeys();
+                tableEntity.ClearUpdateFields();
+            }
             return rInt;
         }
 
@@ -447,6 +468,11 @@ namespace Light.Data
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
             }
+            if (mapping.IsDataTableEntity) {
+                DataTableEntity tableEntity = data as DataTableEntity;
+                tableEntity.ClearRawPrimaryKeys();
+                tableEntity.ClearUpdateFields();
+            }
             return rInt;
         }
 
@@ -457,15 +483,16 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public T CreateNew<T>()
         {
-            DataTableEntityMapping rawmapping = DataEntityMapping.GetTableMapping(typeof(T));
-            object obj = rawmapping.InitialData();
-            if (rawmapping.IsDataEntity) {
-                if (obj is DataEntity data) {
-                    data.SetContext(this);
-                }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            object obj = mapping.InitialData();
+            if (mapping.IsDataEntity) {
+                DataEntity entity = obj as DataEntity;
+                entity.SetContext(this);
             }
             return (T)obj;
         }
+
+       
 
         internal int Delete(DataTableEntityMapping mapping, QueryExpression query, SafeLevel level)
         {
@@ -629,6 +656,13 @@ namespace Light.Data
             if (result == 0) {
                 result = start;
             }
+            if (mapping.IsDataTableEntity) {
+                foreach (object data in datas) {
+                    DataTableEntity tableEntity = data as DataTableEntity;
+                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                    tableEntity.ClearUpdateFields();
+                }
+            }
             return result;
         }
 
@@ -775,6 +809,13 @@ namespace Light.Data
             if (result == 0) {
                 result = start;
             }
+            if (mapping.IsDataTableEntity) {
+                foreach (object data in datas) {
+                    DataTableEntity tableEntity = data as DataTableEntity;
+                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                    tableEntity.ClearUpdateFields();
+                }
+            }
             return result;
         }
 
@@ -872,6 +913,13 @@ namespace Light.Data
             }
             if (result == 0) {
                 result = start;
+            }
+            if (mapping.IsDataTableEntity) {
+                foreach (object data in datas) {
+                    DataTableEntity tableEntity = data as DataTableEntity;
+                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                    tableEntity.ClearUpdateFields();
+                }
             }
             return result;
         }
@@ -997,6 +1045,13 @@ namespace Light.Data
             if (result == 0) {
                 result = start;
             }
+            if (mapping.IsDataTableEntity) {
+                foreach (object data in datas) {
+                    DataTableEntity tableEntity = data as DataTableEntity;
+                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
+                    tableEntity.ClearUpdateFields();
+                }
+            }
             return result;
         }
 
@@ -1094,6 +1149,13 @@ namespace Light.Data
             }
             if (result == 0) {
                 result = start;
+            }
+            if (mapping.IsDataTableEntity) {
+                foreach (object data in datas) {
+                    DataTableEntity tableEntity = data as DataTableEntity;
+                    tableEntity.ClearRawPrimaryKeys();
+                    tableEntity.ClearUpdateFields();
+                }
             }
             return result;
         }
@@ -1220,6 +1282,13 @@ namespace Light.Data
             if (result == 0) {
                 result = start;
             }
+            if (mapping.IsDataTableEntity) {
+                foreach (object data in datas) {
+                    DataTableEntity tableEntity = data as DataTableEntity;
+                    tableEntity.ClearRawPrimaryKeys();
+                    tableEntity.ClearUpdateFields();
+                }
+            }
             return result;
         }
 
@@ -1312,23 +1381,20 @@ namespace Light.Data
                 if (query != null) {
                     if (query.MutliQuery) {
                         mainQuery = query;
-                    }
-                    else {
+                    } else {
                         subQuery = query;
                     }
                 }
                 if (order != null) {
                     if (order.MutliOrder) {
                         mainOrder = order;
-                    }
-                    else {
+                    } else {
                         subOrder = order;
                     }
                 }
                 List<IJoinModel> models = relationMap.CreateJoinModels(subQuery, subOrder);
                 commandData = _database.Factory.CreateSelectInsertCommand(selector, models, mainQuery, mainOrder, distinct, state);
-            }
-            else {
+            } else {
                 commandData = _database.Factory.CreateSelectInsertCommand(selector, mapping, query, order, distinct, state);
             }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
@@ -1351,23 +1417,20 @@ namespace Light.Data
                 if (query != null) {
                     if (query.MutliQuery) {
                         mainQuery = query;
-                    }
-                    else {
+                    } else {
                         subQuery = query;
                     }
                 }
                 if (order != null) {
                     if (order.MutliOrder) {
                         mainOrder = order;
-                    }
-                    else {
+                    } else {
                         subOrder = order;
                     }
                 }
                 List<IJoinModel> models = relationMap.CreateJoinModels(subQuery, subOrder);
                 commandData = _database.Factory.CreateSelectInsertCommand(selector, models, mainQuery, mainOrder, distinct, state);
-            }
-            else {
+            } else {
                 commandData = _database.Factory.CreateSelectInsertCommand(selector, mapping, query, order, distinct, state);
             }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
@@ -2059,8 +2122,7 @@ namespace Light.Data
                 object obj = ExecuteScalar(command, level);
                 if (Equals(obj, DBNull.Value)) {
                     return null;
-                }
-                else {
+                } else {
                     return Convert.ChangeType(obj, typeCode, null);
                 }
             }
@@ -2074,8 +2136,7 @@ namespace Light.Data
                 object obj = await ExecuteScalarAsync(command, level, cancellationToken);
                 if (Equals(obj, DBNull.Value)) {
                     return null;
-                }
-                else {
+                } else {
                     return Convert.ChangeType(obj, typeCode, null);
                 }
             }
@@ -2144,8 +2205,7 @@ namespace Light.Data
                         ExceptionMessage = exceptionMessage
                     };
                     this._output.Output(info);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
@@ -2168,20 +2228,17 @@ namespace Light.Data
                         rInt = dbcommand.ExecuteNonQuery();
                         result = rInt;
                         success = true;
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         exceptionMessage = ex.Message;
                         transaction.Rollback();
                         throw ex;
-                    }
-                    finally {
+                    } finally {
                         DateTime endTime = DateTime.Now;
                         OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
                     }
                     transaction.Commit();
                 }
-            }
-            else {
+            } else {
                 if (!_transaction.IsOpen) {
                     _transaction.Open();
                 }
@@ -2194,15 +2251,13 @@ namespace Light.Data
                     rInt = dbcommand.ExecuteNonQuery();
                     result = rInt;
                     success = true;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     _transaction.Rollback();
                     _transaction.Dispose();
                     _transaction = null;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2226,20 +2281,17 @@ namespace Light.Data
                         rInt = await dbcommand.ExecuteNonQueryAsync(cancellationToken);
                         result = rInt;
                         success = true;
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         exceptionMessage = ex.Message;
                         transaction.Rollback();
                         throw ex;
-                    }
-                    finally {
+                    } finally {
                         DateTime endTime = DateTime.Now;
                         OutputCommand(nameof(ExecuteNonQueryAsync), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
                     }
                     transaction.Commit();
                 }
-            }
-            else {
+            } else {
                 if (!_transaction.IsOpen) {
                     await _transaction.OpenAsync(cancellationToken);
                 }
@@ -2252,15 +2304,13 @@ namespace Light.Data
                     rInt = await dbcommand.ExecuteNonQueryAsync(cancellationToken);
                     result = rInt;
                     success = true;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     _transaction.Rollback();
                     _transaction.Dispose();
                     _transaction = null;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(ExecuteNonQueryAsync), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2284,20 +2334,17 @@ namespace Light.Data
                         resultObj = dbcommand.ExecuteScalar();
                         result = resultObj;
                         success = true;
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         exceptionMessage = ex.Message;
                         transaction.Rollback();
                         throw ex;
-                    }
-                    finally {
+                    } finally {
                         DateTime endTime = DateTime.Now;
                         OutputCommand(nameof(ExecuteScalar), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
                     }
                     transaction.Commit();
                 }
-            }
-            else {
+            } else {
                 if (!_transaction.IsOpen) {
                     _transaction.Open();
                 }
@@ -2310,15 +2357,13 @@ namespace Light.Data
                     resultObj = dbcommand.ExecuteScalar();
                     result = resultObj;
                     success = true;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     _transaction.Rollback();
                     _transaction.Dispose();
                     _transaction = null;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(ExecuteScalar), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2342,20 +2387,17 @@ namespace Light.Data
                         resultObj = await dbcommand.ExecuteScalarAsync(cancellationToken);
                         result = resultObj;
                         success = true;
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         exceptionMessage = ex.Message;
                         transaction.Rollback();
                         throw ex;
-                    }
-                    finally {
+                    } finally {
                         DateTime endTime = DateTime.Now;
                         OutputCommand(nameof(ExecuteScalarAsync), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
                     }
                     transaction.Commit();
                 }
-            }
-            else {
+            } else {
                 if (!_transaction.IsOpen) {
                     _transaction.Open();
                 }
@@ -2368,15 +2410,13 @@ namespace Light.Data
                     resultObj = await dbcommand.ExecuteScalarAsync(cancellationToken);
                     result = resultObj;
                     success = true;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     _transaction.Rollback();
                     _transaction.Dispose();
                     _transaction = null;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(ExecuteScalarAsync), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2393,8 +2433,7 @@ namespace Light.Data
             if (region != null) {
                 start = region.Start;
                 size = region.Size;
-            }
-            else {
+            } else {
                 start = 0;
                 size = int.MaxValue;
             }
@@ -2408,13 +2447,11 @@ namespace Light.Data
                     dbcommand.Connection = connection;
                     reader = dbcommand.ExecuteReader();
                     success = true;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     dbcommand.Dispose();
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(QueryDataDefineReader), dbcommand, SafeLevel.None, false, start, size, startTime, endTime, success, "reader", exceptionMessage);
                 }
@@ -2431,13 +2468,11 @@ namespace Light.Data
                             object item = source.LoadData(this, reader, state);
                             if (item == null) {
                                 yield return default(T);
-                            }
-                            else {
+                            } else {
                                 if (dele != null) {
                                     if (item is object[] objects) {
                                         item = dele.DynamicInvoke(objects);
-                                    }
-                                    else {
+                                    } else {
                                         item = dele.DynamicInvoke(item);
                                     }
                                 }
@@ -2446,8 +2481,7 @@ namespace Light.Data
                         }
                         index++;
                     }
-                }
-                finally {
+                } finally {
                     dbcommand.Dispose();
                 }
             }
@@ -2485,8 +2519,7 @@ namespace Light.Data
                                 if (dele != null) {
                                     if (item is object[] objects) {
                                         item = dele.DynamicInvoke(objects);
-                                    }
-                                    else {
+                                    } else {
                                         item = dele.DynamicInvoke(item);
                                     }
                                 }
@@ -2498,12 +2531,10 @@ namespace Light.Data
                     }
                     result = obj;
                     return obj;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(QueryDataDefineSingle), dbcommand, SafeLevel.None, false, start, 1, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2518,8 +2549,7 @@ namespace Light.Data
             if (region != null) {
                 start = region.Start;
                 size = region.Size;
-            }
-            else {
+            } else {
                 start = 0;
                 size = int.MaxValue;
             }
@@ -2548,13 +2578,11 @@ namespace Light.Data
                             object item = source.LoadData(this, reader, state);
                             if (item == null) {
                                 list.Add(default(T));
-                            }
-                            else {
+                            } else {
                                 if (dele != null) {
                                     if (item is object[] objects) {
                                         item = dele.DynamicInvoke(objects);
-                                    }
-                                    else {
+                                    } else {
                                         item = dele.DynamicInvoke(item);
                                     }
                                 }
@@ -2565,12 +2593,10 @@ namespace Light.Data
                         index++;
                     }
                     return list;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(QueryDataDefineList), dbcommand, SafeLevel.None, false, start, size, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2610,8 +2636,7 @@ namespace Light.Data
                                 if (dele != null) {
                                     if (item is object[] objects) {
                                         item = dele.DynamicInvoke(objects);
-                                    }
-                                    else {
+                                    } else {
                                         item = dele.DynamicInvoke(item);
                                     }
                                 }
@@ -2623,12 +2648,10 @@ namespace Light.Data
                     }
                     result = obj;
                     return obj;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(QueryDataDefineSingleAsync), dbcommand, SafeLevel.None, false, start, 1, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2643,8 +2666,7 @@ namespace Light.Data
             if (region != null) {
                 start = region.Start;
                 size = region.Size;
-            }
-            else {
+            } else {
                 start = 0;
                 size = int.MaxValue;
             }
@@ -2673,13 +2695,11 @@ namespace Light.Data
                             object item = source.LoadData(this, reader, state);
                             if (item == null) {
                                 list.Add(default(T));
-                            }
-                            else {
+                            } else {
                                 if (dele != null) {
                                     if (item is object[] objects) {
                                         item = dele.DynamicInvoke(objects);
-                                    }
-                                    else {
+                                    } else {
                                         item = dele.DynamicInvoke(item);
                                     }
                                 }
@@ -2690,12 +2710,10 @@ namespace Light.Data
                         index++;
                     }
                     return list;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     exceptionMessage = ex.Message;
                     throw ex;
-                }
-                finally {
+                } finally {
                     DateTime endTime = DateTime.Now;
                     OutputCommand(nameof(QueryDataDefineListAsync), dbcommand, SafeLevel.None, false, start, size, startTime, endTime, success, result, exceptionMessage);
                 }
@@ -2827,8 +2845,7 @@ namespace Light.Data
             if (mapping.HasJoinRelateModel) {
                 List<IJoinModel> models = relationMap.CreateJoinModels(query, null);
                 commandData = _database.Factory.CreateSelectJoinTableCommand(selector, models, null, null, false, null, state);
-            }
-            else {
+            } else {
                 commandData = _database.Factory.CreateSelectCommand(mapping, selector, query, null, false, null, state);
             }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
@@ -2938,12 +2955,10 @@ namespace Light.Data
             CheckStatus();
             if (_transaction != null) {
                 return false;
-            }
-            else {
+            } else {
                 if (level == SafeLevel.None) {
                     _transaction = CreateTransactionConnection(SafeLevel.Default);
-                }
-                else {
+                } else {
                     _transaction = CreateTransactionConnection(level);
                 }
                 return true;
@@ -2962,14 +2977,12 @@ namespace Light.Data
                     _transaction.Dispose();
                     _transaction = null;
                     return true;
-                }
-                else {
+                } else {
                     _transaction.Dispose();
                     _transaction = null;
                     return false;
                 }
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -2986,14 +2999,12 @@ namespace Light.Data
                     _transaction.Dispose();
                     _transaction = null;
                     return true;
-                }
-                else {
+                } else {
                     _transaction.Dispose();
                     _transaction = null;
                     return false;
                 }
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -3003,7 +3014,7 @@ namespace Light.Data
             CheckStatus();
             _isCreateTrans = false;
             if (_transaction != null) {
-                if(_transaction.ExecuteFlag) {
+                if (_transaction.ExecuteFlag) {
                     _transaction.Rollback();
                 }
                 _transaction.Dispose();

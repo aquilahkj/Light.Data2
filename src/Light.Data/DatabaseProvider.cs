@@ -101,21 +101,10 @@ namespace Light.Data
                     _commandTimeout = value;
                 }
                 else {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(CommandTimeout));
                 }
             }
         }
-
-        //bool _strictMode = true;
-
-        //public bool StrictMode {
-        //    get {
-        //        return _strictMode;
-        //    }
-        //    set {
-        //        _strictMode = value;
-        //    }
-        //}
 
         int _batchInsertCount;
 
@@ -128,7 +117,7 @@ namespace Light.Data
                     _batchInsertCount = value;
                 }
                 else {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(BatchInsertCount));
                 }
             }
         }
@@ -144,7 +133,7 @@ namespace Light.Data
                     _batchUpdateCount = value;
                 }
                 else {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(BatchUpdateCount));
                 }
             }
         }
@@ -160,7 +149,7 @@ namespace Light.Data
                     _batchDeleteCount = value;
                 }
                 else {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(BatchDeleteCount));
                 }
             }
         }

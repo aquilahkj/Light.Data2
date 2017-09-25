@@ -47,7 +47,7 @@ namespace Light.Data
 			object [] objects = new object [mappings.Length];
 			for (int i = 0; i < mappings.Length; i++) {
 				string aliasName = aliasNames [i];
-				objects [i] = mappings [i].CreateJoinTableData (context, datareader, queryState, aliasName);
+				objects [i] = mappings [i].LoadAliasJoinTableData (context, datareader, queryState, aliasName);
 			}
 			return objects;
 		}

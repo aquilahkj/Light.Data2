@@ -21,6 +21,7 @@
 * [增加数据](#insert)
 * [更新数据](#update)
 * [删除数据](#delete)
+* [数据实体](#data_entity)
 * [事务处理](#transaction)
 * [字段扩展](#field_extend)
 * [主键/自增字段查询数据](#key_query)
@@ -376,7 +377,7 @@ public class TeRelateA_BC : TeRelateA
         get;
         set;
     }
-
+}
 
 public class TeRelateB_C : TeRelateB
 {
@@ -418,13 +419,13 @@ public class TeRelateB_C : TeRelateB
 
 ### 配置文件方式
 
-`Light.Data`支持使用json格式的配置文件对数据库类型和数据连接字符串进行配置， 配置文件地址可通过在程序初始化时进行设置, 只可以设置一个
+`Light.Data`支持使用json格式的配置文件对数据库类型和数据连接字符串进行配置, 配置文件地址可通过在程序初始化时进行设置, 只可以设置一个
 `DataContextConfiguration.SetConfigFilePath("Config/lightdata.json");` 
-默认配置文件为当前目录下的`lightdata.json`, 如文件不存在则自动忽略.
+默认配置文件为当前目录下的`lightdata.json`, 如文件不存在则自动忽略. 该配置为全局配置.
 
 #### 配置方法
 
-配置数据结构为
+Light.Data配置数据结构
 
 ```json
 {
@@ -439,12 +440,9 @@ public class TeRelateB_C : TeRelateB
         "name": "mssql_2012",
         "connectionString": "Data Source=192.168.0.1;User ID=sa;Password=***;Initial Catalog=LightData_Test;",
         "providerName": "Light.Data.Mssql.MssqlProvider",
-        "configParams": [
-          {
-            "name": "version",
-            "value": "11"
-          }
-        ]
+        "configParams": {
+          "version" : "11.0"
+        }
       }
     ]
   }
@@ -463,13 +461,6 @@ connections 字段定义
 | connectionString | string | false | 连接字符串，格式因数据库种类而异 | 
 | providerName | string | false | 对应不同数据库种类的处理类的类名 | 
 | configParams | array(configParam) | true | 额外的配置参数，因数据库类型而异 |
-
-configParam 字段定义
-
-| 字段名 | 值类型 | 可空 | 说明 |
-|:------|:------|:------|:------|
-| name | string | false | 参数名 | 
-| value | string | false | 参数值 | 
 
 providerName 对应数据库种类的类名
 
@@ -499,7 +490,7 @@ SqlServer version 功能列表
 | 11.0 | SqlServer 2012 | version>=11.0 支持offset分页查询 |
 | 12.0 | SqlServer 2014 |  |
 
-#### 使用配置
+#### 使用全局配置文件方式
 
 使用配置名创建核心类`DataContext`, `DataContext`无参构造函数默认使用一个配置节.
 
@@ -510,49 +501,83 @@ DataContext context = new DataContext("mssql");
 可继承DataContext创建指定DataContext类
 
 ```csharp
- public class MyDataContext : DataContext
- {
-     public MyDataContext() : base("mssql")
-     {
+public class MyDataContext : DataContext
+{
+    public MyDataContext() : base("mssql")
+    {
 
-     }
- }
+    }
+}
 ```
 
 ### DependencyInjection方式
 
-使用`Microsoft.Extensions.DependencyInjection`实现依赖注入, 自定义连接字符串的配置. 
+使用`Microsoft.Extensions.DependencyInjection`实现依赖注入. 
+
 继承`DataContext`创建参数为`DataContextOptions<T>`的指定`DataContext`类
 
 ```csharp
- public class MyDataContext : DataContext
- {
-     public MyDataContext(DataContextOptions<MyDataContext> options) : base(options)
-     {
+public class MyDataContext : DataContext
+{
+    public MyDataContext(DataContextOptions<MyDataContext> options) : base(options)
+    {
 
-     }
- }
+    }
+}
 ```
 
-在程序初始化时对`IServiceCollection`使用扩展静态函数`AddDataContext`加入对`DataContextOptionsBuilder<TContext>`的委托处理
+##### 自定义配置获取连接字符串进行配置
+
+在程序初始化时对`IServiceCollection`使用静态扩展函数`AddDataContext`通过对`DataContextOptionsBuilder<TContext>`的委托进行配置, useXXX为使用的数据库类型.
 
 ```csharp
- IServiceCollection service = new ServiceCollection();
- service.AddDataContext<MyDataContext>(builder => {
-     builder.UseMssql(connectionString);
-     builder.SetTimeout(2000);
-     builder.SetVersion("11.0");
- }, ServiceLifetime.Transient);
+IServiceCollection service = new ServiceCollection();
+
+...
+
+service.AddDataContext<MyDataContext>(builder => {
+    builder.UseMssql(connectionString);
+    builder.SetTimeout(2000);
+    builder.SetVersion("11.0");
+}, ServiceLifetime.Transient);
 ```
 
-直接调用
+##### 自定义配置获取指定配置节进行配置
+
+在程序初始化时对`IServiceCollection`使用静态扩展函数`AddDataContext`对`IConfiguration`的指定节点数据进行配置, 配置节点结构与`Light.Data配置数据结构`一致, 并可以通过`DataContextOptionsConfigurator<TContext>`选定配置中的连接配置. 
+
+```csharp
+IServiceCollection service = new ServiceCollection();
+var builder = new ConfigurationBuilder()
+               .SetBasePath(env.ContentRootPath)
+               .AddJsonFile("appsettings.json");
+var configuration = builder.Build();
+  
+ ...
+ 
+service.AddDataContext<MyDataContext>(configuration.GetSection("lightData"), config => {
+       config.ConfigName = "mssql";
+}, ServiceLifetime.Transient);
+```
+
+##### 全局配置文件配置
+
+在程序初始化时对`IServiceCollection`使用静态扩展函数`AddDataContext`对全局配置文件的数据进行配置, 并可以通过`DataContextOptionsConfigurator<TContext>`选定配置中的连接配置.
+
+```csharp
+service.AddDataContext<MyDataContext>(DataContextConfiguration.Global, config => {
+       config.ConfigName = "mssql";
+}, ServiceLifetime.Transient);
+```
+
+##### 直接调用
 
 ```csharp
 var provider = service.BuildServiceProvider();
 var context = provider.GetRequiredService<MyDataContext>();
 ```
 
-MVC依赖注入方式调用
+##### MVC依赖注入方式调用
 
 ```csharp
 public class MyController : Controller
@@ -718,6 +743,8 @@ BatchInsert<T>(IEnumerable<T> datas)
 
 <h2 id="update">更新数据(Update Data)</h2>
 
+数据对象做更新操作需要有主键
+
 ```csharp
 int id = 1;
 TeUser user = context.SelectById<TeUser> (id);
@@ -733,6 +760,8 @@ BatchUpdate<T>(IEnumerable<T> datas)
 
 <h2 id="delete">删除数据(Delete Data)</h2>
 
+数据对象做删除操作需要有主键
+
 ```csharp
 int id = 1;
 TeUser user = context.SelectById<TeUser> (id);
@@ -744,6 +773,64 @@ context.Delete (user);
 ```csharp
 BatchDelete<T>(IEnumerable<T> datas)
 ```
+
+<h2 id="data_entity">数据实体类(Data Entity Class)</h2>
+
+映射类型可以通过继承`DataTableEntity`基类, 使用基类函数实现自身数据的增删改操作, 继承基类后指定数据表的默认为实体表. 
+
+```csharp
+[DataTable("Te_User_Entity")]
+public class TeUserEntity : DataTableEntity
+{
+    private int id;
+
+	[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+    public int Id
+    {
+        get { 
+        	return this.id; 
+        }
+        set { 
+        	this.id = value; 
+			base.UpdateDataNotify(nameof(Id));
+        }
+    }
+
+    private string account;
+
+	[DataField("Account")]
+    public string Account
+    {
+        get { 
+        	return this.account; 
+        }
+        set { 
+        	this.account = value; 
+			base.UpdateDataNotify(nameof(Account));
+        }
+    }
+}
+```
+
+```csharp
+//创建数据
+TeUserEntity item = context.CreateNew<TeUserEntity>();
+item.Account = "abc";
+//新增数据
+item.Save();
+item.Account = "efg";
+//更新数据
+item.Save();
+//删除数据
+item.Erase();
+```
+
+| 方法 | 说明 |
+|:------|:------|
+| UpdateDataNotify(string fieldname) | 用于字段的Set方法中, 该字段修改后在update的sql语句中只会update该字段而不会全字段更新, 一旦设置需所有字段设置 |
+| Save() | 保存数据, 如果数据是从DataContext.CreateNew\<T\>()产生, 则会新增数据, 如果数据是新增后或者从DataContext查询出来的, 则会更新数据 |
+| Erase() | 清除数据 |
+
 
 <h2 id="transaction">事务处理(Transaction)</h2>
 

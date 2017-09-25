@@ -9,14 +9,14 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MysqlOptionsExtensions
     {
-        public static DataContextOptionsBuilder UsePostgre(this DataContextOptionsBuilder builder, string connection)
-        {
-            builder.SetDataConfig(connection, (configName, configParams) => {
-                PostgreProvider database = new PostgreProvider(configName, configParams);
-                return database;
-            });
-            return builder;
-        }
+        //public static DataContextOptionsBuilder UsePostgre(this DataContextOptionsBuilder builder, string connection)
+        //{
+        //    builder.SetDataConfig(connection, (configName, configParams) => {
+        //        PostgreProvider database = new PostgreProvider(configName, configParams);
+        //        return database;
+        //    });
+        //    return builder;
+        //}
 
         public static DataContextOptionsBuilder<TContext> UsePostgre<TContext>(this DataContextOptionsBuilder<TContext> builder, string connection) where TContext : DataContext
         {

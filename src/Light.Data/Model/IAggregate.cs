@@ -101,7 +101,7 @@ namespace Light.Data
         /// <typeparam name="P"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        int SelectInsert<P>(Expression<Func<K, P>> expression) where P : class;
+        int SelectInsert<P>(Expression<Func<K, P>> expression); //where P : class, new();
 
         /// <summary>
         /// Set take datas count.

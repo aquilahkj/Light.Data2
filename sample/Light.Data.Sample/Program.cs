@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Light.Data.Sample
 {
@@ -9,7 +10,7 @@ namespace Light.Data.Sample
         {
             DataMapperConfiguration.AddConfigFilePath("lightdata.json");
             DataMapperConfiguration.AddConfigFilePath("mapper_relate.json");
-            Test0();
+            //Test5();
         }
 
         static void Test0()
@@ -36,7 +37,7 @@ namespace Light.Data.Sample
             output.UseConsoleOutput = true;
             output.OutputFullCommand = true;
 
-            DataContextOptionsBuilder builder = new DataContextOptionsBuilder();
+            DataContextOptionsBuilder<DataContext> builder = new DataContextOptionsBuilder<DataContext>();
             builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
             builder.SetCommandOutput(output);
             var options = builder.Build();
@@ -151,5 +152,32 @@ namespace Light.Data.Sample
             Console.WriteLine(list.Count);
         }
 
+
+        //static void Test5()
+        //{
+        //    CommandOutput output = new CommandOutput();
+        //    output.UseConsoleOutput = true;
+        //    output.OutputFullCommand = true;
+
+        //    IServiceCollection service = new ServiceCollection();
+        //    service.AddDataContext<TestContext>(config => {
+        //        config.ConfigName = "mysql";
+        //        config.SetCommandOutput(output);
+        //    }, ServiceLifetime.Transient);
+
+        //    var provider = service.BuildServiceProvider();
+        //    var context = provider.GetRequiredService<TestContext>();
+
+        //    var context2 = provider.GetRequiredService<TestContext>();
+        //    if (Object.Equals(context, context2)) {
+        //        throw new Exception("error");
+        //    }
+        //    var list = context.Query<TeUser>().ToList();
+
+        //    foreach (var item in list) {
+        //        Console.WriteLine(item);
+        //    }
+        //    Console.Read();
+        //}
     }
 }

@@ -2638,39 +2638,39 @@ namespace Light.Data.Mysql.Test
             List<TeBaseFieldExpression> listAc;
 
             listEx = list.Where(x => x.DateTimeField.Year == dt.Year).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Year == dt.Year).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Year == dt.Year).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.Month == dt.Month).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Month == dt.Month).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Month == dt.Month).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.Day == dt.Day).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Day == dt.Day).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Day == dt.Day).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.Hour == dt.Hour).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Hour == dt.Hour).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Hour == dt.Hour).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            listEx = list.Where(x => x.DateTimeField.Minute == dt.Minute).OrderBy(x => x.Id).ToList(); ;
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Minute == dt.Minute).ToList().OrderBy(x => x.Id).ToList(); ;
+            listEx = list.Where(x => x.DateTimeField.Minute == dt.Minute).OrderBy(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Minute == dt.Minute).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.Second == dt.Second).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Second == dt.Second).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Second == dt.Second).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.DayOfYear == dt.DayOfYear).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.DayOfYear == dt.DayOfYear).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.DayOfYear == dt.DayOfYear).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.DayOfWeek == dt.DayOfWeek).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.DayOfWeek == dt.DayOfWeek).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.DayOfWeek == dt.DayOfWeek).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.DateTimeField.Date == dt.Date).OrderBy(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Date == dt.Date).ToList().OrderBy(x => x.Id).ToList(); ;
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.Date == dt.Date).ToList().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             List<string> formats = new List<string>();
@@ -2686,7 +2686,7 @@ namespace Light.Data.Mysql.Test
             formats.Add("MM/dd/yyyy");
             foreach (string format in formats) {
                 listEx = list.Where(x => x.DateTimeField.ToString(format) == dt.ToString(format)).OrderBy(x => x.Id).ToList();
-                listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.ToString(format) == dt.ToString(format)).ToList().OrderBy(x => x.Id).ToList(); ;
+                listAc = context.Query<TeBaseFieldExpression>().Where(x => x.DateTimeField.ToString(format) == dt.ToString(format)).ToList().OrderBy(x => x.Id).ToList();
                 AssertExtend.StrictEqual(listEx, listAc);
             }
 

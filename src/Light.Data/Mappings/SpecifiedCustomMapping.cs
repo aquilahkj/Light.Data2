@@ -86,7 +86,7 @@ namespace Light.Data
 			return item;
 		}
 
-		public override object CreateJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+		public override object LoadAliasJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
 		{
 			object item = Activator.CreateInstance (ObjectType);
             bool nodataSetNull = queryState != null ? queryState.CheckNoDataSetNull(aliasName) : false;

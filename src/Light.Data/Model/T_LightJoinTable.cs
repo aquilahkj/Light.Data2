@@ -346,7 +346,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -412,7 +412,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -422,7 +422,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -805,7 +805,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -871,7 +871,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -881,7 +881,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -1264,7 +1264,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -1330,7 +1330,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -1340,7 +1340,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -1723,7 +1723,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -1789,7 +1789,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -1799,7 +1799,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -2182,7 +2182,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -2248,7 +2248,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -2258,7 +2258,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -2641,7 +2641,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -2707,7 +2707,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -2717,7 +2717,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -3100,7 +3100,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -3166,7 +3166,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -3176,7 +3176,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -3559,7 +3559,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -3625,7 +3625,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -3635,7 +3635,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}
@@ -4018,7 +4018,7 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) where K : class, new()
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
@@ -4084,7 +4084,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
@@ -4094,7 +4094,7 @@ namespace Light.Data
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) //where K : class, new()
 		{
 			return await SelectInsertAsync(expression, CancellationToken.None);
 		}

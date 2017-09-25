@@ -64,7 +64,7 @@ namespace Light.Data
             return value;
         }
 
-        public object CreateJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+        public object LoadAliasJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
         {
             string fieldname = string.Format("{0}_{1}", aliasName, name);
             object value = null;
