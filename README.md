@@ -1,6 +1,6 @@
 ﻿# LightData 使用文档
  
-`Light.Data`是一个轻量级的ORM框架, 通过对实体模型类的Attribute或者配置文件进行配置与数据表的对应关系. 使用核心类`DataContext`对数据表进行增删改查的操作.
+`Light.Data`是一个轻量级的基于.net standard 2.0的ORM框架, 通过对实体模型类的Attribute或者配置文件进行配置与数据表的对应关系. 使用核心类`DataContext`对数据表进行增删改查的操作.
 
 支持数据库
 
@@ -392,23 +392,23 @@ public class TeRelateB_C : TeRelateB
 #### 当两个表类互为主从时, 需确保双方的关联字段主从相反, 定义保持一致, 否则会出现错误
 
 ```csharp
- public class TeRelateA_B_A : TeRelateA
- {
-     [RelationField("Id", "RelateAId")]
-     public TeRelateB_A_B RelateB {
-         get;
-         set;
-     }
- }
+public class TeRelateA_B_A : TeRelateA
+{
+    [RelationField("Id", "RelateAId")]
+    public TeRelateB_A_B RelateB {
+        get;
+        set;
+    }
+}
 
- public class TeRelateB_A_B : TeRelateB
- {
-     [RelationField("RelateAId", "Id")]
-     public TeRelateA_B_A RelateA {
-         get;
-         set;
-     }
- }
+public class TeRelateB_A_B : TeRelateB
+{
+    [RelationField("RelateAId", "Id")]
+    public TeRelateA_B_A RelateA {
+        get;
+        set;
+    }
+}
 ```
 
 ### 实体类与配置生成模板
@@ -709,11 +709,11 @@ var list = context.Query<TeLog>().ToList();
 
 <h2 id="truncate"> 清空数据表(Truncate Table)</h2>
 
- ```csharp
- context.TruncateTable<TeUser> (); 
- ```
+```csharp
+context.TruncateTable<TeUser> (); 
+```
  
- 注意：该操作直接使用`truncate table`命令清空数据表.
+注意：该操作直接使用`truncate table`命令清空数据表.
 
 <h2 id="insert"> 增加数据(Insert Data)</h2>
 
@@ -1056,10 +1056,10 @@ List<TeUser> list1 = context.Query<TeUser> ().Where (x => !x.Account.StartsWith 
 查询字段需为可空类型(如int?)或string类型
 
 ```csharp
- //null查询
- List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.RefereeId == null).ToList ();
- //非null查询
- List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.RefereeId != null).ToList ();
+//null查询
+List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.RefereeId == null).ToList ();
+//非null查询
+List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.RefereeId != null).ToList ();
 ```
 
 如非可空类型可用扩展查询方式`ExtendQuery.IsNull()`
@@ -1133,23 +1133,23 @@ List<TeUser> list = context.Query<TeUser> ().OrderByDescending (x => x.Id).ToLis
 使用`IQuery<T>.Select(lambda)`查询时指定字段输出新的结构类,支持匿名类输出,使用Lambda表达式中的new方式定义新结构类.
 
 ```csharp
- var list = context.Query<TeUser> ()
-                   .Select (x => new TeUserSimple () {
-                       Id = x.Id,
-                       Account = x.Account,
-                       LevelId = x.LevelId,
-                       RegTime = x.RegTime
-                    })
-                   .ToList ();
-//匿名类
- var list = context.Query<TeUser> ()
-                   .Select (x => new {
-                       x.Id,
-                       x.Account,
-                       x.LevelId,
-                       x.RegTime
-                    })
-                   .ToList ();
+var list = context.Query<TeUser> ()
+                  .Select (x => new TeUserSimple () {
+                      Id = x.Id,
+                      Account = x.Account,
+                      LevelId = x.LevelId,
+                      RegTime = x.RegTime
+                   })
+                  .ToList ();
+/匿名类
+var list = context.Query<TeUser> ()
+                  .Select (x => new {
+                      x.Id,
+                      x.Account,
+                      x.LevelId,
+                      x.RegTime
+                   })
+                  .ToList ();
 ```
 
 查询单字段列表
@@ -1613,6 +1613,7 @@ var result = context.Query<TeUser> ()
 ```
 
 <h2 id="sql_command">执行SQL语句(Execute Sql Command)</h2>
+
 当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建
 
 | 方法 | 说明 |
