@@ -784,29 +784,29 @@ public class TeUserEntity : DataTableEntity
 {
     private int id;
 
-	[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+    [DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
     public int Id
     {
         get { 
-        	return this.id; 
+            return this.id; 
         }
         set { 
-        	this.id = value; 
-			base.UpdateDataNotify(nameof(Id));
+            this.id = value; 
+	    base.UpdateDataNotify(nameof(Id));
         }
     }
 
     private string account;
 
-	[DataField("Account")]
+    [DataField("Account")]
     public string Account
     {
         get { 
-        	return this.account; 
+            return this.account; 
         }
         set { 
-        	this.account = value; 
-			base.UpdateDataNotify(nameof(Account));
+            this.account = value; 
+	    base.UpdateDataNotify(nameof(Account));
         }
     }
 }
