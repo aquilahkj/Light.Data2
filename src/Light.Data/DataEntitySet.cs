@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -150,11 +151,6 @@ namespace Light.Data
             return await context.InsertOrUpdateAsync(data);
         }
 
-        public IQuery<T> Query()
-        {
-            return context.Query<T>();
-        }
-
         public T SelectById(uint id)
         {
             return context.SelectById<T>(id);
@@ -244,5 +240,58 @@ namespace Light.Data
         {
             return await context.UpdateAsync(data);
         }
+
+        public IQuery<T> Query()
+        {
+            return context.Query<T>();
+        }
+
+        public IQuery<T> Where(Expression<Func<T, bool>> expression)
+        {
+            return context.Query<T>().Where(expression);
+        }
+
+        public IQuery<T> OrderBy<TKey>(Expression<Func<T, TKey>> expression)
+        {
+            return context.Query<T>().OrderBy<TKey>(expression);
+        }
+
+        public IQuery<T> OrderByRandom()
+        {
+            return context.Query<T>().OrderByRandom();
+        }
+
+        /// <summary>
+        /// Create Selector.
+        /// </summary>
+        /// <param name="expression">Expression.</param>
+        /// <typeparam name="K">The 1st type parameter.</typeparam>
+        public ISelect<K> Select<K>(Expression<Func<T, K>> expression)
+        {
+            return context.Query<T>().Select(expression);
+        }
+
+        /// <summary>
+        /// Create group by aggregator
+        /// </summary>
+        /// <returns>The by.</returns>
+        /// <param name="expression">Expression.</param>
+        /// <typeparam name="K">The 1st type parameter.</typeparam>
+        public IAggregate<K> GroupBy<K>(Expression<Func<T, K>> expression)
+        {
+            return context.Query<T>().GroupBy(expression);
+        }
+
+        /// <summary>
+        /// Select special field.
+        /// </summary>
+        /// <returns>The field.</returns>
+        /// <param name="expression">Expression.</param>
+        /// <typeparam name="K">The 1st type parameter.</typeparam>
+        public ISelectField<K> SelectField<K>(Expression<Func<T, K>> expression)
+        {
+            return context.Query<T>().SelectField(expression);
+        }
+
     }
 }
