@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
-namespace Light.Data.Postgre.Test
+namespace Light.Data.Mssql.Test
 {
     public abstract class BaseTest
     {
@@ -29,7 +29,7 @@ namespace Light.Data.Postgre.Test
 
         protected BaseTest(ITestOutputHelper output)
         {
-            context = new DataContext("postgre");
+            context = new DataContext("mssql");
             commandOutput.OutputFullCommand = true;
             commandOutput.OnCommandOutput += CommandOutput_OnCommandOutput;
             //output.UseConsoleOutput = true;
@@ -41,7 +41,7 @@ namespace Light.Data.Postgre.Test
         public DataContext CreateBuilderContextByConnection()
         {
             var builder = new DataContextOptionsBuilder<DataContext>();
-            builder.UsePostgre("Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;");
+            builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
             DataContext context = new DataContext(options);
@@ -51,7 +51,7 @@ namespace Light.Data.Postgre.Test
         public DataContext CreateBuilderContextByConfig()
         {
             var builder = new DataContextOptionsConfigurator<DataContext>();
-            builder.ConfigName = "postgre";
+            builder.ConfigName = "mssql";
             builder.SetCommandOutput(commandOutput);
             var options = builder.Create(DataContextConfiguration.Global);
             DataContext context = new DataContext(options);
@@ -62,7 +62,7 @@ namespace Light.Data.Postgre.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder => {
-                builder.UsePostgre("Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;");
+                builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
             }, ServiceLifetime.Transient);
@@ -70,6 +70,7 @@ namespace Light.Data.Postgre.Test
             TestContext context = provider.GetRequiredService<TestContext>();
             return context;
         }
+
 
         public TestContext CreateBuilderContextByDiConfigSpecified()
         {
@@ -106,7 +107,7 @@ namespace Light.Data.Postgre.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(DataContextConfiguration.Global, config => {
-                config.ConfigName = "postgre";
+                config.ConfigName = "mssql";
                 config.SetCommandOutput(commandOutput);
             }, ServiceLifetime.Transient);
             var provider = service.BuildServiceProvider();
@@ -129,7 +130,7 @@ namespace Light.Data.Postgre.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>("lightdata2.json", config => {
-                config.ConfigName = "postgre2";
+                config.ConfigName = "mssql2";
                 config.SetCommandOutput(commandOutput);
             }, ServiceLifetime.Transient);
             var provider = service.BuildServiceProvider();
@@ -139,7 +140,7 @@ namespace Light.Data.Postgre.Test
 
         public DataContext CreateContext()
         {
-            DataContext context = new DataContext("postgre");
+            DataContext context = new DataContext("mssql");
             context.SetCommandOutput(commandOutput);
             return context;
         }

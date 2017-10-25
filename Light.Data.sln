@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{610664E1-A8A2-4D43-9C95-C38134EFB98C}"
+	ProjectSection(SolutionItems) = preProject
+		Light.Data.Mssql.Test\lightdata.json = Light.Data.Mssql.Test\lightdata.json
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{56C8D8B4-0FD9-4986-A25A-26590FC82352}"
 EndProject
@@ -29,9 +32,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Mysql", "src\Lig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Mysql.Test", "test\Light.Data.Mysql.Test\Light.Data.Mysql.Test.csproj", "{292AF9ED-4F80-4D93-BAE2-BD18F6560C6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Data.Postgre", "src\Light.Data.Postgre\Light.Data.Postgre.csproj", "{5E9AE30D-D367-4482-9AF4-E9226465C78F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Postgre", "src\Light.Data.Postgre\Light.Data.Postgre.csproj", "{5E9AE30D-D367-4482-9AF4-E9226465C78F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Data.Postgre.Test", "test\Light.Data.Postgre.Test\Light.Data.Postgre.Test.csproj", "{1F2D696A-53B1-4E31-83F6-E33E580DE167}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Postgre.Test", "test\Light.Data.Postgre.Test\Light.Data.Postgre.Test.csproj", "{1F2D696A-53B1-4E31-83F6-E33E580DE167}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Mssql", "src\Light.Data.Mssql\Light.Data.Mssql.csproj", "{3789649D-004D-4C02-8A67-813ACFF6B399}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Light.Data.Mssql.Test", "Light.Data.Mssql.Test\Light.Data.Mssql.Test.csproj", "{01A70F29-E5FB-45F3-8545-88A0B2CC3484}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +74,14 @@ Global
 		{1F2D696A-53B1-4E31-83F6-E33E580DE167}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F2D696A-53B1-4E31-83F6-E33E580DE167}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F2D696A-53B1-4E31-83F6-E33E580DE167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3789649D-004D-4C02-8A67-813ACFF6B399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3789649D-004D-4C02-8A67-813ACFF6B399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3789649D-004D-4C02-8A67-813ACFF6B399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3789649D-004D-4C02-8A67-813ACFF6B399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01A70F29-E5FB-45F3-8545-88A0B2CC3484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01A70F29-E5FB-45F3-8545-88A0B2CC3484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01A70F29-E5FB-45F3-8545-88A0B2CC3484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01A70F29-E5FB-45F3-8545-88A0B2CC3484}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +94,8 @@ Global
 		{292AF9ED-4F80-4D93-BAE2-BD18F6560C6A} = {610664E1-A8A2-4D43-9C95-C38134EFB98C}
 		{5E9AE30D-D367-4482-9AF4-E9226465C78F} = {56C8D8B4-0FD9-4986-A25A-26590FC82352}
 		{1F2D696A-53B1-4E31-83F6-E33E580DE167} = {610664E1-A8A2-4D43-9C95-C38134EFB98C}
+		{3789649D-004D-4C02-8A67-813ACFF6B399} = {56C8D8B4-0FD9-4986-A25A-26590FC82352}
+		{01A70F29-E5FB-45F3-8545-88A0B2CC3484} = {610664E1-A8A2-4D43-9C95-C38134EFB98C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {968D3971-87BC-4D6C-9CCE-4FA5B7F744C3}

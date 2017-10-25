@@ -6,11 +6,11 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 
-namespace Light.Data.Mysql.Test
+namespace Light.Data.Mssql.Test
 {
-    public class Mysql_BaseCommandTest : BaseTest
+    public class Mssql_BaseCommandTest : BaseTest
     {
-        public Mysql_BaseCommandTest(ITestOutputHelper output) : base(output)
+        public Mssql_BaseCommandTest(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -108,7 +108,7 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> listAc7 = context7.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc7);
 
-            DataContext context8 = CreateBuilderContextByDiConfigGlobalDefault();
+            DataContext context8 = CreateBuilderContextByConfigFile();
             List<TeBaseField> listAc8 = context8.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc8);
         }
@@ -137,7 +137,7 @@ namespace Light.Data.Mysql.Test
             TeBaseField[] arrayAc = context.Query<TeBaseField>().ToArray();
             AssertExtend.StrictEqual(arrayEx, arrayAc);
         }
-
+        
         [Fact]
         public async Task TestCase_Query_Async()
         {
@@ -1101,7 +1101,7 @@ namespace Light.Data.Mysql.Test
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField limit 1";
+            sql = "select top 1 * from Te_BaseField";
             executor = context.CreateSqlStringExecutor(sql);
             var itemAc = executor.QueryFirst<TeBaseField>();
             var itemEx = list.First();
@@ -1155,7 +1155,7 @@ namespace Light.Data.Mysql.Test
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
 
-            sql = "select * from Te_BaseField limit 1";
+            sql = "select top 1 * from Te_BaseField";
             executor = context.CreateSqlStringExecutor(sql);
             var itemAc = await executor.QueryFirstAsync<TeBaseField>();
             var itemEx = list.First();
@@ -1734,6 +1734,40 @@ namespace Light.Data.Mysql.Test
             context.ResetAliasTableName<TeBaseField>();
             AssertExtend.Equal(item, ac2);
         }
+
+        #region version
+        [Fact]
+        public void TestCase_BulkInsert_Ver2008()
+        {
+            DataContext context = CreateContext("mssql_2008");
+            const int count = 33;
+            var listEx = CreateBaseFieldTableList(count);
+            List<TeBaseField> listAc;
+            context.TruncateTable<TeBaseField>();
+            var retInsert = context.BatchInsert(listEx);
+            Assert.Equal(count, retInsert);
+            listAc = context.Query<TeBaseField>().ToList();
+            AssertExtend.Equal(listEx, listAc);
+            DateTime d = GetNow();
+            listEx.ForEach(x => {
+                x.DateTimeField = d;
+                x.DateTimeFieldNull = null;
+                x.Int32Field = 2;
+                x.Int32FieldNull = null;
+                x.DoubleField = 2.0d;
+                x.DoubleFieldNull = null;
+                x.VarcharField = "abc";
+                x.VarcharFieldNull = null;
+                x.EnumInt32Field = EnumInt32Type.Zero;
+                x.EnumInt32FieldNull = null;
+                x.EnumInt64Field = EnumInt64Type.Zero;
+                x.EnumInt64FieldNull = null;
+            });
+            var retUpdate = context.BatchUpdate(listEx);
+        }
+
+
+        #endregion
     }
 
 

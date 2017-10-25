@@ -1,0 +1,30 @@
+﻿{
+  "lightData": {
+    "connections": [
+      {
+        "name": "mssql",
+        "connectionString": "Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;",
+        "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
+        "configParams": {
+          "strictMode": true
+        }
+      },
+      {
+        "name": "mssql_2008",
+        "connectionString": "Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;",
+        "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
+        "configParams": {
+          "version": "10.0"
+        }
+      },
+      {
+        "name": "mssql_2012",
+        "connectionString": "Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;",
+        "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
+        "configParams": {
+          "version": "11.0"
+        }
+      }
+    ]
+  }
+}

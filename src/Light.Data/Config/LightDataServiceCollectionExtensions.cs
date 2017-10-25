@@ -65,5 +65,17 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             return serviceCollection;
         }
+
+        public static IServiceCollection AddDataContext(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<DataContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
+        {
+            DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
+            return AddDataContext<DataContext>(serviceCollection, configFilePath, optionsAction, contextLifetime);
+        }
+
+        public static IServiceCollection AddDataContext<TContext>(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<TContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped) where TContext : DataContext
+        {
+            DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
+            return AddDataContext(serviceCollection, configFilePath, optionsAction, contextLifetime);
+        }
     }
 }

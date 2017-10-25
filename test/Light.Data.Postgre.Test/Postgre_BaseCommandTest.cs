@@ -107,6 +107,10 @@ namespace Light.Data.Postgre.Test
             DataContext context7 = CreateBuilderContextByDiConfigGlobalDefault();
             List<TeBaseField> listAc7 = context7.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc7);
+
+            DataContext context8 = CreateBuilderContextByConfigFile();
+            List<TeBaseField> listAc8 = context8.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc8);
         }
 
         [Fact]

@@ -6,7 +6,7 @@
 
 | 数据库 | 说明 |
 |:------|:------|
-| SqlServer | 支持SqlServer2008或以上 |
+| SqlServer | 需nuget安装Light.Data.Mssql类库, 支持SqlServer2008或以上 |
 | Mysql | 需nuget安装Light.Data.Mysql类库 |
 | Postgre | 需nuget安装Light.Data.Postgre类库 |
 
@@ -466,7 +466,7 @@ providerName 对应数据库种类的类名
 
 | 数据库 | Provider | 说明 |
 |:------|:------|:------|
-| SqlServer | Light.Data.Mssql.MssqlProvider | |
+| SqlServer | Light.Data.Mssql.MssqlProvider | 需nuget安装Light.Data.Mssql类库 |
 | Mysql | Light.Data.Mysql.MysqlProvider | 需nuget安装Light.Data.Mysql类库 |
 | Postgre | Light.Data.Postgre.PostgreProvider | 需nuget安装Light.Data.Postgre类库 |
 
@@ -594,7 +594,7 @@ DataContextOptionsBuilder<TContext>主要方法
 
 | 方法 | 说明 |
 |:------|:------|
-| UseMssql(string connectionString) | 设置数据库为SqlServer时的连接字符串 |
+| UseMssql(string connectionString) | 设置数据库为SqlServer时的连接字符串, 需nuget安装Light.Data.Mssql类库 |
 | UseMysql(string connectionString) | 设置数据库为Mysql时的连接字符串, 需nuget安装Light.Data.Mysql类库 |
 | UsePostgre(string connectionString) | 设置数据库为Postgre时的连接字符串, 需nuget安装Light.Data.Postgre类库 |
 | SetTimeout(int timeout) | 设置执行语句超时时间, 单位毫秒, 默认60000 |

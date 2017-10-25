@@ -17,28 +17,33 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Light.Data.Postgre\Light.Data.Postgre.csproj" />
+    <ProjectReference Include="..\src\Light.Data.Mssql\Light.Data.Mssql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Model\DBSchema_Postgre.cs">
-      <DependentUpon>DBSchema_Postgre.tt</DependentUpon>
+    <Compile Update="Model\DBSchema_Mssql.cs">
+      <DependentUpon>DBSchema_Mssql.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Model\DBSchema_Postgre_NP.cs">
-      <DependentUpon>DBSchema_Postgre_NP.tt</DependentUpon>
+    <Compile Update="Model\DBSchema_Mssql_NP.cs">
+      <DependentUpon>DBSchema_Mssql_NP.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Generator></Generator>
+    </None>
     <None Update="Config\mapper.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>mapper.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <Generator></Generator>
     </None>
     <None Update="Config\mapper.tt">
       <LastGenOutput>mapper.json</LastGenOutput>
@@ -46,9 +51,10 @@
     </None>
     <None Update="Config\mapper_relate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Generator></Generator>
     </None>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="database.sql">
+      <Generator></Generator>
     </None>
     <None Update="lightdata2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -57,12 +63,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Generator></Generator>
     </None>
-    <None Update="Model\DBSchema_Postgre.tt">
-      <LastGenOutput>DBSchema_Postgre.cs</LastGenOutput>
+    <None Update="Model\DBSchema_Mssql.tt">
+      <LastGenOutput>DBSchema_Mssql.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="Model\DBSchema_Postgre_NP.tt">
-      <LastGenOutput>DBSchema_Postgre_NP.cs</LastGenOutput>
+    <None Update="Model\DBSchema_Mssql_NP.tt">
+      <LastGenOutput>DBSchema_Mssql_NP.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
   </ItemGroup>

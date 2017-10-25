@@ -2,22 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.0.4</Version>
     <Authors>Aquila Huang</Authors>
     <Company>Aquila Huang</Company>
-    <Description>Mysql provider for Light.Data</Description>
+    <Description>Mssql provider for Light.Data</Description>
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <Version>2.0.4</Version>
-    <PackageTags>Database, Data, ORM, ADO.NET, SQL, MYSQL</PackageTags>
+    <PackageTags>Database, Data, ORM, ADO.NET, SQL, SQLSERVER</PackageTags>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.4.0</FileVersion>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="6.10.3-rc" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>

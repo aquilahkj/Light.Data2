@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Light.Data\Light.Data.csproj" />
+    <ProjectReference Include="..\..\src\Light.Data.Mssql\Light.Data.Mssql.csproj" />
   </ItemGroup>
 
   <ItemGroup>

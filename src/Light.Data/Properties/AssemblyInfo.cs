@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Light.Data.Extensions")]
 [assembly: InternalsVisibleTo("Light.Data.Test")]
+[assembly: InternalsVisibleTo("Light.Data.Mssql")]
+[assembly: InternalsVisibleTo("Light.Data.Mssql.Test")]
 [assembly: InternalsVisibleTo("Light.Data.Mysql")]
 [assembly: InternalsVisibleTo("Light.Data.Mysql.Test")]
 [assembly: InternalsVisibleTo("Light.Data.Postgre")]

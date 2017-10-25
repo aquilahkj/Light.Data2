@@ -10,11 +10,22 @@ namespace Light.Data
     {
         static object locker = new object();
 
+        static bool useEntryAssemblyDirectory = true;
+
         static HashSet<string> configFilePaths = new HashSet<string>();
 
         static bool initialed;
 
         static Dictionary<Type, DataTableMapperSetting> settingDict = new Dictionary<Type, DataTableMapperSetting>();
+
+        public static bool UseEntryAssemblyDirectory {
+            get {
+                return useEntryAssemblyDirectory;
+            }
+            set {
+                useEntryAssemblyDirectory = value;
+            }
+        }
 
         public static void AddConfigFilePath(string filePath)
         {
@@ -39,7 +50,19 @@ namespace Light.Data
 
         static void LoadData(string configFilePath)
         {
-            FileInfo fileInfo = new FileInfo(configFilePath);
+            FileInfo fileInfo;
+            if (useEntryAssemblyDirectory)
+            {
+                fileInfo = FileHelper.GetFileInfo(configFilePath, out bool absolute);
+                if (!fileInfo.Exists && !absolute)
+                {
+                    fileInfo = new FileInfo(configFilePath);
+                }
+            }
+            else
+            {
+                fileInfo = new FileInfo(configFilePath);
+            }
             if (fileInfo.Exists) {
                 using (StreamReader reader = fileInfo.OpenText()) {
                     string content = reader.ReadToEnd();

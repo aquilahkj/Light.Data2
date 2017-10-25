@@ -125,6 +125,18 @@ namespace Light.Data.Mysql.Test
             return context;
         }
 
+        public TestContext CreateBuilderContextByConfigFile()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContext<TestContext>("lightdata2.json", config => {
+                config.ConfigName = "mysql2";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContext context = provider.GetRequiredService<TestContext>();
+            return context;
+        }
+
         public DataContext CreateContext()
         {
             DataContext context = new DataContext("mysql");
