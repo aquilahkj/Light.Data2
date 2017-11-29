@@ -355,21 +355,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -814,21 +808,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -1273,21 +1261,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -1732,21 +1714,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -2191,21 +2167,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -2650,21 +2620,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -3109,21 +3073,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -3568,21 +3526,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -4027,21 +3979,15 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		public int Count {
-			get {
-				return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public int Count() {
+			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		public long LongCount {
-			get {
-				return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
-			}
+		public long LongCount() {
+			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>

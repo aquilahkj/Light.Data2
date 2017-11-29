@@ -137,10 +137,12 @@ namespace Light.Data
         {
             int start;
             int size = count;
-            if (_region == null) {
+            if (_region == null)
+            {
                 start = 0;
             }
-            else {
+            else
+            {
                 start = _region.Start;
             }
             _region = new Region(start, size);
@@ -151,10 +153,12 @@ namespace Light.Data
         {
             int start = index;
             int size;
-            if (_region == null) {
+            if (_region == null)
+            {
                 size = int.MaxValue;
             }
-            else {
+            else
+            {
                 size = _region.Size;
             }
             _region = new Region(start, size);
@@ -177,10 +181,12 @@ namespace Light.Data
 
         public override IQuery<T> PageSize(int page, int size)
         {
-            if (page < 1) {
+            if (page < 1)
+            {
                 throw new ArgumentOutOfRangeException(nameof(page));
             }
-            if (size < 1) {
+            if (size < 1)
+            {
                 throw new ArgumentOutOfRangeException(nameof(size));
             }
             page--;
@@ -203,16 +209,14 @@ namespace Light.Data
 
         #region aggregate function
 
-        public override int Count {
-            get {
-                return Convert.ToInt32(_context.AggregateCount(_mapping, _query, _level));
-            }
+        public override int Count()
+        {
+            return Convert.ToInt32(_context.AggregateCount(_mapping, _query, _level));
         }
 
-        public override long LongCount {
-            get {
-                return Convert.ToInt64(_context.AggregateCount(_mapping, _query, _level));
-            }
+        public override long LongCount()
+        {
+            return Convert.ToInt64(_context.AggregateCount(_mapping, _query, _level));
         }
 
         //public override IAggregateField<T> AggregateField()
@@ -236,10 +240,9 @@ namespace Light.Data
             return target;
         }
 
-        public override bool Exists {
-            get {
-                return _context.Exists(_mapping, _query);
-            }
+        public override bool Exists()
+        {
+            return _context.Exists(_mapping, _query);
         }
 
         public override List<T> ToList()
@@ -294,7 +297,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
         {
             LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
-            if (queryExpression != null) {
+            if (queryExpression != null)
+            {
                 lightQuery.Where(queryExpression);
             }
             return new LightJoinTable<T, T1>(this, JoinType.InnerJoin, lightQuery, onExpression);
@@ -309,7 +313,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> Join<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression)
         {
             QueryBase<T1> queryBase = query as QueryBase<T1>;
-            if (queryBase == null) {
+            if (queryBase == null)
+            {
                 throw new ArgumentException(nameof(query));
             }
             return new LightJoinTable<T, T1>(this, JoinType.InnerJoin, queryBase, onExpression);
@@ -318,7 +323,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
         {
             LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
-            if (queryExpression != null) {
+            if (queryExpression != null)
+            {
                 lightQuery.Where(queryExpression);
             }
             return new LightJoinTable<T, T1>(this, JoinType.LeftJoin, lightQuery, onExpression);
@@ -333,7 +339,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
         {
             LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
-            if (queryExpression != null) {
+            if (queryExpression != null)
+            {
                 lightQuery.Where(queryExpression);
             }
             return new LightJoinTable<T, T1>(this, JoinType.RightJoin, lightQuery, onExpression);
@@ -342,7 +349,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> LeftJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression)
         {
             QueryBase<T1> queryBase = query as QueryBase<T1>;
-            if (queryBase == null) {
+            if (queryBase == null)
+            {
                 throw new ArgumentException(nameof(query));
             }
             return new LightJoinTable<T, T1>(this, JoinType.LeftJoin, queryBase, onExpression);
@@ -357,7 +365,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> RightJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression)
         {
             QueryBase<T1> queryBase = query as QueryBase<T1>;
-            if (queryBase == null) {
+            if (queryBase == null)
+            {
                 throw new ArgumentException(nameof(query));
             }
             return new LightJoinTable<T, T1>(this, JoinType.RightJoin, queryBase, onExpression);
@@ -366,7 +375,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> Join<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
         {
             AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
-            if (aggregateBase == null) {
+            if (aggregateBase == null)
+            {
                 throw new ArgumentException(nameof(aggregate));
             }
             return new LightJoinTable<T, T1>(this, JoinType.InnerJoin, aggregateBase, onExpression);
@@ -375,7 +385,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> LeftJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
         {
             AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
-            if (aggregateBase == null) {
+            if (aggregateBase == null)
+            {
                 throw new ArgumentException(nameof(aggregate));
             }
             return new LightJoinTable<T, T1>(this, JoinType.LeftJoin, aggregateBase, onExpression);
@@ -384,7 +395,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> RightJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
         {
             AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
-            if (aggregateBase == null) {
+            if (aggregateBase == null)
+            {
                 throw new ArgumentException(nameof(aggregate));
             }
             return new LightJoinTable<T, T1>(this, JoinType.RightJoin, aggregateBase, onExpression);
@@ -393,7 +405,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> Join<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression)
         {
             SelectBase<T1> selectBase = select as SelectBase<T1>;
-            if (selectBase == null) {
+            if (selectBase == null)
+            {
                 throw new ArgumentException(nameof(select));
             }
             return new LightJoinTable<T, T1>(this, JoinType.InnerJoin, selectBase, onExpression);
@@ -402,7 +415,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> LeftJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression)
         {
             SelectBase<T1> selectBase = select as SelectBase<T1>;
-            if (selectBase == null) {
+            if (selectBase == null)
+            {
                 throw new ArgumentException(nameof(select));
             }
             return new LightJoinTable<T, T1>(this, JoinType.LeftJoin, selectBase, onExpression);
@@ -411,7 +425,8 @@ namespace Light.Data
         public override IJoinTable<T, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression)
         {
             SelectBase<T1> selectBase = select as SelectBase<T1>;
-            if (selectBase == null) {
+            if (selectBase == null)
+            {
                 throw new ArgumentException(nameof(select));
             }
             return new LightJoinTable<T, T1>(this, JoinType.RightJoin, selectBase, onExpression);
@@ -431,7 +446,8 @@ namespace Light.Data
             K target = default(K);
             Region region = new Region(0, 1);
             target = _context.QueryDynamicAggregateSingle<K>(model, _query, null, _order, region, null);
-            if (target == null) {
+            if (target == null)
+            {
                 object obj = model.OutputMapping.InitialData();
                 target = (K)obj;
             }
@@ -568,7 +584,8 @@ namespace Light.Data
             K target = default(K);
             Region region = new Region(0, 1);
             target = await _context.QueryDynamicAggregateSingleAsync<K>(model, _query, null, _order, region, null, cancellationToken);
-            if (target == null) {
+            if (target == null)
+            {
                 object obj = model.OutputMapping.InitialData();
                 target = (K)obj;
             }

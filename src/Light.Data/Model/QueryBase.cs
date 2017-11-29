@@ -51,17 +51,11 @@ namespace Light.Data
             _mapping = DataEntityMapping.GetEntityMapping(typeof(T));
         }
 
-        public abstract int Count {
-            get;
-        }
+        public abstract int Count();
 
-        public abstract long LongCount {
-            get;
-        }
+        public abstract long LongCount();
 
-        public abstract bool Exists {
-            get;
-        }
+        public abstract bool Exists();
 
         public abstract int Delete();
 

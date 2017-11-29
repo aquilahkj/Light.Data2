@@ -119,18 +119,12 @@ namespace Light.Data
         /// <summary>
         /// Gets the datas count.
         /// </summary>
-        /// <value>The count.</value>
-        int Count {
-            get;
-        }
+        int Count();
 
         /// <summary>
         /// Gets the datas long count.
         /// </summary>
-        /// <value>The long count.</value>
-        long LongCount {
-            get;
-        }
+        long LongCount();
 
         /// <summary>
         /// Get single instance.
@@ -148,10 +142,7 @@ namespace Light.Data
         /// <summary>
         /// Gets the data is exists with query expression.
         /// </summary>
-        /// <value><c>true</c> if exists; otherwise, <c>false</c>.</value>
-        bool Exists {
-            get;
-        }
+        bool Exists();
 
         /// <summary>
         /// To the list.

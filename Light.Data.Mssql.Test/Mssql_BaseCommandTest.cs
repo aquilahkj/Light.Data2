@@ -185,6 +185,58 @@ namespace Light.Data.Mssql.Test
         }
 
         [Fact]
+        public void TestCase_Count_Exists()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
+            int ex;
+            int ac;
+
+            long exl;
+            long acl;
+
+            bool exe;
+            bool ace;
+
+            ex = list.Count;
+            ac = context.Query<TeBaseField>().Count();
+            AssertExtend.StrictEqual(ex, ac);
+
+            exl = list.LongCount();
+            acl = context.Query<TeBaseField>().LongCount();
+            AssertExtend.StrictEqual(exl, acl);
+
+            exe = list.Count > 0;
+            ace = context.Query<TeBaseField>().Exists();
+            AssertExtend.StrictEqual(exe, ace);
+        }
+
+        [Fact]
+        public async Task TestCase_Count_Exists_Async()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
+            int ex;
+            int ac;
+
+            long exl;
+            long acl;
+
+            bool exe;
+            bool ace;
+
+            ex = list.Count;
+            ac = await context.Query<TeBaseField>().CountAsync();
+            AssertExtend.StrictEqual(ex, ac);
+
+            exl = list.LongCount();
+            acl = await context.Query<TeBaseField>().LongCountAsync();
+            AssertExtend.StrictEqual(exl, acl);
+
+            exe = list.Count > 0;
+            ace = await context.Query<TeBaseField>().ExistsAsync();
+            AssertExtend.StrictEqual(exe, ace);
+        }
+
+        [Fact]
         public void TestCase_CUD_Single()
         {
             context.TruncateTable<TeBaseField>();

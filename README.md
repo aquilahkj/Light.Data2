@@ -1,4 +1,4 @@
-﻿# LightData 使用文档
+# LightData 使用文档
  
 `Light.Data`是一个轻量级的基于.net standard 2.0的ORM框架, 通过对实体模型类的Attribute或者配置文件进行配置与数据表的对应关系. 使用核心类`DataContext`对数据表进行增删改查的操作.
 
@@ -988,9 +988,9 @@ IQuery主要查询用方法:
 | ToArray() | 结果以T[]的方式输出 |
 | First() | 输出的查询结果的首个数据结果对象,如无数据则为null	|
 | ElementAt(int index) | 输出的查询结果的指定位数数据结果对象,如无数据则为null |
-| Exists | 判断该IQuery是否有数据 |
-| Count	| 返回该IQuery的数据长度,返回类型为int |
-| LongCount | 返回该IQuery的数据长度,返回类型为long |
+| Exists() | 判断该IQuery是否有数据 |
+| Count()	| 返回该IQuery的数据长度,返回类型为int |
+| LongCount() | 返回该IQuery的数据长度,返回类型为long |
 
 
 #### 全查询
@@ -1437,8 +1437,8 @@ IJoinTable主要查询方法
 | SetDistinct(bool distinct) | 设定是否使用Distinct方式输出结果 |
 | Select<K> (Expression\<Func\<T, T1, K>> expression)| 选择需要输出的字段 |
 | SelectInsert<K> (Expression\<Func\<T, T1, K>> expression) | 选择需要输出的字段并插入指定的表 |
-| Count	| 返回该IJoinTable的数据长度,返回类型为int |
-| LongCount | 返回该IJoinTable的数据长度,返回类型为long|
+| Count()	| 返回该IJoinTable的数据长度,返回类型为int |
+| LongCount() | 返回该IJoinTable的数据长度,返回类型为long|
 
 ### 连表方法(Join Table Method)
 

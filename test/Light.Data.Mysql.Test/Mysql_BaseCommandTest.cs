@@ -20,7 +20,8 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> list = new List<TeBaseField>();
             DateTime now = DateTime.Now;
             DateTime d = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
-            for (int i = 1; i <= count; i++) {
+            for (int i = 1; i <= count; i++)
+            {
                 int x = i % 5 == 0 ? -1 : 1;
                 TeBaseField item = new TeBaseField();
                 item.BoolField = i % 3 == 0;
@@ -108,7 +109,7 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> listAc7 = context7.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc7);
 
-            DataContext context8 = CreateBuilderContextByDiConfigGlobalDefault();
+            DataContext context8 = CreateBuilderContextByConfigFile();
             List<TeBaseField> listAc8 = context8.Query<TeBaseField>().ToList();
             AssertExtend.StrictEqual(listEx, listAc8);
         }
@@ -182,6 +183,58 @@ namespace Light.Data.Mysql.Test
             ex = list[10];
             ac = await context.Query<TeBaseField>().ElementAtAsync(10);
             AssertExtend.StrictEqual(ex, ac);
+        }
+
+        [Fact]
+        public void TestCase_Count_Exists()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
+            int ex;
+            int ac;
+
+            long exl;
+            long acl;
+
+            bool exe;
+            bool ace;
+
+            ex = list.Count;
+            ac = context.Query<TeBaseField>().Count();
+            AssertExtend.StrictEqual(ex, ac);
+
+            exl = list.LongCount();
+            acl = context.Query<TeBaseField>().LongCount();
+            AssertExtend.StrictEqual(exl, acl);
+
+            exe = list.Count > 0;
+            ace = context.Query<TeBaseField>().Exists();
+            AssertExtend.StrictEqual(exe, ace);
+        }
+
+        [Fact]
+        public async Task TestCase_Count_Exists_Async()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
+            int ex;
+            int ac;
+
+            long exl;
+            long acl;
+
+            bool exe;
+            bool ace;
+
+            ex = list.Count;
+            ac = await context.Query<TeBaseField>().CountAsync();
+            AssertExtend.StrictEqual(ex, ac);
+
+            exl = list.LongCount();
+            acl = await context.Query<TeBaseField>().LongCountAsync();
+            AssertExtend.StrictEqual(exl, acl);
+
+            exe = list.Count > 0;
+            ace = await context.Query<TeBaseField>().ExistsAsync();
+            AssertExtend.StrictEqual(exe, ace);
         }
 
         [Fact]
@@ -396,7 +449,8 @@ namespace Light.Data.Mysql.Test
             listAc = context.Query<TeBaseField>().ToList();
             AssertExtend.Equal(listEx, listAc);
             DateTime d = GetNow();
-            listEx.ForEach(x => {
+            listEx.ForEach(x =>
+            {
                 x.DateTimeField = d;
                 x.DateTimeFieldNull = null;
                 x.Int32Field = 2;
@@ -432,7 +486,8 @@ namespace Light.Data.Mysql.Test
             listAc = await context.Query<TeBaseField>().ToListAsync();
             AssertExtend.Equal(listEx, listAc);
             DateTime d = GetNow();
-            listEx.ForEach(x => {
+            listEx.ForEach(x =>
+            {
                 x.DateTimeField = d;
                 x.DateTimeFieldNull = null;
                 x.Int32Field = 2;
@@ -468,7 +523,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(count, result);
             DateTime uptime = GetNow();
             result = context.Query<TeBaseField>()
-                            .Update(x => new TeBaseField {
+                            .Update(x => new TeBaseField
+                            {
                                 DateTimeField = uptime,
                                 Int32Field = 2,
                                 Int32FieldNull = null
@@ -481,33 +537,43 @@ namespace Light.Data.Mysql.Test
             const int rdd = 20;
 
             result = context.Query<TeBaseField>().Where(x => x.Id >= listEx[0].Id && x.Id <= listEx[0].Id + rdd - 1)
-                            .Update(x => new TeBaseField {
+                            .Update(x => new TeBaseField
+                            {
                                 Int32Field = 3
                             });
 
             Assert.Equal(rdd, result);
             listAc = context.Query<TeBaseField>().ToList();
             Assert.Equal(count, listAc.Count);
-            Assert.True(listAc.TrueForAll(x => {
-                if (x.Id <= rdd) {
+            Assert.True(listAc.TrueForAll(x =>
+            {
+                if (x.Id <= rdd)
+                {
                     return x.Int32Field == 3;
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             }));
 
             result = context.Query<TeBaseField>().Where(x => x.Id >= listEx[0].Id && x.Id <= listEx[0].Id + rdd - 1)
-                .Update(x => new TeBaseField {
+                .Update(x => new TeBaseField
+                {
                     Int32Field = 6,
                     VarcharField = "66"
                 });
             Assert.Equal(rdd, result);
             listAc = context.Query<TeBaseField>().ToList();
             Assert.Equal(count, listAc.Count);
-            Assert.True(listAc.TrueForAll(x => {
-                if (x.Id <= rdd) {
+            Assert.True(listAc.TrueForAll(x =>
+            {
+                if (x.Id <= rdd)
+                {
                     return x.Int32Field == 6 && x.VarcharField == "66";
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             }));
@@ -525,7 +591,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(count, result);
             DateTime uptime = GetNow();
             result = await context.Query<TeBaseField>()
-                            .UpdateAsync(x => new TeBaseField {
+                            .UpdateAsync(x => new TeBaseField
+                            {
                                 DateTimeField = uptime,
                                 Int32Field = 2,
                                 Int32FieldNull = null
@@ -538,33 +605,43 @@ namespace Light.Data.Mysql.Test
             const int rdd = 20;
 
             result = await context.Query<TeBaseField>().Where(x => x.Id >= listEx[0].Id && x.Id <= listEx[0].Id + rdd - 1)
-                            .UpdateAsync(x => new TeBaseField {
+                            .UpdateAsync(x => new TeBaseField
+                            {
                                 Int32Field = 3
                             });
 
             Assert.Equal(rdd, result);
             listAc = await context.Query<TeBaseField>().ToListAsync();
             Assert.Equal(count, listAc.Count);
-            Assert.True(listAc.TrueForAll(x => {
-                if (x.Id <= rdd) {
+            Assert.True(listAc.TrueForAll(x =>
+            {
+                if (x.Id <= rdd)
+                {
                     return x.Int32Field == 3;
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             }));
 
             result = await context.Query<TeBaseField>().Where(x => x.Id >= listEx[0].Id && x.Id <= listEx[0].Id + rdd - 1)
-                .UpdateAsync(x => new TeBaseField {
+                .UpdateAsync(x => new TeBaseField
+                {
                     Int32Field = 6,
                     VarcharField = "66"
                 });
             Assert.Equal(rdd, result);
             listAc = await context.Query<TeBaseField>().ToListAsync();
             Assert.Equal(count, listAc.Count);
-            Assert.True(listAc.TrueForAll(x => {
-                if (x.Id <= rdd) {
+            Assert.True(listAc.TrueForAll(x =>
+            {
+                if (x.Id <= rdd)
+                {
                     return x.Int32Field == 6 && x.VarcharField == "66";
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             }));
@@ -588,7 +665,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(count - 5, ret);
             List<TeBaseFieldSelectInsert> ac2 = context.Query<TeBaseFieldSelectInsert>().ToList();
             Assert.Equal(count - 5, ac2.Count);
-            for (int i = 1; i <= ac2.Count; i++) {
+            for (int i = 1; i <= ac2.Count; i++)
+            {
                 Assert.Equal(i, ac2[i - 1].Id);
             }
         }
@@ -611,7 +689,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(count - 5, ret);
             List<TeBaseFieldSelectInsert> ac2 = await context.Query<TeBaseFieldSelectInsert>().ToListAsync();
             Assert.Equal(count - 5, ac2.Count);
-            for (int i = 1; i <= ac2.Count; i++) {
+            for (int i = 1; i <= ac2.Count; i++)
+            {
                 Assert.Equal(i, ac2[i - 1].Id);
             }
         }
@@ -763,18 +842,20 @@ namespace Light.Data.Mysql.Test
             TeBaseField ex = null;
             TeBaseField ac = null;
             context.TruncateTable<TeBaseField>();
-            
+
             ex = list[0];
-            using(var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Insert(ex);
                 trans.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
-            
+
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Insert(ex);
                 trans.RollbackTrans();
@@ -784,7 +865,8 @@ namespace Light.Data.Mysql.Test
             Assert.Null(ac);
 
             ex = list[2];
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Insert(ex);
             }
@@ -803,29 +885,32 @@ namespace Light.Data.Mysql.Test
 
             ex = list[0];
             ex.Int32Field = 10000;
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Update(ex);
                 trans.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
-            
+
             ex = list[1];
             tg = context.SelectById<TeBaseField>(ex.Id);
             tg.Int32Field = 10000;
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Update(tg);
                 trans.RollbackTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
-            
+
             ex = list[1];
             tg = context.SelectById<TeBaseField>(ex.Id);
             tg.Int32Field = 10000;
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Update(tg);
             }
@@ -841,9 +926,10 @@ namespace Light.Data.Mysql.Test
             TeBaseField ex = null;
             TeBaseField ac = null;
             DataContext transContext = null;
-            
+
             ex = list[0];
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Delete(ex);
                 trans.CommitTrans();
@@ -853,7 +939,8 @@ namespace Light.Data.Mysql.Test
 
             transContext = CreateContext();
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Delete(ex);
                 trans.RollbackTrans();
@@ -863,7 +950,8 @@ namespace Light.Data.Mysql.Test
 
             transContext = CreateContext();
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Delete(ex);
             }
@@ -883,14 +971,17 @@ namespace Light.Data.Mysql.Test
 
 
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 Assert.True(context.IsTransactionMode);
-                try {
+                try
+                {
                     context.Insert(ex);
                     context.Insert(error);
                 }
-                catch(Exception exception) {
+                catch (Exception exception)
+                {
                     output.WriteLine(exception.ToString());
                 }
                 Assert.False(trans.CommitTrans());
@@ -917,7 +1008,8 @@ namespace Light.Data.Mysql.Test
             ex.Id = 0;
             ex1 = list[1];
             ex1.Int32Field = 3000;
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Insert(ex);
                 context.Update(ex1);
@@ -942,7 +1034,8 @@ namespace Light.Data.Mysql.Test
             ex.Id = 0;
             ex1 = list[1];
             ex1.Int32Field = 3000;
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Insert(ex);
                 context.Delete(list[2]);
@@ -952,7 +1045,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(ex, ac);
             ac = context.SelectById<TeBaseField>(list[2].Id);
             Assert.Null(ac);
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Update(ex1);
                 context.Delete(list[3]);
@@ -972,7 +1066,8 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> ac = null;
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.Insert(list[0]);
                 context.BatchInsert(list, 1, list.Count - 1);
@@ -984,7 +1079,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(ex, ac);
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 context.BatchInsert(list, 0, list.Count - 1);
                 context.Insert(list[list.Count - 1]);
@@ -1009,7 +1105,8 @@ namespace Light.Data.Mysql.Test
             ex.Id = 0;
             ex1 = list[1];
             ex1.Int32Field = 3000;
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 await context.InsertAsync(ex);
                 await context.UpdateAsync(ex1);
@@ -1029,7 +1126,8 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> ac = null;
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 await context.InsertAsync(list[0]);
                 await context.BatchInsertAsync(list, 1, list.Count - 1);
@@ -1041,7 +1139,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(ex, ac);
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 await context.BatchInsertAsync(list, 0, list.Count - 1);
                 await context.InsertAsync(list[list.Count - 1]);
@@ -1092,7 +1191,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "select * from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 listAc = executor.QueryList<TeBaseField>();
@@ -1146,7 +1246,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "select * from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 listAc = await executor.QueryListAsync<TeBaseField>();
@@ -1201,7 +1302,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "select * from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 listAc = new List<TeBaseField>(executor.Query<TeBaseField>());
@@ -1248,7 +1350,8 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", itemEx.Id);
             ps[1] = new DataParameter("P2", "cdf");
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql, ps);
                 ret = executor.ExecuteNonQuery();
@@ -1297,7 +1400,8 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", itemEx.Id);
             ps[1] = new DataParameter("P2", "cdf");
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql, ps);
                 ret = await executor.ExecuteNonQueryAsync();
@@ -1331,7 +1435,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "select count(1) from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 ac = Convert.ToInt32(executor.ExecuteScalar());
@@ -1362,7 +1467,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "select count(1) from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 ac = Convert.ToInt32(await executor.ExecuteScalarAsync());
@@ -1391,7 +1497,8 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
             ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 executor.ExecuteNonQuery();
@@ -1420,7 +1527,8 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
             ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 await executor.ExecuteNonQueryAsync();
@@ -1461,7 +1569,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "sptest1";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 listAc = executor.QueryList<TeBaseField>();
@@ -1509,7 +1618,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "sptest1";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 listAc = await executor.QueryListAsync<TeBaseField>();
@@ -1558,7 +1668,8 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "sptest1";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 listAc = new List<TeBaseField>(executor.QueryList<TeBaseField>());
@@ -1598,7 +1709,8 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 3);
             ps[1] = new DataParameter("P2", "abc");
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 executor.ExecuteNonQuery();
@@ -1639,7 +1751,8 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 3);
             ps[1] = new DataParameter("P2", "abc");
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 await executor.ExecuteNonQueryAsync();
@@ -1672,7 +1785,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "sptest5";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 ac = Convert.ToInt32(executor.ExecuteScalar());
@@ -1703,7 +1817,8 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "sptest5";
-            using (var trans = context.CreateTransactionScope()) {
+            using (var trans = context.CreateTransactionScope())
+            {
                 trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 ac = Convert.ToInt32(await executor.ExecuteScalarAsync());

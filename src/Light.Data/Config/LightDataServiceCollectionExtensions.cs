@@ -75,7 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddDataContext<TContext>(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<TContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped) where TContext : DataContext
         {
             DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
-            return AddDataContext(serviceCollection, configFilePath, optionsAction, contextLifetime);
+            return AddDataContext(serviceCollection, configuration, optionsAction, contextLifetime);
         }
     }
 }

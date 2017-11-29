@@ -124,18 +124,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -397,18 +391,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -670,18 +658,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -943,18 +925,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1216,18 +1192,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1489,18 +1459,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1762,18 +1726,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -2035,18 +1993,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
@@ -2308,18 +2260,12 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
-		int Count {
-			get;
-		}
+		int Count();
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
-		long LongCount {
-			get;
-		}
+		long LongCount();
 
 		/// <summary>
 		/// Gets the datas count.
