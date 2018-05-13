@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using System.Text.RegularExpressions;
+//using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
@@ -15,9 +15,9 @@ namespace Light.Data
             TypeInfo typeInfo = type.GetTypeInfo();
             string indexName = property.Name;
             string fieldName = string.IsNullOrEmpty(config.Name) ? property.Name : config.Name;
-            if (!Regex.IsMatch(fieldName, _fieldRegex, RegexOptions.IgnoreCase)) {
-                throw new LightDataException(string.Format(SR.FieldNameIsInvalid, type, fieldName));
-            }
+            //if (!Regex.IsMatch(fieldName, _fieldRegex, RegexOptions.IgnoreCase)) {
+            //    throw new LightDataException(string.Format(SR.FieldNameIsInvalid, type, fieldName));
+            //}
 
             DataFieldMapping fieldMapping;
 

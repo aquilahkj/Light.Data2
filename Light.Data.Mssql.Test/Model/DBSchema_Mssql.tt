@@ -763,7 +763,7 @@ order by
         public static string ToPascalCase(string name)
         {
             StringBuilder sb = new StringBuilder();
-            string[] parts = name.Split(new char[]{'_'});
+            string[] parts = name.Split(new char[] { '_',' ' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string part in parts)
             {
                 if (part.Length > 0)
@@ -787,7 +787,7 @@ order by
         public static string ToCamelCase(string name)
         {
             StringBuilder sb = new StringBuilder();
-            string[] parts = name.Split(new char[]{'_'});
+            string[] parts = name.Split(new char[] { '_',' ' }, StringSplitOptions.RemoveEmptyEntries);
             bool f=false;
             foreach (string part in parts)
             {
