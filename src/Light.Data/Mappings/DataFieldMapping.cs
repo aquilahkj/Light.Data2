@@ -158,7 +158,9 @@ namespace Light.Data
             }
         }
 
-        public abstract object ToColumn(object value);
+        public abstract object GetInsertData(object entity, bool refreshField);
+
+        //public abstract object ToColumn(object value);
 
         public abstract object ToParameter(object value);
     }

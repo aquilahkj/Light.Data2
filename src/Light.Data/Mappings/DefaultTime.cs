@@ -14,7 +14,15 @@ namespace Light.Data
 		/// <summary>
 		/// The today.
 		/// </summary>
-		Today
-	}
+		Today,
+        /// <summary>
+		/// The utc now.
+		/// </summary>
+		UtcNow,
+        /// <summary>
+        /// The utc today.
+        /// </summary>
+        UtcToday
+    }
 }
 

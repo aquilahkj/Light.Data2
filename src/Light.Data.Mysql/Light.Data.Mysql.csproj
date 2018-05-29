@@ -9,15 +9,15 @@
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <Version>2.0.5</Version>
+    <Version>2.0.6</Version>
     <PackageTags>Database, Data, ORM, ADO.NET, SQL, MYSQL</PackageTags>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.5.0</FileVersion>
+    <FileVersion>2.0.6.0</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="6.10.3-rc" />
+    <PackageReference Include="MySql.Data" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>

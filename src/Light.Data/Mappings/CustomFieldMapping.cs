@@ -40,11 +40,16 @@ namespace Light.Data
 
 		#region implemented abstract members of DataFieldMapping
 
-		public override object ToColumn (object value)
-		{
-			return value;
-		}
+		//public override object ToColumn (object value)
+		//{
+		//	return value;
+		//}
 
-		#endregion
-	}
+        public override object GetInsertData(object entity, bool refreshField)
+        {
+            object value = Handler.Get(entity);
+            return value;
+        }
+            #endregion
+        }
 }

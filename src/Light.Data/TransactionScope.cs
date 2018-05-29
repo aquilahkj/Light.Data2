@@ -33,7 +33,7 @@ namespace Light.Data
 
         public bool RollbackTrans()
         {
-            return _context.RollbackTrans();
+            return _context.RollbackTrans(true);
         }
 
         public void Dispose()
@@ -59,7 +59,7 @@ namespace Light.Data
             if (!_isDisposed) {
                 if (disposing) {
                     // dispose managed state (managed objects).
-                    _context.CloseTrans();
+                    _context.CloseTrans(true);
                 }
                 // free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // set large fields to null.

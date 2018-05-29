@@ -16,13 +16,23 @@ namespace Light.Data
         /// </summary>
         public int Save()
         {
+            return Save(true);
+        }
+
+        /// <summary>
+        /// 保存数据
+        /// </summary>
+        /// <param name="refresh">is refresh null data field</param>
+        public int Save(bool refresh)
+        {
             DataContext context = GetContext();
             int ret;
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
             if (rawKeys != null) {
                 ret = context.Update(mapping, this);
-            } else {
-                ret = context.Insert(mapping, this);
+            }
+            else {
+                ret = context.Insert(mapping, this, refresh);
             }
             return ret;
         }
@@ -32,7 +42,16 @@ namespace Light.Data
         /// </summary>
         public async Task<int> SaveAsync()
         {
-            return await SaveAsync(CancellationToken.None);
+            return await SaveAsync(true, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 保存数据
+        /// </summary>
+        /// <param name="refresh">is refresh null data field</param>
+        public async Task<int> SaveAsync(bool refresh)
+        {
+            return await SaveAsync(refresh, CancellationToken.None);
         }
 
         /// <summary>
@@ -40,13 +59,23 @@ namespace Light.Data
         /// </summary>
         public async Task<int> SaveAsync(CancellationToken cancellationToken)
         {
+            return await SaveAsync(true, cancellationToken);
+        }
+
+        /// <summary>
+        /// 保存数据
+        /// </summary>
+        /// <param name="refresh">is refresh null data field</param>
+        public async Task<int> SaveAsync(bool refresh, CancellationToken cancellationToken)
+        {
             DataContext context = GetContext();
             int ret;
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
             if (rawKeys != null) {
                 ret = await context.UpdateAsync(mapping, this, cancellationToken);
-            } else {
-                ret = await context.InsertAsync(mapping, this, cancellationToken);
+            }
+            else {
+                ret = await context.InsertAsync(mapping, this, refresh, cancellationToken);
             }
             return ret;
         }
@@ -61,7 +90,8 @@ namespace Light.Data
             if (rawKeys != null) {
                 DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
                 ret = context.Delete(mapping, this);
-            } else {
+            }
+            else {
                 ret = 0;
             }
             return ret;
@@ -85,7 +115,8 @@ namespace Light.Data
             if (rawKeys != null) {
                 DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
                 ret = await context.DeleteAsync(mapping, this, cancellationToken);
-            } else {
+            }
+            else {
                 ret = 0;
             }
             return ret;
@@ -116,7 +147,8 @@ namespace Light.Data
                 string[] array = new string[_updateFields.Count];
                 _updateFields.CopyTo(array);
                 return array;
-            } else {
+            }
+            else {
                 return null;
             }
         }

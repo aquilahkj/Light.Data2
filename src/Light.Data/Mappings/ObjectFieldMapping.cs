@@ -7,25 +7,30 @@ namespace Light.Data
 {
     class ObjectFieldMapping : DataFieldMapping
     {
-        string defaultData;
+        string emptyData;
 
         public ObjectFieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
             : base(type, fieldName, indexName, mapping, isNullable, dbType)
         {
             if (!isNullable) {
                 object value = Activator.CreateInstance(type);
-                defaultData = JsonConvert.SerializeObject(value);
+                emptyData = JsonConvert.SerializeObject(value);
             }
         }
 
-        public override object ToColumn(object value)
+        public override object GetInsertData(object entity, bool refreshField)
         {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+            object value = Handler.Get(entity);
+            if (Object.Equals(value, null)) {
                 if (IsNullable) {
                     return null;
                 }
                 else {
-                    return defaultData;
+                    if (refreshField) {
+                        object obj = Activator.CreateInstance(ObjectType);
+                        Handler.Set(entity, obj);
+                    }
+                    return emptyData;
                 }
             }
             else {
@@ -34,9 +39,25 @@ namespace Light.Data
             }
         }
 
+        //public override object ToColumn(object value)
+        //{
+        //    if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+        //        if (IsNullable) {
+        //            return null;
+        //        }
+        //        else {
+        //            return emptyData;
+        //        }
+        //    }
+        //    else {
+        //        string data = JsonConvert.SerializeObject(value);
+        //        return data;
+        //    }
+        //}
+
         public override object ToParameter(object value)
         {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+            if (Object.Equals(value, null)) {
                 return null;
             }
             else {

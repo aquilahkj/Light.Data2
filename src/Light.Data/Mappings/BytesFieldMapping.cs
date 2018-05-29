@@ -10,20 +10,40 @@ namespace Light.Data
 
         }
 
-        public override object ToColumn(object value)
+        public override object GetInsertData(object entity, bool refreshField)
         {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+            object value = Handler.Get(entity);
+            if (Object.Equals(value, null)) {
                 if (IsNullable) {
                     return null;
                 }
                 else {
-                    return new byte[0];
+                    object result = new byte[0];
+                    if (refreshField) {
+                        Handler.Set(entity, result);
+                    }
+                    return result;
                 }
             }
             else {
                 return value;
             }
         }
+
+        //public override object ToColumn(object value)
+        //{
+        //    if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+        //        if (IsNullable) {
+        //            return null;
+        //        }
+        //        else {
+        //            return new byte[0];
+        //        }
+        //    }
+        //    else {
+        //        return value;
+        //    }
+        //}
 
         public override object ToParameter(object value)
         {

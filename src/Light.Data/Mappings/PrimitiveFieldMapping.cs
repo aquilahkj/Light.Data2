@@ -164,67 +164,116 @@ namespace Light.Data
 
         public override object ToParameter(object value)
         {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
-                return null;
-            }
-            else {
-                if (value is IConvertible ic) {
-                    if (ic.GetTypeCode() != _typeCode) {
-                        return Convert.ChangeType(value, _typeCode, null);
-                    }
-                    else {
-                        return value;
-                    }
-                }
-                else {
-                    return value;
-                }
-            }
+            return value;
+            //if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+            //    return null;
+            //}
+            //else {
+            //    if (value is IConvertible ic) {
+            //        if (ic.GetTypeCode() != _typeCode) {
+            //            return Convert.ChangeType(value, _typeCode, null);
+            //        }
+            //        else {
+            //            return value;
+            //        }
+            //    }
+            //    else {
+            //        return value;
+            //    }
+            //}
         }
 
-        public override object ToColumn(object value)
+        //public override object ToColumn(object value)
+        //{
+        //    if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+        //        if (_defaultValue != null) {
+        //            if (_typeCode == TypeCode.DateTime && _defaultTimeFunction != null) {
+        //                return _defaultTimeFunction.GetValue();
+        //            }
+        //            else {
+        //                return _defaultValue;
+        //            }
+        //        }
+        //        else {
+        //            if (IsNullable) {
+        //                return null;
+        //            }
+        //            else {
+        //                return _minValue;
+        //            }
+        //        }
+        //    }
+        //    else if (_typeCode == TypeCode.DateTime && Object.Equals(value, DateTime.MinValue)) {
+        //        if (_defaultTimeFunction != null) {
+        //            return this._defaultTimeFunction.GetValue();
+        //        }
+        //        else if (_defaultValue != null) {
+        //            return _defaultValue;
+        //        }
+        //        else {
+        //            return value;
+        //        }
+        //    }
+        //    else {
+        //        if (value is IConvertible ic) {
+        //            if (ic.GetTypeCode() != _typeCode) {
+        //                return Convert.ChangeType(value, _typeCode, null);
+        //            }
+        //            else {
+        //                return value;
+        //            }
+        //        }
+        //        else {
+        //            return value;
+        //        }
+        //    }
+        //}
+
+        public override object GetInsertData(object entity, bool refreshField)
         {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
-                if(_defaultValue!=null) {
+            object value = Handler.Get(entity);
+            object result;
+            bool useDef = false;
+            if (Object.Equals(value, null)) {
+                if (_defaultValue != null) {
+                    useDef = true;
                     if (_typeCode == TypeCode.DateTime && _defaultTimeFunction != null) {
-                        return _defaultTimeFunction.GetValue();
-                    } else {
-                        return _defaultValue;
+                        result = _defaultTimeFunction.GetValue();
+                    }
+                    else {
+                        result = _defaultValue;
                     }
                 }
                 else {
                     if (IsNullable) {
-                        return null;
+                        result = null;
                     }
                     else {
-                        return _minValue;
+                        useDef = true;
+                        result = _minValue;
                     }
                 }
             }
             else if (_typeCode == TypeCode.DateTime && Object.Equals(value, DateTime.MinValue)) {
                 if (_defaultTimeFunction != null) {
-                    return this._defaultTimeFunction.GetValue();
+                    useDef = true;
+                    result = this._defaultTimeFunction.GetValue();
                 }
                 else if (_defaultValue != null) {
-                    return _defaultValue;
+                    useDef = true;
+                    result = _defaultValue;
                 }
                 else {
-                    return value;
+                    result = value;
                 }
             }
             else {
-                if (value is IConvertible ic) {
-                    if (ic.GetTypeCode() != _typeCode) {
-                        return Convert.ChangeType(value, _typeCode, null);
-                    }
-                    else {
-                        return value;
-                    }
-                }
-                else {
-                    return value;
-                }
+                result = value;
             }
+            if (useDef && refreshField) {
+                Handler.Set(entity, result);
+            }
+            return result;
         }
     }
 }

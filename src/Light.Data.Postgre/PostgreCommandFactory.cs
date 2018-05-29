@@ -114,7 +114,7 @@ namespace Light.Data.Postgre
             return command;
         }
 
-        public override Tuple<CommandData, int> CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, CreateSqlState state)
+        public override Tuple<CommandData, int> CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
@@ -147,8 +147,9 @@ namespace Light.Data.Postgre
                 string[] valuesList = new string[insertLen];
                 for (int i = 0; i < insertLen; i++) {
                     DataFieldMapping field = fields[i];
-                    object obj = field.Handler.Get(entity);
-                    object value = field.ToColumn(obj);
+                    //object obj = field.Handler.Get(entity);
+                    //object value = field.ToColumn(obj);
+                    object value = field.GetInsertData(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input);
                 }
                 string values = string.Join(",", valuesList);
