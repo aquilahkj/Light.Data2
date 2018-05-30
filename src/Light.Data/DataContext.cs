@@ -201,7 +201,6 @@ namespace Light.Data
                 queryExpression = QueryExpression.And(queryExpression, keyExpression);
                 i++;
             }
-            bool isTrans = BeginTrans(SafeLevel.Default);
             bool exists = Exists(mapping, queryExpression);
             int result;
             if (exists) {
@@ -209,9 +208,6 @@ namespace Light.Data
             }
             else {
                 result = Insert(mapping, data, refresh);
-            }
-            if (isTrans) {
-                CommitTrans();
             }
             return result;
         }
@@ -275,7 +271,6 @@ namespace Light.Data
                 queryExpression = QueryExpression.And(queryExpression, keyExpression);
                 i++;
             }
-            bool isTrans = BeginTrans(SafeLevel.Default);
             bool exists = await ExistsAsync(mapping, queryExpression, cancellationToken);
             int result;
             if (exists) {
@@ -283,9 +278,6 @@ namespace Light.Data
             }
             else {
                 result = await InsertAsync(mapping, data, refresh, cancellationToken);
-            }
-            if (isTrans) {
-                CommitTrans();
             }
             return result;
         }
@@ -368,18 +360,18 @@ namespace Light.Data
                 CreateSqlState state1 = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state1);
             }
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
-                rInt = ExecuteNonQuery(command, SafeLevel.Default);
+                rInt = ExecuteNonQuery(command, SafeLevel.Default, transaction);
             }
             if (commandDataIdentity != null) {
                 using (DbCommand identityCommand = commandDataIdentity.CreateCommand(_database)) {
-                    obj = ExecuteScalar(identityCommand, SafeLevel.Default);
+                    obj = ExecuteScalar(identityCommand, SafeLevel.Default, transaction);
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+            
+            CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 mapping.IdentityField.Handler.Set(data, id);
@@ -403,18 +395,18 @@ namespace Light.Data
                 CreateSqlState state1 = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state1);
             }
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
-                rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
+                rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken, transaction);
             }
             if (commandDataIdentity != null) {
                 using (DbCommand identityCommand = commandDataIdentity.CreateCommand(_database)) {
-                    obj = await ExecuteScalarAsync(identityCommand, SafeLevel.Default, cancellationToken);
+                    obj = await ExecuteScalarAsync(identityCommand, SafeLevel.Default, cancellationToken, transaction);
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+
+            CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 mapping.IdentityField.Handler.Set(data, id);
@@ -668,6 +660,7 @@ namespace Light.Data
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
+        /// <param name="refresh">is refresh null data field</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas, int index, int count, bool refresh)
         {
@@ -731,10 +724,11 @@ namespace Light.Data
                 CreateSqlState state = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
             }
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-                    int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default);
+                    int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default, transaction);
                     if (data.Item1.ReturnRowCount) {
                         result += ret;
                     }
@@ -742,12 +736,11 @@ namespace Light.Data
             }
             if (commandDataIdentity != null) {
                 using (DbCommand identityCommand = commandDataIdentity.CreateCommand(_database)) {
-                    obj = ExecuteScalar(identityCommand, SafeLevel.Default);
+                    obj = ExecuteScalar(identityCommand, SafeLevel.Default, transaction);
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+ 
+            CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 int len = datas.Count;
@@ -801,6 +794,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>The insert rows.</returns>
         /// <param name="datas">Datas.</param>
+        /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, bool refresh, CancellationToken cancellationToken)
@@ -847,6 +841,7 @@ namespace Light.Data
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
+        /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, CancellationToken cancellationToken)
@@ -923,10 +918,11 @@ namespace Light.Data
                 CreateSqlState state = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
             }
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-                    int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken);
+                    int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken, transaction);
                     if (data.Item1.ReturnRowCount) {
                         result += ret;
                     }
@@ -934,12 +930,11 @@ namespace Light.Data
             }
             if (commandDataIdentity != null) {
                 using (DbCommand identityCommand = commandDataIdentity.CreateCommand(_database)) {
-                    obj = await ExecuteScalarAsync(identityCommand, SafeLevel.Default, cancellationToken);
+                    obj = await ExecuteScalarAsync(identityCommand, SafeLevel.Default, cancellationToken, transaction);
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+
+            CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 int len = datas.Count;
@@ -1044,18 +1039,18 @@ namespace Light.Data
                 }
             }
 
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-                    int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default);
+                    int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default, transaction);
                     if (data.Item1.ReturnRowCount) {
                         result += ret;
                     }
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+
+            CommitInnerTransaction(transaction);
             if (result == 0) {
                 result = start;
             }
@@ -1175,18 +1170,18 @@ namespace Light.Data
                 }
             }
 
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-                    int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken);
+                    int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken, transaction);
                     if (data.Item1.ReturnRowCount) {
                         result += ret;
                     }
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+
+            CommitInnerTransaction(transaction);
             if (result == 0) {
                 result = start;
             }
@@ -1280,18 +1275,18 @@ namespace Light.Data
                 }
             }
 
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-                    int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default);
+                    int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default, transaction);
                     if (data.Item1.ReturnRowCount) {
                         result += ret;
                     }
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+
+            CommitInnerTransaction(transaction);
             if (result == 0) {
                 result = start;
             }
@@ -1412,18 +1407,18 @@ namespace Light.Data
                 }
             }
 
-            bool isTrans = BeginTrans(SafeLevel.Default);
+            
+            var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-                    int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken);
+                    int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken, transaction);
                     if (data.Item1.ReturnRowCount) {
                         result += ret;
                     }
                 }
             }
-            if (isTrans) {
-                CommitTrans();
-            }
+
+            CommitInnerTransaction(transaction);
             if (result == 0) {
                 result = start;
             }
@@ -2366,227 +2361,291 @@ namespace Light.Data
         }
 
 
-        internal int ExecuteNonQuery(DbCommand dbcommand, SafeLevel level)
+        internal int ExecuteNonQuery(DbCommand dbcommand, SafeLevel level, TransactionConnection transaction = null)
         {
             CheckStatus();
             int rInt;
-            if (_transaction == null) {
-                using (TransactionConnection transaction = CreateTransactionConnection(level)) {
+            bool commit;
+            bool trans = false;
+            if (transaction == null) {
+                if (_transaction != null) {
+                    transaction = _transaction;
+                    commit = false;
+                    trans = true;
+                }
+                else {
+                    transaction = CreateTransactionConnection(level);
+                    commit = true;
+                }
+            }
+            else {
+                commit = false;
+            }
+
+            DateTime startTime = DateTime.Now;
+            bool success = false;
+            string exceptionMessage = null;
+            object result = null;
+            try {
+                if (!transaction.IsOpen) {
                     transaction.Open();
-                    DateTime startTime = DateTime.Now;
-                    bool success = false;
-                    string exceptionMessage = null;
-                    object result = null;
-                    try {
-                        transaction.SetupCommand(dbcommand);
-                        rInt = dbcommand.ExecuteNonQuery();
-                        result = rInt;
-                        success = true;
-                    }
-                    catch (Exception ex) {
-                        exceptionMessage = ex.Message;
-                        transaction.Rollback();
-                        throw ex;
-                    }
-                    finally {
-                        DateTime endTime = DateTime.Now;
-                        OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
-                    }
+                }
+                transaction.SetupCommand(dbcommand);
+                rInt = dbcommand.ExecuteNonQuery();
+                result = rInt;
+                success = true;
+                if (commit) {
                     transaction.Commit();
                 }
             }
-            else {
-                if (!_transaction.IsOpen) {
-                    _transaction.Open();
-                }
-                DateTime startTime = DateTime.Now;
-                bool success = false;
-                string exceptionMessage = null;
-                object result = null;
-                try {
-                    _transaction.SetupCommand(dbcommand);
-                    rInt = dbcommand.ExecuteNonQuery();
-                    result = rInt;
-                    success = true;
-                }
-                catch (Exception ex) {
-                    exceptionMessage = ex.Message;
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                if (trans) {
                     RollbackTrans(false);
-                    throw ex;
                 }
-                finally {
-                    DateTime endTime = DateTime.Now;
-                    OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
+                else {
+                    transaction.Rollback();
+                    transaction.Dispose();
                 }
+                throw ex;
             }
+            finally {
+                if (commit && !transaction.IsDisposed) {
+                    transaction.Dispose();
+                }
+                DateTime endTime = DateTime.Now;
+                OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            }
+
             return rInt;
         }
 
-        internal async Task<int> ExecuteNonQueryAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken)
+        internal async Task<int> ExecuteNonQueryAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken, TransactionConnection transaction = null)
         {
             CheckStatus();
             int rInt;
-            if (_transaction == null) {
-                using (TransactionConnection transaction = CreateTransactionConnection(level)) {
-                    await transaction.OpenAsync(cancellationToken);
-                    DateTime startTime = DateTime.Now;
-                    bool success = false;
-                    string exceptionMessage = null;
-                    object result = null;
-                    try {
-                        transaction.SetupCommand(dbcommand);
-                        rInt = await dbcommand.ExecuteNonQueryAsync(cancellationToken);
-                        result = rInt;
-                        success = true;
-                    }
-                    catch (Exception ex) {
-                        exceptionMessage = ex.Message;
-                        transaction.Rollback();
-                        throw ex;
-                    }
-                    finally {
-                        DateTime endTime = DateTime.Now;
-                        OutputCommand(nameof(ExecuteNonQueryAsync), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
-                    }
-                    transaction.Commit();
+            bool commit;
+            bool trans = false;
+            if (transaction == null) {
+                if (_transaction != null) {
+                    transaction = _transaction;
+                    commit = false;
+                    trans = true;
+                }
+                else {
+                    transaction = CreateTransactionConnection(level);
+                    commit = true;
                 }
             }
             else {
-                if (!_transaction.IsOpen) {
-                    await _transaction.OpenAsync(cancellationToken);
+                commit = false;
+            }
+
+            DateTime startTime = DateTime.Now;
+            bool success = false;
+            string exceptionMessage = null;
+            object result = null;
+            try {
+                if (!transaction.IsOpen) {
+                    await transaction.OpenAsync(cancellationToken);
                 }
-                DateTime startTime = DateTime.Now;
-                bool success = false;
-                string exceptionMessage = null;
-                object result = null;
-                try {
-                    _transaction.SetupCommand(dbcommand);
-                    rInt = await dbcommand.ExecuteNonQueryAsync(cancellationToken);
-                    result = rInt;
-                    success = true;
-                }
-                catch (Exception ex) {
-                    exceptionMessage = ex.Message;
-                    RollbackTrans(false);
-                    throw ex;
-                }
-                finally {
-                    DateTime endTime = DateTime.Now;
-                    OutputCommand(nameof(ExecuteNonQueryAsync), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
+                transaction.SetupCommand(dbcommand);
+                rInt = await dbcommand.ExecuteNonQueryAsync();
+                result = rInt;
+                success = true;
+                if (commit) {
+                    transaction.Commit();
                 }
             }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                if (trans) {
+                    RollbackTrans(false);
+                }
+                else {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                }
+                throw ex;
+            }
+            finally {
+                if (commit && !transaction.IsDisposed) {
+                    transaction.Dispose();
+                }
+                DateTime endTime = DateTime.Now;
+                OutputCommand(nameof(ExecuteNonQueryAsync), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            }
+
             return rInt;
         }
 
-        internal object ExecuteScalar(DbCommand dbcommand, SafeLevel level)
+        internal object ExecuteScalar(DbCommand dbcommand, SafeLevel level, TransactionConnection transaction = null)
         {
             CheckStatus();
             object resultObj;
-            if (_transaction == null) {
-                using (TransactionConnection transaction = CreateTransactionConnection(level)) {
-                    transaction.Open();
-                    DateTime startTime = DateTime.Now;
-                    bool success = false;
-                    string exceptionMessage = null;
-                    object result = null;
-                    try {
-                        transaction.SetupCommand(dbcommand);
-                        resultObj = dbcommand.ExecuteScalar();
-                        result = resultObj;
-                        success = true;
-                    }
-                    catch (Exception ex) {
-                        exceptionMessage = ex.Message;
-                        transaction.Rollback();
-                        throw ex;
-                    }
-                    finally {
-                        DateTime endTime = DateTime.Now;
-                        OutputCommand(nameof(ExecuteScalar), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
-                    }
-                    transaction.Commit();
+            bool commit;
+            bool trans = false;
+            if (transaction == null) {
+                if (_transaction != null) {
+                    transaction = _transaction;
+                    commit = false;
+                    trans = true;
+                }
+                else {
+                    transaction = CreateTransactionConnection(level);
+                    commit = true;
                 }
             }
             else {
-                if (!_transaction.IsOpen) {
-                    _transaction.Open();
+                commit = false;
+            }
+
+            DateTime startTime = DateTime.Now;
+            bool success = false;
+            string exceptionMessage = null;
+            object result = null;
+            try {
+                if (!transaction.IsOpen) {
+                    transaction.Open();
                 }
-                DateTime startTime = DateTime.Now;
-                bool success = false;
-                string exceptionMessage = null;
-                object result = null;
-                try {
-                    _transaction.SetupCommand(dbcommand);
-                    resultObj = dbcommand.ExecuteScalar();
-                    result = resultObj;
-                    success = true;
-                }
-                catch (Exception ex) {
-                    exceptionMessage = ex.Message;
-                    RollbackTrans(false);
-                    throw ex;
-                }
-                finally {
-                    DateTime endTime = DateTime.Now;
-                    OutputCommand(nameof(ExecuteScalar), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
+                transaction.SetupCommand(dbcommand);
+                resultObj = dbcommand.ExecuteScalar();
+                result = resultObj;
+                success = true;
+                if (commit) {
+                    transaction.Commit();
                 }
             }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                if (trans) {
+                    RollbackTrans(false);
+                }
+                else {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                }
+                throw ex;
+            }
+            finally {
+                if (commit && !transaction.IsDisposed) {
+                    transaction.Dispose();
+                }
+                DateTime endTime = DateTime.Now;
+                OutputCommand(nameof(ExecuteScalar), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            }
+
             return resultObj;
+            //CheckStatus();
+            //object resultObj;
+            //if (_transaction == null) {
+            //    using (TransactionConnection transaction = CreateTransactionConnection(level)) {
+            //        transaction.Open();
+            //        DateTime startTime = DateTime.Now;
+            //        bool success = false;
+            //        string exceptionMessage = null;
+            //        object result = null;
+            //        try {
+            //            transaction.SetupCommand(dbcommand);
+            //            resultObj = dbcommand.ExecuteScalar();
+            //            result = resultObj;
+            //            success = true;
+            //        }
+            //        catch (Exception ex) {
+            //            exceptionMessage = ex.Message;
+            //            transaction.Rollback();
+            //            throw ex;
+            //        }
+            //        finally {
+            //            DateTime endTime = DateTime.Now;
+            //            OutputCommand(nameof(ExecuteScalar), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            //        }
+            //        transaction.Commit();
+            //    }
+            //}
+            //else {
+            //    if (!_transaction.IsOpen) {
+            //        _transaction.Open();
+            //    }
+            //    DateTime startTime = DateTime.Now;
+            //    bool success = false;
+            //    string exceptionMessage = null;
+            //    object result = null;
+            //    try {
+            //        _transaction.SetupCommand(dbcommand);
+            //        resultObj = dbcommand.ExecuteScalar();
+            //        result = resultObj;
+            //        success = true;
+            //    }
+            //    catch (Exception ex) {
+            //        exceptionMessage = ex.Message;
+            //        RollbackTrans(false);
+            //        throw ex;
+            //    }
+            //    finally {
+            //        DateTime endTime = DateTime.Now;
+            //        OutputCommand(nameof(ExecuteScalar), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            //    }
+            //}
+            //return resultObj;
         }
 
-        internal async Task<object> ExecuteScalarAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken)
+        internal async Task<object> ExecuteScalarAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken, TransactionConnection transaction = null)
         {
             CheckStatus();
             object resultObj;
-            if (_transaction == null) {
-                using (TransactionConnection transaction = CreateTransactionConnection(level)) {
-                    await transaction.OpenAsync(cancellationToken);
-                    DateTime startTime = DateTime.Now;
-                    bool success = false;
-                    string exceptionMessage = null;
-                    object result = null;
-                    try {
-                        transaction.SetupCommand(dbcommand);
-                        resultObj = await dbcommand.ExecuteScalarAsync(cancellationToken);
-                        result = resultObj;
-                        success = true;
-                    }
-                    catch (Exception ex) {
-                        exceptionMessage = ex.Message;
-                        transaction.Rollback();
-                        throw ex;
-                    }
-                    finally {
-                        DateTime endTime = DateTime.Now;
-                        OutputCommand(nameof(ExecuteScalarAsync), dbcommand, level, false, 0, 0, startTime, endTime, success, result, exceptionMessage);
-                    }
-                    transaction.Commit();
+            bool commit;
+            bool trans = false;
+            if (transaction == null) {
+                if (_transaction != null) {
+                    transaction = _transaction;
+                    commit = false;
+                    trans = true;
+                }
+                else {
+                    transaction = CreateTransactionConnection(level);
+                    commit = true;
                 }
             }
             else {
-                if (!_transaction.IsOpen) {
-                    _transaction.Open();
+                commit = false;
+            }
+
+            DateTime startTime = DateTime.Now;
+            bool success = false;
+            string exceptionMessage = null;
+            object result = null;
+            try {
+                if (!transaction.IsOpen) {
+                    await transaction.OpenAsync(cancellationToken);
                 }
-                DateTime startTime = DateTime.Now;
-                bool success = false;
-                string exceptionMessage = null;
-                object result = null;
-                try {
-                    _transaction.SetupCommand(dbcommand);
-                    resultObj = await dbcommand.ExecuteScalarAsync(cancellationToken);
-                    result = resultObj;
-                    success = true;
-                }
-                catch (Exception ex) {
-                    exceptionMessage = ex.Message;
-                    RollbackTrans(false);
-                    throw ex;
-                }
-                finally {
-                    DateTime endTime = DateTime.Now;
-                    OutputCommand(nameof(ExecuteScalarAsync), dbcommand, level, true, 0, 0, startTime, endTime, success, result, exceptionMessage);
+                transaction.SetupCommand(dbcommand);
+                resultObj = await dbcommand.ExecuteScalarAsync();
+                result = resultObj;
+                success = true;
+                if (commit) {
+                    transaction.Commit();
                 }
             }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                if (trans) {
+                    RollbackTrans(false);
+                }
+                else {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                }
+                throw ex;
+            }
+            finally {
+                if (commit && !transaction.IsDisposed) {
+                    transaction.Dispose();
+                }
+                DateTime endTime = DateTime.Now;
+                OutputCommand(nameof(ExecuteScalarAsync), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            }
+
             return resultObj;
         }
 
@@ -3214,6 +3273,34 @@ namespace Light.Data
                 }
                 _transaction.Dispose();
                 _transaction = null;
+            }
+        }
+
+        TransactionConnection CreateInnerTransaction(SafeLevel level)
+        {
+            if (_transaction != null) {
+                return null;
+            }
+            else {
+                if (level == SafeLevel.None) {
+                    return CreateTransactionConnection(SafeLevel.Default);
+                }
+                else {
+                    return CreateTransactionConnection(level);
+                }
+            }
+        }
+
+        void CommitInnerTransaction(TransactionConnection transaction)
+        {
+            if (transaction != null) {
+                if (transaction.IsOpen) {
+                    transaction.Commit();
+                    transaction.Dispose();
+                }
+                else {
+                    transaction.Dispose();
+                }
             }
         }
 
