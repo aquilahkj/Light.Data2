@@ -320,12 +320,12 @@ namespace Light.Data.Mysql.Test
                 Assert.Equal(20.5d, ac.DoubleFieldNull.Value, 4);
                 Assert.Equal(20.5m, ac.DecimalFieldNull);
                 Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeFieldNull);
-                Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
+                Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 30);
                 Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);
                 Assert.Equal("testtest", ac.VarcharFieldNull);
                 Assert.Equal("testtest", ac.TextFieldNull);
                 Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeField);
-                Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+                Assert.True((DateTime.Now - ac.NowField).Seconds <= 30);
                 Assert.Equal(DateTime.Now.Date, ac.TodayField);
                 Assert.Equal(EnumInt32Type.Positive1, ac.EnumInt32FieldNull);
                 Assert.Equal(EnumInt64Type.Positive1, ac.EnumInt64FieldNull);

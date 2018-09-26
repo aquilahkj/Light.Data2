@@ -10,7 +10,7 @@ namespace Light.Data.Sample
         {
             DataMapperConfiguration.AddConfigFilePath("lightdata.json");
             DataMapperConfiguration.AddConfigFilePath("mapper_relate.json");
-            //Test5();
+            Test0_1<TeUser>();
         }
 
         static void Test0()
@@ -20,10 +20,27 @@ namespace Light.Data.Sample
             output.UseConsoleOutput = true;
             output.OutputFullCommand = true;
 
-
             DataContext context = new DataContext("test");
             context.SetCommandOutput(output);
             var list = context.Query<TeUser>().Where(x => x.Id == 10).ToList();
+
+            //foreach (var item in list) {
+            //    Console.WriteLine(item);
+            //}
+            Console.Read();
+        }
+
+        static void Test0_1<T>() where T : ITeUser
+        {
+            CommandOutput output = new CommandOutput();
+            output.Enable = true;
+            output.UseConsoleOutput = true;
+            output.OutputFullCommand = true;
+
+
+            DataContext context = new DataContext("test");
+            context.SetCommandOutput(output);
+            var list = context.Query<T>().Where(x => x.Id == 10).ToList();
 
             //foreach (var item in list) {
             //    Console.WriteLine(item);
@@ -59,7 +76,8 @@ namespace Light.Data.Sample
             output.OutputFullCommand = true;
 
             IServiceCollection service = new ServiceCollection();
-            service.AddDataContext<TestContext>(builder => {
+            service.AddDataContext<TestContext>(builder =>
+            {
                 builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
                 builder.SetCommandOutput(output);
                 builder.SetTimeout(2000);
@@ -115,7 +133,7 @@ namespace Light.Data.Sample
             context.Insert(taginfo);
             context.Insert(taginfo1);
             var list = context.Query<TeTagInfo>().Where(x => x.Remark == taginfo.Remark).ToList();
-
+            
             foreach (var item in list) {
                 Console.WriteLine(item);
             }

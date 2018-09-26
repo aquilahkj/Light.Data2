@@ -97,7 +97,7 @@ namespace Light.Data.Mysql
                 throw new ArgumentNullException(nameof(entitys));
             }
             int totalCount = entitys.Count;
-            IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+            IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
@@ -173,7 +173,7 @@ namespace Light.Data.Mysql
             return "rand()";
         }
 
-        protected override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
+        public override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
         {
             if (mapping.IdentityField != null) {
                 return "select last_insert_id();";

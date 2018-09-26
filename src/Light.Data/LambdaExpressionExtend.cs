@@ -21,7 +21,8 @@ namespace Light.Data
             object obj;
             if (value is Delegate dele) {
                 obj = dele.DynamicInvoke(null);
-            } else {
+            }
+            else {
                 obj = value;
             }
             if (obj != null && Object.Equals(obj, DBNull.Value)) {
@@ -34,7 +35,8 @@ namespace Light.Data
         {
             if (expression is ConstantExpression constant) {
                 return constant.Value;
-            } else {
+            }
+            else {
                 LambdaExpression lambda = Expression.Lambda(expression);
                 Delegate fn = lambda.Compile();
                 return fn;
@@ -51,9 +53,10 @@ namespace Light.Data
                 SelectModel model = null;
                 if (expression.Body is MemberInitExpression memberInitObj) {
                     model = ParseSelectModel(memberInitObj, state);
-                } else if (expression.Body is NewExpression newObj) {
+                }
+                else if (expression.Body is NewExpression newObj) {
                     model = ParseSelectModel(newObj, state);
-                } 
+                }
                 //else {
                 //    DataEntityMapping entityMapping = state.MainMapping;
                 //    SoloFieldDataMapping soloMapping = SoloFieldDataMapping.GetMapping(expression.Type);
@@ -73,10 +76,12 @@ namespace Light.Data
                 //}
                 if (model != null) {
                     return model;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "select", expression, ex.Message), ex);
             }
         }
@@ -91,17 +96,20 @@ namespace Light.Data
                 AggregateModel model = null;
                 if (expression.Body is MemberInitExpression memberInitObj) {
                     model = ParseAggregateModel(memberInitObj, state);
-                } else {
+                }
+                else {
                     if (expression.Body is NewExpression newObj) {
                         model = ParseAggregateModel(newObj, state);
                     }
                 }
                 if (model != null) {
                     return model;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "group by", expression, ex.Message), ex);
             }
         }
@@ -116,10 +124,12 @@ namespace Light.Data
                 Expression bodyExpression = expression.Body;
                 if (ParseNewArguments(bodyExpression, state, out List<string> list)) {
                     return state.CreateSelector(list.ToArray());
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "select", expression, ex.Message), ex);
             }
         }
@@ -135,13 +145,16 @@ namespace Light.Data
                 if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression || bodyExpression is ParameterExpression) {
                     if (ParseNewArguments(bodyExpression, state, out List<string> list)) {
                         return state.CreateSelector(list.ToArray());
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                     }
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "select", expression, ex.Message), ex);
             }
         }
@@ -170,18 +183,22 @@ namespace Light.Data
 
                                 selector.SetInsertField(insertField);
                                 selector.SetSelectField(selectField);
-                            } else {
+                            }
+                            else {
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionBindingError, binding.Member);
                             }
                         }
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionNoMember);
                     }
                     return selector;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "select", expression, ex.Message), ex);
             }
         }
@@ -198,10 +215,12 @@ namespace Light.Data
                     OrderExpression exp = new DataFieldOrderExpression(dataFieldInfo, orderType);
                     exp.MutliOrder = true;
                     return exp;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "order", expression, ex.Message), ex);
             }
         }
@@ -218,10 +237,12 @@ namespace Light.Data
                     OrderExpression exp = new DataFieldOrderExpression(dataFieldInfo, orderType);
                     exp.MutliOrder = true;
                     return exp;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "order", expression, ex.Message), ex);
             }
         }
@@ -236,7 +257,8 @@ namespace Light.Data
                 QueryExpression query = ResolveQueryExpression(expression.Body, state);
                 query.MutliQuery = state.MutliEntity;
                 return query;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "query", expression, ex.Message), ex);
             }
         }
@@ -251,7 +273,8 @@ namespace Light.Data
                 QueryExpression query = ResolveQueryExpression(expression.Body, state);
                 query.MutliQuery = state.MutliEntity;
                 return query;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "query", expression, ex.Message), ex);
             }
         }
@@ -265,7 +288,8 @@ namespace Light.Data
                 LambdaState state = new AggregateLambdaState(expression.Parameters[0], model);
                 QueryExpression query = ResolveQueryExpression(expression.Body, state);
                 return query;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "having", expression, ex.Message), ex);
             }
         }
@@ -281,10 +305,12 @@ namespace Light.Data
                     CheckFieldInfo(dataFieldInfo);
                     OrderExpression exp = new DataFieldOrderExpression(dataFieldInfo, orderType);
                     return exp;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "aggregate order", expression, ex.Message), ex);
             }
         }
@@ -298,7 +324,8 @@ namespace Light.Data
                 LambdaState state = new MutliParameterLambdaState(expression.Parameters, maps);
                 DataFieldExpression on = ResolveOnExpression(expression.Body, state);
                 return on;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "on", expression, ex.Message), ex);
             }
         }
@@ -326,18 +353,22 @@ namespace Light.Data
                                 DataFieldInfo insertField = map.GetFieldInfoForPath(mypath);
                                 selector.SetInsertField(insertField);
                                 selector.SetSelectField(selectField);
-                            } else {
+                            }
+                            else {
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionBindingError, binding.Member);
                             }
                         }
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionNoMember);
                     }
                     return selector;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "insert", expression, ex.Message), ex);
             }
         }
@@ -360,7 +391,8 @@ namespace Light.Data
                                 if (!ParseDataFieldInfo(innerExpression, state, out DataFieldInfo selectField)) {
                                     object obj = ConvertObject(innerExpression);
                                     selectField = new LightConstantDataFieldInfo(obj);
-                                } else {
+                                }
+                                else {
                                     selectField = new DataFieldInfo(selectField.TableMapping, true, selectField.FieldName);
                                 }
                                 string mypath = "." + ass.Member.Name;
@@ -368,18 +400,22 @@ namespace Light.Data
 
                                 selector.SetInsertField(insertField);
                                 selector.SetSelectField(selectField);
-                            } else {
+                            }
+                            else {
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionBindingError, binding.Member);
                             }
                         }
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionNoMember);
                     }
                     return selector;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "select", expression, ex.Message), ex);
             }
         }
@@ -403,24 +439,29 @@ namespace Light.Data
                                 if (!ParseDataFieldInfo(innerExpression, state, out DataFieldInfo valueField)) {
                                     object obj = ConvertObject(innerExpression);
                                     valueField = new LightConstantDataFieldInfo(obj);
-                                } else if (state.MutliEntity) {
+                                }
+                                else if (state.MutliEntity) {
                                     throw new LambdaParseException(LambdaParseMessage.ExpressionUnsupportRelateField);
                                 }
                                 string mypath = "." + ass.Member.Name;
                                 DataFieldInfo keyField = map.GetFieldInfoForPath(mypath);
                                 updator.SetUpdateData(keyField, valueField);
-                            } else {
+                            }
+                            else {
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionBindingError, binding.Member);
                             }
                         }
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionNoMember);
                     }
                     return updator;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionTypeInvalid);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "updator", expression, ex.Message), ex);
             }
         }
@@ -437,10 +478,12 @@ namespace Light.Data
                         throw new LambdaParseException(LambdaParseMessage.ExpressionUnsupportRelateField);
                     }
                     return fieldInfo;
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 throw new LightDataException(string.Format(SR.ParseExpressionError, "single field", expression, ex.Message), ex);
             }
         }
@@ -485,7 +528,8 @@ namespace Light.Data
                                     };
                                     return true;
                             }
-                        } else {
+                        }
+                        else {
                             throw new LambdaParseException(LambdaParseMessage.ExpressionParameterTypeError, param.Name, param.Type);
                         }
                     }
@@ -513,15 +557,18 @@ namespace Light.Data
                                     };
                                     return true;
                             }
-                        } else {
+                        }
+                        else {
                             pathList = memberList;
                             return true;
                         }
-                    } else {
+                    }
+                    else {
                         pathList = null;
                         return false;
                     }
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -538,7 +585,8 @@ namespace Light.Data
                             ret = true;
                             if (argList == null) {
                                 methodList.Add(arg.ToString());
-                            } else {
+                            }
+                            else {
                                 methodList.AddRange(argList);
                             }
                         }
@@ -549,7 +597,8 @@ namespace Light.Data
                         ret = true;
                         if (callList == null) {
                             methodList.Add(methodcallObj.Object.ToString());
-                        } else {
+                        }
+                        else {
                             methodList.AddRange(callList);
                         }
                     }
@@ -557,7 +606,8 @@ namespace Light.Data
                 if (ret) {
                     pathList = methodList;
                     return true;
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -572,7 +622,8 @@ namespace Light.Data
                             ret = true;
                             if (argList == null) {
                                 newarrayList.Add(arg.ToString());
-                            } else {
+                            }
+                            else {
                                 newarrayList.AddRange(argList);
                             }
                         }
@@ -580,11 +631,13 @@ namespace Light.Data
                     if (ret) {
                         pathList = newarrayList;
                         return true;
-                    } else {
+                    }
+                    else {
                         pathList = null;
                         return false;
                     }
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -600,7 +653,8 @@ namespace Light.Data
                                 ret = true;
                                 if (argList == null) {
                                     memberInitList.Add(ass.Expression.ToString());
-                                } else {
+                                }
+                                else {
                                     memberInitList.AddRange(argList);
                                 }
                             }
@@ -612,7 +666,8 @@ namespace Light.Data
                         ret = true;
                         if (newList == null) {
                             memberInitList.Add(memberInitObj.NewExpression.ToString());
-                        } else {
+                        }
+                        else {
                             memberInitList.AddRange(newList);
                         }
                     }
@@ -620,7 +675,8 @@ namespace Light.Data
                 if (ret) {
                     pathList = memberInitList;
                     return true;
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -635,7 +691,8 @@ namespace Light.Data
                             ret = true;
                             if (argList == null) {
                                 newobjList.Add(arg.ToString());
-                            } else {
+                            }
+                            else {
                                 newobjList.AddRange(argList);
                             }
                         }
@@ -643,11 +700,13 @@ namespace Light.Data
                     if (ret) {
                         pathList = newobjList;
                         return true;
-                    } else {
+                    }
+                    else {
                         pathList = null;
                         return false;
                     }
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -663,7 +722,8 @@ namespace Light.Data
                     ret = true;
                     if (leftList == null) {
                         binaryList.Add(binaryObj.Left.ToString());
-                    } else {
+                    }
+                    else {
                         binaryList.AddRange(leftList);
                     }
                 }
@@ -671,14 +731,16 @@ namespace Light.Data
                     ret = true;
                     if (rightList == null) {
                         binaryList.Add(binaryObj.Right.ToString());
-                    } else {
+                    }
+                    else {
                         binaryList.AddRange(rightList);
                     }
                 }
                 if (ret) {
                     pathList = binaryList;
                     return true;
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -692,7 +754,8 @@ namespace Light.Data
                             ret = true;
                             if (argList == null) {
                                 indexList.Add(arg.ToString());
-                            } else {
+                            }
+                            else {
                                 indexList.AddRange(argList);
                             }
                         }
@@ -703,7 +766,8 @@ namespace Light.Data
                         ret = true;
                         if (callList == null) {
                             indexList.Add(indexObj.Object.ToString());
-                        } else {
+                        }
+                        else {
                             indexList.AddRange(callList);
                         }
                     }
@@ -711,7 +775,8 @@ namespace Light.Data
                 if (ret) {
                     pathList = indexList;
                     return true;
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -726,7 +791,8 @@ namespace Light.Data
                             ret = true;
                             if (argList == null) {
                                 aynamicList.Add(arg.ToString());
-                            } else {
+                            }
+                            else {
                                 aynamicList.AddRange(argList);
                             }
                         }
@@ -734,11 +800,13 @@ namespace Light.Data
                     if (ret) {
                         pathList = aynamicList;
                         return true;
-                    } else {
+                    }
+                    else {
                         pathList = null;
                         return false;
                     }
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -754,7 +822,8 @@ namespace Light.Data
                     ret = true;
                     if (testList == null) {
                         conditionList.Add(conditionObj.Test.ToString());
-                    } else {
+                    }
+                    else {
                         conditionList.AddRange(testList);
                     }
                 }
@@ -762,7 +831,8 @@ namespace Light.Data
                     ret = true;
                     if (trueList == null) {
                         conditionList.Add(conditionObj.IfTrue.ToString());
-                    } else {
+                    }
+                    else {
                         conditionList.AddRange(trueList);
                     }
                 }
@@ -770,14 +840,16 @@ namespace Light.Data
                     ret = true;
                     if (falseList == null) {
                         conditionList.Add(conditionObj.IfFalse.ToString());
-                    } else {
+                    }
+                    else {
                         conditionList.AddRange(falseList);
                     }
                 }
                 if (ret) {
                     pathList = conditionList;
                     return true;
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -796,7 +868,8 @@ namespace Light.Data
                                 ret = true;
                                 if (argList == null) {
                                     lisInitList.Add(arg.ToString());
-                                } else {
+                                }
+                                else {
                                     lisInitList.AddRange(argList);
                                 }
                             }
@@ -808,7 +881,8 @@ namespace Light.Data
                         ret = true;
                         if (newList == null) {
                             lisInitList.Add(listInitObj.NewExpression.ToString());
-                        } else {
+                        }
+                        else {
                             lisInitList.AddRange(newList);
                         }
                     }
@@ -816,7 +890,8 @@ namespace Light.Data
                 if (ret) {
                     pathList = lisInitList;
                     return true;
-                } else {
+                }
+                else {
                     pathList = null;
                     return false;
                 }
@@ -848,16 +923,19 @@ namespace Light.Data
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionUnsupportAggregateField);
                             }
                             model.AddSelectField(ass.Member.Name, fieldInfo);
-                        } else {
+                        }
+                        else {
                             object value = ConvertObject(innerExpression);
                             fieldInfo = new LightConstantDataFieldInfo(value);
                             model.AddSelectField(ass.Member.Name, fieldInfo);
                         }
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionBindingError, binding.Member);
                     }
                 }
-            } else {
+            }
+            else {
                 throw new LambdaParseException(LambdaParseMessage.ExpressionNoMember);
             }
             return model;
@@ -882,13 +960,15 @@ namespace Light.Data
                         }
                         model.AddSelectField(member.Name, fieldInfo);
                         index++;
-                    } else {
+                    }
+                    else {
                         object value = ConvertObject(innerExpression);
                         fieldInfo = new LightConstantDataFieldInfo(value);
                         model.AddSelectField(member.Name, fieldInfo);
                     }
                 }
-            } else {
+            }
+            else {
                 throw new LambdaParseException(LambdaParseMessage.ExpressionNoArguments);
             }
             return model;
@@ -911,23 +991,27 @@ namespace Light.Data
                             if (fieldInfo is LightAggregateDataFieldInfo) {
                                 hasAggregateField = true;
                                 model.AddAggregateField(ass.Member.Name, fieldInfo);
-                            } else {
+                            }
+                            else {
                                 model.AddGroupByField(ass.Member.Name, fieldInfo);
                             }
-                        } else {
+                        }
+                        else {
                             object value = ConvertObject(innerExpression);
                             fieldInfo = new LightConstantDataFieldInfo(value);
                             model.AddAggregateField(ass.Member.Name, fieldInfo);
                             //throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                         }
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionBindingError, binding.Member);
                     }
                 }
                 if (!hasAggregateField) {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainAggregateFunction);
                 }
-            } else {
+            }
+            else {
                 throw new LambdaParseException(LambdaParseMessage.ExpressionNoMember);
             }
             return model;
@@ -951,10 +1035,12 @@ namespace Light.Data
                         if (fieldInfo is LightAggregateDataFieldInfo) {
                             hasAggregateField = true;
                             model.AddAggregateField(member.Name, fieldInfo);
-                        } else {
+                        }
+                        else {
                             model.AddGroupByField(member.Name, fieldInfo);
                         }
-                    } else {
+                    }
+                    else {
                         object value = ConvertObject(innerExpression);
                         fieldInfo = new LightConstantDataFieldInfo(value);
                         model.AddAggregateField(member.Name, fieldInfo);
@@ -965,7 +1051,8 @@ namespace Light.Data
                 if (!hasAggregateField) {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainAggregateFunction);
                 }
-            } else {
+            }
+            else {
                 throw new LambdaParseException(LambdaParseMessage.ExpressionNoArguments);
             }
             return model;
@@ -983,7 +1070,8 @@ namespace Light.Data
                 if (ParseDataFieldInfo(binaryObj.Left, state, out DataFieldInfo leftFieldInfo)) {
                     left = true;
                     CheckFieldInfo(leftFieldInfo);
-                } else {
+                }
+                else {
                     left = false;
                     leftValue = ConvertObject(binaryObj.Left);
                 }
@@ -993,7 +1081,8 @@ namespace Light.Data
                 if (ParseDataFieldInfo(binaryObj.Right, state, out DataFieldInfo rightFieldInfo)) {
                     right = true;
                     CheckFieldInfo(rightFieldInfo);
-                } else {
+                }
+                else {
                     right = false;
                     rightValue = ConvertObject(binaryObj.Right);
                 }
@@ -1005,22 +1094,27 @@ namespace Light.Data
                     if (left && right) {
                         fieldInfo = new LightStringConcatDataFieldInfo(leftFieldInfo.TableMapping, leftFieldInfo, rightFieldInfo);
                         return true;
-                    } else if (left && !right) {
+                    }
+                    else if (left && !right) {
                         fieldInfo = new LightStringConcatDataFieldInfo(leftFieldInfo.TableMapping, leftFieldInfo, rightValue);
                         return true;
-                    } else if (!left && right) {
+                    }
+                    else if (!left && right) {
                         fieldInfo = new LightStringConcatDataFieldInfo(rightFieldInfo.TableMapping, leftValue, rightFieldInfo);
                         return true;
                     }
-                } else {
+                }
+                else {
                     if (CheckMathOperator(binaryObj.NodeType, out MathOperator mathOperator)) {
                         if (left && right) {
                             fieldInfo = new LightMathCalculateDataFieldInfo(leftFieldInfo.TableMapping, mathOperator, leftFieldInfo, rightFieldInfo);
                             return true;
-                        } else if (left && !right) {
+                        }
+                        else if (left && !right) {
                             fieldInfo = new LightMathCalculateDataFieldInfo(leftFieldInfo.TableMapping, mathOperator, leftFieldInfo, rightValue);
                             return true;
-                        } else if (!left && right) {
+                        }
+                        else if (!left && right) {
                             fieldInfo = new LightMathCalculateDataFieldInfo(rightFieldInfo.TableMapping, mathOperator, leftValue, rightFieldInfo);
                             return true;
                         }
@@ -1029,11 +1123,14 @@ namespace Light.Data
                         QueryExpression queryExpression;
                         if (left && right) {
                             queryExpression = new LightBinaryQueryExpression(leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightFieldInfo);
-                        } else if (left && !right) {
+                        }
+                        else if (left && !right) {
                             queryExpression = new LightBinaryQueryExpression(leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightValue);
-                        } else if (!left && right) {
+                        }
+                        else if (!left && right) {
                             queryExpression = new LightBinaryQueryExpression(rightFieldInfo.TableMapping, queryPredicate, rightFieldInfo, leftValue);
-                        } else {
+                        }
+                        else {
                             throw new LambdaParseException(LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);
                         }
                         fieldInfo = new LightQueryDataFieldInfo(queryExpression);
@@ -1046,25 +1143,30 @@ namespace Light.Data
                 if (unaryObj.NodeType == ExpressionType.Not) {
                     if (ParseDataFieldInfo(unaryObj.Operand, state, out DataFieldInfo notfieldInfo)) {
                         CheckFieldInfo(notfieldInfo);
-                    } else {
+                    }
+                    else {
                         return false;
                     }
                     if (notfieldInfo is ISupportNotDefine notDefine) {
                         notDefine.SetNot();
                         fieldInfo = notfieldInfo;
-                    } else {
+                    }
+                    else {
                         fieldInfo = new LightNotDataFieldInfo(notfieldInfo);
                     }
                     return true;
-                } else if (unaryObj.NodeType == ExpressionType.Convert) {
+                }
+                else if (unaryObj.NodeType == ExpressionType.Convert) {
                     if (ParseDataFieldInfo(unaryObj.Operand, state, out DataFieldInfo convertfieldInfo)) {
                         CheckFieldInfo(convertfieldInfo);
                         fieldInfo = convertfieldInfo;
                         return true;
-                    } else {
+                    }
+                    else {
                         return false;
                     }
-                } else if (unaryObj.NodeType == ExpressionType.TypeAs) {
+                }
+                else if (unaryObj.NodeType == ExpressionType.TypeAs) {
                     if (unaryObj.Type.GetTypeInfo().IsGenericType) {
                         Type frameType = unaryObj.Type.GetGenericTypeDefinition();
                         if (frameType.FullName != "System.Nullable`1") {
@@ -1076,7 +1178,8 @@ namespace Light.Data
                         CheckFieldInfo(convertfieldInfo);
                         fieldInfo = convertfieldInfo;
                         return true;
-                    } else {
+                    }
+                    else {
                         return false;
                     }
                 }
@@ -1091,15 +1194,39 @@ namespace Light.Data
                                 DataFieldInfo myinfo = state.GetDataFieldInfo(fullPath);
                                 fieldInfo = myinfo;
                                 return true;
-                            } else if (pathType == LambdaPathType.RelateEntity) {
+                            }
+                            else if (pathType == LambdaPathType.RelateEntity) {
                                 return true;
-                            } else {
+                            }
+                            else {
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionMemberInvalid);
                             }
-                        } else {
+                        }
+                        else {
                             throw new LambdaParseException(LambdaParseMessage.ExpressionParameterTypeError, param.Name, param.Type);
                         }
                     }
+                    if (memberObj.Expression is UnaryExpression unary && unary.NodeType == ExpressionType.Convert && unary.Operand is ParameterExpression param1) {
+                        if (state.CheckPamramter(param1.Name, param1.Type)) {
+                            string fullPath = memberObj.ToString().Replace(unary.ToString(), param1.ToString());
+                            LambdaPathType pathType = state.ParsePath(fullPath);
+                            if (pathType == LambdaPathType.Field) {
+                                DataFieldInfo myinfo = state.GetDataFieldInfo(fullPath);
+                                fieldInfo = myinfo;
+                                return true;
+                            }
+                            else if (pathType == LambdaPathType.RelateEntity) {
+                                return true;
+                            }
+                            else {
+                                throw new LambdaParseException(LambdaParseMessage.ExpressionMemberInvalid);
+                            }
+                        }
+                        else {
+                            throw new LambdaParseException(LambdaParseMessage.ExpressionParameterTypeError, param1.Name, param1.Type);
+                        }
+                    }
+
                     if (ParseDataFieldInfo(memberObj.Expression, state, out fieldInfo)) {
                         if (Object.Equals(fieldInfo, null)) {
                             string fullPath = memberObj.ToString();
@@ -1109,12 +1236,15 @@ namespace Light.Data
                                 fieldInfo = myinfo;
                                 state.MutliEntity = true;
                                 return true;
-                            } else if (pathType == LambdaPathType.RelateEntity) {
+                            }
+                            else if (pathType == LambdaPathType.RelateEntity) {
                                 return true;
-                            } else {
+                            }
+                            else {
                                 throw new LambdaParseException(LambdaParseMessage.ExpressionMemberInvalid);
                             }
-                        } else {
+                        }
+                        else {
                             if (memberObj.Expression.Type.GetTypeInfo().IsGenericType) {
                                 Type frameType = memberObj.Expression.Type.GetGenericTypeDefinition();
                                 if (frameType.FullName == "System.Nullable`1") {
@@ -1126,7 +1256,8 @@ namespace Light.Data
                                         return true;
                                     }
                                 }
-                            } else {
+                            }
+                            else {
                                 if (memberObj.Expression.Type == typeof(DateTime)) {
                                     fieldInfo = CreateDateDataFieldInfo(memberObj.Member, fieldInfo);
                                     return true;
@@ -1139,10 +1270,12 @@ namespace Light.Data
                             throw new LambdaParseException(LambdaParseMessage.MemberExpressionTypeUnsupport, memberObj.Expression.Type);
 
                         }
-                    } else {
+                    }
+                    else {
                         return false;
                     }
-                } else {
+                }
+                else {
                     return false;
                 }
             }
@@ -1166,20 +1299,24 @@ namespace Light.Data
                         if (methodInfo.DeclaringType == typeof(string)) {
                             fieldInfo = ParseStaticStringFunctionDataFieldInfo(methodInfo, mainFieldInfo, argObjects, state);
                             return true;
-                        } else {
+                        }
+                        else {
                             throw new LambdaParseException(LambdaParseMessage.MethodExpressionTypeUnsupport, methodInfo.DeclaringType);
                         }
-                    } else {
+                    }
+                    else {
                         return false;
                     }
-                } else {
+                }
+                else {
                     DataFieldInfo mainFieldInfo = null;
                     object callObject = null;
                     if (ParseDataFieldInfo(methodcallObj.Object, state, out DataFieldInfo callFieldInfo)) {
                         CheckFieldInfo(callFieldInfo);
                         mainFieldInfo = callFieldInfo;
                         callObject = callFieldInfo;
-                    } else {
+                    }
+                    else {
                         callObject = ConvertObject(methodcallObj.Object);
                     }
 
@@ -1210,7 +1347,8 @@ namespace Light.Data
                 if (ParseArguments(newarrayObj.Expressions, state, out object[] argsObjects, out DataFieldInfo arrayFieldInfo)) {
                     fieldInfo = new LightNewArrayDataFieldInfo(arrayFieldInfo.TableMapping, argsObjects);
                     return true;
-                } else {
+                }
+                else {
                     return false;
                 }
             }
@@ -1220,14 +1358,16 @@ namespace Light.Data
                 if (ParseDataFieldInfo(conditionObj.IfTrue, state, out DataFieldInfo ifTrueFieldInfo)) {
                     CheckFieldInfo(ifTrueFieldInfo);
                     ifTrueValue = ifTrueFieldInfo;
-                } else {
+                }
+                else {
                     ifTrueValue = ConvertObject(conditionObj.IfTrue);
                 }
                 object ifFalseValue = null;
                 if (ParseDataFieldInfo(conditionObj.IfFalse, state, out DataFieldInfo ifFalseFieldInfo)) {
                     CheckFieldInfo(ifFalseFieldInfo);
                     ifFalseValue = ifFalseFieldInfo;
-                } else {
+                }
+                else {
                     ifFalseValue = ConvertObject(conditionObj.IfFalse);
                 }
                 fieldInfo = new LightConditionDataFieldInfo(query, ifTrueValue, ifFalseValue);
@@ -1254,14 +1394,16 @@ namespace Light.Data
                         fieldInfo = argFieldInfo;
                     }
                     array[i] = argFieldInfo;
-                } else {
+                }
+                else {
                     array[i] = ConvertObject(arg);
                 }
             }
             if (!hasFieldInfo) {
                 argObjects = array;
                 return false;
-            } else {
+            }
+            else {
                 argObjects = array;
                 return true;
             }
@@ -1272,10 +1414,12 @@ namespace Light.Data
             if (expressionType == ExpressionType.And || expressionType == ExpressionType.AndAlso) {
                 catchType = CatchOperatorsType.AND;
                 return true;
-            } else if (expressionType == ExpressionType.Or || expressionType == ExpressionType.OrElse) {
+            }
+            else if (expressionType == ExpressionType.Or || expressionType == ExpressionType.OrElse) {
                 catchType = CatchOperatorsType.OR;
                 return true;
-            } else {
+            }
+            else {
                 catchType = CatchOperatorsType.AND;
                 return false;
             }
@@ -1367,7 +1511,8 @@ namespace Light.Data
                     DatePart datePart;
                     if (Enum.TryParse<DatePart>(member.Name, out datePart)) {
                         fieldInfo = new LightDatePartDataFieldInfo(fieldInfo, datePart);
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.MemberExpressionMemberUnsupport, "DateTime", member.Name);
                     }
                     break;
@@ -1393,17 +1538,20 @@ namespace Light.Data
             if (Enum.TryParse(method.Name, out MathFunction mathFunction)) {
                 if (parameterInfos == null || parameterInfos.Length == 0) {
                     throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "Math", method.Name);
-                } else if (mathFunction == MathFunction.Atan2 || mathFunction == MathFunction.Max || mathFunction == MathFunction.Min || mathFunction == MathFunction.Pow) {
+                }
+                else if (mathFunction == MathFunction.Atan2 || mathFunction == MathFunction.Max || mathFunction == MathFunction.Min || mathFunction == MathFunction.Pow) {
                     if (parameterInfos.Length != 2) {
                         throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "Math", method.Name);
                     }
-                } else if (mathFunction == MathFunction.Log || mathFunction == MathFunction.Round) {
+                }
+                else if (mathFunction == MathFunction.Log || mathFunction == MathFunction.Round) {
                     if (parameterInfos.Length > 2) {
                         throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "Math", method.Name);
                     }
                 }
                 return new LightMathFunctionDataFieldInfo(mainFieldInfo.TableMapping, mathFunction, argObjects);
-            } else {
+            }
+            else {
                 throw new LambdaParseException(LambdaParseMessage.MethodExpressionMethodUnsupport, "Math", method.Name);
             }
         }
@@ -1415,10 +1563,12 @@ namespace Light.Data
                     LightNewArrayDataFieldInfo newarray = argObjects[0] as LightNewArrayDataFieldInfo;
                     if (!Object.Equals(newarray, null)) {
                         return new LightStringConcatDataFieldInfo(newarray.TableMapping, newarray.Values);
-                    } else {
+                    }
+                    else {
                         return new LightStringConcatDataFieldInfo(mainFieldInfo.TableMapping, argObjects);
                     }
-                } else {
+                }
+                else {
                     return new LightStringConcatDataFieldInfo(mainFieldInfo.TableMapping, argObjects);
                 }
             }
@@ -1449,7 +1599,8 @@ namespace Light.Data
                     if (Enum.TryParse<StringFunction>(method.Name, out stringFunction)) {
                         if (stringFunction == StringFunction.IndexOf && !(parameterInfos.Length == 1 || (parameterInfos.Length == 2 && parameterInfos[1].ParameterType == typeof(int)))) {
                             throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
-                        } else if (stringFunction == StringFunction.Trim && parameterInfos.Length > 0) {
+                        }
+                        else if (stringFunction == StringFunction.Trim && parameterInfos.Length > 0) {
                             throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
                         }
                         return new LightStringFunctionDataFieldInfo(mainFieldInfo.TableMapping, stringFunction, callObject, argObjects);
@@ -1467,14 +1618,17 @@ namespace Light.Data
             if (method.Name == "ToString") {
                 if (parameterInfos.Length == 0) {
                     return new LightDateFormatDataFieldInfo(mainFieldInfo, null);
-                } else if (parameterInfos.Length == 1) {
+                }
+                else if (parameterInfos.Length == 1) {
                     if (parameterInfos[0].ParameterType == typeof(string)) {
                         object o = ConvertLambdaObject(argObjects[0]);
                         return new LightDateFormatDataFieldInfo(mainFieldInfo, o as string);
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "DateTime", method.Name);
                     }
-                } else {
+                }
+                else {
                     throw new LambdaParseException(LambdaParseMessage.MethodExpressionArgumentError, "DateTime", method.Name);
                 }
             }
@@ -1580,7 +1734,8 @@ namespace Light.Data
                                 query.MutliQuery = state.MutliEntity;
                             }
                             data = new LightSubQueryDataFieldInfo(mstate.MainMapping, fieldInfo, selectFieldInfo, predicate, query);
-                        } else {
+                        }
+                        else {
                             throw new LambdaParseException(LambdaParseMessage.MethodExpressionMethodUnsupport, "ExtendQuery", method.Name);
                         }
                     }
@@ -1610,11 +1765,13 @@ namespace Light.Data
                         data = new LightAggregateCountDataFieldInfo();
                         break;
                 }
-            } else if (paramExpressions.Count == 1) {
+            }
+            else if (paramExpressions.Count == 1) {
                 if (method.Name == "CountCondition" || method.Name == "LongCountCondition") {
                     QueryExpression queryExpression = ResolveQueryExpression(paramExpressions[0], state);
                     data = new LightAggregateCountDataFieldInfo(queryExpression);
-                } else {
+                }
+                else {
                     if (!ParseDataFieldInfo(paramExpressions[0], state, out DataFieldInfo fieldInfo)) {
                         throw new LambdaParseException(LambdaParseMessage.ExpressionNotContainDataField);
                     }
@@ -1662,14 +1819,16 @@ namespace Light.Data
                     var left = ResolveQueryExpression(binaryObj.Left, state);
                     var right = ResolveQueryExpression(binaryObj.Right, state);
                     return QueryExpression.Catch(left, catchType, right);
-                } else {
+                }
+                else {
                     if (CheckQueryPredicate(binaryObj.NodeType, out QueryPredicate queryPredicate)) {
                         object leftValue = null;
                         bool left;
                         if (ParseDataFieldInfo(binaryObj.Left, state, out DataFieldInfo leftFieldInfo)) {
                             left = true;
                             CheckFieldInfo(leftFieldInfo);
-                        } else {
+                        }
+                        else {
                             left = false;
                             leftValue = ConvertObject(binaryObj.Left);
                         }
@@ -1679,18 +1838,22 @@ namespace Light.Data
                         if (ParseDataFieldInfo(binaryObj.Right, state, out DataFieldInfo rightFieldInfo)) {
                             right = true;
                             CheckFieldInfo(rightFieldInfo);
-                        } else {
+                        }
+                        else {
                             right = false;
                             rightValue = ConvertObject(binaryObj.Right);
                         }
 
                         if (left && right) {
                             return new LightBinaryQueryExpression(leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightFieldInfo);
-                        } else if (left && !right) {
+                        }
+                        else if (left && !right) {
                             return new LightBinaryQueryExpression(leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightValue);
-                        } else if (!left && right) {
+                        }
+                        else if (!left && right) {
                             return new LightBinaryQueryExpression(rightFieldInfo.TableMapping, queryPredicate, rightFieldInfo, leftValue);
-                        } else {
+                        }
+                        else {
                             throw new LambdaParseException(LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);
                         }
                     }
@@ -1702,7 +1865,8 @@ namespace Light.Data
                     if (queryExpression is ISupportNotDefine notDefine) {
                         notDefine.SetNot();
                         return queryExpression;
-                    } else {
+                    }
+                    else {
                         return new LightNotQueryExpression(queryExpression);
                     }
                 }
@@ -1715,7 +1879,8 @@ namespace Light.Data
                 IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
                 if (Object.Equals(convertFieldInfo, null)) {
                     return new LightBinaryQueryExpression(fieldInfo.TableMapping, QueryPredicate.Eq, fieldInfo, true);
-                } else {
+                }
+                else {
                     return convertFieldInfo.ConvertToExpression();
                 }
             }
@@ -1727,7 +1892,8 @@ namespace Light.Data
                 IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
                 if (Object.Equals(convertFieldInfo, null)) {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotAllowNoDataField, methodcallObj);
-                } else {
+                }
+                else {
                     return convertFieldInfo.ConvertToExpression();
                 }
             }
@@ -1739,7 +1905,8 @@ namespace Light.Data
                 IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
                 if (Object.Equals(convertFieldInfo, null)) {
                     throw new LambdaParseException(LambdaParseMessage.ExpressionNotAllowNoDataField, conditionObj);
-                } else {
+                }
+                else {
                     return convertFieldInfo.ConvertToExpression();
                 }
             }
@@ -1759,7 +1926,8 @@ namespace Light.Data
                     if (ParseDataFieldInfo(binary.Left, state, out DataFieldInfo leftFieldInfo)) {
                         left = true;
                         CheckFieldInfo(leftFieldInfo);
-                    } else {
+                    }
+                    else {
                         left = false;
                     }
 
@@ -1767,13 +1935,15 @@ namespace Light.Data
                     if (ParseDataFieldInfo(binary.Right, state, out DataFieldInfo rightFieldInfo)) {
                         right = true;
                         CheckFieldInfo(rightFieldInfo);
-                    } else {
+                    }
+                    else {
                         right = false;
                     }
 
                     if (left && right) {
                         return new DataFieldMatchExpression(leftFieldInfo, rightFieldInfo, queryPredicate);
-                    } else {
+                    }
+                    else {
                         throw new LambdaParseException(LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);
                     }
                 }

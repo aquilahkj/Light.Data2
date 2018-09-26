@@ -47,11 +47,15 @@
     DbSetting.SetTable("Te_BaseFieldAggregateField_GroupBy");
     DbSetting.SetTable("Te_ObjectField");
     //DbSetting.SetTable("Te_BaseField_Config_Replace");
-
+	DbSetting.SetTable("Te_BaseField", "MyBase1");
     //设置需要生成的数据表,数据类型继承DataTableEntity
     DbSetting.SetEntityTable("Te_BaseField_Entity");
     DbSetting.SetEntityTable("Te_BaseFieldNoIdentity_Entity");
-
+	DbSetting.SetEntityTable("Te_BaseField_DefaultValue", "MyBase2");
+	DbSetting.SetDefaultValue("MyBase2.NowField", "DefaultTime.TimeStamp");
+	DbSetting.SetReadControl("MyBase2.TodayField");
+	DbSetting.SetCreateControl("MyBase2.VarcharFieldNull");
+	DbSetting.SetUpdateControl("MyBase2.DoubleFieldNull");
     //设置字段的转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
     DbSetting.SetSpecifiedType("*.EnumInt32Field", "EnumInt32Type");
     DbSetting.SetSpecifiedType("*.EnumInt32FieldNull", "EnumInt32Type");
@@ -114,7 +118,7 @@ namespace <#=namespaceName#>
     /// <#=table.CommentText#>
     /// </summary>
 <# if(useLightData){ #>
-    [DataTable("<#=tableName#>")]
+    [DataTable("<#=table.RawName#>")]
 <# } #>
     public class <#=StringUtil.ToPascalCase(tableName)#> <#=DbSetting.CheckEntity(tableName)?": DataTableEntity":""#>
     {
@@ -131,7 +135,7 @@ namespace <#=namespaceName#>
 		/// </summary>
 		/// <value></value>
 <# if(useLightData){ #>
-		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #>)]
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
 <# } #>
         public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
         {
@@ -140,7 +144,9 @@ namespace <#=namespaceName#>
             }
             set { 
             	this.<#=StringUtil.ToCamelCase(c.ColumnName)#> = value; 
+<# if(!c.NoUpdate){ #>
 				base.UpdateDataNotify(nameof(<#=StringUtil.ToPascalCase(c.ColumnName)#>));
+<# } #>
             }
         }
 
@@ -150,7 +156,7 @@ namespace <#=namespaceName#>
         /// </summary>
         /// <value></value>
 <# if(useLightData){ #>
-        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #>)]
+        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
 <# } #>
 	    public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
         {
@@ -171,7 +177,7 @@ namespace <#=namespaceName#>
 
 <#+ 
 
-        #region GetDataBaseSchema
+   #region GetDataBaseSchema
 
     public class DataBaseSchema
     {
@@ -209,8 +215,8 @@ COLUMN_TYPE AS 'ColumnType'
 from information_schema.COLUMNS where TABLE_SCHEMA='{0}' and TABLE_NAME='{1}'
 order by ORDINAL_POSITION";
             List<Table> tables = new List<Table>();
-            foreach (string tableName in DbSetting.GetTables()) {
-                string tableCommandStr = String.Format(tableCommandText, this._dataBaseName, tableName);
+            foreach (TableNameSet tableNameSet in DbSetting.GetTables()) {
+                string tableCommandStr = String.Format(tableCommandText, this._dataBaseName, tableNameSet.TableName);
                 MySqlConnection tableConn = new MySqlConnection(_connectionString);
                 tableConn.Open();
                 MySqlCommand tableCommand = new MySqlCommand(tableCommandStr, tableConn);
@@ -223,7 +229,7 @@ order by ORDINAL_POSITION";
                     continue;
                 }
                 string tableComment = Convert.ToString(tableColumns.Rows[0]["CommentText"]);
-                string columnCommandStr = String.Format(columnCommandText, this._dataBaseName, tableName);
+                string columnCommandStr = String.Format(columnCommandText, this._dataBaseName, tableNameSet.TableName);
                 MySqlConnection columnConn = new MySqlConnection(_connectionString);
                 columnConn.Open();
                 MySqlCommand columnCommand = new MySqlCommand(columnCommandStr, tableConn);
@@ -233,9 +239,9 @@ order by ORDINAL_POSITION";
                 DataTable columnColumns = columnDs.Tables[0];
                 tableConn.Close();
 
-                Table table = new Table(_dataBaseName, tableName);
+                Table table = new Table(_dataBaseName, tableNameSet.AliasName, tableNameSet.TableName);
                 if (String.IsNullOrEmpty(tableComment)) {
-                    tableComment = tableName;
+                    tableComment = tableNameSet.TableName;
                 }
                 table.CommentText = tableComment;
                 foreach (DataRow item in columnColumns.Rows) {
@@ -249,10 +255,11 @@ order by ORDINAL_POSITION";
 
     public class Table
     {
-        public Table(string dataBaseName, string tableName)
+        public Table(string dataBaseName, string tableName, string rawName)
         {
             this._dataBaseName = dataBaseName;
             this._tableName = tableName;
+			this._rawName = rawName;
             this._columns = new Dictionary<string, Column>();
         }
 
@@ -271,7 +278,12 @@ order by ORDINAL_POSITION";
                 return this._commentText;
             }
         }
-
+		string _rawName = null;
+		public string RawName {
+            get {
+                return this._rawName;
+            }
+        }
 
         string _tableName = null;
         public string TableName {
@@ -406,7 +418,7 @@ order by ORDINAL_POSITION";
                     this._defaultValue = "\"" + defaultValue + "\"";
                 }
                 else if (this._dataType == "DateTime" || this._dataType == "DateTime?") {
-                    if (defaultValue == "DefaultTime.Now" || defaultValue == "DefaultTime.Today") {
+                    if (defaultValue.StartsWith("DefaultTime.")) {
                         this._defaultValue = defaultValue;
                     }
                     else {
@@ -417,6 +429,14 @@ order by ORDINAL_POSITION";
                     this._defaultValue = defaultValue;
                 }
             }
+
+			string control;
+            if (DbSetting.GetControl(this._tableName + "." + this._columnName, out control) || DbSetting.GetControl("*." + this._columnName, out control)) {
+				_control="FunctionControl."+control;
+				if(control == "Create" || control == "Read"){
+					_noUpdate = true;
+				}
+			}
 
             this._isPrimaryKey = Convert.ToBoolean(dataRow["ColumnKey"]);
             this._isIdentity = Convert.ToBoolean(dataRow["IsIdentity"]);
@@ -475,6 +495,13 @@ order by ORDINAL_POSITION";
             }
         }
 
+		public string _control = null;
+		public string Control {
+            get {
+                return this._control;
+            }
+        }
+
         bool _allowNull = false;
         public bool AllowNull {
             get {
@@ -524,6 +551,13 @@ order by ORDINAL_POSITION";
             }
         }
 
+		bool _noUpdate = false;
+		 public bool NoUpdate {
+            get {
+                return this._noUpdate;
+            }
+        }
+
         string _upColumnName = null;
         public string UpColumnName {
             get {
@@ -541,18 +575,26 @@ order by ORDINAL_POSITION";
 
     #endregion
 
+	public class TableNameSet
+	{
+		public string TableName;
+		public string AliasName;
+	}
+
     public static class DbSetting
     {
         static bool defaultValueStringMode = false;
         static Dictionary<string, string> specifiedDict = new Dictionary<string, string>();
         static Dictionary<string, string> defaultValueDict = new Dictionary<string, string>();
+		static Dictionary<string, string> controlDict = new Dictionary<string, string>();
         static HashSet<string> tableHash = new HashSet<string>();
+		static Dictionary<string, string> aliasTableDict = new Dictionary<string, string>();
         static HashSet<string> notnullFieldHash = new HashSet<string>();
         static HashSet<string> entityHash = new HashSet<string>();
 
-        public static void SetSpecifiedType(string filedName, string specifiedType)
+        public static void SetSpecifiedType(string fieldName, string specifiedType)
         {
-            specifiedDict[filedName] = specifiedType;
+            specifiedDict[fieldName] = specifiedType;
         }
 
         public static bool GetSpecifiedType(string fieldName, out string specifiedType)
@@ -560,9 +602,9 @@ order by ORDINAL_POSITION";
             return specifiedDict.TryGetValue(fieldName, out specifiedType);
         }
 
-        public static void SetDefaultValue(string filedName, string value)
+        public static void SetDefaultValue(string fieldName, string value)
         {
-            defaultValueDict[filedName] = value;
+            defaultValueDict[fieldName] = value;
         }
 
         public static bool GetDefaultValue(string fieldName, out string value)
@@ -570,10 +612,34 @@ order by ORDINAL_POSITION";
             return defaultValueDict.TryGetValue(fieldName, out value);
         }
 
+		public static void SetReadControl(string fieldName)
+		{
+			controlDict[fieldName] = "Read";
+		}
+
+		public static void SetCreateControl(string fieldName)
+		{
+			controlDict[fieldName] = "Create";
+		}
+
+		public static void SetUpdateControl(string fieldName)
+		{
+			controlDict[fieldName] = "Update";
+		}
+
+		public static bool GetControl(string fieldName, out string value)
+        {
+            return controlDict.TryGetValue(fieldName, out value);
+        }
 
         public static void SetTable(string table)
         {
             tableHash.Add(table);
+        }
+
+		public static void SetTable(string table, string alias)
+        {
+            aliasTableDict[alias]=table;
         }
 
         public static bool CheckTable(string table)
@@ -586,9 +652,24 @@ order by ORDINAL_POSITION";
             }
         }
 
-        public static string[] GetTables()
+        public static TableNameSet[] GetTables()
         {
-            return tableHash.ToArray();
+			List<TableNameSet> list=new List<TableNameSet>();
+			foreach(var item in tableHash)
+			{
+				TableNameSet ts=new TableNameSet();
+				ts.TableName=item;
+				ts.AliasName=item;
+				list.Add(ts);
+			}
+			foreach(var kvs in aliasTableDict)
+			{
+				TableNameSet ts=new TableNameSet();
+				ts.TableName=kvs.Value;
+				ts.AliasName=kvs.Key;
+				list.Add(ts);
+			}
+            return list.ToArray();
         }
 
         public static void SetNotNullField(string field)
@@ -605,6 +686,12 @@ order by ORDINAL_POSITION";
         {
             tableHash.Add(table);
             entityHash.Add(table);
+        }
+
+		public static void SetEntityTable(string table, string alias)
+        {
+            aliasTableDict[alias]=table;
+            entityHash.Add(alias);
         }
 
         public static bool CheckEntity(string table)
@@ -633,10 +720,19 @@ order by ORDINAL_POSITION";
 
     public static class StringUtil
     {
+		static char[] splitChars=new char[]{ '_',' ','	',':','-','+' };
+
+		public static void SetSplitChars(params char[] chars)
+		{
+			List<char> list = new List<char>(splitChars);
+			list.AddRange(chars);
+			splitChars = list.ToArray();
+		}
+
         public static string ToPascalCase(string name)
         {
             StringBuilder sb = new StringBuilder();
-            string[] parts = name.Split(new char[] { '_',' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = name.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
             foreach (string part in parts) {
                 if (part.Length > 0) {
                     sb.Append(Char.ToUpper(part[0]));
@@ -652,11 +748,10 @@ order by ORDINAL_POSITION";
             return sb.ToString();
         }
 
-
         public static string ToCamelCase(string name)
         {
             StringBuilder sb = new StringBuilder();
-            string[] parts = name.Split(new char[] { '_',' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = name.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
             bool f = false;
             foreach (string part in parts) {
                 if (part.Length > 0) {

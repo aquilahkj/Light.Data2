@@ -14,14 +14,15 @@ namespace Light.Data
         {
             dict.Add(DefaultTime.Now, new DefaultTimeFunction(GetNow));
             dict.Add(DefaultTime.Today, new DefaultTimeFunction(GetToday));
+            dict.Add(DefaultTime.TimeStamp, new DefaultTimeFunction(GetNow));
             dict.Add(DefaultTime.UtcNow, new DefaultTimeFunction(GetUtcNow));
             dict.Add(DefaultTime.UtcToday, new DefaultTimeFunction(GetUtcToday));
+            dict.Add(DefaultTime.UtcTimeStamp, new DefaultTimeFunction(GetUtcNow));
         }
 
         public static DefaultTimeFunction GetFunction(DefaultTime defaultTime)
         {
-            DefaultTimeFunction function;
-            dict.TryGetValue(defaultTime, out function);
+            dict.TryGetValue(defaultTime, out DefaultTimeFunction function);
             return function;
         }
 
@@ -66,6 +67,7 @@ namespace Light.Data
         {
             return DateTime.Now.Date;
         }
+        
 
         static object GetUtcNow()
         {
@@ -82,6 +84,7 @@ namespace Light.Data
         {
             return DateTime.UtcNow.Date;
         }
+        
     }
 }
 

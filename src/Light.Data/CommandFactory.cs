@@ -115,7 +115,7 @@ namespace Light.Data
 
         public virtual CommandData CreateInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
         {
-            IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+            IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
@@ -124,8 +124,6 @@ namespace Light.Data
             string[] valuesList = new string[insertLen];
             for (int i = 0; i < insertLen; i++) {
                 DataFieldMapping field = fields[i];
-                //object obj = field.Handler.Get(entity);
-                //object value = field.ToColumn(obj);
                 object value = field.GetInsertData(entity, refresh);
                 insertList[i] = CreateDataFieldSql(field.Name);
                 valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input);
@@ -142,9 +140,9 @@ namespace Light.Data
             if (!mapping.HasPrimaryKey) {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
-            if (mapping.NoPrimaryKeyFields.Count == 0) {
-                throw new LightDataException(string.Format(SR.NotContainNonPrimaryKeyFields, mapping.ObjectType));
-            }
+            //if (mapping.UpdateFieldList.Count == 0 && !mapping.IsDataTableEntity) {
+            //    throw new LightDataException(string.Format(SR.NotContainNonPrimaryKeyFields, mapping.ObjectType));
+            //}
 
             IList<DataFieldMapping> columnFields;
             object[] keys = null;
@@ -163,17 +161,27 @@ namespace Light.Data
                         if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
                             throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
                         }
-                        updateFields.Add(fm);
+                        if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+                            updateFields.Add(fm);
+                        }
+                    }
+                    foreach (DataFieldMapping tm in mapping.TimeStampFieldList) {
+                        if (!updateFields.Contains(tm) && (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+                            updateFields.Add(tm);
+                        }
                     }
                     columnFields = updateFields;
                 }
                 else {
-                    columnFields = mapping.NoPrimaryKeyFields;
+                    columnFields = mapping.UpdateFieldList;
                 }
             }
             else {
                 tableEntity = null;
-                columnFields = mapping.NoPrimaryKeyFields;
+                columnFields = mapping.UpdateFieldList;
+            }
+            if (columnFields.Count == 0) {
+                return null;
             }
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
             int keyLen = keyFields.Count;
@@ -183,9 +191,18 @@ namespace Light.Data
             string[] whereList = new string[keyLen];
             for (int i = 0; i < updateLen; i++) {
                 DataFieldMapping field = columnFields[i];
-                object obj = field.Handler.Get(entity);
-                object value = field.ToParameter(obj);
-                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                if ((field.FunctionControl & FunctionControl.Create) == FunctionControl.Create) {
+                    object value;
+                    if (field.IsTimeStamp) {
+                        value = field.GetTimeStamp();
+                    }
+                    else {
+                        object obj = field.Handler.Get(entity);
+                        value = field.ToParameter(obj);
+                    }
+                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+
+                }
             }
             for (int i = 0; i < keyLen; i++) {
                 DataFieldMapping field = keyFields[i];
@@ -589,7 +606,7 @@ namespace Light.Data
                 throw new ArgumentNullException(nameof(entitys));
             }
             int totalCount = entitys.Count;
-            IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+            IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
@@ -636,9 +653,9 @@ namespace Light.Data
             if (!mapping.HasPrimaryKey) {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
-            if (mapping.NoPrimaryKeyFields.Count == 0) {
-                throw new LightDataException(string.Format(SR.NotContainNonPrimaryKeyFields, mapping.ObjectType));
-            }
+            //if (mapping.UpdateFieldList.Count == 0 && !mapping.IsDataTableEntity) {
+            //    throw new LightDataException(string.Format(SR.NotContainNonPrimaryKeyFields, mapping.ObjectType));
+            //}
 
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
             int keyLen = keyFields.Count;
@@ -670,25 +687,41 @@ namespace Light.Data
                             if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
                                 throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
                             }
-                            updateFields.Add(fm);
+                            if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+                                updateFields.Add(fm);
+                            }
+                        }
+                        foreach (DataFieldMapping tm in mapping.TimeStampFieldList) {
+                            if (!updateFields.Contains(tm) && (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+                                updateFields.Add(tm);
+                            }
                         }
                         columnFields = updateFields;
                     }
                     else {
-                        columnFields = mapping.NoPrimaryKeyFields;
+                        columnFields = mapping.UpdateFieldList;
                     }
                 }
                 else {
                     tableEntity = null;
-                    columnFields = mapping.NoPrimaryKeyFields;
+                    columnFields = mapping.UpdateFieldList;
+                }
+                if (columnFields.Count == 0) {
+                    continue;
                 }
                 int updateLen = columnFields.Count;
                 string[] updateList = new string[updateLen];
                 string[] whereList = new string[keyLen];
                 for (int i = 0; i < updateLen; i++) {
                     DataFieldMapping field = columnFields[i];
-                    object obj = field.Handler.Get(entity);
-                    object value = field.ToParameter(obj);
+                    object value;
+                    if (field.IsTimeStamp) {
+                        value = field.GetTimeStamp();
+                    }
+                    else {
+                        object obj = field.Handler.Get(entity);
+                        value = field.ToParameter(obj);
+                    }
                     updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
                 }
                 for (int i = 0; i < keyLen; i++) {
@@ -702,6 +735,9 @@ namespace Light.Data
                 string where = string.Join(" and ", whereList);
                 totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state), update, where);
                 createCount++;
+            }
+            if (createCount == 0) {
+                return null;
             }
             CommandData command = new CommandData(totalSql.ToString());
             Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
@@ -929,17 +965,12 @@ namespace Light.Data
 
         public virtual string CreateRandomOrderBySql(DataEntityMapping mapping, string aliasName, bool fullFieldName)
         {
-            return "newid()";
+            throw new NotSupportedException();
         }
 
-        protected virtual string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
+        public virtual string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            if (mapping.IdentityField != null) {
-                return "select @@Identity;";
-            }
-            else {
-                return string.Empty;
-            }
+            throw new NotSupportedException();
         }
 
         public virtual string CreateSelectAllSql()

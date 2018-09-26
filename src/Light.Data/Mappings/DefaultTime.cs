@@ -16,13 +16,21 @@ namespace Light.Data
 		/// </summary>
 		Today,
         /// <summary>
+        /// The timestamp
+        /// </summary>
+        TimeStamp,
+        /// <summary>
 		/// The utc now.
 		/// </summary>
 		UtcNow,
         /// <summary>
         /// The utc today.
         /// </summary>
-        UtcToday
+        UtcToday,
+        /// <summary>
+        /// The utc timestamp
+        /// </summary>
+        UtcTimeStamp
     }
 }
 

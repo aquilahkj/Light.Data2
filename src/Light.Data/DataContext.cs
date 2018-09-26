@@ -360,7 +360,7 @@ namespace Light.Data
                 CreateSqlState state1 = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state1);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default, transaction);
@@ -370,7 +370,7 @@ namespace Light.Data
                     obj = ExecuteScalar(identityCommand, SafeLevel.Default, transaction);
                 }
             }
-            
+
             CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
@@ -395,7 +395,7 @@ namespace Light.Data
                 CreateSqlState state1 = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state1);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken, transaction);
@@ -435,6 +435,9 @@ namespace Light.Data
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
             CommandData commandData = _database.Factory.CreateUpdateCommand(mapping, data, state);
+            if (commandData == null) {
+                return 0;
+            }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default);
             }
@@ -473,6 +476,9 @@ namespace Light.Data
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
             CommandData commandData = _database.Factory.CreateUpdateCommand(mapping, data, state);
+            if (commandData == null) {
+                return 0;
+            }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
             }
@@ -724,7 +730,7 @@ namespace Light.Data
                 CreateSqlState state = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -739,7 +745,7 @@ namespace Light.Data
                     obj = ExecuteScalar(identityCommand, SafeLevel.Default, transaction);
                 }
             }
- 
+
             CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
@@ -918,7 +924,7 @@ namespace Light.Data
                 CreateSqlState state = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1028,6 +1034,15 @@ namespace Light.Data
             while (true) {
                 CreateSqlState state = new CreateSqlState(this);
                 Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, state);
+                if (commandDataResult == null) {
+                    start += batchCount;
+                    if (start >= datas.Count) {
+                        break;
+                    }
+                    else {
+                        continue;
+                    }
+                }
                 if (commandDataResult.Item2 == 0) {
                     break;
                 }
@@ -1039,7 +1054,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1159,6 +1174,15 @@ namespace Light.Data
             while (true) {
                 CreateSqlState state = new CreateSqlState(this);
                 Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, state);
+                if (commandDataResult == null) {
+                    start += batchCount;
+                    if (start >= datas.Count) {
+                        break;
+                    }
+                    else {
+                        continue;
+                    }
+                }
                 if (commandDataResult.Item2 == 0) {
                     break;
                 }
@@ -1170,7 +1194,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1275,7 +1299,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1407,7 +1431,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {

@@ -14,7 +14,7 @@ namespace Light.Data.Mssql
                 throw new ArgumentNullException(nameof(entitys));
             }
             int totalCount = entitys.Count;
-            IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+            IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));

@@ -63,6 +63,7 @@ namespace Light.Data
                 fieldMapping._dataOrder = config.DataOrder;
             }
             fieldMapping._positionOrder = positionOrder;
+            fieldMapping._functionControl = config.FunctionControl == FunctionControl.Default ? FunctionControl.Full : config.FunctionControl;
             fieldMapping._handler = new PropertyHandler(property);
             return fieldMapping;
         }
@@ -128,6 +129,8 @@ namespace Light.Data
 
         protected PropertyHandler _handler;
 
+        protected FunctionControl _functionControl;
+
         public int? DataOrder {
             get {
                 return _dataOrder;
@@ -139,6 +142,13 @@ namespace Light.Data
                 return _positionOrder;
             }
         }
+
+        public FunctionControl FunctionControl {
+            get {
+                return _functionControl;
+            }
+        }
+
 
         public PropertyHandler Handler {
             get {
@@ -160,8 +170,17 @@ namespace Light.Data
 
         public abstract object GetInsertData(object entity, bool refreshField);
 
-        //public abstract object ToColumn(object value);
-
         public abstract object ToParameter(object value);
+
+        public virtual bool IsTimeStamp {
+            get {
+                return false;
+            }
+        }
+
+        public virtual object GetTimeStamp()
+        {
+            return null;
+        }
     }
 }
