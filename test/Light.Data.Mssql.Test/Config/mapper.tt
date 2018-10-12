@@ -3,21 +3,21 @@
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
-<#@ assembly name="$(SolutionDir)/lib/MySql.Data.dll"  #>
 <#@ assembly name="$(SolutionDir)/lib/Light.Data.Template.dll"  #>
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Data.SqlClient"#>
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
 <#@ import namespace="Light.Data.Template"#>
 <# 
 	//设置命名空间
-    var namespaceName="Light.Data.Mysql.Test";
+    var namespaceName="Light.Data.Mssql.Test";
 	//设置数据库连接
-    var connection="server=192.168.210.1;Port=3306;User Id=root;password=qwerty;Allow Zero Datetime=True;charset=utf8;";
+    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
 	//设置需要生成的数据库
     var dataBase="LightData_Test";
 
@@ -36,7 +36,6 @@
 	DbSetting.SetDefaultValue("MyConfig1.DateTime_FieldNull","2017-01-02 12:00:00");
 	DbSetting.SetDefaultValue("MyConfig1.Varchar_FieldNull","testtest");
 	DbSetting.SetDefaultValue("MyConfig1.EnumInt32_FieldNull","EnumInt32Type.Positive1");
-
 
 	//设置需要生成的数据表,数据类型继承DataTableEntity
 	//DbSetting.SetEntityTable("Te_BaseField_Entity");
@@ -67,7 +66,7 @@
 	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.Varchar_FieldNull","testtest2");
 	DbSetting.SetDefaultValue("Te_BaseField_Config_Replace.EnumInt32_FieldNull","EnumInt32Type.Positive2");
 
-	var dbSchema= new MysqlSchema(dataBase, connection);
+	var dbSchema= new MssqlSchema(dataBase, connection);
     var tableList=dbSchema.GetTables();
 #>
 {

@@ -178,7 +178,7 @@ namespace Light.Data
             }
         }
 
-        public virtual object GetTimeStamp()
+        public virtual object GetTimeStamp(object entity, bool refreshField)
         {
             return null;
         }

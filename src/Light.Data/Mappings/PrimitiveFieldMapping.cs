@@ -209,6 +209,10 @@ namespace Light.Data
                     result = value;
                 }
             }
+            else if (isTimeStamp) {
+                useDef = true;
+                result = this._defaultTimeFunction.GetValue();
+            }
             else {
                 result = value;
             }
@@ -226,13 +230,17 @@ namespace Light.Data
             }
         }
 
-        public override object GetTimeStamp()
+        public override object GetTimeStamp(object entity, bool refreshField)
         {
             if (isTimeStamp && _defaultTimeFunction != null) {
-                return _defaultTimeFunction.GetValue();
+                object value = _defaultTimeFunction.GetValue();
+                if (refreshField) {
+                    Handler.Set(entity, value);
+                }
+                return value;
             }
             else {
-                return base.GetTimeStamp();
+                return base.GetTimeStamp(entity, refreshField);
             }
         }
     }

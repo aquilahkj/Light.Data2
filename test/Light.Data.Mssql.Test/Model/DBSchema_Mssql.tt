@@ -3,25 +3,25 @@
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
-<#@ assembly name="$(SolutionDir)/lib/Npgsql.dll"  #>
 <#@ assembly name="$(SolutionDir)/lib/Light.Data.Template.dll"  #>
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Data.SqlClient"#>
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
 <#@ import namespace="Light.Data.Template"#>
 <# 
 	//设置命名空间
-    var namespaceName="Light.Data.Postgre.Test";
+    var namespaceName="Light.Data.Mssql.Test";
 	//设置数据库连接
-    var connection="Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;Pooling=false;";
+    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
 	//设置需要生成的数据库
     var dataBase="LightData_Test";
 	//设置是否使用LightData框架
-    var useLightData = true;
+	var useLightData=true;
 	DbSetting.Initial();
 	//设置需要生成的数据表
     DbSetting.SetTable("Te_BaseField");
@@ -66,11 +66,7 @@
 	DbSetting.SetDefaultValue("MyBase4.NowFieldNull", "DefaultTime.TimeStamp");
     DbSetting.SetDefaultValue("MyBase4.NowField", "DefaultTime.TimeStamp");
 
-	//设置需要生成的数据表,数据类型继承DataTableEntity
-	DbSetting.SetEntityTable("Te_BaseField_Entity");
-	DbSetting.SetEntityTable("Te_BaseFieldNoIdentity_Entity");
-
-	//设置字段的Enum转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
+	//设置字段的转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
     DbSetting.SetSpecifiedType("*.EnumInt32Field","EnumInt32Type");
 	DbSetting.SetSpecifiedType("*.EnumInt32FieldNull","EnumInt32Type");
 	DbSetting.SetSpecifiedType("*.EnumInt64Field","EnumInt64Type");
@@ -87,7 +83,7 @@
 	DbSetting.SetSpecifiedType("*.UInt32FieldNull","uint");
 	DbSetting.SetSpecifiedType("*.UInt64Field","ulong");
 	DbSetting.SetSpecifiedType("*.UInt64FieldNull","ulong");
-	
+
 	DbSetting.SetSpecifiedType("*.ObjectField","ObjectType");
 	DbSetting.SetSpecifiedType("*.ObjectFieldNull","ObjectType");
 	//设置字段非空,设置"表名.字段名"指定表字段非空,设置"*.字段名"所有表符合字段名的都非空,设置"表名.*"指定表所有字段非空
@@ -117,7 +113,8 @@
 	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.EnumInt32FieldNull","EnumInt32Type.Positive1");
 	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.EnumInt64FieldNull","EnumInt64Type.Positive1");
 
-	var dbSchema= new PostgreSchema(dataBase, connection);
+	DbSetting.SetDefaultValue("Te_BaseField_NullMiniValue.DateTimeFieldNull","2017-01-02 12:00:00");
+	var dbSchema= new MssqlSchema(dataBase, connection);
     var tableList=dbSchema.GetTables();
 #>
 using System;

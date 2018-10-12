@@ -439,5 +439,31 @@ namespace Light.Data.Mysql.Test
             AssertExtend.Equal(list, listAc);
         }
         #endregion
+
+        [Fact]
+        public void TestCase_DefalutValue_TimeStamp()
+        {
+            context.TruncateTable<MyBase4>();
+            var value = context.CreateNew<MyBase4>();
+
+            context.Insert(value);
+            var ac = context.SelectById<MyBase4>(value.Id);
+
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
+
+            ac.NowField = DateTime.Now.AddDays(-1).Date;
+            ac.NowFieldNull = DateTime.Now.AddDays(-1).Date;
+            System.Threading.Thread.Sleep(1000);
+            int ret = context.Update(ac);
+            Assert.Equal(1, ret);
+            var ac1 = context.SelectById<MyBase4>(value.Id);
+            Assert.NotEqual(ac.NowField, ac1.NowField);
+            Assert.NotEqual(ac.NowFieldNull, ac1.NowFieldNull);
+            Assert.True((DateTime.Now - ac1.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac1.NowFieldNull.Value).Seconds <= 1);
+
+
+        }
     }
 }

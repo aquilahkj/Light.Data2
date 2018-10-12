@@ -167,7 +167,23 @@ namespace Light.Data
         {
             FunctionControl functionControl;
             if (!string.IsNullOrEmpty(fieldConfig.FunctionControl)) {
-                functionControl = (FunctionControl)(Enum.Parse(typeof(FunctionControl), fieldConfig.FunctionControl, true));
+                string name;
+                int index = fieldConfig.FunctionControl.IndexOf('.');
+                if (index > 0) {
+                    string type = fieldConfig.FunctionControl.Substring(0, index);
+                    if (type != "FunctionControl") {
+                        throw new Exception("Not FunctionControl type");
+                    }
+                    index++;
+                    if (index >= fieldConfig.FunctionControl.Length) {
+                        throw new Exception("FunctionControl error");
+                    }
+                    name = fieldConfig.FunctionControl.Substring(index);
+                }
+                else {
+                    name = fieldConfig.FunctionControl;
+                }
+                functionControl = (FunctionControl)(Enum.Parse(typeof(FunctionControl), name, true));
             }
             else {
                 functionControl = FunctionControl.Default;

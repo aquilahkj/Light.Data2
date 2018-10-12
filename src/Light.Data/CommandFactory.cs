@@ -113,7 +113,7 @@ namespace Light.Data
 
         #region 增删改操作命令
 
-        public virtual CommandData CreateInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
         {
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
@@ -135,7 +135,7 @@ namespace Light.Data
             return command;
         }
 
-        public virtual CommandData CreateUpdateCommand(DataTableEntityMapping mapping, object entity, CreateSqlState state)
+        public virtual CommandData CreateBaseUpdateCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
         {
             if (!mapping.HasPrimaryKey) {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
@@ -173,7 +173,15 @@ namespace Light.Data
                     columnFields = updateFields;
                 }
                 else {
-                    columnFields = mapping.UpdateFieldList;
+                    if (keys == null) {
+                        columnFields = mapping.UpdateFieldList;
+                    }
+                    else {
+                        List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
+                        updateFields.AddRange(mapping.PrimaryKeyFields);
+                        updateFields.AddRange(mapping.UpdateFieldList);
+                        columnFields = updateFields;
+                    }
                 }
             }
             else {
@@ -191,22 +199,20 @@ namespace Light.Data
             string[] whereList = new string[keyLen];
             for (int i = 0; i < updateLen; i++) {
                 DataFieldMapping field = columnFields[i];
-                if ((field.FunctionControl & FunctionControl.Create) == FunctionControl.Create) {
-                    object value;
-                    if (field.IsTimeStamp) {
-                        value = field.GetTimeStamp();
-                    }
-                    else {
-                        object obj = field.Handler.Get(entity);
-                        value = field.ToParameter(obj);
-                    }
-                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
-
+                object value;
+                if (field.IsTimeStamp) {
+                    value = field.GetTimeStamp(entity, refresh);
                 }
+                else {
+                    object obj = field.Handler.Get(entity);
+                    value = field.ToParameter(obj);
+                }
+                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
             }
             for (int i = 0; i < keyLen; i++) {
                 DataFieldMapping field = keyFields[i];
                 object obj = keys == null ? field.Handler.Get(entity) : keys[i];
+                //object obj = field.Handler.Get(entity);
                 object value = field.ToParameter(obj);
                 whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
             }
@@ -218,7 +224,7 @@ namespace Light.Data
             return command;
         }
 
-        public virtual CommandData CreateDeleteCommand(DataTableEntityMapping mapping, object entity, CreateSqlState state)
+        public virtual CommandData CreateBaseDeleteCommand(DataTableEntityMapping mapping, object entity, CreateSqlState state)
         {
             if (!mapping.HasPrimaryKey) {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
@@ -474,7 +480,7 @@ namespace Light.Data
             return CreateSelectJoinTableBaseCommand(select, modelList, query, null, null, state);
         }
 
-        public virtual CommandData CreateDeleteMassCommand(DataTableEntityMapping mapping, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateMassDeleteCommand(DataTableEntityMapping mapping, QueryExpression query, CreateSqlState state)
         {
             StringBuilder sql = new StringBuilder();
             sql.AppendFormat("delete from {0}", CreateDataTableMappingSql(mapping, state));
@@ -485,7 +491,7 @@ namespace Light.Data
             return command;
         }
 
-        public virtual CommandData CreateUpdateMassCommand(DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateMassUpdateCommand(DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, CreateSqlState state)
         {
             StringBuilder sql = new StringBuilder();
             string setString = updator.CreateSqlString(this, false, state);
@@ -645,7 +651,7 @@ namespace Light.Data
             return result;
         }
 
-        public virtual Tuple<CommandData, int> CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, CreateSqlState state)
+        public virtual Tuple<CommandData, int> CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
@@ -685,7 +691,9 @@ namespace Light.Data
                                 throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField, mapping.ObjectType, name));
                             }
                             if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
-                                throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
+                                // && keys == null
+                                //throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
+                                continue;
                             }
                             if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
                                 updateFields.Add(fm);
@@ -699,7 +707,15 @@ namespace Light.Data
                         columnFields = updateFields;
                     }
                     else {
-                        columnFields = mapping.UpdateFieldList;
+                        if (keys == null) {
+                            columnFields = mapping.UpdateFieldList;
+                        }
+                        else {
+                            List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
+                            updateFields.AddRange(mapping.PrimaryKeyFields);
+                            updateFields.AddRange(mapping.UpdateFieldList);
+                            columnFields = updateFields;
+                        }
                     }
                 }
                 else {
@@ -716,7 +732,7 @@ namespace Light.Data
                     DataFieldMapping field = columnFields[i];
                     object value;
                     if (field.IsTimeStamp) {
-                        value = field.GetTimeStamp();
+                        value = field.GetTimeStamp(entity, refresh);
                     }
                     else {
                         object obj = field.Handler.Get(entity);
@@ -727,6 +743,7 @@ namespace Light.Data
                 for (int i = 0; i < keyLen; i++) {
                     DataFieldMapping field = keyFields[i];
                     object obj = keys == null ? field.Handler.Get(entity) : keys[i];
+                    //object obj = field.Handler.Get(entity);
                     object value = field.ToParameter(obj);
                     whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
                 }

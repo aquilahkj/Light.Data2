@@ -169,9 +169,7 @@ namespace Light.Data
         {
             object data = base.LoadAliasJoinTableData(context, datareader, queryState, aliasName);
             if (_isDataTableEntity) {
-                DataTableEntity dataEntity = data as DataTableEntity;
-                object[] keys = GetRawKeys(dataEntity);
-                dataEntity.SetRawPrimaryKeys(keys);
+                UpdateDateTableEntity(data);
             }
             return data;
         }
@@ -180,9 +178,7 @@ namespace Light.Data
         {
             object data = base.LoadData(context, datareader, state);
             if (_isDataTableEntity) {
-                DataTableEntity dataEntity = data as DataTableEntity;
-                object[] keys = GetRawKeys(dataEntity);
-                dataEntity.SetRawPrimaryKeys(keys);
+                UpdateDateTableEntity(data);
             }
             return data;
         }
@@ -191,11 +187,18 @@ namespace Light.Data
         {
             object data = base.LoadJoinTableData(context, datareader, queryState, fieldPath);
             if (_isDataTableEntity) {
-                DataTableEntity dataEntity = data as DataTableEntity;
-                object[] keys = GetRawKeys(dataEntity);
-                dataEntity.SetRawPrimaryKeys(keys);
+                UpdateDateTableEntity(data);
             }
             return data;
+        }
+
+        private void UpdateDateTableEntity(object data)
+        {
+            DataTableEntity tableEntity = data as DataTableEntity;
+            tableEntity.LoadData();
+            //if (tableEntity.IsAllowUpdatePrimaryKey()) {
+            //    tableEntity.SetRawPrimaryKeys(GetRawKeys(tableEntity));
+            //}
         }
     }
 }

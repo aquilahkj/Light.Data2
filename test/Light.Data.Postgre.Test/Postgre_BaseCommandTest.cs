@@ -1786,6 +1786,219 @@ namespace Light.Data.Postgre.Test
             context.ResetAliasTableName<TeBaseField>();
             AssertExtend.Equal(item, ac2);
         }
+
+        [Fact]
+        public void TestCase_CUD_Single_S1()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase1>(item.Id);
+            item1.Id = 0;
+            context.TruncateTable<MyBase1>();
+            var retInsert = context.Insert(item1);
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retInsert);
+            var item2 = context.SelectById<MyBase1>(item1.Id);
+            AssertExtend.StrictEqual(item1, item2);
+            item2.DateTimeField = GetNow();
+            item2.DateTimeFieldNull = null;
+            item2.Int32Field = 2;
+            item2.Int32FieldNull = null;
+            item2.DoubleField = 2.0d;
+            item2.DoubleFieldNull = null;
+            item2.VarcharField = "abc";
+            item2.VarcharFieldNull = null;
+            item2.EnumInt32Field = EnumInt32Type.Zero;
+            item2.EnumInt32FieldNull = null;
+            item2.EnumInt64Field = EnumInt64Type.Zero;
+            item2.EnumInt64FieldNull = null;
+            var retUpdate = context.Update(item2);
+            Assert.Equal(1, item2.Id);
+            Assert.Equal(1, retUpdate);
+            var item3 = context.SelectById<MyBase1>(item1.Id);
+            AssertExtend.StrictEqual(item2, item3);
+            var retDelete = context.Delete(item3);
+            Assert.Equal(1, item3.Id);
+            Assert.Equal(1, retDelete);
+            var item4 = context.SelectById<MyBase1>(item1.Id);
+            Assert.Null(item4);
+        }
+
+        [Fact]
+        public void TestCase_FunctionControl_ReadOnly()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase3>(item.Id);
+
+            Assert.Equal(item.Int32Field, item1.Int32Field);
+            Assert.Equal(item.Int32FieldNull, item1.Int32FieldNull);
+
+            item1.Int32Field = 10000;
+            item1.Int32FieldNull = 20000;
+            var retUpdate = context.Update(item1);
+            Assert.Equal(1, retUpdate);
+
+            var item2 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int32Field, item2.Int32Field);
+            Assert.Equal(item.Int32FieldNull, item2.Int32FieldNull);
+
+            var retInsert = context.Insert(item1);
+            Assert.Equal(1, retInsert);
+
+            var item3 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int32Field, item3.Int32Field);
+            Assert.Null(item3.Int32FieldNull);
+        }
+
+
+        [Fact]
+        public void TestCase_FunctionControl_Create()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase3>(item.Id);
+
+            Assert.Equal(item.DecimalField, item1.DecimalField);
+            Assert.Equal(item.DecimalFieldNull, item1.DecimalFieldNull);
+
+            item1.DecimalField = 10000;
+            item1.DecimalFieldNull = 20000;
+            var retUpdate = context.Update(item1);
+            Assert.Equal(1, retUpdate);
+
+            var item2 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.DecimalField, item2.DecimalField);
+            Assert.Equal(item.DecimalFieldNull, item2.DecimalFieldNull);
+
+            var retInsert = context.Insert(item1);
+            Assert.Equal(1, retInsert);
+
+            var item3 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.DecimalField, item3.DecimalField);
+            Assert.Equal(item1.DecimalFieldNull, item3.DecimalFieldNull);
+        }
+
+        [Fact]
+        public void TestCase_FunctionControl_Update()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase3>(item.Id);
+
+            Assert.Equal(item.Int64Field, item1.Int64Field);
+            Assert.Equal(item.Int64FieldNull, item1.Int64FieldNull);
+
+            item1.Int64Field = 10000;
+            item1.Int64FieldNull = 20000;
+            var retUpdate = context.Update(item1);
+            Assert.Equal(1, retUpdate);
+
+            var item2 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int64Field, item2.Int64Field);
+            Assert.Equal(item1.Int64FieldNull, item2.Int64FieldNull);
+
+            var retInsert = context.Insert(item1);
+            Assert.Equal(1, retInsert);
+
+            var item3 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int64Field, item3.Int64Field);
+            Assert.Null(item3.Int64FieldNull);
+        }
+
+        [Fact]
+        public void TestCase_FunctionControl_ReadOnly_Batch()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase3>(item.Id);
+
+            Assert.Equal(item.Int32Field, item1.Int32Field);
+            Assert.Equal(item.Int32FieldNull, item1.Int32FieldNull);
+
+            item1.Int32Field = 10000;
+            item1.Int32FieldNull = 20000;
+            var retUpdate = context.BatchUpdate(new[] { item1 });
+            Assert.Equal(1, retUpdate);
+
+            var item2 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int32Field, item2.Int32Field);
+            Assert.Equal(item.Int32FieldNull, item2.Int32FieldNull);
+
+            var retInsert = context.BatchInsert(new[] { item1 });
+            Assert.Equal(1, retInsert);
+
+            var item3 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int32Field, item3.Int32Field);
+            Assert.Null(item3.Int32FieldNull);
+        }
+
+
+        [Fact]
+        public void TestCase_FunctionControl_Create_Batch()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase3>(item.Id);
+
+            Assert.Equal(item.DecimalField, item1.DecimalField);
+            Assert.Equal(item.DecimalFieldNull, item1.DecimalFieldNull);
+
+            item1.DecimalField = 10000;
+            item1.DecimalFieldNull = 20000;
+            var retUpdate = context.BatchUpdate(new[] { item1 });
+            Assert.Equal(1, retUpdate);
+
+            var item2 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.DecimalField, item2.DecimalField);
+            Assert.Equal(item.DecimalFieldNull, item2.DecimalFieldNull);
+
+            var retInsert = context.BatchInsert(new[] { item1 });
+            Assert.Equal(1, retInsert);
+
+            var item3 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.DecimalField, item3.DecimalField);
+            Assert.Equal(item1.DecimalFieldNull, item3.DecimalFieldNull);
+        }
+
+        [Fact]
+        public void TestCase_FunctionControl_Update_Batch()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            var item1 = context.SelectById<MyBase3>(item.Id);
+
+            Assert.Equal(item.Int64Field, item1.Int64Field);
+            Assert.Equal(item.Int64FieldNull, item1.Int64FieldNull);
+
+            item1.Int64Field = 10000;
+            item1.Int64FieldNull = 20000;
+            var retUpdate = context.BatchUpdate(new[] { item1 });
+            Assert.Equal(1, retUpdate);
+
+            var item2 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int64Field, item2.Int64Field);
+            Assert.Equal(item1.Int64FieldNull, item2.Int64FieldNull);
+
+            var retInsert = context.BatchInsert(new[] { item1 });
+            Assert.Equal(1, retInsert);
+
+            var item3 = context.SelectById<MyBase3>(item1.Id);
+
+            Assert.Equal(item1.Int64Field, item3.Int64Field);
+            Assert.Null(item3.Int64FieldNull);
+        }
     }
 
 

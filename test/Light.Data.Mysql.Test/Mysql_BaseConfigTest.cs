@@ -148,6 +148,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(EnumInt32Type.Zero, ac.EnumInt32Field);
             Assert.Equal(EnumInt32Type.Positive2, ac.EnumInt32FieldNull);
         }
+        
 
         [Fact]
         public void TestCase_Config_Relate()
@@ -196,5 +197,54 @@ namespace Light.Data.Mysql.Test
             }
         }
         #endregion
+
+        [Fact]
+        public void TestCase_Config1()
+        {
+            context.TruncateTable<MyConfig1>();
+            var item = context.CreateNew<MyConfig1>();
+            item.Int32FieldNull = 1000;
+            var ret = context.Insert(item);
+            Assert.Equal(1, ret);
+            var ac = context.Query<MyConfig1>().First();
+
+            Assert.Equal(1, ac.Id);
+            Assert.Equal(0, ac.Int32Field);
+            Assert.Null(ac.Int32FieldNull);
+            Assert.Equal(0m, ac.DecimalField);
+            Assert.Equal(20.5m, ac.DecimalFieldNull);
+            Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeField);
+            Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeFieldNull);
+            Assert.Equal("", ac.VarcharField);
+            Assert.Equal("testtest", ac.VarcharFieldNull);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
+            Assert.Equal(DateTime.Now.Date, ac.TodayField);
+            Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);
+            Assert.Equal(EnumInt32Type.Zero, ac.EnumInt32Field);
+            Assert.Equal(EnumInt32Type.Positive1, ac.EnumInt32FieldNull);
+
+            ac.Int32FieldNull = 1000;
+            ac.NowField = DateTime.Now.AddDays(-1).Date;
+            ret = context.Update(ac);
+            Assert.Equal(1, ret);
+            ac = context.Query<MyConfig1>().First();
+            Assert.Equal(1, ac.Id);
+            Assert.Equal(0, ac.Int32Field);
+            Assert.Null(ac.Int32FieldNull);
+            Assert.Equal(0m, ac.DecimalField);
+            Assert.Equal(20.5m, ac.DecimalFieldNull);
+            Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeField);
+            Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeFieldNull);
+            Assert.Equal("", ac.VarcharField);
+            Assert.Equal("testtest", ac.VarcharFieldNull);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
+            Assert.Equal(DateTime.Now.Date, ac.TodayField);
+            Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);
+            Assert.Equal(EnumInt32Type.Zero, ac.EnumInt32Field);
+            Assert.Equal(EnumInt32Type.Positive1, ac.EnumInt32FieldNull);
+
+        }
     }
 }

@@ -22,10 +22,10 @@
 
   <ItemGroup>
     <None Update="Config\mapper.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>mapper.tt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Config\mapper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

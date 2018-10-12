@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    public class DataEntitySet<T>
+    public class DataEntitySet<T> //where T : class, new()
     {
         private readonly DataContext context;
 
