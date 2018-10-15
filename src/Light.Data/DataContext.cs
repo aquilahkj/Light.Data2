@@ -164,6 +164,25 @@ namespace Light.Data
             }
         }
 
+        private void UpdateDateTableEntity(DataTableEntityMapping mapping, object data)
+        {
+            DataTableEntity tableEntity = data as DataTableEntity;
+            tableEntity.LoadData();
+            if (tableEntity.IsAllowUpdatePrimaryKey()) {
+                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(tableEntity));
+            }
+            tableEntity.ClearUpdateFields();
+        }
+
+        private void ClearDataTableEntity(object data)
+        {
+            DataTableEntity tableEntity = data as DataTableEntity;
+            if (tableEntity.IsAllowUpdatePrimaryKey()) {
+                tableEntity.ClearRawPrimaryKeys();
+            }
+            tableEntity.ClearUpdateFields();
+        }
+
         /// <summary>
         /// Insert or update the specified data.
         /// </summary>
@@ -183,7 +202,7 @@ namespace Light.Data
         /// <returns></returns>
         public int InsertOrUpdate<T>(T data, bool refresh)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(data.GetType());
             return InsertOrUpdate(mapping, data, refresh);
         }
 
@@ -204,7 +223,7 @@ namespace Light.Data
             bool exists = Exists(mapping, queryExpression);
             int result;
             if (exists) {
-                result = Update(mapping, data);
+                result = Update(mapping, data, refresh);
             }
             else {
                 result = Insert(mapping, data, refresh);
@@ -232,7 +251,7 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(data.GetType());
             return await InsertOrUpdateAsync(mapping, data, refresh, cancellationToken);
         }
 
@@ -274,7 +293,7 @@ namespace Light.Data
             bool exists = await ExistsAsync(mapping, queryExpression, cancellationToken);
             int result;
             if (exists) {
-                result = await UpdateAsync(mapping, data, cancellationToken);
+                result = await UpdateAsync(mapping, data, refresh, cancellationToken);
             }
             else {
                 result = await InsertAsync(mapping, data, refresh, cancellationToken);
@@ -335,7 +354,7 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         public async Task<int> InsertAsync<T>(T data)
         {
-            return await InsertAsync(data, CancellationToken.None);
+            return await InsertAsync(data, false, CancellationToken.None);
         }
 
         /// <summary>
@@ -354,13 +373,13 @@ namespace Light.Data
             object obj = null;
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateInsertCommand(mapping, data, refresh, state);
+            CommandData commandData = _database.Factory.CreateBaseInsertCommand(mapping, data, refresh, state);
             CommandData commandDataIdentity = null;
             if (mapping.IdentityField != null) {
                 CreateSqlState state1 = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state1);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default, transaction);
@@ -370,32 +389,32 @@ namespace Light.Data
                     obj = ExecuteScalar(identityCommand, SafeLevel.Default, transaction);
                 }
             }
-            
+
             CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
                 mapping.IdentityField.Handler.Set(data, id);
             }
             if (mapping.IsDataTableEntity) {
-                DataTableEntity tableEntity = data as DataTableEntity;
-                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                tableEntity.ClearUpdateFields();
+                UpdateDateTableEntity(mapping, data);
             }
             return rInt;
         }
+
+        
 
         internal async Task<int> InsertAsync(DataTableEntityMapping mapping, object data, bool refresh, CancellationToken cancellationToken)
         {
             object obj = null;
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateInsertCommand(mapping, data, refresh, state);
+            CommandData commandData = _database.Factory.CreateBaseInsertCommand(mapping, data, refresh, state);
             CommandData commandDataIdentity = null;
             if (mapping.IdentityField != null) {
                 CreateSqlState state1 = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state1);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken, transaction);
@@ -412,9 +431,7 @@ namespace Light.Data
                 mapping.IdentityField.Handler.Set(data, id);
             }
             if (mapping.IsDataTableEntity) {
-                DataTableEntity tableEntity = data as DataTableEntity;
-                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                tableEntity.ClearUpdateFields();
+                UpdateDateTableEntity(mapping, data);
             }
             return rInt;
         }
@@ -426,24 +443,70 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         public int Update<T>(T data)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            return Update(mapping, data);
+            return Update(data, false);
         }
 
-        internal int Update(DataTableEntityMapping mapping, object data)
+        /// <summary>
+        /// Update the specified data.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="data">Data.</param>
+        /// <param name="refresh">Is refresh data field</param>
+        public int Update<T>(T data, bool refresh)
+        {
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(data.GetType());
+            return Update(mapping, data, refresh);
+        }
+
+        internal int Update(DataTableEntityMapping mapping, object data, bool refresh)
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateUpdateCommand(mapping, data, state);
+            CommandData commandData = _database.Factory.CreateBaseUpdateCommand(mapping, data, refresh, state);
+            if (commandData == null) {
+                return 0;
+            }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default);
             }
             if (mapping.IsDataTableEntity) {
-                DataTableEntity tableEntity = data as DataTableEntity;
-                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                tableEntity.ClearUpdateFields();
+                UpdateDateTableEntity(mapping, data);
             }
             return rInt;
+        }
+
+        /// <summary>
+        /// Update the specified data.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="data">Data.</param>
+        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        public async Task<int> UpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken)
+        {
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(data.GetType());
+            return await UpdateAsync(mapping, data, refresh, cancellationToken);
+        }
+
+        /// <summary>
+        /// Update the specified data.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="data">Data.</param>
+        public async Task<int> UpdateAsync<T>(T data)
+        {
+            return await UpdateAsync(data, false, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Update the specified data.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="data">Data.</param>
+        /// <param name="refresh">Is refresh data field</param>
+        public async Task<int> UpdateAsync<T>(T data, bool refresh)
+        {
+            return await UpdateAsync(data, refresh, CancellationToken.None);
         }
 
         /// <summary>
@@ -454,32 +517,22 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> UpdateAsync<T>(T data, CancellationToken cancellationToken)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            return await UpdateAsync(mapping, data, cancellationToken);
+            return await UpdateAsync(data, false, cancellationToken);
         }
 
-        /// <summary>
-        /// Update the specified data.
-        /// </summary>
-        /// <returns>result.</returns>
-        /// <param name="data">Data.</param>
-        public async Task<int> UpdateAsync<T>(T data)
-        {
-            return await UpdateAsync(data, CancellationToken.None);
-        }
-
-        internal async Task<int> UpdateAsync(DataTableEntityMapping mapping, object data, CancellationToken cancellationToken)
+        internal async Task<int> UpdateAsync(DataTableEntityMapping mapping, object data, bool refresh, CancellationToken cancellationToken)
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateUpdateCommand(mapping, data, state);
+            CommandData commandData = _database.Factory.CreateBaseUpdateCommand(mapping, data, refresh, state);
+            if (commandData == null) {
+                return 0;
+            }
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
             }
             if (mapping.IsDataTableEntity) {
-                DataTableEntity tableEntity = data as DataTableEntity;
-                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                tableEntity.ClearUpdateFields();
+                UpdateDateTableEntity(mapping, data);
             }
             return rInt;
         }
@@ -491,7 +544,7 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         public int Delete<T>(T data)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(data.GetType());
             return Delete(mapping, data);
         }
 
@@ -503,7 +556,7 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> DeleteAsync<T>(T data, CancellationToken cancellationToken)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(data.GetType());
             return await DeleteAsync(mapping, data, cancellationToken);
         }
 
@@ -521,30 +574,28 @@ namespace Light.Data
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateDeleteCommand(mapping, data, state);
+            CommandData commandData = _database.Factory.CreateBaseDeleteCommand(mapping, data, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, SafeLevel.Default);
             }
             if (mapping.IsDataTableEntity) {
-                DataTableEntity tableEntity = data as DataTableEntity;
-                tableEntity.ClearRawPrimaryKeys();
-                tableEntity.ClearUpdateFields();
+                ClearDataTableEntity(data);
             }
             return rInt;
         }
+
+       
 
         internal async Task<int> DeleteAsync(DataTableEntityMapping mapping, object data, CancellationToken cancellationToken)
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateDeleteCommand(mapping, data, state);
+            CommandData commandData = _database.Factory.CreateBaseDeleteCommand(mapping, data, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
             }
             if (mapping.IsDataTableEntity) {
-                DataTableEntity tableEntity = data as DataTableEntity;
-                tableEntity.ClearRawPrimaryKeys();
-                tableEntity.ClearUpdateFields();
+                ClearDataTableEntity(data);
             }
             return rInt;
         }
@@ -554,24 +605,22 @@ namespace Light.Data
         /// </summary>
         /// <returns>The new.</returns>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public T CreateNew<T>()
+        public T CreateNew<T>() where T : class, new()
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            object obj = mapping.InitialData();
+            T obj = new T();//mapping.InitialData();
             if (mapping.IsDataEntity) {
                 DataEntity entity = obj as DataEntity;
                 entity.SetContext(this);
             }
-            return (T)obj;
+            return obj;
         }
-
-
 
         internal int Delete(DataTableEntityMapping mapping, QueryExpression query, SafeLevel level)
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateDeleteMassCommand(mapping, query, state);
+            CommandData commandData = _database.Factory.CreateMassDeleteCommand(mapping, query, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, level);
             }
@@ -582,7 +631,7 @@ namespace Light.Data
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateDeleteMassCommand(mapping, query, state);
+            CommandData commandData = _database.Factory.CreateMassDeleteCommand(mapping, query, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, level, cancellationToken);
             }
@@ -593,7 +642,7 @@ namespace Light.Data
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateUpdateMassCommand(mapping, updator, query, state);
+            CommandData commandData = _database.Factory.CreateMassUpdateCommand(mapping, updator, query, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = ExecuteNonQuery(command, level);
             }
@@ -604,7 +653,7 @@ namespace Light.Data
         {
             int rInt;
             CreateSqlState state = new CreateSqlState(this);
-            CommandData commandData = _database.Factory.CreateUpdateMassCommand(mapping, updator, query, state);
+            CommandData commandData = _database.Factory.CreateMassUpdateCommand(mapping, updator, query, state);
             using (DbCommand command = commandData.CreateCommand(_database, state)) {
                 rInt = await ExecuteNonQueryAsync(command, level, cancellationToken);
             }
@@ -635,7 +684,10 @@ namespace Light.Data
             }
 
             List<T> list = new List<T>(datas);
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return BatchInsert(mapping, list, refresh);
         }
 
@@ -686,7 +738,10 @@ namespace Light.Data
                 }
                 mindex++;
             }
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return BatchInsert(mapping, list, refresh);
         }
 
@@ -724,7 +779,7 @@ namespace Light.Data
                 CreateSqlState state = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -739,7 +794,7 @@ namespace Light.Data
                     obj = ExecuteScalar(identityCommand, SafeLevel.Default, transaction);
                 }
             }
- 
+
             CommitInnerTransaction(transaction);
             if (!Equals(obj, null)) {
                 object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
@@ -757,9 +812,7 @@ namespace Light.Data
             }
             if (mapping.IsDataTableEntity) {
                 foreach (object data in datas) {
-                    DataTableEntity tableEntity = data as DataTableEntity;
-                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                    tableEntity.ClearUpdateFields();
+                    UpdateDateTableEntity(mapping, data);
                 }
             }
             return result;
@@ -804,7 +857,10 @@ namespace Light.Data
             }
 
             List<T> list = new List<T>(datas);
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return await BatchInsertAsync(mapping, list, refresh, cancellationToken);
         }
 
@@ -868,7 +924,10 @@ namespace Light.Data
                 }
                 mindex++;
             }
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return await BatchInsertAsync(mapping, list, refresh, cancellationToken);
         }
 
@@ -882,7 +941,21 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count)
         {
-            return await BatchInsertAsync(datas, index, count, CancellationToken.None);
+            return await BatchInsertAsync(datas, index, count, false, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Mass insert data.
+        /// </summary>
+        /// <returns>The insert rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <param name="index">Index.</param>
+        /// <param name="count">Count.</param>
+        /// <param name="refresh">is refresh null data field</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh)
+        {
+            return await BatchInsertAsync(datas, index, count, refresh, CancellationToken.None);
         }
 
         internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IList datas, bool refresh, CancellationToken cancellationToken)
@@ -918,7 +991,7 @@ namespace Light.Data
                 CreateSqlState state = new CreateSqlState(this);
                 commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
             }
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -951,9 +1024,7 @@ namespace Light.Data
             }
             if (mapping.IsDataTableEntity) {
                 foreach (object data in datas) {
-                    DataTableEntity tableEntity = data as DataTableEntity;
-                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                    tableEntity.ClearUpdateFields();
+                    UpdateDateTableEntity(mapping, data);
                 }
             }
             return result;
@@ -967,13 +1038,28 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas)
         {
+            return BatchUpdate(datas, false);
+        }
+
+        /// <summary>
+        /// Batch update datas.
+        /// </summary>
+        /// <returns>The update rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <param name="refresh">is refresh null data field</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public int BatchUpdate<T>(IEnumerable<T> datas, bool refresh)
+        {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
             }
 
             List<T> list = new List<T>(datas);
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            return BatchUpdate(mapping, list);
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
+            return BatchUpdate(mapping, list, refresh);
         }
 
         /// <summary>
@@ -985,6 +1071,20 @@ namespace Light.Data
         /// <param name="count">Count.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, int index, int count)
+        {
+            return BatchUpdate(datas, index, count, false);
+        }
+
+        /// <summary>
+        /// Batch update datas.
+        /// </summary>
+        /// <returns>The update rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <param name="index">Index.</param>
+        /// <param name="count">Count.</param>
+        /// <param name="refresh">is refresh null data field</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public int BatchUpdate<T>(IEnumerable<T> datas, int index, int count, bool refresh)
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -1008,11 +1108,14 @@ namespace Light.Data
                 }
                 mindex++;
             }
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            return BatchUpdate(mapping, list);
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
+            return BatchUpdate(mapping, list, refresh);
         }
 
-        internal int BatchUpdate(DataTableEntityMapping mapping, IList datas)
+        internal int BatchUpdate(DataTableEntityMapping mapping, IList datas, bool refresh)
         {
             if (datas.Count == 0) {
                 return 0;
@@ -1027,7 +1130,16 @@ namespace Light.Data
             List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
             while (true) {
                 CreateSqlState state = new CreateSqlState(this);
-                Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, state);
+                Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, refresh, state);
+                if (commandDataResult == null) {
+                    start += batchCount;
+                    if (start >= datas.Count) {
+                        break;
+                    }
+                    else {
+                        continue;
+                    }
+                }
                 if (commandDataResult.Item2 == 0) {
                     break;
                 }
@@ -1039,7 +1151,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1056,9 +1168,7 @@ namespace Light.Data
             }
             if (mapping.IsDataTableEntity) {
                 foreach (object data in datas) {
-                    DataTableEntity tableEntity = data as DataTableEntity;
-                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                    tableEntity.ClearUpdateFields();
+                    UpdateDateTableEntity(mapping, data);
                 }
             }
             return result;
@@ -1073,13 +1183,29 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken)
         {
+            return await BatchUpdateAsync(datas, false, cancellationToken);
+        }
+
+        /// <summary>
+        /// Batch update datas.
+        /// </summary>
+        /// <returns>The update rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, bool refresh, CancellationToken cancellationToken)
+        {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
             }
 
             List<T> list = new List<T>(datas);
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            return await BatchUpdateAsync(mapping, list, cancellationToken);
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
+            return await BatchUpdateAsync(mapping, list, refresh, cancellationToken);
         }
 
         /// <summary>
@@ -1090,7 +1216,7 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas)
         {
-            return await BatchUpdateAsync(datas, CancellationToken.None);
+            return await BatchUpdateAsync(datas, false, CancellationToken.None);
         }
 
         /// <summary>
@@ -1103,6 +1229,22 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        {
+            return await BatchUpdateAsync(datas, index, count, false, cancellationToken);
+        }
+
+
+        /// <summary>
+        /// Batch update datas.
+        /// </summary>
+        /// <returns>The update rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <param name="index">Index.</param>
+        /// <param name="count">Count.</param>
+        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, CancellationToken cancellationToken)
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -1126,9 +1268,13 @@ namespace Light.Data
                 }
                 mindex++;
             }
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            return await BatchUpdateAsync(mapping, list, cancellationToken);
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
+            return await BatchUpdateAsync(mapping, list, refresh, cancellationToken);
         }
+
 
         /// <summary>
         /// Batch update datas.
@@ -1140,10 +1286,24 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count)
         {
-            return await BatchUpdateAsync(datas, index, count, CancellationToken.None);
+            return await BatchUpdateAsync(datas, index, count, false, CancellationToken.None);
         }
 
-        internal async Task<int> BatchUpdateAsync(DataTableEntityMapping mapping, IList datas, CancellationToken cancellationToken)
+        /// <summary>
+        /// Batch update datas.
+        /// </summary>
+        /// <returns>The update rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <param name="index">Index.</param>
+        /// <param name="count">Count.</param>
+        /// <param name="refresh">is refresh null data field</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh)
+        {
+            return await BatchUpdateAsync(datas, index, count, refresh, CancellationToken.None);
+        }
+
+        internal async Task<int> BatchUpdateAsync(DataTableEntityMapping mapping, IList datas, bool refresh, CancellationToken cancellationToken)
         {
             if (datas.Count == 0) {
                 return 0;
@@ -1158,7 +1318,16 @@ namespace Light.Data
             List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
             while (true) {
                 CreateSqlState state = new CreateSqlState(this);
-                Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, state);
+                Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, refresh, state);
+                if (commandDataResult == null) {
+                    start += batchCount;
+                    if (start >= datas.Count) {
+                        break;
+                    }
+                    else {
+                        continue;
+                    }
+                }
                 if (commandDataResult.Item2 == 0) {
                     break;
                 }
@@ -1170,7 +1339,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1187,9 +1356,7 @@ namespace Light.Data
             }
             if (mapping.IsDataTableEntity) {
                 foreach (object data in datas) {
-                    DataTableEntity tableEntity = data as DataTableEntity;
-                    tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(data));
-                    tableEntity.ClearUpdateFields();
+                    UpdateDateTableEntity(mapping, data);
                 }
             }
             return result;
@@ -1208,7 +1375,10 @@ namespace Light.Data
             }
 
             List<T> list = new List<T>(datas);
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return BatchDelete(mapping, list);
         }
 
@@ -1244,7 +1414,10 @@ namespace Light.Data
                 }
                 mindex++;
             }
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return BatchDelete(mapping, list);
         }
 
@@ -1275,7 +1448,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1292,9 +1465,7 @@ namespace Light.Data
             }
             if (mapping.IsDataTableEntity) {
                 foreach (object data in datas) {
-                    DataTableEntity tableEntity = data as DataTableEntity;
-                    tableEntity.ClearRawPrimaryKeys();
-                    tableEntity.ClearUpdateFields();
+                    ClearDataTableEntity(data);
                 }
             }
             return result;
@@ -1315,7 +1486,10 @@ namespace Light.Data
             }
 
             List<T> list = new List<T>(datas);
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return await BatchDeleteAsync(mapping, list, cancellationToken);
         }
 
@@ -1363,7 +1537,10 @@ namespace Light.Data
                 }
                 mindex++;
             }
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            if (list.Count == 0) {
+                return 0;
+            }
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(list[0].GetType());
             return await BatchDeleteAsync(mapping, list, cancellationToken);
         }
 
@@ -1407,7 +1584,7 @@ namespace Light.Data
                 }
             }
 
-            
+
             var transaction = CreateInnerTransaction(SafeLevel.Default);
             foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
                 using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
@@ -1424,9 +1601,7 @@ namespace Light.Data
             }
             if (mapping.IsDataTableEntity) {
                 foreach (object data in datas) {
-                    DataTableEntity tableEntity = data as DataTableEntity;
-                    tableEntity.ClearRawPrimaryKeys();
-                    tableEntity.ClearUpdateFields();
+                    ClearDataTableEntity(data);
                 }
             }
             return result;
@@ -2013,7 +2188,6 @@ namespace Light.Data
             }
         }
 
-
         internal T QueryJoinDataSingle<T>(DataMapping mapping, ISelector selector, List<IJoinModel> models, QueryExpression query, OrderExpression order, bool distinct, Region region, Delegate dele, List<int> nodataSetNull)
         {
             CreateSqlState state = new CreateSqlState(this);
@@ -2222,7 +2396,6 @@ namespace Light.Data
             }
         }
 
-
         internal object AggregateCount(DataEntityMapping mapping, QueryExpression query, SafeLevel level)
         {
             CreateSqlState state = new CreateSqlState(this);
@@ -2240,7 +2413,6 @@ namespace Light.Data
                 return await ExecuteScalarAsync(command, level, cancellationToken);
             }
         }
-
 
         internal object AggregateJoinTableCount(List<IJoinModel> models, QueryExpression query, SafeLevel level)
         {

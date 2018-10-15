@@ -51,16 +51,13 @@ namespace Light.Data
         static void LoadData(string configFilePath)
         {
             FileInfo fileInfo;
-            if (useEntryAssemblyDirectory)
-            {
+            if (useEntryAssemblyDirectory) {
                 fileInfo = FileHelper.GetFileInfo(configFilePath, out bool absolute);
-                if (!fileInfo.Exists && !absolute)
-                {
+                if (!fileInfo.Exists && !absolute) {
                     fileInfo = new FileInfo(configFilePath);
                 }
             }
-            else
-            {
+            else {
                 fileInfo = new FileInfo(configFilePath);
             }
             if (fileInfo.Exists) {
@@ -112,12 +109,18 @@ namespace Light.Data
 
                                     object defaultValue;
                                     try {
-                                        defaultValue = GreateDefaultValue(property.PropertyType, fieldConfig.DefaultValue);
+                                        defaultValue = CreateDefaultValue(property.PropertyType, fieldConfig.DefaultValue);
                                     }
                                     catch (Exception ex) {
                                         throw new LightDataException(string.Format(SR.ConfigDataFieldLoadError, typeName, fieldName, ex.Message));
                                     }
-
+                                    FunctionControl functionControl;
+                                    try {
+                                        functionControl = CreateFunctionControl(fieldConfig);
+                                    }
+                                    catch (Exception ex) {
+                                        throw new LightDataException(string.Format(SR.ConfigDataFieldLoadError, typeName, fieldName, ex.Message));
+                                    }
                                     var dataFieldMap = new DataFieldMapperConfig(fieldName) {
                                         Name = fieldConfig.Name,
                                         IsPrimaryKey = fieldConfig.IsPrimaryKey,
@@ -125,7 +128,8 @@ namespace Light.Data
                                         DbType = fieldConfig.DbType,
                                         DataOrder = fieldConfig.DataOrder,
                                         IsNullable = fieldConfig.IsNullable,
-                                        DefaultValue = defaultValue
+                                        DefaultValue = defaultValue,
+                                        FunctionControl = functionControl
                                     };
                                     setting.AddDataFieldMapConfig(fieldName, dataFieldMap);
                                 }
@@ -159,7 +163,36 @@ namespace Light.Data
             }
         }
 
-        private static object GreateDefaultValue(Type type, string defaultValue)
+        private static FunctionControl CreateFunctionControl(DataFieldSection fieldConfig)
+        {
+            FunctionControl functionControl;
+            if (!string.IsNullOrEmpty(fieldConfig.FunctionControl)) {
+                string name;
+                int index = fieldConfig.FunctionControl.IndexOf('.');
+                if (index > 0) {
+                    string type = fieldConfig.FunctionControl.Substring(0, index);
+                    if (type != "FunctionControl") {
+                        throw new Exception("Not FunctionControl type");
+                    }
+                    index++;
+                    if (index >= fieldConfig.FunctionControl.Length) {
+                        throw new Exception("FunctionControl error");
+                    }
+                    name = fieldConfig.FunctionControl.Substring(index);
+                }
+                else {
+                    name = fieldConfig.FunctionControl;
+                }
+                functionControl = (FunctionControl)(Enum.Parse(typeof(FunctionControl), name, true));
+            }
+            else {
+                functionControl = FunctionControl.Default;
+            }
+
+            return functionControl;
+        }
+
+        private static object CreateDefaultValue(Type type, string defaultValue)
         {
             if (!string.IsNullOrEmpty(defaultValue)) {
                 TypeInfo typeInfo = type.GetTypeInfo();

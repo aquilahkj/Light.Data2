@@ -19,7 +19,7 @@ namespace Light.Data
             LCollectionFrameType = Ltype.GetGenericTypeDefinition();
         }
 
-        static DataEntityMapping defaultMapping = new DataEntityMapping(typeof(DataEntityMapping));
+        static readonly DataEntityMapping defaultMapping = new DataEntityMapping(typeof(DataEntityMapping));
 
         public static DataEntityMapping Default {
             get {
@@ -29,7 +29,7 @@ namespace Light.Data
 
         #region static
 
-        static object _synobj = new object();
+        static readonly object _synobj = new object();
 
         static Dictionary<Type, DataEntityMapping> _defaultMapping = new Dictionary<Type, DataEntityMapping>();
 
@@ -212,7 +212,7 @@ namespace Light.Data
             _singleRelationFields = new ReadOnlyCollection<SingleRelationFieldMapping>(singleTmpList);
         }
 
-        bool _isDataEntity;
+        readonly bool _isDataEntity;
 
         public bool IsDataEntity {
             get {
@@ -220,7 +220,7 @@ namespace Light.Data
             }
         }
 
-        string _tableName;
+        readonly string _tableName;
 
         public string TableName {
             get {
@@ -288,7 +288,7 @@ namespace Light.Data
             }
         }
 
-        object joinLock = new object();
+        readonly object joinLock = new object();
 
         RelationMap relationMap;
 

@@ -120,7 +120,7 @@ namespace Light.Data.Postgre
                 throw new ArgumentNullException(nameof(entitys));
             }
             int totalCount = entitys.Count;
-            IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+            IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
@@ -192,7 +192,7 @@ namespace Light.Data.Postgre
             return "random()";
         }
 
-        protected override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
+        public override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
         {
             if (mapping.IdentityField != null) {
                 return string.Format("select currval('\"{0}\"');", GetIndentitySeq(mapping, state));

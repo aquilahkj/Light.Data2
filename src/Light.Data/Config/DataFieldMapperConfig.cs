@@ -93,5 +93,10 @@ namespace Light.Data
 			get;
 			set;
 		}
+
+        public FunctionControl FunctionControl {
+            get;
+            set;
+        }
 	}
 }

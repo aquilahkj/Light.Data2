@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <SignAssembly>False</SignAssembly>
-    <Version>2.0.6</Version>
+    <SignAssembly>true</SignAssembly>
+    <Version>2.0.7</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>The light weight object relational mapping framework for sqlserver</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
@@ -12,11 +12,13 @@
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.6.0</FileVersion>
+    <AssemblyVersion>2.0.7.0</AssemblyVersion>
+    <FileVersion>2.0.7.0</FileVersion>
     <PackageReleaseNotes>Light.Data.Mssql for SqlServer
 Light.Data.Mysql for Mysql
 Light.Data.Postgre for Postgre</PackageReleaseNotes>
+    <AssemblyOriginatorKeyFile>LightData.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>

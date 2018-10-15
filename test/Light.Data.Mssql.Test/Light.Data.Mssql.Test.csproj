@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <SignAssembly>true</SignAssembly>
+
+    <AssemblyOriginatorKeyFile>LightDataTest.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Light.Data.Mssql\Light.Data.Mssql.csproj" />
+    <ProjectReference Include="..\..\src\Light.Data.Mssql\Light.Data.Mssql.csproj" />
   </ItemGroup>
 
   <ItemGroup>

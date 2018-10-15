@@ -10,8 +10,7 @@ namespace Light.Data
     /// </summary>
     class DataTableEntityMapping : DataEntityMapping
     {
-
-        bool _isDataTableEntity;
+        readonly bool _isDataTableEntity;
 
         public bool IsDataTableEntity {
             get {
@@ -23,7 +22,7 @@ namespace Light.Data
             : base(type, tableName, isDataEntity)
         {
             _isDataTableEntity = isDataTableEntity;
-            GetPrimaryKey();
+            InitialFieldList();
         }
 
         DataFieldMapping _identityField;
@@ -58,6 +57,30 @@ namespace Light.Data
 
         ReadOnlyCollection<DataFieldMapping> _noPrimaryKeyFieldList;// = new List<DataFieldMapping> ();
 
+        public ReadOnlyCollection<DataFieldMapping> CreateFieldList {
+            get {
+                return _createFieldList;
+            }
+        }
+
+        ReadOnlyCollection<DataFieldMapping> _createFieldList;
+
+        public ReadOnlyCollection<DataFieldMapping> UpdateFieldList {
+            get {
+                return _updateFieldList;
+            }
+        }
+
+        ReadOnlyCollection<DataFieldMapping> _updateFieldList;
+
+        public ReadOnlyCollection<DataFieldMapping> TimeStampFieldList {
+            get {
+                return _timeStampFieldList;
+            }
+        }
+
+        ReadOnlyCollection<DataFieldMapping> _timeStampFieldList;
+
         /// <summary>
         /// Gets a value indicating whether this instance has identity.
         /// </summary>
@@ -88,29 +111,35 @@ namespace Light.Data
             }
         }
 
-        void GetPrimaryKey()
+        void InitialFieldList()
         {
             List<DataFieldMapping> noIdentityTmpList = new List<DataFieldMapping>();
             List<DataFieldMapping> primaryKeyTmpList = new List<DataFieldMapping>();
             List<DataFieldMapping> noPrimaryKeyTmpList = new List<DataFieldMapping>();
+            List<DataFieldMapping> createTmpList = new List<DataFieldMapping>();
+            List<DataFieldMapping> updateTmpList = new List<DataFieldMapping>();
 
             foreach (FieldMapping field in _fieldList) {
                 if (field is PrimitiveFieldMapping pfmapping) {
                     if (pfmapping.IsIdentity) {
                         if (IdentityField == null) {
                             _identityField = pfmapping;
-                        } else {
+                        }
+                        else {
                             throw new LightDataException(string.Format(SR.MultipleIdentityField, ObjectType));
                         }
-                    } else {
+                    }
+                    else {
                         noIdentityTmpList.Add(pfmapping);
                     }
                     if (pfmapping.IsPrimaryKey) {
                         primaryKeyTmpList.Add(pfmapping);
-                    } else {
+                    }
+                    else {
                         noPrimaryKeyTmpList.Add(pfmapping);
                     }
-                } else {
+                }
+                else {
                     DataFieldMapping mapping = field as DataFieldMapping;
                     noIdentityTmpList.Add(mapping);
                     noPrimaryKeyTmpList.Add(mapping);
@@ -120,6 +149,10 @@ namespace Light.Data
             _noIdentityFieldList = new ReadOnlyCollection<DataFieldMapping>(noIdentityTmpList);
             _primaryKeyFieldList = new ReadOnlyCollection<DataFieldMapping>(primaryKeyTmpList);
             _noPrimaryKeyFieldList = new ReadOnlyCollection<DataFieldMapping>(noPrimaryKeyTmpList);
+            _createFieldList = new ReadOnlyCollection<DataFieldMapping>(noIdentityTmpList.FindAll(x => (x.FunctionControl & FunctionControl.Create) == FunctionControl.Create));
+            _updateFieldList = new ReadOnlyCollection<DataFieldMapping>(noPrimaryKeyTmpList.FindAll(x => (x.FunctionControl & FunctionControl.Update) == FunctionControl.Update));
+            _timeStampFieldList = new ReadOnlyCollection<DataFieldMapping>(noPrimaryKeyTmpList.FindAll(x => x.IsTimeStamp));
+
         }
 
         public object[] GetRawKeys(object data)
@@ -136,9 +169,7 @@ namespace Light.Data
         {
             object data = base.LoadAliasJoinTableData(context, datareader, queryState, aliasName);
             if (_isDataTableEntity) {
-                DataTableEntity dataEntity = data as DataTableEntity;
-                object[] keys = GetRawKeys(dataEntity);
-                dataEntity.SetRawPrimaryKeys(keys);
+                UpdateDateTableEntity(data);
             }
             return data;
         }
@@ -147,9 +178,7 @@ namespace Light.Data
         {
             object data = base.LoadData(context, datareader, state);
             if (_isDataTableEntity) {
-                DataTableEntity dataEntity = data as DataTableEntity;
-                object[] keys = GetRawKeys(dataEntity);
-                dataEntity.SetRawPrimaryKeys(keys);
+                UpdateDateTableEntity(data);
             }
             return data;
         }
@@ -158,11 +187,18 @@ namespace Light.Data
         {
             object data = base.LoadJoinTableData(context, datareader, queryState, fieldPath);
             if (_isDataTableEntity) {
-                DataTableEntity dataEntity = data as DataTableEntity;
-                object[] keys = GetRawKeys(dataEntity);
-                dataEntity.SetRawPrimaryKeys(keys);
+                UpdateDateTableEntity(data);
             }
             return data;
+        }
+
+        private void UpdateDateTableEntity(object data)
+        {
+            DataTableEntity tableEntity = data as DataTableEntity;
+            tableEntity.LoadData();
+            //if (tableEntity.IsAllowUpdatePrimaryKey()) {
+            //    tableEntity.SetRawPrimaryKeys(GetRawKeys(tableEntity));
+            //}
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Light.Data
     /// </summary>
     public class DataTableEntity : DataEntity
     {
-        object[] rawKeys = null;
+        //object[] rawKeys = null;
 
         /// <summary>
         /// 保存数据
@@ -28,8 +28,8 @@ namespace Light.Data
             DataContext context = GetContext();
             int ret;
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
-            if (rawKeys != null) {
-                ret = context.Update(mapping, this);
+            if (_hasLoadData) {
+                ret = context.Update(mapping, this, refresh);
             }
             else {
                 ret = context.Insert(mapping, this, refresh);
@@ -71,8 +71,8 @@ namespace Light.Data
             DataContext context = GetContext();
             int ret;
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
-            if (rawKeys != null) {
-                ret = await context.UpdateAsync(mapping, this, cancellationToken);
+            if (_hasLoadData) {
+                ret = await context.UpdateAsync(mapping, this, refresh, cancellationToken);
             }
             else {
                 ret = await context.InsertAsync(mapping, this, refresh, cancellationToken);
@@ -87,7 +87,7 @@ namespace Light.Data
         {
             DataContext context = GetContext();
             int ret;
-            if (rawKeys != null) {
+            if (_hasLoadData) {
                 DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
                 ret = context.Delete(mapping, this);
             }
@@ -112,7 +112,7 @@ namespace Light.Data
         {
             DataContext context = GetContext();
             int ret;
-            if (rawKeys != null) {
+            if (_hasLoadData) {
                 DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
                 ret = await context.DeleteAsync(mapping, this, cancellationToken);
             }
@@ -120,6 +120,18 @@ namespace Light.Data
                 ret = 0;
             }
             return ret;
+        }
+
+        /// <summary>
+        /// Reset inner data
+        /// </summary>
+        public void Reset()
+        {
+            _hasLoadData = false;
+            rawKeys = null;
+            if (_updateFields != null) {
+                _updateFields.Clear();
+            }
         }
 
         /// <summary>
@@ -133,7 +145,7 @@ namespace Light.Data
         /// <param name="fieldName">字段名字</param>
         protected void UpdateDataNotify(string fieldName)
         {
-            if (rawKeys != null) {
+            if (_hasLoadData) {
                 if (_updateFields == null) {
                     _updateFields = new HashSet<string>();
                 }
@@ -161,6 +173,29 @@ namespace Light.Data
             }
         }
 
+        bool allowUpdatePrimaryKey;
+
+        internal bool IsAllowUpdatePrimaryKey()
+        {
+            return allowUpdatePrimaryKey;
+        }
+
+        public void AllowUpdatePrimaryKey(bool allow = true)
+        {
+            if (allow) {
+                allowUpdatePrimaryKey = true;
+                if (_hasLoadData && rawKeys == null) {
+                    DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(GetType());
+                    SetRawPrimaryKeys(mapping.GetRawKeys(this));
+                }
+            }
+            else {
+                allowUpdatePrimaryKey = false;
+            }
+        }
+
+        object[] rawKeys = null;
+
         internal void SetRawPrimaryKeys(object[] keys)
         {
             rawKeys = keys;
@@ -185,5 +220,12 @@ namespace Light.Data
         //    _hasLoadData = true;
         //    _allowNotifyUpdateField = true;
         //}
+
+        bool _hasLoadData;
+
+        internal void LoadData()
+        {
+            _hasLoadData = true;
+        }
     }
 }

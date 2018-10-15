@@ -1908,7 +1908,7 @@ namespace Light.Data.Sample
 
 
     [DataTable("Te_User")]
-    public class TeUser
+    public class TeUser : ITeUser
     {
         #region "Data Property"
         private int id;

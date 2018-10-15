@@ -41,6 +41,8 @@ namespace Light.Data
         public string DefaultValue { get; set; }
 
         public int DataOrder { get; set; }
+
+        public string FunctionControl { get; set; }
     }
 
     class RelationFieldSection

@@ -38,7 +38,11 @@ namespace Light.Data
                 Type defaultValueType = defaultValue.GetType();
                 if (_typeCode == TypeCode.DateTime) {
                     if (defaultValueType == typeof(DefaultTime)) {
-                        this._defaultTimeFunction = DefaultTimeFunction.GetFunction((DefaultTime)defaultValue);
+                        DefaultTime defaultTime = (DefaultTime)defaultValue;
+                        this._defaultTimeFunction = DefaultTimeFunction.GetFunction(defaultTime);
+                        if (defaultTime == DefaultTime.TimeStamp || defaultTime == DefaultTime.UtcTimeStamp) {
+                            isTimeStamp = true;
+                        }
                         this._defaultValue = this._defaultTimeFunction;
                     }
                     else if (defaultValueType == typeof(DateTime)) {
@@ -165,69 +169,7 @@ namespace Light.Data
         public override object ToParameter(object value)
         {
             return value;
-            //if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
-            //    return null;
-            //}
-            //else {
-            //    if (value is IConvertible ic) {
-            //        if (ic.GetTypeCode() != _typeCode) {
-            //            return Convert.ChangeType(value, _typeCode, null);
-            //        }
-            //        else {
-            //            return value;
-            //        }
-            //    }
-            //    else {
-            //        return value;
-            //    }
-            //}
         }
-
-        //public override object ToColumn(object value)
-        //{
-        //    if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
-        //        if (_defaultValue != null) {
-        //            if (_typeCode == TypeCode.DateTime && _defaultTimeFunction != null) {
-        //                return _defaultTimeFunction.GetValue();
-        //            }
-        //            else {
-        //                return _defaultValue;
-        //            }
-        //        }
-        //        else {
-        //            if (IsNullable) {
-        //                return null;
-        //            }
-        //            else {
-        //                return _minValue;
-        //            }
-        //        }
-        //    }
-        //    else if (_typeCode == TypeCode.DateTime && Object.Equals(value, DateTime.MinValue)) {
-        //        if (_defaultTimeFunction != null) {
-        //            return this._defaultTimeFunction.GetValue();
-        //        }
-        //        else if (_defaultValue != null) {
-        //            return _defaultValue;
-        //        }
-        //        else {
-        //            return value;
-        //        }
-        //    }
-        //    else {
-        //        if (value is IConvertible ic) {
-        //            if (ic.GetTypeCode() != _typeCode) {
-        //                return Convert.ChangeType(value, _typeCode, null);
-        //            }
-        //            else {
-        //                return value;
-        //            }
-        //        }
-        //        else {
-        //            return value;
-        //        }
-        //    }
-        //}
 
         public override object GetInsertData(object entity, bool refreshField)
         {
@@ -267,6 +209,10 @@ namespace Light.Data
                     result = value;
                 }
             }
+            else if (isTimeStamp) {
+                useDef = true;
+                result = this._defaultTimeFunction.GetValue();
+            }
             else {
                 result = value;
             }
@@ -275,5 +221,28 @@ namespace Light.Data
             }
             return result;
         }
+
+        bool isTimeStamp = false;
+
+        public override bool IsTimeStamp {
+            get {
+                return isTimeStamp;
+            }
+        }
+
+        public override object GetTimeStamp(object entity, bool refreshField)
+        {
+            if (isTimeStamp && _defaultTimeFunction != null) {
+                object value = _defaultTimeFunction.GetValue();
+                if (refreshField) {
+                    Handler.Set(entity, value);
+                }
+                return value;
+            }
+            else {
+                return base.GetTimeStamp(entity, refreshField);
+            }
+        }
     }
+
 }

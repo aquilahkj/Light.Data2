@@ -5,7 +5,7 @@ namespace Light.Data
     /// <summary>
     /// Data field info.
     /// </summary>
-    class DataFieldInfo<T> : DataFieldInfo //where T : class, new()
+    class DataFieldInfo<T> : DataFieldInfo
     {
         /// <summary>
         /// Create the specified name.

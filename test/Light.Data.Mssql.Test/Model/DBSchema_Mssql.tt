@@ -1,0 +1,191 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="System.Data"#>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="$(SolutionDir)/lib/Light.Data.Template.dll"  #>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Data.SqlClient"#>
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Text.RegularExpressions"#>
+<#@ import namespace="Light.Data.Template"#>
+<# 
+	//设置命名空间
+    var namespaceName="Light.Data.Mssql.Test";
+	//设置数据库连接
+    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
+	//设置需要生成的数据库
+    var dataBase="LightData_Test";
+	//设置是否使用LightData框架
+	var useLightData=true;
+	DbSetting.Initial();
+	//设置需要生成的数据表
+    DbSetting.SetTable("Te_BaseField");
+	DbSetting.SetTable("Te_BaseFieldNoIdentity");
+	DbSetting.SetTable("Te_BaseFieldExpression");
+	DbSetting.SetTable("Te_BaseFieldExpression_Extend");
+	DbSetting.SetTable("Te_BaseFieldSelectField");
+	DbSetting.SetTable("Te_BaseFieldAggregateField");
+	DbSetting.SetTable("Te_BaseField_SelectInsert");
+	DbSetting.SetTable("Te_BaseField_SelectInsert_NoIdentity");
+	DbSetting.SetTable("Te_BaseField_NullMiniValue");
+	DbSetting.SetTable("Te_BaseField_DefaultValue");
+	DbSetting.SetTable("Te_BaseField_Alias");
+	DbSetting.SetTable("Te_MainTable");
+	DbSetting.SetTable("Te_SubTable");
+	DbSetting.SetTable("Te_JoinTable_SelectInsert");
+	DbSetting.SetTable("Te_RelateA");
+	DbSetting.SetTable("Te_RelateB");
+	DbSetting.SetTable("Te_RelateC");
+	DbSetting.SetTable("Te_RelateD");
+	DbSetting.SetTable("Te_RelateE");
+	DbSetting.SetTable("Te_RelateF");
+	DbSetting.SetTable("Te_RelateCollection");
+	DbSetting.SetTable("Te_BaseFieldAggregateField_GroupBy");
+	DbSetting.SetTable("Te_ObjectField");
+	//DbSetting.SetTable("Te_BaseField_Config_Replace");
+	DbSetting.SetTable("Te_BaseField", "MyBase1");
+    //设置需要生成的数据表,数据类型继承DataTableEntity
+    DbSetting.SetEntityTable("Te_BaseField_Entity");
+    DbSetting.SetEntityTable("Te_BaseFieldNoIdentity_Entity");
+	DbSetting.SetEntityTable("Te_BaseField_Entity", "MyBase2");
+
+	DbSetting.SetTable("Te_BaseField", "MyBase3");
+	//DbSetting.SetReadControl("MyBase3.Int32Field");
+	DbSetting.SetReadControl("MyBase3.Int32FieldNull");
+	//DbSetting.SetUpdateControl("MyBase3.Int64Field");
+	DbSetting.SetUpdateControl("MyBase3.Int64FieldNull");
+	//DbSetting.SetCreateControl("MyBase3.DecimalField");
+	DbSetting.SetCreateControl("MyBase3.DecimalFieldNull");
+
+	DbSetting.SetTable("Te_BaseField_DefaultValue", "MyBase4");
+	DbSetting.SetDefaultValue("MyBase4.NowFieldNull", "DefaultTime.TimeStamp");
+    DbSetting.SetDefaultValue("MyBase4.NowField", "DefaultTime.TimeStamp");
+
+	//设置字段的转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
+    DbSetting.SetSpecifiedType("*.EnumInt32Field","EnumInt32Type");
+	DbSetting.SetSpecifiedType("*.EnumInt32FieldNull","EnumInt32Type");
+	DbSetting.SetSpecifiedType("*.EnumInt64Field","EnumInt64Type");
+	DbSetting.SetSpecifiedType("*.EnumInt64FieldNull","EnumInt64Type");
+
+	DbSetting.SetSpecifiedType("*.ByteField","byte");
+	DbSetting.SetSpecifiedType("*.ByteFieldNull","byte");
+	DbSetting.SetSpecifiedType("*.SbyteField","sbyte");
+	DbSetting.SetSpecifiedType("*.SbyteFieldNull","sbyte");
+
+	DbSetting.SetSpecifiedType("*.UInt16Field","ushort");
+	DbSetting.SetSpecifiedType("*.UInt16FieldNull","ushort");
+	DbSetting.SetSpecifiedType("*.UInt32Field","uint");
+	DbSetting.SetSpecifiedType("*.UInt32FieldNull","uint");
+	DbSetting.SetSpecifiedType("*.UInt64Field","ulong");
+	DbSetting.SetSpecifiedType("*.UInt64FieldNull","ulong");
+
+	DbSetting.SetSpecifiedType("*.ObjectField","ObjectType");
+	DbSetting.SetSpecifiedType("*.ObjectFieldNull","ObjectType");
+	//设置字段非空,设置"表名.字段名"指定表字段非空,设置"*.字段名"所有表符合字段名的都非空,设置"表名.*"指定表所有字段非空
+	DbSetting.SetNotNullField("Te_BaseField_NullMiniValue.*");
+
+	//设置字段默认值,设置"表名.字段名"指定表字段使用默认值,设置"*.字段名"所有表符合字段名的都使用默认值
+	DbSetting.SetDefaultValue("*.NowFieldNull","DefaultTime.Now");
+	DbSetting.SetDefaultValue("*.TodayFieldNull","DefaultTime.Today");
+	DbSetting.SetDefaultValue("*.NowField","DefaultTime.Now");
+	DbSetting.SetDefaultValue("*.TodayField","DefaultTime.Today");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.BoolFieldNull","true");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.SbyteFieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.ByteFieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.Int16FieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.Int32FieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.Int64FieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.UInt16FieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.UInt32FieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.UInt64FieldNull","20");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.FloatFieldNull","20.5");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DoubleFieldNull","20.5");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DecimalFieldNull","20.5");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DateTimeField","2017-01-02 12:00:00");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.DateTimeFieldNull","2017-01-02 12:00:00");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.VarcharFieldNull","testtest");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.TextFieldNull","testtest");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.EnumInt32FieldNull","EnumInt32Type.Positive1");
+	DbSetting.SetDefaultValue("Te_BaseField_DefaultValue.EnumInt64FieldNull","EnumInt64Type.Positive1");
+
+	DbSetting.SetDefaultValue("Te_BaseField_NullMiniValue.DateTimeFieldNull","2017-01-02 12:00:00");
+	var dbSchema= new MssqlSchema(dataBase, connection);
+    var tableList=dbSchema.GetTables();
+#>
+using System;
+using System.Collections.Generic;
+using System.Text;
+<# if(useLightData || DbSetting.HasEntityTable){ #>
+using Light.Data;
+<# } #>
+
+namespace <#=namespaceName#>
+{
+<#
+    foreach(Table table in tableList)
+    {
+        string tableName=table.TableName;
+#>
+	/// <summary>
+    /// <#=table.CommentText#>
+    /// </summary>
+<# if(useLightData){ #>
+    [DataTable("<#=table.RawName#>")]
+<# } #>
+    public class <#=StringUtil.ToPascalCase(tableName)#> <#=DbSetting.CheckEntity(tableName)?": DataTableEntity":""#>
+    {
+        #region "Data Property"
+<#
+        foreach(Column c in table.GetColumns())
+        {
+#>
+<# if(DbSetting.CheckEntity(tableName)){ #>
+        private <#=c.DataType#> <#=StringUtil.ToCamelCase(c.FieldName)#>;
+
+		/// <summary>
+		/// <#=c.ColumnComment#>
+		/// </summary>
+		/// <value></value>
+<# if(useLightData){ #>
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+<# } #>
+        public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
+        {
+            get { 
+            	return this.<#=StringUtil.ToCamelCase(c.FieldName)#>; 
+            }
+            set { 
+            	this.<#=StringUtil.ToCamelCase(c.FieldName)#> = value; 
+<# if(!c.NoUpdate){ #>
+				base.UpdateDataNotify(nameof(<#=StringUtil.ToPascalCase(c.FieldName)#>));
+<# } #>
+            }
+        }
+
+<# } else { #>
+        /// <summary>
+        /// <#=c.ColumnComment#>
+        /// </summary>
+        /// <value></value>
+<# if(useLightData){ #>
+        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+<# } #>
+	    public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
+        {
+            get;
+            set;
+        }
+<# } #>
+<#
+        }
+#>
+        #endregion
+    }
+<#
+    }
+#>}

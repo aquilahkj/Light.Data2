@@ -214,6 +214,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(1, retInsert);
             var item2 = context.SelectByKey<TeBaseFieldNoIdentityEntity>(item1.Id);
             AssertExtend.StrictEqual(item1, item2);
+            item1.AllowUpdatePrimaryKey();
             item1.Id = 1;
             item1.DateTimeField = GetNow();
             item1.Int32Field = 2;
@@ -439,6 +440,47 @@ namespace Light.Data.Mysql.Test
             AssertExtend.Equal(0, listAc.Count);
         }
         #endregion
+
+
+        [Fact]
+        public void TestCase_CUD_Single_S2()
+        {
+            context.TruncateTable<TeBaseFieldEntity>();
+            var item = CreateAndInsertBaseFieldEntityTableList(1)[0];
+            var item1 = context.SelectById<MyBase2>(item.Id);
+            item1.Id = 0;
+            item1.Reset();
+            context.TruncateTable<MyBase2>();
+            var retInsert = item1.Save();
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retInsert);
+            var item2 = context.SelectById<MyBase2>(item1.Id);
+            AssertExtend.StrictEqual(item1, item2);
+            item1.DateTimeField = GetNow();
+            item1.DateTimeFieldNull = null;
+            item1.Int32Field = 2;
+            item1.Int32FieldNull = null;
+            item1.DoubleField = 2.0d;
+            item1.DoubleFieldNull = null;
+            item1.VarcharField = "abc";
+            item1.VarcharFieldNull = null;
+            item1.EnumInt32Field = EnumInt32Type.Zero;
+            item1.EnumInt32FieldNull = null;
+            item1.EnumInt64Field = EnumInt64Type.Zero;
+            item1.EnumInt64FieldNull = null;
+            var retUpdate = item1.Save();
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retUpdate);
+            var item3 = context.SelectById<MyBase2>(item1.Id);
+            AssertExtend.StrictEqual(item1, item3);
+            var retDelete = item1.Erase();
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retDelete);
+            var item4 = context.SelectById<MyBase2>(item1.Id);
+            Assert.Null(item4);
+        }
+
+        
     }
 }
 

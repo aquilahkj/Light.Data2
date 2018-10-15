@@ -422,5 +422,20 @@ namespace Light.Data.Mssql
             }
             return base.CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, region, state);
         }
+
+        public override string CreateRandomOrderBySql(DataEntityMapping mapping, string aliasName, bool fullFieldName)
+        {
+            return "newid()";
+        }
+
+        public override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
+        {
+            if (mapping.IdentityField != null) {
+                return "select @@Identity;";
+            }
+            else {
+                return string.Empty;
+            }
+        }
     }
 }

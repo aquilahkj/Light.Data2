@@ -1,0 +1,111 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="System.Data"#>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="$(SolutionDir)/lib/Light.Data.Template.dll"  #>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Data.SqlClient"#>
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Text.RegularExpressions"#>
+<#@ import namespace="Light.Data.Template"#>
+<# 
+	//设置命名空间
+    var namespaceName="Light.Data.Mssql.Test";
+	//设置数据库连接
+    var connection="Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;";
+	//设置需要生成的数据库
+    var dataBase="LightData_Test";
+	//设置是否使用LightData框架
+	var useLightData=false;
+	DbSetting.Initial();
+	//设置需要生成的数据表
+    DbSetting.SetTable("Te_BaseField_Config");
+	DbSetting.SetTable("Te_BaseField_Config","MyConfig1");
+	//DbSetting.SetTable("Te_RelateMain_Config");
+	//DbSetting.SetTable("Te_RelateSub_Config");
+
+   //设置字段的Enum转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
+    DbSetting.SetSpecifiedType("*.EnumInt32_Field","EnumInt32Type");
+	DbSetting.SetSpecifiedType("*.EnumInt32_FieldNull","EnumInt32Type");
+
+
+	var dbSchema= new MssqlSchema(dataBase, connection);
+    var tableList=dbSchema.GetTables();
+#>
+using System;
+using System.Collections.Generic;
+using System.Text;
+<# if(useLightData || DbSetting.HasEntityTable){ #>
+using Light.Data;
+<# } #>
+
+namespace <#=namespaceName#>
+{
+<#
+    foreach(Table table in tableList)
+    {
+        string tableName=table.TableName;
+#>
+	/// <summary>
+    /// <#=table.CommentText#>
+    /// </summary>
+<# if(useLightData){ #>
+    [DataTable("<#=table.RawName#>")]
+<# } #>
+    public class <#=StringUtil.ToPascalCase(tableName)#> <#=DbSetting.CheckEntity(tableName)?": DataTableEntity":""#>
+    {
+        #region "Data Property"
+<#
+        foreach(Column c in table.GetColumns())
+        {
+#>
+<# if(DbSetting.CheckEntity(tableName)){ #>
+        private <#=c.DataType#> <#=StringUtil.ToCamelCase(c.FieldName)#>;
+
+		/// <summary>
+		/// <#=c.ColumnComment#>
+		/// </summary>
+		/// <value></value>
+<# if(useLightData){ #>
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+<# } #>
+        public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
+        {
+            get { 
+            	return this.<#=StringUtil.ToCamelCase(c.FieldName)#>; 
+            }
+            set { 
+            	this.<#=StringUtil.ToCamelCase(c.FieldName)#> = value; 
+<# if(!c.NoUpdate){ #>
+				base.UpdateDataNotify(nameof(<#=StringUtil.ToPascalCase(c.FieldName)#>));
+<# } #>
+            }
+        }
+
+<# } else { #>
+        /// <summary>
+        /// <#=c.ColumnComment#>
+        /// </summary>
+        /// <value></value>
+<# if(useLightData){ #>
+        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+<# } #>
+	    public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
+        {
+            get;
+            set;
+        }
+<# } #>
+<#
+        }
+#>
+        #endregion
+    }
+<#
+    }
+#>}

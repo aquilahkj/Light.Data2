@@ -49,7 +49,8 @@ namespace Light.Data
                     IsIdentity = attribute.IsIdentity,
                     DefaultValue = attribute.DefaultValue,
                     DbType = attribute.DbType,
-                    DataOrder = attribute.DataOrder
+                    DataOrder = attribute.DataOrder,
+                    FunctionControl = attribute.FunctionControl
                 };
                 return config;
             }
