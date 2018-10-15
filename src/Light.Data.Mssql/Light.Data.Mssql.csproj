@@ -12,6 +12,9 @@
     <PackageTags>Database, Data, ORM, ADO.NET, SQL, SQLSERVER</PackageTags>
     <AssemblyVersion>2.0.7.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>LightData.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>

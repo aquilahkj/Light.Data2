@@ -1,5 +1,5 @@
 # LightData 使用文档
- 
+
 `Light.Data`是一个轻量级的基于.net standard 2.0的ORM框架, 通过对实体模型类的Attribute或者配置文件进行配置与数据表的对应关系. 使用核心类`DataContext`对数据表进行增删改查的操作.
 
 支持数据库
@@ -83,7 +83,8 @@ DataField:指定对应数据字段的字段名
 * IsIdentity 字段是否自增, 默认为false
 * IsPrimaryKey 字段是否主键, 默认为false
 * IsNullable 字段是否可为空, 默认为false, 影响数据新增与更新
-* DefaultValue 默认值,可空类型字段在新增数据时, 如果数据为空, 自动使用该默认值；如数据类型是datetime, 空值或最小值时可使用`DefaultTime.Now`表示默认值为当前时间; `DefaultTime.Today`表示默认值为当天
+* DefaultValue 默认值,可空类型字段在新增数据时, 如果数据为空, 自动使用该默认值；如数据类型是datetime, 空值或最小值时可使用`DefaultTime.Now`与`DefaultTime.TimeStamp`表示默认值为当前时间; `DefaultTime.Today`表示默认值为当天; `TimeStamp`在更新数据时同样有效
+* FunctionControl 字段功能控制，`Read`代表字段只读, 新增和修改数据时不生效, `Create`代表字段只增, `Update`代表字段只改, 默认为全控制
 
 ### 配置文件
 `Light.Data`支持使用json格式的配置文件进行对数据实体的映射配置, 用于对数据层的解耦, 数据层不需引用`Light.Data`类库进行类Attribute和字段Attribute标记, 如实体类可为
@@ -172,21 +173,22 @@ dataType 字段定义
 
 | 字段名 | 值类型 | 可空 | 说明 |
 |:------|:------|:------|:------|
-| type | string | false | 实体类的类名全名 | 
-| tableName | string | false | 对应数据表的表名 | 
-| isEntityTable | bool | true | 指定数据表的是否实体表, 否为视图, 不可以进行增删改操作, 默认为true | 
+| type | string | false | 实体类的类名全名 |
+| tableName | string | false | 对应数据表的表名 |
+| isEntityTable | bool | true | 指定数据表的是否实体表, 否为视图, 不可以进行增删改操作, 默认为true |
 | dataFields | array(dataField) | true | 该实体类下的映射字段集合 |
 
 dataField 字段定义
 
 | 字段名 | 值类型 | 可空 | 说明 |
 |:------|:------|:------|:------|
-| fieldName | string | false | 实体类的字段名 | 
-| isPrimaryKey | bool | true | 字段是否自增, 默认为false | 
-| isIdentity | bool | true | 字段是否自增, 默认为false | 
+| fieldName | string | false | 实体类的字段名 |
+| isPrimaryKey | bool | true | 字段是否自增, 默认为false |
+| isIdentity | bool | true | 字段是否自增, 默认为false |
 | isNullable | bool  | true | 字段是否可为空, 默认为false, 影响数据新增与更新 |
-| name | string | true | 字段映射的数据库字段名, 默认为实体类的字段名 | 
-| defaultValue | string | true | 默认值, 可空类型字段在新增数据时, 如果数据为空, 自动使用该默认值; 如数据类型是datetime, 空值或最小值时可使用`DefaultTime.Now`表示默认值为当前时间; `DefaultTime.Today`表示默认值为当天 | 
+| name | string | true | 字段映射的数据库字段名, 默认为实体类的字段名 |
+| defaultValue | string | true | 默认值, 可空类型字段在新增数据时, 如果数据为空, 自动使用该默认值；如数据类型是datetime, 空值或最小值时可使用`DefaultTime.Now`与`DefaultTime.TimeStamp`表示默认值为当前时间; `DefaultTime.Today`表示默认值为当天; `TimeStamp`在更新数据时同样有效 |
+| functionControl | string | true | 字段功能控制，`Read`代表字段只读, 新增和修改数据时不生效, `Create`代表字段只增, `Update`代表字段只改, 默认为全控制 |
 
 ### 字段类型(Field Type)
 
@@ -323,15 +325,15 @@ relationFields 字段定义
 
 | 字段名 | 值类型 | 可空 | 说明 |
 |:------|:------|:------|:------|
-| fieldName | string | false | 实体类的字段名 | 
+| fieldName | string | false | 实体类的字段名 |
 | relationPairs | array(relationPair) | false | 关联字段组合 |
 
 relationPair 字段定义
 
 | 字段名 | 值类型 | 可空 | 说明 |
 |:------|:------|:------|:------|
-| masterKey | string | false | 主表的关联字段属性名 | 
-| masterKey | string | false | 子表的关联字段属性名 | 
+| masterKey | string | false | 主表的关联字段属性名 |
+| masterKey | string | false | 子表的关联字段属性名 |
 
 #### 一个主表类支持多个不同子表类做关联属性, 如
 
@@ -457,9 +459,9 @@ connections 字段定义
 
 | 字段名 | 值类型 | 可空 | 说明 |
 |:------|:------|:------|:------|
-| name | string | false | 连接配置唯一名称 | 
-| connectionString | string | false | 连接字符串，格式因数据库种类而异 | 
-| providerName | string | false | 对应不同数据库种类的处理类的类名 | 
+| name | string | false | 连接配置唯一名称 |
+| connectionString | string | false | 连接字符串，格式因数据库种类而异 |
+| providerName | string | false | 对应不同数据库种类的处理类的类名 |
 | configParams | array(configParam) | true | 额外的配置参数，因数据库类型而异 |
 
 providerName 对应数据库种类的类名
@@ -712,7 +714,7 @@ var list = context.Query<TeLog>().ToList();
 ```csharp
 context.TruncateTable<TeUser> (); 
 ```
- 
+
 注意：该操作直接使用`truncate table`命令清空数据表.
 
 <h2 id="insert"> 增加数据(Insert Data)</h2>
@@ -830,6 +832,9 @@ item.Erase();
 | UpdateDataNotify(string fieldname) | 用于字段的Set方法中, 该字段修改后在update的sql语句中只会update该字段而不会全字段更新, 一旦设置需所有字段设置 |
 | Save() | 保存数据, 如果数据是从DataContext.CreateNew\<T\>()产生, 则会新增数据, 如果数据是新增后或者从DataContext查询出来的, 则会更新数据 |
 | Erase() | 清除数据 |
+| AllowUpdatePrimaryKey(bool allow = true) | 是否允许更新数据实体的主键, 允许后可以赋值新主键到该数据实体, 在更新操作后数据表的该行数据主键变为新主键 |
+| Reset() | 重置数据状态, 使数据状态变为新建时的状态 |
+
 
 
 <h2 id="transaction">事务处理(Transaction)</h2>
@@ -911,7 +916,7 @@ using (TransactionScope trans = context.TransactionScope ()) {
 | ToLower() | 转换大写 |
 | ToUpper() | 转换小写 |
 | Trim() | 清空前后空格 |
-| Concat(object obj1,object obj2,object obj3...) | 静态函数, 连接字符串 |	
+| Concat(object obj1,object obj2,object obj3...) | 静态函数, 连接字符串 |
 
 | 属性 | 说明 |
 |:------|:------|

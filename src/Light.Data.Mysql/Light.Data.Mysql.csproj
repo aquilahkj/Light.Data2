@@ -14,6 +14,8 @@
     <AssemblyVersion>2.0.7.0</AssemblyVersion>
     <FileVersion>2.0.7.0</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>LightData.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
