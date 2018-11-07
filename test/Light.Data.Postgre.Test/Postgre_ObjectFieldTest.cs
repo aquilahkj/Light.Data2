@@ -99,7 +99,7 @@ namespace Light.Data.Postgre.Test
                 ObjectField = g.Key,
                 Count = g.Count()
             }).ToList().OrderBy(x => x.ObjectField.DataInt).ToList();
-            var listAc = context.Query<TeObjectField>().GroupBy(x => new {
+            var listAc = context.Query<TeObjectField>().Aggregate(x => new {
                 ObjectField = x.ObjectField,
                 Count = Function.Count()
             }).ToList().OrderBy(x => x.ObjectField.DataInt).ToList();
@@ -138,7 +138,7 @@ namespace Light.Data.Postgre.Test
                 x.ObjectFieldNull
             });
 
-            var listAc = context.Query<TeObjectField>().GroupBy(x => new {
+            var listAc = context.Query<TeObjectField>().Aggregate(x => new {
                 ObjectField = x.ObjectField,
                 Count = Function.Count()
             })

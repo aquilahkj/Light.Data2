@@ -65,17 +65,16 @@ namespace Light.Data
 
         public override IEnumerator<K> GetEnumerator()
         {
-            return Context.QueryJoinDataReader<K>(Mapping, Selector, Models, _query, _order, _distinct, _region, Dele, nodataSetNull).GetEnumerator();
+            QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, nodataSetNull, _region);
+            return _context.QueryDataDefineReader<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele).GetEnumerator();
+            //return Context.QueryJoinDataReader<K>(Mapping, Selector, Models, _query, _order, _distinct, _region, _level, Dele, nodataSetNull).GetEnumerator();
         }
 
         #endregion
 
         public override ISelectJoin<K> NoDataSetEntityNull(int entityIndex)
         {
-            if (entityIndex < 0) {
-                throw new ArgumentOutOfRangeException(nameof(entityIndex));
-            }
-            if (entityIndex >= Models.Count) {
+            if (entityIndex < 0 || entityIndex >= Models.Count) {
                 throw new ArgumentOutOfRangeException(nameof(entityIndex));
             }
             if (nodataSetNull == null) {
@@ -89,8 +88,10 @@ namespace Light.Data
 
         public override List<K> ToList()
         {
-            List<K> list = Context.QueryJoinDataList<K>(Mapping, Selector, Models, _query, _order, _distinct, _region, Dele, nodataSetNull);
-            return list;
+            QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, nodataSetNull, _region);
+            return _context.QueryDataDefineList<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele);
+            //List<K> list = Context.QueryJoinDataList<K>(Mapping, Selector, Models, _query, _order, _distinct, _region, _level, Dele, nodataSetNull);
+            //return list;
         }
 
         public override K[] ToArray()
@@ -105,23 +106,23 @@ namespace Light.Data
 
         public override K ElementAt(int index)
         {
-            K target = default(K);
             Region region = new Region(index, 1);
-            target = Context.QueryJoinDataSingle<K>(Mapping, Selector, Models, _query, _order, _distinct, region, Dele, nodataSetNull);
-            return target;
+            QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, nodataSetNull, region);
+            return _context.QueryDataDefineSingle<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, Dele);
+            //K target = default(K);
+            //Region region = new Region(index, 1);
+            //target = Context.QueryJoinDataSingle<K>(Mapping, Selector, Models, _query, _order, _distinct, region, _level, Dele, nodataSetNull);
+            //return target;
         }
 
         #region async
 
         public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken)
         {
-            List<K> list = await Context.QueryJoinDataListAsync<K>(Mapping, Selector, Models, _query, _order, _distinct, _region, Dele, nodataSetNull, cancellationToken);
-            return list;
-        }
-
-        public async override Task<List<K>> ToListAsync()
-        {
-            return await ToListAsync(CancellationToken.None);
+            QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, nodataSetNull, _region);
+            return await _context.QueryDataDefineListAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele, cancellationToken);
+            //List<K> list = await Context.QueryJoinDataListAsync<K>(Mapping, Selector, Models, _query, _order, _distinct, _region, _level, Dele, nodataSetNull, cancellationToken);
+            //return list;
         }
 
         public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken)
@@ -130,33 +131,22 @@ namespace Light.Data
             return list.ToArray();
         }
 
-        public async override Task<K[]> ToArrayAsync()
-        {
-            return await ToArrayAsync(CancellationToken.None);
-        }
-
         public async override Task<K> FirstAsync(CancellationToken cancellationToken)
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<K> FirstAsync()
-        {
-            return await FirstAsync(CancellationToken.None);
-        }
-
         public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken)
         {
-            K target = default(K);
             Region region = new Region(index, 1);
-            target = await Context.QueryJoinDataSingleAsync<K>(Mapping, Selector, Models, _query, _order, _distinct, region, Dele, nodataSetNull, cancellationToken);
-            return target;
+            QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, nodataSetNull, region);
+            return await _context.QueryDataDefineSingleAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, Dele, cancellationToken);
+            //K target = default(K);
+            //Region region = new Region(index, 1);
+            //target = await Context.QueryJoinDataSingleAsync<K>(Mapping, Selector, Models, _query, _order, _distinct, region, _level, Dele, nodataSetNull, cancellationToken);
+            //return target;
         }
 
-        public async override Task<K> ElementAtAsync(int index)
-        {
-            return await ElementAtAsync(index, CancellationToken.None);
-        }
         #endregion
     }
 }

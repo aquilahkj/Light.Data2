@@ -5,6 +5,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Light.Data.Mssql.Test
 {
@@ -664,7 +665,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).ToListAsync();
+                }).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new {
@@ -708,7 +709,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).ToArrayAsync();
+                }).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
             var firstEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new {
@@ -752,7 +753,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).FirstAsync();
+                }).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new {
@@ -796,7 +797,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).ElementAtAsync(5);
+                }).ElementAtAsync(5, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -1074,7 +1075,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).ToListAsync();
+                }).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new ComposeTable {
@@ -1118,7 +1119,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).ToArrayAsync();
+                }).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
             var firstEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new ComposeTable {
@@ -1162,7 +1163,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).FirstAsync();
+                }).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = listMain.Join(listSub, x => x.SubId, y => y.SubId, (x, y) => new ComposeTable {
@@ -1206,7 +1207,7 @@ namespace Light.Data.Mssql.Test
                     SubDateTimeFieldNull = y.DateTimeFieldNull,
                     SubVarcharField = y.VarcharField,
                     SubVarcharFieldNull = y.VarcharFieldNull,
-                }).ElementAtAsync(5);
+                }).ElementAtAsync(5, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -2828,7 +2829,7 @@ namespace Light.Data.Mssql.Test
                     }).OrderBy(x => x.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
@@ -2865,7 +2866,7 @@ namespace Light.Data.Mssql.Test
                     }).OrderBy(x => x.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
@@ -2902,7 +2903,7 @@ namespace Light.Data.Mssql.Test
                     }).OrderBy(x => x.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
@@ -2940,7 +2941,7 @@ namespace Light.Data.Mssql.Test
                   }).OrderBy(x => x.MainId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                      .Join(context.Query<TeSubTable>().GroupBy(x => new {
+                      .Join(context.Query<TeSubTable>().Aggregate(x => new {
                           SubId = x.SubId,
                           Count = Function.Count(),
                       }), (x, y) => x.SubId == y.SubId)
@@ -2971,11 +2972,11 @@ namespace Light.Data.Mssql.Test
                   }).ToList().OrderBy(x => x.SubIdx).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
-                    .Join(context.Query<TeSubTable>().GroupBy(x => new {
+                    .Join(context.Query<TeSubTable>().Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     }), (x, y) => x.SubId == y.SubId)
@@ -3021,7 +3022,7 @@ namespace Light.Data.Mssql.Test
                     }).OrderBy(x => x.MainTable.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
@@ -3056,7 +3057,7 @@ namespace Light.Data.Mssql.Test
                     }).OrderBy(x => x.MainTable.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
@@ -3091,7 +3092,7 @@ namespace Light.Data.Mssql.Test
                     }).OrderBy(x => x.MainTable.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
@@ -3127,7 +3128,7 @@ namespace Light.Data.Mssql.Test
                   }).OrderBy(x => x.MainId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                      .Join(context.Query<TeSubTable>().GroupBy(x => new {
+                      .Join(context.Query<TeSubTable>().Aggregate(x => new {
                           SubId = x.SubId,
                           Count = Function.Count(),
                       }), (x, y) => x.SubId == y.SubId)
@@ -3155,11 +3156,11 @@ namespace Light.Data.Mssql.Test
                   }).ToList().OrderBy(x => x.MainTable.SubId).ToList();
 
                 var listAc = context.Query<TeMainTable>()
-                    .GroupBy(x => new {
+                    .Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     })
-                    .Join(context.Query<TeSubTable>().GroupBy(x => new {
+                    .Join(context.Query<TeSubTable>().Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     }), (x, y) => x.SubId == y.SubId)
@@ -3218,7 +3219,7 @@ namespace Light.Data.Mssql.Test
                         x.Int32Field,
                         x.Int32FieldNull
                     })
-                    .Join(context.Query<TeSubTable>().GroupBy(x => new {
+                    .Join(context.Query<TeSubTable>().Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     }), (x, y) => x.SubId == y.SubId)
@@ -3242,7 +3243,7 @@ namespace Light.Data.Mssql.Test
                       SubInt32FieldNull = y.Int32FieldNull,
                   }).OrderBy(x => x.SubId).ToList();
 
-                var listAc = context.Query<TeMainTable>().GroupBy(x => new {
+                var listAc = context.Query<TeMainTable>().Aggregate(x => new {
                     SubId = x.SubId,
                     Count = Function.Count()
                 }).Join(context.Query<TeSubTable>().Select(x => new {
@@ -3305,7 +3306,7 @@ namespace Light.Data.Mssql.Test
                         x.Int32Field,
                         x.Int32FieldNull
                     })
-                    .Join(context.Query<TeSubTable>().GroupBy(x => new {
+                    .Join(context.Query<TeSubTable>().Aggregate(x => new {
                         SubId = x.SubId,
                         Count = Function.Count()
                     }), (x, y) => x.SubId == y.SubId)
@@ -3324,7 +3325,7 @@ namespace Light.Data.Mssql.Test
                       SubTable = y,
                   }).OrderBy(x => x.MainTable.SubId);
 
-                var listAc = context.Query<TeMainTable>().GroupBy(x => new {
+                var listAc = context.Query<TeMainTable>().Aggregate(x => new {
                     SubId = x.SubId,
                     Count = Function.Count()
                 }).Join(context.Query<TeSubTable>().Select(x => new {
@@ -3433,7 +3434,7 @@ namespace Light.Data.Mssql.Test
                        SubId = x.SubId,
                        SubInt32Field = y.Int32Field,
                        SubInt32FieldNull = y.Int32FieldNull,
-                   });
+                   }, CancellationToken.None);
                 Assert.Equal(listEx.Count, ret);
                 var listAc = context.Query<TeJoinTableSelectInsert>().ToList();
 
@@ -3460,7 +3461,7 @@ namespace Light.Data.Mssql.Test
                        SubId = x.SubId,
                        SubInt32Field = y.Int32Field,
                        SubInt32FieldNull = y.Int32FieldNull,
-                   });
+                   }, CancellationToken.None);
                 Assert.Equal(listEx.Count, ret);
                 var listAc = context.Query<TeJoinTableSelectInsert>().ToList();
 

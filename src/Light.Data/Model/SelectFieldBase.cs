@@ -71,14 +71,6 @@ namespace Light.Data
 
         public abstract K ElementAt(int index);
 
-        public abstract Task<List<K>> ToListAsync();
-
-        public abstract Task<K[]> ToArrayAsync();
-
-        public abstract Task<K> FirstAsync();
-
-        public abstract Task<K> ElementAtAsync(int index);
-
         public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken);
 
         public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken);

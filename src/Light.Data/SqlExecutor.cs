@@ -17,7 +17,7 @@ namespace Light.Data
 
         DataContext _context;
 
-        SafeLevel _level = SafeLevel.Default;
+        SafeLevel _level = SafeLevel.None;
 
         /// <summary>
         /// Gets or sets the command time out.
@@ -84,7 +84,7 @@ namespace Light.Data
         /// <returns>数据集合</returns>
         public T QueryFirst<T>()
         {
-            T target = _context.QueryDataDefineSingle<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _command, 0, null, null);
+            T target = _context.QueryDataDefineSingle<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null);
             return target;
         }
 
@@ -97,7 +97,7 @@ namespace Light.Data
         /// <returns>数据集合</returns>
         private List<T> QueryList<T>(Region region)
         {
-            List<T> list = _context.QueryDataDefineList<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _command, region, null, null);
+            List<T> list = _context.QueryDataDefineList<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
             return list;
         }
 
@@ -156,7 +156,7 @@ namespace Light.Data
         /// <returns>枚举数据</returns>
         private IEnumerable<T> Query<T>(Region region)
         {
-            return _context.QueryDataDefineReader<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _command, region, null, null);
+            return _context.QueryDataDefineReader<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
         }
 
         /// <summary>
@@ -179,16 +179,7 @@ namespace Light.Data
         {
             return await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
         }
-
-        /// <summary>
-        /// Executes the non query.
-        /// </summary>
-        /// <returns>The non query.</returns>
-        public async Task<int> ExecuteNonQueryAsync()
-        {
-            return await ExecuteNonQueryAsync(CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// Executes the scalar.
         /// </summary>
@@ -197,16 +188,7 @@ namespace Light.Data
         {
             return await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
         }
-
-        /// <summary>
-        /// Executes the scalar.
-        /// </summary>
-        /// <returns>The scalar.</returns>
-        public async Task<object> ExecuteScalarAsync()
-        {
-            return await ExecuteScalarAsync(CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// 查询并返回指定类型的数据
         /// </summary>
@@ -214,20 +196,10 @@ namespace Light.Data
         /// <returns>数据集合</returns>
         public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken)
         {
-            T target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _command, 0, null, null, cancellationToken);
+            T target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null, cancellationToken);
             return target;
         }
-
-        /// <summary>
-        /// 查询并返回指定类型的数据
-        /// </summary>
-        /// <typeparam name="T">数据类型</typeparam>
-        /// <returns>数据集合</returns>
-        public async Task<T> QueryFirstAsync<T>()
-        {
-            return await QueryFirstAsync<T>(CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// 查询并返回指定类型的数据集合
         /// </summary>
@@ -236,19 +208,8 @@ namespace Light.Data
         /// <returns>数据集合</returns>
         private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken)
         {
-            List<T> list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _command, region, null, null, cancellationToken);
+            List<T> list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null, cancellationToken);
             return list;
-        }
-
-        /// <summary>
-        /// 查询并返回指定类型的数据集合
-        /// </summary>
-        /// <typeparam name="T">数据类型</typeparam>
-        /// <param name="region">查询范围</param>
-        /// <returns>数据集合</returns>
-        private async Task<List<T>> QueryListAsync<T>(Region region)
-        {
-            return await QueryListAsync<T>(region, CancellationToken.None);
         }
 
         /// <summary>
@@ -260,17 +221,7 @@ namespace Light.Data
         {
             return await QueryListAsync<T>(null, cancellationToken);
         }
-
-        /// <summary>
-        /// Queries the list.
-        /// </summary>
-        /// <returns>The list.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<List<T>> QueryListAsync<T>()
-        {
-            return await QueryListAsync<T>(CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// Queries the list.
         /// </summary>
@@ -289,19 +240,7 @@ namespace Light.Data
             Region region = new Region(start, size);
             return await QueryListAsync<T>(region, cancellationToken);
         }
-
-        /// <summary>
-        /// Queries the list.
-        /// </summary>
-        /// <returns>The list.</returns>
-        /// <param name="start">Start.</param>
-        /// <param name="size">Size.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<List<T>> QueryListAsync<T>(int start, int size)
-        {
-            return await QueryListAsync<T>(start, size, CancellationToken.None);
-        }
-
+        
         #endregion
     }
 }

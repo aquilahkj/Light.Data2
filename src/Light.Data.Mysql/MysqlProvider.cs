@@ -47,7 +47,12 @@ namespace Light.Data.Mysql
             return command;
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction)
+        public override DataAdapter CreateDataAdapter(DbCommand command)
+        {
+            return new MySqlDataAdapter((MySqlCommand)command);
+        }
+
+        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType)
         {
             string parameterName = name;
             if (!parameterName.StartsWith("?", StringComparison.Ordinal)) {
@@ -64,11 +69,10 @@ namespace Light.Data.Mysql
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                //if (ParseSqlDbType(dbType, out MySqlDbType sqltype)) {
-                //    sp.MySqlDbType = sqltype;
-                //}
-                //else 
-                if (Utility.ParseDbType(dbType, out DbType dType)) {
+                if (ParseSqlDbType(dbType, out MySqlDbType sqltype)) {
+                    sp.MySqlDbType = sqltype;
+                }
+                else if (Utility.ParseDbType(dbType, out DbType dType)) {
                     sp.DbType = dType;
                 }
                 if (Utility.ParseSize(dbType, out int size)) {
@@ -87,21 +91,21 @@ namespace Light.Data.Mysql
 
         #endregion
 
-        //bool ParseSqlDbType(string dbType, out MySqlDbType type)
-        //{
-        //    type = MySqlDbType.VarChar;
-        //    int index = dbType.IndexOf('(');
-        //    string typeString = string.Empty;
-        //    if (index < 0) {
-        //        typeString = dbType;
-        //    }
-        //    else if (index == 0) {
-        //        return false;
-        //    }
-        //    else {
-        //        typeString = dbType.Substring(0, index);
-        //    }
-        //    return Enum.TryParse(typeString, true, out type);
-        //}
+        bool ParseSqlDbType(string dbType, out MySqlDbType type)
+        {
+            type = MySqlDbType.VarChar;
+            int index = dbType.IndexOf('(');
+            string typeString = string.Empty;
+            if (index < 0) {
+                typeString = dbType;
+            }
+            else if (index == 0) {
+                return false;
+            }
+            else {
+                typeString = dbType.Substring(0, index);
+            }
+            return Enum.TryParse(typeString, true, out type);
+        }
     }
 }

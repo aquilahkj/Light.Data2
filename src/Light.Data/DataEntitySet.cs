@@ -36,16 +36,6 @@ namespace Light.Data
             return await context.BatchDeleteAsync(datas, index, count, cancellationToken);
         }
 
-        public async Task<int> BatchDeleteAsync(IEnumerable<T> datas, int index, int count)
-        {
-            return await context.BatchDeleteAsync(datas, index, count);
-        }
-
-        public async Task<int> BatchDeleteAsync(IEnumerable<T> datas)
-        {
-            return await context.BatchDeleteAsync(datas);
-        }
-
         public int BatchInsert(IEnumerable<T> datas)
         {
             return context.BatchInsert(datas);
@@ -56,19 +46,9 @@ namespace Light.Data
             return context.BatchInsert(datas, index, count);
         }
 
-        public async Task<int> BatchInsertAsync(IEnumerable<T> datas, int index, int count)
-        {
-            return await context.BatchInsertAsync(datas, index, count);
-        }
-
         public async Task<int> BatchInsertAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
         {
             return await context.BatchInsertAsync(datas, index, count, cancellationToken);
-        }
-
-        public async Task<int> BatchInsertAsync(IEnumerable<T> datas)
-        {
-            return await context.BatchInsertAsync(datas);
         }
 
         public async Task<int> BatchInsertAsync(IEnumerable<T> datas, CancellationToken cancellationToken)
@@ -91,16 +71,6 @@ namespace Light.Data
             return await context.BatchUpdateAsync(datas, cancellationToken);
         }
 
-        public async Task<int> BatchUpdateAsync(IEnumerable<T> datas, int index, int count)
-        {
-            return await context.BatchUpdateAsync(datas, index, count);
-        }
-
-        public async Task<int> BatchUpdateAsync(IEnumerable<T> datas)
-        {
-            return await context.BatchUpdateAsync(datas);
-        }
-
         public async Task<int> BatchUpdateAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
         {
             return await context.BatchUpdateAsync(datas, index, count, cancellationToken);
@@ -111,11 +81,6 @@ namespace Light.Data
             return context.Delete(data);
         }
 
-        public async Task<int> DeleteAsync(T data)
-        {
-            return await context.DeleteAsync(data);
-        }
-
         public async Task<int> DeleteAsync(T data, CancellationToken cancellationToken)
         {
             return await context.DeleteAsync(data, cancellationToken);
@@ -124,11 +89,6 @@ namespace Light.Data
         public int Insert(T data)
         {
             return context.Insert(data);
-        }
-
-        public async Task<int> InsertAsync(T data)
-        {
-            return await context.InsertAsync(data);
         }
 
         public async Task<int> InsertAsync(T data, CancellationToken cancellationToken)
@@ -146,67 +106,12 @@ namespace Light.Data
             return await context.InsertOrUpdateAsync(data, cancellationToken);
         }
 
-        public async Task<int> InsertOrUpdateAsync(T data)
-        {
-            return await context.InsertOrUpdateAsync(data);
-        }
-
-        public T SelectById(uint id)
+        public T SelectById(object id)
         {
             return context.SelectById<T>(id);
         }
 
-        public T SelectById(int id)
-        {
-            return context.SelectById<T>(id);
-        }
-
-        public T SelectById(long id)
-        {
-            return context.SelectById<T>(id);
-        }
-
-        public T SelectById(ulong id)
-        {
-            return context.SelectById<T>(id);
-        }
-
-        public async Task<T> SelectByIdAsync(ulong id)
-        {
-            return await context.SelectByIdAsync<T>(id);
-        }
-
-        public async Task<T> SelectByIdAsync(ulong id, CancellationToken cancellationToken)
-        {
-            return await context.SelectByIdAsync<T>(id, cancellationToken);
-        }
-
-        public async Task<T> SelectByIdAsync(long id, CancellationToken cancellationToken)
-        {
-            return await context.SelectByIdAsync<T>(id, cancellationToken);
-        }
-
-        public async Task<T> SelectByIdAsync(uint id)
-        {
-            return await context.SelectByIdAsync<T>(id);
-        }
-
-        public async Task<T> SelectByIdAsync(long id)
-        {
-            return await context.SelectByIdAsync<T>(id);
-        }
-
-        public async Task<T> SelectByIdAsync(uint id, CancellationToken cancellationToken)
-        {
-            return await context.SelectByIdAsync<T>(id, cancellationToken);
-        }
-
-        public async Task<T> SelectByIdAsync(int id)
-        {
-            return await context.SelectByIdAsync<T>(id);
-        }
-
-        public async Task<T> SelectByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<T> SelectByIdAsync(object id, CancellationToken cancellationToken)
         {
             return await context.SelectByIdAsync<T>(id, cancellationToken);
         }
@@ -216,14 +121,49 @@ namespace Light.Data
             return context.SelectByKey<T>(primaryKeys);
         }
 
+        public async Task<T> SelectByKeyAsync(object primaryKey, CancellationToken cancellationToken)
+        {
+            return await context.SelectByKeyAsync<T>(primaryKey, cancellationToken);
+        }
+
+        public async Task<T> SelectByKeyAsync(object primaryKey1, object primaryKey2, CancellationToken cancellationToken)
+        {
+            return await context.SelectByKeyAsync<T>(primaryKey1, primaryKey2, cancellationToken);
+        }
+
+        public async Task<T> SelectByKeyAsync(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken)
+        {
+            return await context.SelectByKeyAsync<T>(primaryKey1, primaryKey2, primaryKey3, cancellationToken);
+        }
+
         public async Task<T> SelectByKeyAsync(object[] primaryKeys, CancellationToken cancellationToken)
         {
             return await context.SelectByKeyAsync<T>(primaryKeys, cancellationToken);
         }
 
-        public async Task<T> SelectByKeyAsync(params object[] primaryKeys)
+        public bool Exists(params object[] primaryKeys)
         {
-            return await context.SelectByKeyAsync<T>(primaryKeys);
+            return context.Exists<T>(primaryKeys);
+        }
+
+        public async Task<bool> ExistsAsync(object primaryKey, CancellationToken cancellationToken)
+        {
+            return await context.ExistsAsync<T>(primaryKey, cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(object primaryKey1, object primaryKey2, CancellationToken cancellationToken)
+        {
+            return await context.ExistsAsync<T>(primaryKey1, primaryKey2, cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken)
+        {
+            return await context.ExistsAsync<T>(primaryKey1, primaryKey2, primaryKey3, cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(object[] primaryKeys, CancellationToken cancellationToken)
+        {
+            return await context.ExistsAsync<T>(primaryKeys, cancellationToken);
         }
 
         public int Update(T data)
@@ -234,11 +174,6 @@ namespace Light.Data
         public async Task<int> UpdateAsync(T data, CancellationToken cancellationToken)
         {
             return await context.UpdateAsync(data, cancellationToken);
-        }
-
-        public async Task<int> UpdateAsync(T data)
-        {
-            return await context.UpdateAsync(data);
         }
 
         public IQuery<T> Query()
@@ -279,7 +214,7 @@ namespace Light.Data
         /// <typeparam name="K">The 1st type parameter.</typeparam>
         public IAggregate<K> GroupBy<K>(Expression<Func<T, K>> expression)
         {
-            return context.Query<T>().GroupBy(expression);
+            return context.Query<T>().Aggregate(expression);
         }
 
         /// <summary>

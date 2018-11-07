@@ -29,7 +29,7 @@ namespace Light.Data
             get;
         }
 
-        DataContext _context;
+        protected readonly DataContext _context;
 
         public DataContext Context {
             get {
@@ -132,14 +132,6 @@ namespace Light.Data
         public abstract IJoinTable<K, T1> LeftJoin<T1>(ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression);
 
         public abstract IJoinTable<K, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression);
-
-        public abstract Task<List<K>> ToListAsync();
-
-        public abstract Task<K[]> ToArrayAsync();
-
-        public abstract Task<K> FirstAsync();
-
-        public abstract Task<K> ElementAtAsync(int index);
 
         public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken);
 

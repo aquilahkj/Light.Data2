@@ -261,13 +261,7 @@ namespace Light.Data
 
 
         #region async
-
-        /// <summary>
-        /// To the list.
-        /// </summary>
-        /// <returns>The list.</returns>
-        Task<List<K>> ToListAsync();
-
+        
         /// <summary>
 		/// To the list.
 		/// </summary>
@@ -278,18 +272,7 @@ namespace Light.Data
         /// To the array.
         /// </summary>
         /// <returns>The array.</returns>
-        Task<K[]> ToArrayAsync();
-
-        /// <summary>
-        /// To the array.
-        /// </summary>
-        /// <returns>The array.</returns>
         Task<K[]> ToArrayAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Get first instance.
-        /// </summary>
-        Task<K> FirstAsync();
 
         /// <summary>
         /// Get first instance.
@@ -301,22 +284,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>The <see cref="!:K"/>.</returns>
         /// <param name="index">Index.</param>
-        Task<K> ElementAtAsync(int index);
-
-        /// <summary>
-        /// Elements at index.
-        /// </summary>
-        /// <returns>The <see cref="!:K"/>.</returns>
-        /// <param name="index">Index.</param>
         Task<K> ElementAtAsync(int index, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Select insert aggregate data to specified table
-        /// </summary>
-        /// <typeparam name="P"></typeparam>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression) where P : class;
 
         /// <summary>
         /// Select insert aggregate data to specified table

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using Npgsql;
+using NpgsqlTypes;
 using System.Data.Common;
 
 namespace Light.Data.Postgre
@@ -10,14 +11,14 @@ namespace Light.Data.Postgre
         public PostgreProvider(string configName, ConfigParamSet configParams)
             : base(configName, configParams)
         {
-             _factory = new PostgreCommandFactory();
+            _factory = new PostgreCommandFactory();
             string strictMode = configParams.GetParamValue("strictMode");
             if (strictMode != null) {
                 if (bool.TryParse(strictMode, out bool value))
                     _factory.SetStrictMode(value);
             }
         }
-        
+
         #region implemented abstract members of Database
 
         public override DbConnection CreateConnection()
@@ -47,7 +48,12 @@ namespace Light.Data.Postgre
             return command;
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction)
+        public override DataAdapter CreateDataAdapter(DbCommand command)
+        {
+            return new NpgsqlDataAdapter((NpgsqlCommand)command);
+        }
+
+        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType)
         {
             string parameterName = name;
             if (!parameterName.StartsWith(":", StringComparison.Ordinal)) {
@@ -73,11 +79,10 @@ namespace Light.Data.Postgre
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                //if (ParseSqlDbType(dbType, out NpgsqlDbType sqltype)) {
-                //    sp.NpgsqlDbType = sqltype;
-                //}
-                //else 
-                if (Utility.ParseDbType(dbType, out DbType dType)) {
+                if (ParseSqlDbType(dbType, out NpgsqlDbType sqltype)) {
+                    sp.NpgsqlDbType = sqltype;
+                }
+                else if (Utility.ParseDbType(dbType, out DbType dType)) {
                     sp.DbType = dType;
                 }
                 if (Utility.ParseSize(dbType, out int size)) {
@@ -96,22 +101,22 @@ namespace Light.Data.Postgre
 
         #endregion
 
-        //bool ParseSqlDbType(string dbType, out NpgsqlDbType type)
-        //{
-        //    type = NpgsqlDbType.Varchar;
-        //    int index = dbType.IndexOf('(');
-        //    string typeString = string.Empty;
-        //    if (index < 0) {
-        //        typeString = dbType;
-        //    }
-        //    else if (index == 0) {
-        //        return false;
-        //    }
-        //    else {
-        //        typeString = dbType.Substring(0, index);
-        //    }
-        //    return Enum.TryParse(typeString, true, out type);
-        //}
+        bool ParseSqlDbType(string dbType, out NpgsqlDbType type)
+        {
+            type = NpgsqlDbType.Varchar;
+            int index = dbType.IndexOf('(');
+            string typeString = string.Empty;
+            if (index < 0) {
+                typeString = dbType;
+            }
+            else if (index == 0) {
+                return false;
+            }
+            else {
+                typeString = dbType.Substring(0, index);
+            }
+            return Enum.TryParse(typeString, true, out type);
+        }
     }
 }
 

@@ -7,24 +7,28 @@ namespace Light.Data
 	public enum SafeLevel
 	{
 		/// <summary>
-		/// The default level.
+		/// Use default transaction level.
 		/// </summary>
 		Default,
-		/// <summary>
-		/// The none level.
-		/// </summary>
-		None,
-		/// <summary>
-		/// The low level.
-		/// </summary>
-		Low,
-		/// <summary>
-		/// The normal level.
-		/// </summary>
-		Normal,
-		/// <summary>
-		/// The high level.
-		/// </summary>
-		High
-	}
+        /// <summary>
+        /// Not use transaction level.
+        /// </summary>
+        None,
+        /// <summary>
+        /// Use ReadUncommitted transaction level.
+        /// </summary>
+        Low,
+        /// <summary>
+        /// Use ReadCommitted transaction level.
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// Use RepeatableRead transaction level.
+        /// </summary>
+        High,
+        /// <summary>
+        /// Use Serializable transaction level.
+        /// </summary>
+        Serializable
+    }
 }

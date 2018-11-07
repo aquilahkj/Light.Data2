@@ -30,7 +30,7 @@ namespace Light.Data
 				typeString = dbType.Substring (0, index);
 			}
 			bool result = false;
-			if (Enum.TryParse<DbType> (typeString, true, out type)) {
+			if (Enum.TryParse (typeString, true, out type)) {
 				result = true;
 			}
 			else {

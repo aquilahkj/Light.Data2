@@ -40,23 +40,6 @@ namespace Light.Data
         /// <summary>
         /// 保存数据
         /// </summary>
-        public async Task<int> SaveAsync()
-        {
-            return await SaveAsync(true, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// 保存数据
-        /// </summary>
-        /// <param name="refresh">is refresh null data field</param>
-        public async Task<int> SaveAsync(bool refresh)
-        {
-            return await SaveAsync(refresh, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// 保存数据
-        /// </summary>
         public async Task<int> SaveAsync(CancellationToken cancellationToken)
         {
             return await SaveAsync(true, cancellationToken);
@@ -96,15 +79,7 @@ namespace Light.Data
             }
             return ret;
         }
-
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        public async Task<int> EraseAsync()
-        {
-            return await EraseAsync(CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// 删除数据
         /// </summary>

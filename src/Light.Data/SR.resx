@@ -222,4 +222,10 @@
   <data name="TransactionScopeHasBeenCreated" xml:space="preserve">
     <value>The TransactionScope Has Been Created</value>
   </data>
+  <data name="UnsupportUpdatePrimaryKey" xml:space="preserve">
+    <value>Unsupport update primary key</value>
+  </data>
+  <data name="KeyNotAllowNull" xml:space="preserve">
+    <value>The Id or Key does not allow null</value>
+  </data>
 </root>

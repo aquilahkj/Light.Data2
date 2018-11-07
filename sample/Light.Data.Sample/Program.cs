@@ -10,7 +10,7 @@ namespace Light.Data.Sample
         {
             DataMapperConfiguration.AddConfigFilePath("lightdata.json");
             DataMapperConfiguration.AddConfigFilePath("mapper_relate.json");
-            Test0_1<TeUser>();
+            Test5();
         }
 
         static void Test0()
@@ -133,12 +133,12 @@ namespace Light.Data.Sample
             context.Insert(taginfo);
             context.Insert(taginfo1);
             var list = context.Query<TeTagInfo>().Where(x => x.Remark == taginfo.Remark).ToList();
-            
+
             foreach (var item in list) {
                 Console.WriteLine(item);
             }
 
-            var agg = context.Query<TeTagInfo>().GroupBy(x => new {
+            var agg = context.Query<TeTagInfo>().Aggregate(x => new {
                 Remark = x.Remark,
                 Count = Function.Count()
             }).ToList();
@@ -170,6 +170,25 @@ namespace Light.Data.Sample
             Console.WriteLine(list.Count);
         }
 
+        static void Test5()
+        {
+            CommandOutput output = new CommandOutput();
+            output.Enable = true;
+            output.UseConsoleOutput = true;
+            output.OutputFullCommand = true;
+
+            DataContext context = new DataContext("test");
+            context.SetCommandOutput(output);
+            var list = context.Query<TeUser>();
+
+            foreach (var item in list) {
+                //if (item.Id > 5) {
+                //    break;
+                //}
+                Console.WriteLine(item);
+            }
+            Console.Read();
+        }
 
         //static void Test5()
         //{

@@ -63,15 +63,21 @@ namespace Light.Data
 
         public override IEnumerator<K> GetEnumerator()
         {
-            return _context.QuerySingleFieldReader<K>(SpecifiedFieldInfo, typeof(K), _query, _order, _distinct, _region).GetEnumerator();
+            QueryCommand queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, _region);
+            DataDefine define = DataDefine.GetDefine(typeof(K));
+            return _context.QueryDataDefineReader<K>(define, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, null, null).GetEnumerator();
+            //return _context.QuerySingleFieldReader<K>(SpecifiedFieldInfo, typeof(K), _query, _order, _distinct, _region, _level).GetEnumerator();
         }
 
         #endregion
 
         public override List<K> ToList()
         {
-            List<K> list = _context.QuerySingleFieldList<K>(SpecifiedFieldInfo, typeof(K), _query, _order, _distinct, _region);
-            return list;
+            QueryCommand queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, _region);
+            DataDefine define = DataDefine.GetDefine(typeof(K));
+            return _context.QueryDataDefineList<K>(define, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, null, null);
+            //List<K> list = _context.QuerySingleFieldList<K>(SpecifiedFieldInfo, typeof(K), _query, _order, _distinct, _region, _level);
+            //return list;
         }
 
         public override K[] ToArray()
@@ -86,34 +92,31 @@ namespace Light.Data
 
         public override K ElementAt(int index)
         {
-            K target = default(K);
             Region region = new Region(index, 1);
-            target = _context.QuerySingleFieldSingle<K>(SpecifiedFieldInfo, typeof(K), _query, _order, false, region);
-            return target;
+            QueryCommand queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, region);
+            DataDefine define = DataDefine.GetDefine(typeof(K));
+            return _context.QueryDataDefineSingle<K>(define, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, null, null);
+            //K target = default(K);
+            //Region region = new Region(index, 1);
+            //target = _context.QuerySingleFieldSingle<K>(SpecifiedFieldInfo, typeof(K), _query, _order, false, region, _level);
+            //return target;
         }
 
         #region async
 
         public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken)
         {
-            List<K> list = await _context.QuerySingleFieldListAsync<K>(SpecifiedFieldInfo, typeof(K), _query, _order, _distinct, _region, cancellationToken);
-            return list;
-        }
-
-        public async override Task<List<K>> ToListAsync()
-        {
-            return await ToListAsync(CancellationToken.None);
+            QueryCommand queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, _region);
+            DataDefine define = DataDefine.GetDefine(typeof(K));
+            return await _context.QueryDataDefineListAsync<K>(define, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, null, null, cancellationToken);
+            //List<K> list = await _context.QuerySingleFieldListAsync<K>(SpecifiedFieldInfo, typeof(K), _query, _order, _distinct, _region, _level, cancellationToken);
+            //return list;
         }
 
         public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken)
         {
-            List<K> list = await ToListAsync();
+            List<K> list = await ToListAsync(CancellationToken.None);
             return list.ToArray();
-        }
-
-        public async override Task<K[]> ToArrayAsync()
-        {
-            return await ToArrayAsync(CancellationToken.None);
         }
 
         public async override Task<K> FirstAsync(CancellationToken cancellationToken)
@@ -121,22 +124,16 @@ namespace Light.Data
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<K> FirstAsync()
-        {
-            return await FirstAsync(CancellationToken.None);
-        }
-
         public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken)
         {
-            K target = default(K);
             Region region = new Region(index, 1);
-            target = await _context.QuerySingleFieldSingleAsync<K>(SpecifiedFieldInfo, typeof(K), _query, _order, false, region, cancellationToken);
-            return target;
-        }
-
-        public async override Task<K> ElementAtAsync(int index)
-        {
-            return await ElementAtAsync(index, CancellationToken.None);
+            QueryCommand queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, region);
+            DataDefine define = DataDefine.GetDefine(typeof(K));
+            return await _context.QueryDataDefineSingleAsync<K>(define, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, null, null, cancellationToken);
+            //K target = default(K);
+            //Region region = new Region(index, 1);
+            //target = await _context.QuerySingleFieldSingleAsync<K>(SpecifiedFieldInfo, typeof(K), _query, _order, false, region, _level, cancellationToken);
+            //return target;
         }
 
         #endregion

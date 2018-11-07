@@ -13,7 +13,9 @@ namespace Light.Data
 
         public override IEnumerator<K> GetEnumerator()
         {
-            return Context.QueryEntityDataReader<K>(Mapping, Selector, _query, _order, _distinct, _region, Dele).GetEnumerator();
+            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
+            return _context.QueryDataDefineReader<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele).GetEnumerator();
+            //return Context.QueryEntityDataReader<K>(Mapping, Selector, _query, _order, _distinct, _region, _level, Dele).GetEnumerator();
         }
 
         #endregion
@@ -70,8 +72,10 @@ namespace Light.Data
 
         public override List<K> ToList()
         {
-            List<K> list = Context.QueryEntityDataList<K>(Mapping, Selector, _query, _order, _distinct, _region, Dele);
-            return list;
+            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
+            return _context.QueryDataDefineList<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele);
+            //List<K> list = Context.QueryEntityDataList<K>(Mapping, Selector, _query, _order, _distinct, _region, _level, Dele);
+            //return list;
         }
 
         public override K[] ToArray()
@@ -86,10 +90,13 @@ namespace Light.Data
 
         public override K ElementAt(int index)
         {
-            K target = default(K);
             Region region = new Region(index, 1);
-            target = Context.QueryEntityDataSingle<K>(Mapping, Selector, _query, _order, false, region, Dele);
-            return target;
+            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, region);
+            return _context.QueryDataDefineSingle<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, Dele);
+            //K target = default(K);
+            //Region region = new Region(index, 1);
+            //target = Context.QueryEntityDataSingle<K>(Mapping, Selector, _query, _order, false, region, _level, Dele);
+            //return target;
         }
 
         public override IJoinTable<K, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression)
@@ -222,13 +229,10 @@ namespace Light.Data
 
         public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken)
         {
-            List<K> list = await Context.QueryEntityDataListAsync<K>(Mapping, Selector, _query, _order, _distinct, _region, Dele, cancellationToken);
-            return list;
-        }
-
-        public async override Task<List<K>> ToListAsync()
-        {
-            return await ToListAsync(CancellationToken.None);
+            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
+            return await _context.QueryDataDefineListAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele, cancellationToken);
+            //List<K> list = await Context.QueryEntityDataListAsync<K>(Mapping, Selector, _query, _order, _distinct, _region, _level, Dele, cancellationToken);
+            //return list;
         }
 
         public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken)
@@ -236,34 +240,23 @@ namespace Light.Data
             List<K> list = await ToListAsync(cancellationToken);
             return list.ToArray();
         }
-
-        public async override Task<K[]> ToArrayAsync()
-        {
-            return await ToArrayAsync(CancellationToken.None);
-        }
-
+        
         public async override Task<K> FirstAsync(CancellationToken cancellationToken)
         {
             return await ElementAtAsync(0, cancellationToken);
         }
-
-        public async override Task<K> FirstAsync()
-        {
-            return await FirstAsync(CancellationToken.None);
-        }
-
+        
         public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken)
         {
-            K target = default(K);
             Region region = new Region(index, 1);
-            target = await Context.QueryEntityDataSingleAsync<K>(Mapping, Selector, _query, _order, false, region, Dele, cancellationToken);
-            return target;
+            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, region);
+            return await _context.QueryDataDefineSingleAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, Dele, cancellationToken);
+            //K target = default(K);
+            //Region region = new Region(index, 1);
+            //target = await Context.QueryEntityDataSingleAsync<K>(Mapping, Selector, _query, _order, false, region, _level, Dele, cancellationToken);
+            //return target;
         }
-
-        public async override Task<K> ElementAtAsync(int index)
-        {
-            return await ElementAtAsync(index, CancellationToken.None);
-        }
+        
 
         #endregion
     }

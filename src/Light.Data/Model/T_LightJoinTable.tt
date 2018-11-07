@@ -412,21 +412,29 @@ namespace Light.Data
 		public int SelectInsert<K> (Expression<Func<<#= GetAll(i) #>, K>> expression) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
+			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
+            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			//return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+            return Convert.ToInt32(value);
+			//return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+            return Convert.ToInt64(value);
+			//return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -435,16 +443,10 @@ namespace Light.Data
 		/// <value>The count.</value>
 		public async Task<int> CountAsync(CancellationToken cancellationToken)
 		{
-			return Convert.ToInt32(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
-		}
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
-		public async Task<int> CountAsync()
-		{
-			return await CountAsync(CancellationToken.None);
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+            return Convert.ToInt32(value);
+			//return Convert.ToInt32(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
 		}
 
 		/// <summary>
@@ -453,16 +455,10 @@ namespace Light.Data
 		/// <value>The long count.</value>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken)
 		{
-			return Convert.ToInt64(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
-		}
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
-		public async Task<long> LongCountAsync()
-		{
-			return await LongCountAsync(CancellationToken.None);
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+            return Convert.ToInt64(value);
+			//return Convert.ToInt64(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
 		}
 
 		/// <summary>
@@ -472,16 +468,9 @@ namespace Light.Data
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<<#= GetAll(i) #>, K>> expression, CancellationToken cancellationToken) //where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
-		}
-
-		/// <summary>
-		/// Insert the select data
-		/// </summary>
-		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<<#= GetAll(i) #>, K>> expression) //where K : class, new()
-		{
-			return await SelectInsertAsync(expression, CancellationToken.None);
+			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
+            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			//return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
 		}
 
 <#if(i<MaxCount){#>

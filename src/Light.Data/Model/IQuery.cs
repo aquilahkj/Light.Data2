@@ -195,7 +195,7 @@ namespace Light.Data
         /// <returns>The by.</returns>
         /// <param name="expression">Expression.</param>
         /// <typeparam name="K">The 1st type parameter.</typeparam>
-        IAggregate<K> GroupBy<K>(Expression<Func<T, K>> expression);
+        IAggregate<K> Aggregate<K>(Expression<Func<T, K>> expression);
 
         /// <summary>
         /// Select special field.
@@ -345,11 +345,6 @@ namespace Light.Data
 
 
         #region async
-        /// <summary>
-        /// Gets the datas count.
-        /// </summary>
-        /// <value>The count.</value>
-        Task<int> CountAsync();
 
         /// <summary>
         /// Gets the datas count.
@@ -361,31 +356,13 @@ namespace Light.Data
         /// Gets the datas long count.
         /// </summary>
         /// <value>The long count.</value>
-        Task<long> LongCountAsync();
-
-        /// <summary>
-        /// Gets the datas long count.
-        /// </summary>
-        /// <value>The long count.</value>
         Task<long> LongCountAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the data is exists with query expression.
         /// </summary>
         /// <value><c>true</c> if exists; otherwise, <c>false</c>.</value>
-        Task<bool> ExistsAsync();
-
-        /// <summary>
-        /// Gets the data is exists with query expression.
-        /// </summary>
-        /// <value><c>true</c> if exists; otherwise, <c>false</c>.</value>
         Task<bool> ExistsAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Get single instance.
-        /// </summary>
-        /// <returns>instance.</returns>
-        Task<T> FirstAsync();
 
         /// <summary>
         /// Get single instance.
@@ -398,20 +375,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>instance.</returns>
         /// <param name="index">Index.</param>
-        Task<T> ElementAtAsync(int index);
-
-        /// <summary>
-        /// Elements at index.
-        /// </summary>
-        /// <returns>instance.</returns>
-        /// <param name="index">Index.</param>
         Task<T> ElementAtAsync(int index, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// To the list.
-        /// </summary>
-        /// <returns>The list.</returns>
-        Task<List<T>> ToListAsync();
 
         /// <summary>
         /// To the list.
@@ -423,19 +387,7 @@ namespace Light.Data
         /// To the array.
         /// </summary>
         /// <returns>The array.</returns>
-        Task<T[]> ToArrayAsync();
-
-        /// <summary>
-        /// To the array.
-        /// </summary>
-        /// <returns>The array.</returns>
         Task<T[]> ToArrayAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// All fields data insert to the special table K.
-        /// </summary>
-        /// <typeparam name="K">The 1st type parameter.</typeparam>
-        Task<int> InsertAsync<K>();
 
         /// <summary>
         /// All fields data insert to the special table K.
@@ -448,20 +400,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="expression">Expression.</param>
         /// <typeparam name="K">The 1st type parameter.</typeparam>
-        Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression);
-
-        /// <summary>
-        /// Select fields data insert to the special table K.
-        /// </summary>
-        /// <param name="expression">Expression.</param>
-        /// <typeparam name="K">The 1st type parameter.</typeparam>
         Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Update datas.
-        /// </summary>
-        /// <param name="expression">Expression.</param>
-        Task<int> UpdateAsync(Expression<Func<T, T>> expression);
 
         /// <summary>
         /// Update datas.
@@ -472,20 +411,7 @@ namespace Light.Data
         /// <summary>
         /// Delete datas
         /// </summary>
-        Task<int> DeleteAsync();
-
-        /// <summary>
-        /// Delete datas
-        /// </summary>
         Task<int> DeleteAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Aggregates the fields.
-        /// </summary>
-        /// <returns>The field.</returns>
-        /// <param name="expression">Expression.</param>
-        /// <typeparam name="K">The 1st type parameter.</typeparam>
-        Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression);
 
         /// <summary>
         /// Aggregates the fields.

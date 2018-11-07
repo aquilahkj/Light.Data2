@@ -125,6 +125,9 @@ namespace Light.Data
                             if (data.Value == null) {
                                 value = "null";
                             }
+                            else if (data.Value == DBNull.Value) {
+                                value = "null";
+                            }
                             else {
                                 TypeCode code = Type.GetTypeCode(data.Value.GetType());
                                 Type type = data.Value.GetType();
@@ -144,7 +147,7 @@ namespace Light.Data
                                     value = string.Concat("'", dt.ToString("yyyy-MM-dd HH:mm:ss"), "'");
                                 }
                                 else if(data.Value is byte[]) {
-                                    value = "null";
+                                    value = "[bytes]";
                                 }
                                 else {
                                     value = data.Value.ToString();

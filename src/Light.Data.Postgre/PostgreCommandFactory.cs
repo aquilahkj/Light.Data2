@@ -125,14 +125,26 @@ namespace Light.Data.Postgre
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
-            string[] insertList = new string[insertLen];
-            for (int i = 0; i < insertLen; i++) {
-                DataFieldMapping field = fields[i];
-                insertList[i] = CreateDataFieldSql(field.Name);
+            string insertSql = null;
+            string cachekey = null;
+            if (state.Seed == 0) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+                    insertSql = cache;
+                }
             }
-            string insert = string.Join(",", insertList);
-            string insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
-
+            if (insertSql == null) {
+                string[] insertList = new string[insertLen];
+                for (int i = 0; i < insertLen; i++) {
+                    DataFieldMapping field = fields[i];
+                    insertList[i] = CreateDataFieldSql(field.Name);
+                }
+                string insert = string.Join(",", insertList);
+                insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
+                if (cachekey != null) {
+                    _batchInsertCache.SetCommand(cachekey, insertSql);
+                }
+            }
             int createCount = 0;
 
             StringBuilder totalSql = new StringBuilder();
@@ -150,7 +162,7 @@ namespace Light.Data.Postgre
                     //object obj = field.Handler.Get(entity);
                     //object value = field.ToColumn(obj);
                     object value = field.GetInsertData(entity, refresh);
-                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input);
+                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
                 }
                 string values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);

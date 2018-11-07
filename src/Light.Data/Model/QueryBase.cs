@@ -65,7 +65,7 @@ namespace Light.Data
 
         public abstract IEnumerator<T> GetEnumerator();
 
-        public abstract IAggregate<K> GroupBy<K>(Expression<Func<T, K>> expression);
+        public abstract IAggregate<K> Aggregate<K>(Expression<Func<T, K>> expression);
 
         public abstract int Insert<K>();
 
@@ -151,30 +151,6 @@ namespace Light.Data
         public abstract ISelectField<K> SelectField<K>(Expression<Func<T, K>> expression);
 
         public abstract K AggregateField<K>(Expression<Func<T, K>> expression);
-
-        public abstract Task<List<T>> ToListAsync();
-
-        public abstract Task<T[]> ToArrayAsync();
-
-        public abstract Task<T> FirstAsync();
-
-        public abstract Task<T> ElementAtAsync(int index);
-
-        public abstract Task<int> InsertAsync<K>();
-
-        public abstract Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression);
-
-        public abstract Task<int> UpdateAsync(Expression<Func<T, T>> expression);
-
-        public abstract Task<int> DeleteAsync();
-
-        public abstract Task<int> CountAsync();
-
-        public abstract Task<long> LongCountAsync();
-
-        public abstract Task<bool> ExistsAsync();
-
-        public abstract Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression);
 
         public abstract Task<int> CountAsync(CancellationToken cancellationToken);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -70,12 +71,12 @@ namespace Light.Data.Mssql.Test
         [Fact]
         public async Task TestCase_MiniValue_Async()
         {
-            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>();
+            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>(CancellationToken.None);
 
 
             var value = context.CreateNew<TeBaseFieldNullMiniValue>();
-            await context.InsertAsync(value);
-            var ac = await context.SelectByIdAsync<TeBaseFieldNullMiniValue>(value.Id);
+            await context.InsertAsync(value, CancellationToken.None);
+            var ac = await context.SelectByIdAsync<TeBaseFieldNullMiniValue>(value.Id, CancellationToken.None);
 
             Assert.Equal(1, ac.Id);
             Assert.Equal(false, ac.BoolFieldNull);
@@ -180,15 +181,15 @@ namespace Light.Data.Mssql.Test
         [Fact]
         public async Task TestCase_MiniValue_BulkInsert_Async()
         {
-            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>();
+            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>(CancellationToken.None);
 
             var list = new List<TeBaseFieldNullMiniValue>();
             for (int i = 0; i < 10; i++) {
                 var value = context.CreateNew<TeBaseFieldNullMiniValue>();
                 list.Add(value);
             }
-            await context.BatchInsertAsync(list);
-            var listAc = await context.Query<TeBaseFieldNullMiniValue>().ToListAsync();
+            await context.BatchInsertAsync(list, CancellationToken.None);
+            var listAc = await context.Query<TeBaseFieldNullMiniValue>().ToListAsync(CancellationToken.None);
 
             for (int i = 0; i < listAc.Count; i++) {
                 var ac = listAc[i];
@@ -371,11 +372,11 @@ namespace Light.Data.Mssql.Test
         [Fact]
         public async Task TestCase_MiniValue_Refresh_Async()
         {
-            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>();
+            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>(CancellationToken.None);
 
             var value = context.CreateNew<TeBaseFieldNullMiniValue>();
-            await context.InsertAsync(value, true);
-            var ac = await context.SelectByIdAsync<TeBaseFieldNullMiniValue>(value.Id);
+            await context.InsertAsync(value, true, CancellationToken.None);
+            var ac = await context.SelectByIdAsync<TeBaseFieldNullMiniValue>(value.Id, CancellationToken.None);
 
             AssertExtend.Equal(value, ac);
         }
@@ -390,7 +391,7 @@ namespace Light.Data.Mssql.Test
                 var value = context.CreateNew<TeBaseFieldNullMiniValue>();
                 list.Add(value);
             }
-            context.BatchInsert(list, true);
+            context.BatchInsert(list, true, true);
             var listAc = context.Query<TeBaseFieldNullMiniValue>().ToList();
 
             AssertExtend.Equal(list, listAc);
@@ -399,15 +400,15 @@ namespace Light.Data.Mssql.Test
         [Fact]
         public async Task TestCase_MiniValue_BulkInsert_Refresh_Async()
         {
-            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>();
+            await context.TruncateTableAsync<TeBaseFieldNullMiniValue>(CancellationToken.None);
 
             var list = new List<TeBaseFieldNullMiniValue>();
             for (int i = 0; i < 10; i++) {
                 var value = context.CreateNew<TeBaseFieldNullMiniValue>();
                 list.Add(value);
             }
-            await context.BatchInsertAsync(list, true);
-            var listAc = await context.Query<TeBaseFieldNullMiniValue>().ToListAsync();
+            await context.BatchInsertAsync(list, true, true, CancellationToken.None);
+            var listAc = await context.Query<TeBaseFieldNullMiniValue>().ToListAsync(CancellationToken.None);
 
             AssertExtend.Equal(list, listAc);
         }
@@ -433,7 +434,7 @@ namespace Light.Data.Mssql.Test
                 var value = context.CreateNew<TeBaseFieldDefaultValue>();
                 list.Add(value);
             }
-            context.BatchInsert(list, true);
+            context.BatchInsert(list, true, true);
             var listAc = context.Query<TeBaseFieldDefaultValue>().ToList();
 
             AssertExtend.Equal(list, listAc);

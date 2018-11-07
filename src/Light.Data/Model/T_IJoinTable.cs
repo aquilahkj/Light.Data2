@@ -135,32 +135,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -402,32 +383,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -669,32 +631,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -936,32 +879,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -1203,32 +1127,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -1470,32 +1375,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -1737,32 +1623,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -2004,32 +1871,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -2271,32 +2119,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
 		Task<long> LongCountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression); //where K : class, new();
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
