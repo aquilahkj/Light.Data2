@@ -313,6 +313,15 @@ namespace Light.Data {
         }
         
         /// <summary>
+        ///   查找类似 Specific primary key data does not exists 的本地化字符串。
+        /// </summary>
+        internal static string PrimaryKeyDataNotExists {
+            get {
+                return ResourceManager.GetString("PrimaryKeyDataNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 The type &apos;{0}&apos; relation field &apos;{1}&apos; error 的本地化字符串。
         /// </summary>
         internal static string RelationFieldError {
@@ -372,15 +381,6 @@ namespace Light.Data {
         internal static string UnsupportPredicate {
             get {
                 return ResourceManager.GetString("UnsupportPredicate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Unsupport update primary key 的本地化字符串。
-        /// </summary>
-        internal static string UnsupportUpdatePrimaryKey {
-            get {
-                return ResourceManager.GetString("UnsupportUpdatePrimaryKey", resourceCulture);
             }
         }
         

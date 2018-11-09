@@ -83,6 +83,11 @@
     //DbSetting.SetDefaultValue("Te_Table.EnumField","MyEnumType.Positive1");
 	//DbSetting.SetDefaultValue("*.TimeStampField","DefaultTime.TimeStamp");
 
+	//设置字段数据类型,设置"表名.字段名"指定表字段使用数据类型,设置"*.字段名"所有表符合字段名的都使用该数据类型
+	//数据库类型可以使用该数据专用类型
+    //方法:DbSetting.SetDbType(tableName.fieldName,dbType);
+	//DbSetting.SetDbType("Te_Table.StringField","varchar(10)");
+	//DbSetting.SetDbType("*.StringField","varchar");
 
     var dbSchema = new MysqlSchema(dataBase, connection);
     var tableList = dbSchema.GetTables();
@@ -122,7 +127,7 @@ namespace <#=namespaceName#>
 		/// </summary>
 		/// <value></value>
 <# if(useLightData){ #>
-		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DbType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
 <# } #>
         public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
         {
@@ -143,7 +148,7 @@ namespace <#=namespaceName#>
         /// </summary>
         /// <value></value>
 <# if(useLightData){ #>
-        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DbType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
 <# } #>
 	    public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
         {

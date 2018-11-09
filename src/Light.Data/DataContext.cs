@@ -169,7 +169,7 @@ namespace Light.Data
             DataTableEntity tableEntity = data as DataTableEntity;
             tableEntity.LoadData();
             if (tableEntity.IsAllowUpdatePrimaryKey()) {
-                tableEntity.SetRawPrimaryKeys(mapping.GetRawKeys(tableEntity));
+                tableEntity.SetRawPrimaryKeys(mapping.GetPrimaryKeys(tableEntity));
             }
             tableEntity.ClearUpdateFields();
         }
@@ -207,7 +207,7 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         public int InsertOrUpdate<T>(T data)
         {
-            return InsertOrUpdate(data, SafeLevel.Serializable, false);
+            return InsertOrUpdate(data, SafeLevel.Default, false);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace Light.Data
         /// <returns></returns>
         public int InsertOrUpdate<T>(T data, bool refresh)
         {
-            return InsertOrUpdate(data, SafeLevel.Serializable, refresh);
+            return InsertOrUpdate(data, SafeLevel.Default, refresh);
         }
 
         /// <summary>
@@ -254,30 +254,45 @@ namespace Light.Data
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
             int rInt = 0;
-            object[] primaryKeys = mapping.GetRawKeys(data);
+            object[] primaryKeys = mapping.GetPrimaryKeys(data);
+            object[] rawKeys = null;
+            bool updateKey = false;
             if (mapping.IsDataTableEntity) {
                 DataTableEntity tableEntity = data as DataTableEntity;
-                object[] rawkeys = tableEntity.GetRawPrimaryKeys();
-                if (rawkeys != null) {
-                    for (int i = 0; i < rawkeys.Length; i++) {
-                        if (!rawkeys[i].Equals(primaryKeys[i])) {
-                            throw new LightDataException(SR.UnsupportUpdatePrimaryKey);
+                rawKeys = tableEntity.GetRawPrimaryKeys();
+                if (rawKeys != null) {
+                    for (int i = 0; i < rawKeys.Length; i++) {
+                        if (!rawKeys[i].Equals(primaryKeys[i])) {
+                            updateKey = true;
                         }
                     }
                 }
             }
-            QueryCommand queryCommand = _database.ExistsByKey(this, mapping, primaryKeys);
+            if (level == SafeLevel.Default) {
+                if (mapping.HasIdentity && mapping.PrimaryKeyCount == 1 && mapping.IdentityField == mapping.PrimaryKeyFields[0]) {
+                    level = SafeLevel.High;
+                }
+                else {
+                    level = SafeLevel.Serializable;
+                }
+            }
+            QueryCommand queryCommand = _database.ExistsByKey(this, mapping, updateKey ? rawKeys : primaryKeys);
             TransactionConnection transaction = CreateInnerTransaction(level);
             try {
                 DataDefine define = DataDefine.GetDefine(typeof(int?));
                 int? obj = QueryDataDefineSingle<int?>(define, SafeLevel.Default, queryCommand.Command, 0, queryCommand.State, null, transaction);
                 if (!obj.HasValue) {
-                    QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh);
-                    rInt = ExecuteNonQuery(insertCommand.Command, SafeLevel.Default, transaction);
-                    if (mapping.HasIdentity && rInt > 0) {
-                        QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-                        object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
-                        _database.UpdateDataIdentity(mapping, data, id);
+                    if (updateKey) {
+                        throw new LightDataException(SR.PrimaryKeyDataNotExists);
+                    }
+                    else {
+                        QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh);
+                        rInt = ExecuteNonQuery(insertCommand.Command, SafeLevel.Default, transaction);
+                        if (mapping.HasIdentity && rInt > 0) {
+                            QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                            object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
+                            _database.UpdateDataIdentity(mapping, data, id);
+                        }
                     }
                 }
                 else {
@@ -304,7 +319,7 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, CancellationToken cancellationToken)
         {
-            return await InsertOrUpdateAsync(data, SafeLevel.Serializable, false, cancellationToken);
+            return await InsertOrUpdateAsync(data, SafeLevel.Default, false, cancellationToken);
         }
 
         /// <summary>
@@ -328,7 +343,7 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken)
         {
-            return await InsertOrUpdateAsync(data, SafeLevel.Serializable, refresh, cancellationToken);
+            return await InsertOrUpdateAsync(data, SafeLevel.Default, refresh, cancellationToken);
         }
 
         /// <summary>
@@ -351,30 +366,45 @@ namespace Light.Data
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
             int rInt = 0;
-            object[] primaryKeys = mapping.GetRawKeys(data);
+            object[] primaryKeys = mapping.GetPrimaryKeys(data);
+            object[] rawKeys = null;
+            bool updateKey = false;
             if (mapping.IsDataTableEntity) {
                 DataTableEntity tableEntity = data as DataTableEntity;
-                object[] rawkeys = tableEntity.GetRawPrimaryKeys();
-                if (rawkeys != null) {
-                    for (int i = 0; i < rawkeys.Length; i++) {
-                        if (!rawkeys[i].Equals(primaryKeys[i])) {
-                            throw new LightDataException(SR.UnsupportUpdatePrimaryKey);
+                rawKeys = tableEntity.GetRawPrimaryKeys();
+                if (rawKeys != null) {
+                    for (int i = 0; i < rawKeys.Length; i++) {
+                        if (!rawKeys[i].Equals(primaryKeys[i])) {
+                            updateKey = true;
                         }
                     }
                 }
             }
-            QueryCommand queryCommand = _database.ExistsByKey(this, mapping, primaryKeys);
+            if (level == SafeLevel.Default) {
+                if (mapping.HasIdentity && mapping.PrimaryKeyCount == 1 && mapping.IdentityField == mapping.PrimaryKeyFields[0]) {
+                    level = SafeLevel.High;
+                }
+                else {
+                    level = SafeLevel.Serializable;
+                }
+            }
+            QueryCommand queryCommand = _database.ExistsByKey(this, mapping, updateKey ? rawKeys : primaryKeys);
             TransactionConnection transaction = CreateInnerTransaction(level);
             try {
                 DataDefine define = DataDefine.GetDefine(typeof(int?));
                 int? obj = await QueryDataDefineSingleAsync<int?>(define, SafeLevel.Default, queryCommand.Command, 0, queryCommand.State, null, cancellationToken, transaction);
                 if (!obj.HasValue) {
-                    QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh);
-                    rInt = ExecuteNonQuery(insertCommand.Command, SafeLevel.Default, transaction);
-                    if (mapping.HasIdentity && rInt > 0) {
-                        QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-                        object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
-                        _database.UpdateDataIdentity(mapping, data, id);
+                    if (updateKey) {
+                        throw new LightDataException(SR.PrimaryKeyDataNotExists);
+                    }
+                    else {
+                        QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh);
+                        rInt = await ExecuteNonQueryAsync(insertCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                        if (mapping.HasIdentity && rInt > 0) {
+                            QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                            object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                            _database.UpdateDataIdentity(mapping, data, id);
+                        }
                     }
                 }
                 else {
@@ -496,36 +526,7 @@ namespace Light.Data
             if (mapping.IsDataTableEntity) {
                 UpdateDateTableEntity(mapping, data);
             }
-            return rInt;
-            //object obj = null;
-            //int rInt;
-            //CreateSqlState state = new CreateSqlState(this);
-            //CommandData commandData = _database.Factory.CreateBaseInsertCommand(mapping, data, refresh, state);
-            //CommandData commandDataIdentity = null;
-            //if (mapping.IdentityField != null) {
-            //    //CreateSqlState state1 = new CreateSqlState(this);
-            //    commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
-            //}
-
-            //var transaction = CreateInnerTransaction(SafeLevel.Default);
-            //using (DbCommand command = commandData.CreateCommand(_database, state)) {
-            //    rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken, transaction);
-            //}
-            //if (commandDataIdentity != null) {
-            //    using (DbCommand identityCommand = commandDataIdentity.CreateCommand(_database)) {
-            //        obj = await ExecuteScalarAsync(identityCommand, SafeLevel.Default, cancellationToken, transaction);
-            //    }
-            //}
-
-            //CommitInnerTransaction(transaction);
-            //if (!Equals(obj, null)) {
-            //    object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
-            //    mapping.IdentityField.Handler.Set(data, id);
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    UpdateDateTableEntity(mapping, data);
-            //}
-            //return rInt;
+            return rInt;//return rInt;
         }
 
         /// <summary>
@@ -604,19 +605,6 @@ namespace Light.Data
                 UpdateDateTableEntity(mapping, data);
             }
             return rInt;
-            //int rInt;
-            //CreateSqlState state = new CreateSqlState(this);
-            //CommandData commandData = _database.Factory.CreateBaseUpdateCommand(mapping, data, refresh, state);
-            //if (commandData == null) {
-            //    return 0;
-            //}
-            //using (DbCommand command = commandData.CreateCommand(_database, state)) {
-            //    rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    UpdateDateTableEntity(mapping, data);
-            //}
-            //return rInt;
         }
 
         /// <summary>
@@ -642,16 +630,6 @@ namespace Light.Data
                 ClearDataTableEntity(data);
             }
             return rInt;
-            //int rInt;
-            //CreateSqlState state = new CreateSqlState(this);
-            //CommandData commandData = _database.Factory.CreateBaseDeleteCommand(mapping, data, state);
-            //using (DbCommand command = commandData.CreateCommand(_database, state)) {
-            //    rInt = ExecuteNonQuery(command, SafeLevel.Default);
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    ClearDataTableEntity(data);
-            //}
-            //return rInt;
         }
 
         /// <summary>
@@ -678,16 +656,6 @@ namespace Light.Data
                 ClearDataTableEntity(data);
             }
             return rInt;
-            //int rInt;
-            //CreateSqlState state = new CreateSqlState(this);
-            //CommandData commandData = _database.Factory.CreateBaseDeleteCommand(mapping, data, state);
-            //using (DbCommand command = commandData.CreateCommand(_database, state)) {
-            //    rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken);
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    ClearDataTableEntity(data);
-            //}
-            //return rInt;
         }
 
         /// <summary>
@@ -956,74 +924,6 @@ namespace Light.Data
                 }
             }
             return result;
-            //if (datas.Count == 0) {
-            //    return 0;
-            //}
-            //int batchCount;
-            //if (_database.BatchInsertCount > 0)
-            //    batchCount = _database.BatchInsertCount;
-            //else
-            //    batchCount = 10;
-            //int result = 0;
-            //object obj = null;
-            //int start = 0;
-            //List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
-            //while (true) {
-            //    CreateSqlState state = new CreateSqlState(this);
-            //    Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchInsertCommand(mapping, datas, start, batchCount, refresh, state);
-            //    if (commandDataResult.Item2 == 0) {
-            //        break;
-            //    }
-            //    Tuple<CommandData, CreateSqlState> commandData = new Tuple<CommandData, CreateSqlState>(commandDataResult.Item1, state);
-            //    commandDatas.Add(commandData);
-            //    start += commandDataResult.Item2;
-            //    if (start >= datas.Count) {
-            //        break;
-            //    }
-            //}
-
-            //CommandData commandDataIdentity = null;
-            //if (mapping.IdentityField != null) {
-            //    CreateSqlState state = new CreateSqlState(this);
-            //    commandDataIdentity = _database.Factory.CreateIdentityCommand(mapping, state);
-            //}
-
-            //var transaction = CreateInnerTransaction(SafeLevel.Default);
-            //foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
-            //    using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-            //        int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken, transaction);
-            //        if (data.Item1.ReturnRowCount) {
-            //            result += ret;
-            //        }
-            //    }
-            //}
-            //if (commandDataIdentity != null) {
-            //    using (DbCommand identityCommand = commandDataIdentity.CreateCommand(_database)) {
-            //        obj = await ExecuteScalarAsync(identityCommand, SafeLevel.Default, cancellationToken, transaction);
-            //    }
-            //}
-
-            //CommitInnerTransaction(transaction);
-            //if (!Equals(obj, null)) {
-            //    object id = Convert.ChangeType(obj, mapping.IdentityField.ObjectType);
-            //    int len = datas.Count;
-            //    object[] ids = CreateObjectList(id, len);
-
-            //    for (int i = 0; i < len; i++) {
-            //        object data = datas[i];
-            //        object value = ids[i];
-            //        mapping.IdentityField.Handler.Set(data, value);
-            //    }
-            //}
-            //if (result == 0) {
-            //    result = start;
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    foreach (object data in datas) {
-            //        UpdateDateTableEntity(mapping, data);
-            //    }
-            //}
-            //return result;
         }
 
         /// <summary>
@@ -1131,61 +1031,6 @@ namespace Light.Data
                 }
             }
             return result;
-            //if (datas.Count == 0) {
-            //    return 0;
-            //}
-            //int batchCount;
-            //if (_database.BatchUpdateCount > 0)
-            //    batchCount = _database.BatchUpdateCount;
-            //else
-            //    batchCount = 10;
-            //int result = 0;
-            //int start = 0;
-            //List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
-            //while (true) {
-            //    CreateSqlState state = new CreateSqlState(this);
-            //    Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, refresh, state);
-            //    if (commandDataResult == null) {
-            //        start += batchCount;
-            //        if (start >= datas.Count) {
-            //            break;
-            //        }
-            //        else {
-            //            continue;
-            //        }
-            //    }
-            //    if (commandDataResult.Item2 == 0) {
-            //        break;
-            //    }
-            //    Tuple<CommandData, CreateSqlState> commandData = new Tuple<CommandData, CreateSqlState>(commandDataResult.Item1, state);
-            //    commandDatas.Add(commandData);
-            //    start += commandDataResult.Item2;
-            //    if (start >= datas.Count) {
-            //        break;
-            //    }
-            //}
-
-
-            //var transaction = CreateInnerTransaction(SafeLevel.Default);
-            //foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
-            //    using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-            //        int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default, transaction);
-            //        if (data.Item1.ReturnRowCount) {
-            //            result += ret;
-            //        }
-            //    }
-            //}
-
-            //CommitInnerTransaction(transaction);
-            //if (result == 0) {
-            //    result = start;
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    foreach (object data in datas) {
-            //        UpdateDateTableEntity(mapping, data);
-            //    }
-            //}
-            //return result;
         }
 
         /// <summary>
@@ -1378,52 +1223,6 @@ namespace Light.Data
                 }
             }
             return result;
-            //if (datas.Count == 0) {
-            //    return 0;
-            //}
-            //int batchCount;
-            //if (_database.BatchInsertCount > 0)
-            //    batchCount = _database.BatchDeleteCount;
-            //else
-            //    batchCount = 10;
-            //int result = 0;
-            //int start = 0;
-            //List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
-            //while (true) {
-            //    CreateSqlState state = new CreateSqlState(this);
-            //    Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchDeleteCommand(mapping, datas, start, batchCount, state);
-            //    if (commandDataResult.Item2 == 0) {
-            //        break;
-            //    }
-            //    Tuple<CommandData, CreateSqlState> commandData = new Tuple<CommandData, CreateSqlState>(commandDataResult.Item1, state);
-            //    commandDatas.Add(commandData);
-            //    start += commandDataResult.Item2;
-            //    if (start >= datas.Count) {
-            //        break;
-            //    }
-            //}
-
-
-            //var transaction = CreateInnerTransaction(SafeLevel.Default);
-            //foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
-            //    using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-            //        int ret = ExecuteNonQuery(dbcommand, SafeLevel.Default, transaction);
-            //        if (data.Item1.ReturnRowCount) {
-            //            result += ret;
-            //        }
-            //    }
-            //}
-
-            //CommitInnerTransaction(transaction);
-            //if (result == 0) {
-            //    result = start;
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    foreach (object data in datas) {
-            //        ClearDataTableEntity(data);
-            //    }
-            //}
-            //return result;
         }
 
         /// <summary>
@@ -1507,52 +1306,6 @@ namespace Light.Data
                 }
             }
             return result;
-            //if (datas.Count == 0) {
-            //    return 0;
-            //}
-            //int batchCount;
-            //if (_database.BatchInsertCount > 0)
-            //    batchCount = _database.BatchDeleteCount;
-            //else
-            //    batchCount = 10;
-            //int result = 0;
-            //int start = 0;
-            //List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
-            //while (true) {
-            //    CreateSqlState state = new CreateSqlState(this);
-            //    Tuple<CommandData, int> commandDataResult = _database.Factory.CreateBatchDeleteCommand(mapping, datas, start, batchCount, state);
-            //    if (commandDataResult.Item2 == 0) {
-            //        break;
-            //    }
-            //    Tuple<CommandData, CreateSqlState> commandData = new Tuple<CommandData, CreateSqlState>(commandDataResult.Item1, state);
-            //    commandDatas.Add(commandData);
-            //    start += commandDataResult.Item2;
-            //    if (start >= datas.Count) {
-            //        break;
-            //    }
-            //}
-
-
-            //var transaction = CreateInnerTransaction(SafeLevel.Default);
-            //foreach (Tuple<CommandData, CreateSqlState> data in commandDatas) {
-            //    using (DbCommand dbcommand = data.Item1.CreateCommand(_database, data.Item2)) {
-            //        int ret = await ExecuteNonQueryAsync(dbcommand, SafeLevel.Default, cancellationToken, transaction);
-            //        if (data.Item1.ReturnRowCount) {
-            //            result += ret;
-            //        }
-            //    }
-            //}
-
-            //CommitInnerTransaction(transaction);
-            //if (result == 0) {
-            //    result = start;
-            //}
-            //if (mapping.IsDataTableEntity) {
-            //    foreach (object data in datas) {
-            //        ClearDataTableEntity(data);
-            //    }
-            //}
-            //return result;
         }
 
         /// <summary>

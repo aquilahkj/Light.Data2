@@ -15,7 +15,6 @@ namespace Light.Data
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
             return _context.QueryDataDefineReader<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele).GetEnumerator();
-            //return Context.QueryEntityDataReader<K>(Mapping, Selector, _query, _order, _distinct, _region, _level, Dele).GetEnumerator();
         }
 
         #endregion
@@ -74,8 +73,6 @@ namespace Light.Data
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
             return _context.QueryDataDefineList<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele);
-            //List<K> list = Context.QueryEntityDataList<K>(Mapping, Selector, _query, _order, _distinct, _region, _level, Dele);
-            //return list;
         }
 
         public override K[] ToArray()
@@ -93,10 +90,6 @@ namespace Light.Data
             Region region = new Region(index, 1);
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, region);
             return _context.QueryDataDefineSingle<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, Dele);
-            //K target = default(K);
-            //Region region = new Region(index, 1);
-            //target = Context.QueryEntityDataSingle<K>(Mapping, Selector, _query, _order, false, region, _level, Dele);
-            //return target;
         }
 
         public override IJoinTable<K, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression)
@@ -231,8 +224,6 @@ namespace Light.Data
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
             return await _context.QueryDataDefineListAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele, cancellationToken);
-            //List<K> list = await Context.QueryEntityDataListAsync<K>(Mapping, Selector, _query, _order, _distinct, _region, _level, Dele, cancellationToken);
-            //return list;
         }
 
         public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken)
@@ -251,10 +242,6 @@ namespace Light.Data
             Region region = new Region(index, 1);
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, region);
             return await _context.QueryDataDefineSingleAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, Dele, cancellationToken);
-            //K target = default(K);
-            //Region region = new Region(index, 1);
-            //target = await Context.QueryEntityDataSingleAsync<K>(Mapping, Selector, _query, _order, false, region, _level, Dele, cancellationToken);
-            //return target;
         }
         
 

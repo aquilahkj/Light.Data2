@@ -8,9 +8,7 @@ namespace Light.Data
     /// </summary>
     abstract class FieldMapping
     {
-        //protected static readonly string _fieldRegex = @"^([a-zA-Z][a-z0-9A-Z_]*)$";
-
-        #region 私有变量
+        #region Private Field
 
         protected string _dbType;
 
@@ -28,7 +26,7 @@ namespace Light.Data
 
         #endregion
 
-        #region 公共属性
+        #region Public Property
 
         public virtual string DBType {
             get {
@@ -74,7 +72,7 @@ namespace Light.Data
 
         #endregion
 
-        #region 公共方法
+        #region Public Method
 
         protected FieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
         {
@@ -86,68 +84,10 @@ namespace Light.Data
             this._indexName = indexName;
             this._typeMapping = mapping;
             this._isNullable = isNullable;
-            this._dbType = dbType;
-            //if (!string.IsNullOrEmpty(dbType)) {
-            //    this._dbType = dbType;
-            //}
-            //else {
-            //    this._dbType = ConvertDbType(type);
-            //}
+            if (dbType != null) {
+                this._dbType = dbType.Trim();
+            }
         }
-
-        //string ConvertDbType(Type type)
-        //{
-        //    string dbType;
-        //    if (type == typeof(Byte[])) {
-        //        dbType = DbType.Binary.ToString();
-        //    }
-        //    else if (type == typeof(String)) {
-        //        dbType = DbType.String.ToString();
-        //    }
-        //    else if (type == typeof(Boolean)) {
-        //        dbType = DbType.Boolean.ToString();
-        //    }
-        //    else if (type == typeof(Byte)) {
-        //        dbType = DbType.Byte.ToString();
-        //    }
-        //    else if (type == typeof(SByte)) {
-        //        dbType = DbType.SByte.ToString();
-        //    }
-        //    else if (type == typeof(Int16)) {
-        //        dbType = DbType.Int16.ToString();
-        //    }
-        //    else if (type == typeof(Int32)) {
-        //        dbType = DbType.Int32.ToString();
-        //    }
-        //    else if (type == typeof(Int64)) {
-        //        dbType = DbType.Int64.ToString();
-        //    }
-        //    else if (type == typeof(UInt16)) {
-        //        dbType = DbType.UInt16.ToString();
-        //    }
-        //    else if (type == typeof(UInt32)) {
-        //        dbType = DbType.UInt32.ToString();
-        //    }
-        //    else if (type == typeof(UInt64)) {
-        //        dbType = DbType.UInt64.ToString();
-        //    }
-        //    else if (type == typeof(float)) {
-        //        dbType = DbType.Single.ToString();
-        //    }
-        //    else if (type == typeof(Decimal)) {
-        //        dbType = DbType.Decimal.ToString();
-        //    }
-        //    else if (type == typeof(Double)) {
-        //        dbType = DbType.Double.ToString();
-        //    }
-        //    else if (type == typeof(DateTime)) {
-        //        dbType = DbType.DateTime.ToString();
-        //    }
-        //    else {
-        //        dbType = null;
-        //    }
-        //    return dbType;
-        //}
 
         public abstract object ToProperty(object value);
 

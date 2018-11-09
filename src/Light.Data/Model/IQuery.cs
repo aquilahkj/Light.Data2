@@ -12,7 +12,7 @@ namespace Light.Data
     /// </summary>
     public partial interface IQuery<T> : IEnumerable<T>
     {
-        #region IQuery<T> 成员
+        #region IQuery<T> Member
 
         /// <summary>
         /// Reset the specified where expression

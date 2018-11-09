@@ -155,7 +155,7 @@ namespace Light.Data
 
         }
 
-        public object[] GetRawKeys(object data)
+        public object[] GetPrimaryKeys(object data)
         {
             object[] rawkeys = new object[PrimaryKeyCount];
             for (int i = 0; i < PrimaryKeyCount; i++) {

@@ -15,7 +15,6 @@ namespace Light.Data
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return _context.QueryDataDefineReader<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null).GetEnumerator();
-            //return _context.QueryEntityDataReader<T>(_mapping, null, _query, _order, _distinct, _region, _level, null).GetEnumerator();
         }
 
         #endregion
@@ -66,7 +65,7 @@ namespace Light.Data
 
         }
 
-        #region LQuery<T> 成员
+        #region LQuery<T> Member
 
         public override IQuery<T> WhereReset()
         {
@@ -210,7 +209,6 @@ namespace Light.Data
             QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             object value = _context.ExecuteScalar(queryCommand.Command, _level);
             return Convert.ToInt32(value);
-            //return Convert.ToInt32(_context.AggregateCount(_mapping, _query, _level));
         }
 
         public override long LongCount()
@@ -218,14 +216,8 @@ namespace Light.Data
             QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             object value = _context.ExecuteScalar(queryCommand.Command, _level);
             return Convert.ToInt64(value);
-            //return Convert.ToInt64(_context.AggregateCount(_mapping, _query, _level));
         }
-
-        //public override IAggregateField<T> AggregateField()
-        //{
-        //    LightAggregateField<T> aggregate = new LightAggregateField<T>(_context, _query, _distinct, _level);
-        //    return aggregate;
-        //}
+        
 
         #endregion
 
@@ -239,8 +231,6 @@ namespace Light.Data
             Region region = new Region(index, 1);
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
             return _context.QueryDataDefineSingle<T>(_mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
-            //target = _context.QueryEntityDataSingle<T>(_mapping, null, _query, _order, false, region, _level, null);
-            //return target;
         }
 
         public override bool Exists()
@@ -249,15 +239,12 @@ namespace Light.Data
             DataDefine define = DataDefine.GetDefine(typeof(int?));
             int? obj = _context.QueryDataDefineSingle<int?>(define, _level, queryCommand.Command, 0, null, null);
             return obj.HasValue;
-            //return _context.Exists(_mapping, _query, _level);
         }
 
         public override List<T> ToList()
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return _context.QueryDataDefineList<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null);
-            //List<T> list = _context.QueryEntityDataList<T>(_mapping, null, _query, _order, _distinct, _region, _level, null);
-            //return list;
         }
 
         public override T[] ToArray()
@@ -272,7 +259,6 @@ namespace Light.Data
             DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
             QueryCommand queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
-            //return _context.SelectInsert(insertMapping, _mapping, _query, _order, _level);
         }
 
         public override int SelectInsert<K>(Expression<Func<T, K>> expression)
@@ -280,7 +266,6 @@ namespace Light.Data
             InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector(expression);
             QueryCommand queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
-            //return _context.SelectInsert(selector, _mapping, _query, _order, _distinct, _level);
         }
 
         public override int Update(Expression<Func<T, T>> expression)
@@ -464,8 +449,6 @@ namespace Light.Data
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return await _context.QueryDataDefineListAsync<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null, cancellationToken);
-            //List<T> list = await _context.QueryEntityDataListAsync<T>(_mapping, null, _query, _order, _distinct, _region, _level, null, cancellationToken);
-            //return list;
         }
 
         public async override Task<T[]> ToArrayAsync(CancellationToken cancellationToken)
@@ -484,11 +467,6 @@ namespace Light.Data
             Region region = new Region(index, 1);
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
             return await _context.QueryDataDefineSingleAsync<T>(_mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
-
-            //T target = default(T);
-            //Region region = new Region(index, 1);
-            //target = await _context.QueryEntityDataSingleAsync<T>(_mapping, null, _query, _order, false, region, _level, null, cancellationToken);
-            //return target;
         }
 
         public async override Task<int> InsertAsync<K>(CancellationToken cancellationToken)
@@ -496,7 +474,6 @@ namespace Light.Data
             DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
             QueryCommand queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
-            //return await _context.SelectInsertAsync(insertMapping, _mapping, _query, _order, _level, cancellationToken);
         }
 
         public async override Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken)
@@ -504,7 +481,6 @@ namespace Light.Data
             InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector(expression);
             QueryCommand queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
-            //return await _context.SelectInsertAsync(selector, _mapping, _query, _order, _distinct, _level, cancellationToken);
         }
         
         public async override Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken)
@@ -527,7 +503,6 @@ namespace Light.Data
             QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt32(value);
-            //return Convert.ToInt32(await _context.AggregateCountAsync(_mapping, _query, _level, cancellationToken));
         }
 
         public async override Task<long> LongCountAsync(CancellationToken cancellationToken)
@@ -535,7 +510,6 @@ namespace Light.Data
             QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt64(value);
-            //return Convert.ToInt64(await _context.AggregateCountAsync(_mapping, _query, _level, cancellationToken));
         }
 
         public async override Task<bool> ExistsAsync(CancellationToken cancellationToken)
@@ -544,7 +518,6 @@ namespace Light.Data
             DataDefine define = DataDefine.GetDefine(typeof(int?));
             int? obj = await _context.QueryDataDefineSingleAsync<int?>(define, _level, queryCommand.Command, 0, null, null, cancellationToken);
             return obj.HasValue;
-            //return await _context.ExistsAsync(_mapping, _query, _level, cancellationToken);
         }
 
         public async override Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken)
@@ -559,16 +532,6 @@ namespace Light.Data
                 target = (K)obj;
             }
             return target;
-            //AggregateModel model = LambdaExpressionExtend.CreateAggregateModel(expression);
-            //model.OnlyAggregate = true;
-            //K target = default(K);
-            //Region region = new Region(0, 1);
-            //target = await _context.QueryDynamicAggregateSingleAsync<K>(model, _query, null, _order, region, _level, null, cancellationToken);
-            //if (target == null) {
-            //    object obj = model.OutputMapping.InitialData();
-            //    target = (K)obj;
-            //}
-            //return target;
         }
         #endregion
     }

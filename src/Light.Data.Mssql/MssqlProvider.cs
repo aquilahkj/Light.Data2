@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -87,10 +88,9 @@ namespace Light.Data.Mssql
                 ParameterName = parameterName,
                 Direction = direction
             };
-            bool settype = false;
             if (value == null) {
                 sp.Value = DBNull.Value;
-                if (dbType == null && dataType != null) {
+                if (string.IsNullOrEmpty(dbType) && dataType != null) {
                     if (ConvertDbType(dataType, out SqlDbType sqlType)) {
                         sp.SqlDbType = sqlType;
                     }
@@ -111,15 +111,53 @@ namespace Light.Data.Mssql
             else {
                 sp.Value = value;
             }
-            if (!settype && !string.IsNullOrEmpty(dbType)) {
-                if (ParseSqlDbType(dbType, out System.Data.SqlDbType sqltype)) {
-                    sp.SqlDbType = sqltype;
+            if (!string.IsNullOrEmpty(dbType)) {
+                if (!dbTypeDict.TryGetValue(dbType, out DbTypeInfo info)) {
+                    lock (dbTypeDict) {
+                        if (!dbTypeDict.TryGetValue(dbType, out info)) {
+                            info = new DbTypeInfo();
+                            try {
+                                if (ParseSqlDbType(dbType, out SqlDbType sqltype)) {
+                                    info.SqlDbType = sqltype;
+                                }
+                                else if (Utility.ParseDbType(dbType, out DbType dType)) {
+                                    info.DbType = dType;
+                                }
+                                if (Utility.ParseSize(dbType, out int size, out byte? scale)) {
+                                    info.Size = size;
+                                    info.Scale = scale;
+                                }
+                            }
+                            catch (Exception ex) {
+                                info.InnerException = ex;
+                            }
+                            finally {
+                                dbTypeDict.Add(dbType, info);
+                            }
+                        }
+                    }
                 }
-                else if (Utility.ParseDbType(dbType, out DbType dType)) {
-                    sp.DbType = dType;
-                }
-                if (Utility.ParseSize(dbType, out int size)) {
-                    sp.Size = size;
+                if (info != null) {
+                    if (info.InnerException != null) {
+                        throw info.InnerException;
+                    }
+                    if (info.SqlDbType != null) {
+                        sp.SqlDbType = info.SqlDbType.Value;
+                    }
+                    else if (info.DbType != null) {
+                        sp.DbType = info.DbType.Value;
+                    }
+                    if (info.Size != null) {
+                        if (sp.SqlDbType == SqlDbType.Decimal) {
+                            sp.Precision = (byte)info.Size.Value;
+                        }
+                        else {
+                            sp.Size = info.Size.Value;
+                        }
+                    }
+                    if (info.Scale != null) {
+                        sp.Scale = info.Scale.Value;
+                    }
                 }
             }
 
@@ -172,11 +210,11 @@ namespace Light.Data.Mssql
             else if (type == typeof(Single)) {
                 sqlType = SqlDbType.Real;
             }
-            else if (type == typeof(Decimal)) {
-                sqlType = SqlDbType.Decimal;
-            }
             else if (type == typeof(Double)) {
                 sqlType = SqlDbType.Float;
+            }
+            else if (type == typeof(Decimal)) {
+                sqlType = SqlDbType.Decimal;
             }
             else if (type == typeof(DateTime)) {
                 sqlType = SqlDbType.DateTime;
@@ -209,6 +247,17 @@ namespace Light.Data.Mssql
             catch {
                 return false;
             }
+        }
+
+        Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
+
+        class DbTypeInfo
+        {
+            public SqlDbType? SqlDbType;
+            public DbType? DbType;
+            public int? Size;
+            public byte? Scale;
+            public Exception InnerException;
         }
     }
 }

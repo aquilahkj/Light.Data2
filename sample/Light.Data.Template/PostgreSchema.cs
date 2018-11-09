@@ -214,6 +214,10 @@ on a.table_name=b.table_name and a.column_name=b.column_name
                 }
             }
 
+            if (DbSetting.GetDbType(column.TableName + "." + column.ColumnName, out string dbType) || DbSetting.GetDbType("*." + column.ColumnName, out dbType)) {
+                column.DBType = dbType;
+            }
+
             if (DbSetting.GetControl(column.TableName + "." + column.ColumnName, out string control) || DbSetting.GetControl("*." + column.ColumnName, out control)) {
                 column.Control = "FunctionControl." + control;
                 if (control == "Create" || control == "Read") {

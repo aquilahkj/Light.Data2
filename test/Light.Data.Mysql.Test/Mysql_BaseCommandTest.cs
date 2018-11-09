@@ -2207,5 +2207,39 @@ namespace Light.Data.Mysql.Test
             Assert.Null(item3.Int64FieldNull);
         }
 
+        [Fact]
+        public void TestCase_DbType()
+        {
+            context.TruncateTable<TeBaseField>();
+            var item = CreateAndInsertBaseFieldTableList(1)[0];
+            item.VarcharField = "1111111111111111111111111111111111";
+            item.VarcharFieldNull = "1111111111111111111111111111111111";
+            item.DecimalField = 2312.45345m;
+            item.DecimalFieldNull = 2312.45345m;
+            context.Update(item);
+            var item1 = context.SelectById<MyBase5>(item.Id);
+
+            Assert.Equal(item.VarcharField, item1.VarcharField);
+            Assert.Equal(item.VarcharFieldNull, item1.VarcharFieldNull);
+
+            context.Insert(item1);
+
+            var item2 = context.SelectById<MyBase5>(item1.Id);
+
+            Assert.Equal(5, item2.VarcharField.Length);
+            Assert.Equal(6, item2.VarcharFieldNull.Length);
+            //Assert.Equal(2312.45m, item2.DecimalField);
+            //Assert.Equal(2312.4m, item2.DecimalFieldNull);
+
+            context.Insert(item1);
+
+            var item3 = context.SelectById<MyBase5>(item1.Id);
+
+            Assert.Equal(5, item3.VarcharField.Length);
+            Assert.Equal(6, item3.VarcharFieldNull.Length);
+            //Assert.Equal(2312.45m, item2.DecimalField);
+            //Assert.Equal(2312.4m, item2.DecimalFieldNull);
+        }
+
     }
 }

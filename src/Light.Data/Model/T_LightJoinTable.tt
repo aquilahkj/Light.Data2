@@ -414,7 +414,6 @@ namespace Light.Data
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
-			//return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
 		}
 
 		/// <summary>
@@ -424,7 +423,6 @@ namespace Light.Data
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
             object value =  _context.ExecuteScalar(queryCommand.Command, _level);
             return Convert.ToInt32(value);
-			//return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -434,7 +432,6 @@ namespace Light.Data
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
             object value =  _context.ExecuteScalar(queryCommand.Command, _level);
             return Convert.ToInt64(value);
-			//return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
 		}
 
 		/// <summary>
@@ -446,7 +443,6 @@ namespace Light.Data
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
             object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt32(value);
-			//return Convert.ToInt32(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
 		}
 
 		/// <summary>
@@ -458,7 +454,6 @@ namespace Light.Data
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
             object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt64(value);
-			//return Convert.ToInt64(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
 		}
 
 		/// <summary>
@@ -470,7 +465,6 @@ namespace Light.Data
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
 			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
-			//return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
 		}
 
 <#if(i<MaxCount){#>

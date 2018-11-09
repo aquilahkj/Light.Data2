@@ -3,7 +3,7 @@
 namespace Light.Data
 {
 	/// <summary>
-	/// 取值范围对象
+	/// Data region
 	/// </summary>
 	class Region
 	{
@@ -17,10 +17,10 @@ namespace Light.Data
 
 
 		/// <summary>
-		/// 构造函数
+		/// 
 		/// </summary>
-		/// <param name="start">开始索引,从0开始</param>
-		/// <param name="size">取值数量</param>
+		/// <param name="start">Start index,start from 0</param>
+		/// <param name="size">Size</param>
 		public Region (int start, int size)
 		{
 			if (start < 0) {
@@ -35,10 +35,10 @@ namespace Light.Data
 
 		int _start;
 
-		/// <summary>
-		/// 获取开始索引
-		/// </summary>
-		public int Start {
+        /// <summary>
+        /// Start index,start from 0
+        /// </summary>
+        public int Start {
 			get {
 				return _start;
 			}
@@ -55,7 +55,7 @@ namespace Light.Data
 		int _size = 1;
 
 		/// <summary>
-		/// 获取取值数量
+		/// Size
 		/// </summary>
 		public int Size {
 			get {

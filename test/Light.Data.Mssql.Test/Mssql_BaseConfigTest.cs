@@ -245,5 +245,20 @@ namespace Light.Data.Mssql.Test
             Assert.Equal(EnumInt32Type.Positive1, ac.EnumInt32FieldNull);
 
         }
+
+        [Fact]
+        public void TestCase_Config_DbType()
+        {
+            context.TruncateTable<MyConfig2>();
+            var item = context.CreateNew<MyConfig2>();
+            item.Int32FieldNull = 1000;
+            item.VarcharField = "11111111111111111111111111";
+            var ret = context.Insert(item);
+            Assert.Equal(1, ret);
+            var ac = context.Query<MyConfig2>().First();
+            Assert.Equal(1, ac.Id);
+            Assert.Equal(1000, ac.Int32FieldNull);
+            Assert.Equal("111111", ac.VarcharField);
+        }
     }
 }

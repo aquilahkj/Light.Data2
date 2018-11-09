@@ -480,6 +480,74 @@ namespace Light.Data.Mssql.Test
             var item4 = context.SelectById<MyBase2>(item1.Id);
             Assert.Null(item4);
         }
+
+        [Fact]
+        public void TestCase_CUD_Single_Save2()
+        {
+            context.TruncateTable<TeBaseFieldEntity>();
+            var item1 = CreateBaseFieldEntityTableList(1)[0];
+            var retInsert = item1.Save(false, true);
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retInsert);
+            var item2 = context.SelectById<TeBaseFieldEntity>(item1.Id);
+            AssertExtend.StrictEqual(item1, item2);
+            item1.DateTimeField = GetNow();
+            item1.DateTimeFieldNull = null;
+            item1.Int32Field = 2;
+            item1.Int32FieldNull = null;
+            item1.DoubleField = 2.0d;
+            item1.DoubleFieldNull = null;
+            item1.VarcharField = "abc";
+            item1.VarcharFieldNull = null;
+            item1.EnumInt32Field = EnumInt32Type.Zero;
+            item1.EnumInt32FieldNull = null;
+            item1.EnumInt64Field = EnumInt64Type.Zero;
+            item1.EnumInt64FieldNull = null;
+            var retUpdate = item1.Save(false, true);
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retUpdate);
+            var item3 = context.SelectById<TeBaseFieldEntity>(item1.Id);
+            AssertExtend.StrictEqual(item1, item3);
+            var retDelete = item1.Erase();
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retDelete);
+            var item4 = context.SelectById<TeBaseFieldEntity>(item1.Id);
+            Assert.Null(item4);
+        }
+
+        [Fact]
+        public async Task TestCase_CUD_Single_Save2Async()
+        {
+            context.TruncateTable<TeBaseFieldEntity>();
+            var item1 = CreateBaseFieldEntityTableList(1)[0];
+            var retInsert = await item1.SaveAsync(false, true, CancellationToken.None);
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retInsert);
+            var item2 = await context.SelectByIdAsync<TeBaseFieldEntity>(item1.Id, CancellationToken.None);
+            AssertExtend.StrictEqual(item1, item2);
+            item1.DateTimeField = GetNow();
+            item1.DateTimeFieldNull = null;
+            item1.Int32Field = 2;
+            item1.Int32FieldNull = null;
+            item1.DoubleField = 2.0d;
+            item1.DoubleFieldNull = null;
+            item1.VarcharField = "abc";
+            item1.VarcharFieldNull = null;
+            item1.EnumInt32Field = EnumInt32Type.Zero;
+            item1.EnumInt32FieldNull = null;
+            item1.EnumInt64Field = EnumInt64Type.Zero;
+            item1.EnumInt64FieldNull = null;
+            var retUpdate = await item1.SaveAsync(false, true, CancellationToken.None);
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retUpdate);
+            var item3 = await context.SelectByIdAsync<TeBaseFieldEntity>(item1.Id, CancellationToken.None);
+            AssertExtend.StrictEqual(item1, item3);
+            var retDelete = await item1.EraseAsync(CancellationToken.None);
+            Assert.Equal(1, item1.Id);
+            Assert.Equal(1, retDelete);
+            var item4 = await context.SelectByIdAsync<TeBaseFieldEntity>(item1.Id, CancellationToken.None);
+            Assert.Null(item4);
+        }
     }
 }
 
