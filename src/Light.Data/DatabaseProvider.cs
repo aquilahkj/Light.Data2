@@ -191,18 +191,15 @@ namespace Light.Data
             return queryCommand;
         }
 
-        public virtual QueryCommand QueryJoinData(DataContext context, DataMapping mapping, ISelector selector, List<IJoinModel> models, QueryExpression query, OrderExpression order, bool distinct, List<int> nodataSetNull, Region region)
+        public virtual QueryCommand QueryJoinData(DataContext context, DataMapping mapping, ISelector selector, List<IJoinModel> models, QueryExpression query, OrderExpression order, bool distinct, Region region)
         {
             CreateSqlState state = new CreateSqlState(context);
             CommandData commandData = _factory.CreateSelectJoinTableCommand(selector, models, query, order, distinct, region, state);
             DbCommand command = commandData.CreateCommand(this, state);
             QueryState queryState = new QueryState();
-            if (nodataSetNull != null && nodataSetNull.Count > 0) {
-                foreach (int i in nodataSetNull) {
-                    if (i < models.Count) {
-                        IJoinModel model = models[i];
-                        queryState.SetNoDataSetNull(model.AliasTableName);
-                    }
+            foreach(IJoinModel model in models) {
+                if(model.NoDataSetEntityNull) {
+                    queryState.SetNoDataSetNull(model.AliasTableName);
                 }
             }
             queryState.SetSelector(selector);

@@ -486,6 +486,42 @@ namespace Light.Data.Mysql.Test
         }
 
         [Fact]
+        public void TestCase_Insert_Reapid_Bulk()
+        {
+            const int count = 33;
+            var listEx = CreateBaseFieldTableList(count);
+            List<TeBaseField> listAc;
+            context.TruncateTable<TeBaseField>();
+            var retInsert = context.BatchInsert(listEx, false, false);
+            Assert.Equal(count, retInsert);
+            listAc = context.Query<TeBaseField>().ToList();
+            Assert.Equal(listEx.Count, listAc.Count);
+            for (int i = 0; i < listAc.Count; i++) {
+                Assert.Equal(0, listEx[i].Id);
+                Assert.Equal(i + 1, listAc[i].Id);
+                Assert.Equal(listEx[i].Int32Field, listAc[i].Int32Field);
+            }
+        }
+
+        [Fact]
+        public async Task TestCase_Insert_Reapid_Bulk_Async()
+        {
+            const int count = 33;
+            var listEx = CreateBaseFieldTableList(count);
+            List<TeBaseField> listAc;
+            context.TruncateTable<TeBaseField>();
+            var retInsert = await context.BatchInsertAsync(listEx, false, false, CancellationToken.None);
+            Assert.Equal(count, retInsert);
+            listAc = context.Query<TeBaseField>().ToList();
+            Assert.Equal(listEx.Count, listAc.Count);
+            for (int i = 0; i < listAc.Count; i++) {
+                Assert.Equal(0, listEx[i].Id);
+                Assert.Equal(i + 1, listAc[i].Id);
+                Assert.Equal(listEx[i].Int32Field, listAc[i].Int32Field);
+            }
+        }
+
+        [Fact]
         public void TestCase_CUD_Bulk()
         {
             const int count = 33;

@@ -11,12 +11,6 @@ namespace Light.Data
 	public interface ISelectJoin<K> : IEnumerable<K>
 	{
         /// <summary>
-        /// set entity null if no any data
-        /// </summary>
-        /// <param name="entityIndex"></param>
-        ISelectJoin<K> NoDataSetEntityNull(int entityIndex);
-
-        /// <summary>
         /// To the list.
         /// </summary>
         /// <returns>The list.</returns>

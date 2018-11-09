@@ -119,7 +119,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -148,7 +148,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -251,6 +251,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2> RightJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> Join<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> Join<T2> (Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> LeftJoin<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> LeftJoin<T2> (Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> RightJoin<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> RightJoin<T2> (Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> Join<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> LeftJoin<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> RightJoin<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> Join<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> LeftJoin<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> RightJoin<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> Join<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> LeftJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2> RightJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -367,7 +484,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -396,7 +513,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -499,6 +616,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3> RightJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> Join<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> Join<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> Join<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -615,7 +849,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -644,7 +878,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -747,6 +981,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -863,7 +1214,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -892,7 +1243,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -995,6 +1346,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -1111,7 +1579,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1140,7 +1608,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1243,6 +1711,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -1359,7 +1944,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1388,7 +1973,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1491,6 +2076,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -1607,7 +2309,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1636,7 +2338,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1739,6 +2441,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -1855,7 +2674,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -1884,7 +2703,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1987,6 +2806,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting); 
 
 
 	}
@@ -2103,7 +3039,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -2132,7 +3068,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken);
 
 
 	}

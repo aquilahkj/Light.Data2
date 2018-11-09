@@ -71,7 +71,18 @@ namespace Light.Data
             }
         }
 
-        public EntityJoinModel(DataEntityMapping mapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
+        bool _noDataSetEntityNull;
+
+        public bool NoDataSetEntityNull {
+            get {
+                return _noDataSetEntityNull;
+            }
+            set {
+                _noDataSetEntityNull = value;
+            }
+        }
+
+        public EntityJoinModel(DataEntityMapping mapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order, JoinSetting setting)
         {
             this._mapping = mapping;
             //this._selector = AllSelector.Value;
@@ -80,6 +91,12 @@ namespace Light.Data
             this._order = order;
             this._aliasTableName = aliasTableName;
             this._joinMapping = mapping;
+            if ((setting & JoinSetting.QueryDistinct) == JoinSetting.QueryDistinct) {
+                _distinct = true;
+            }
+            if ((setting & JoinSetting.NoDataSetEntityNull) == JoinSetting.NoDataSetEntityNull) {
+               _noDataSetEntityNull = true;
+            }
         }
 
         public string CreateSqlString(CommandFactory factory, CreateSqlState state)
@@ -89,10 +106,12 @@ namespace Light.Data
                 CommandData command = factory.CreateSelectCommand(_mapping, AllSelector.Value, _query, _order, _distinct, null, state);
                 string aliasName = _aliasTableName;// ?? factory.CreateDataTableMappingSql(_mapping, state);
                 sb.Append(factory.CreateAliasQuerySql(command.CommandText, aliasName));
-            } else {
+            }
+            else {
                 if (_aliasTableName != null) {
                     sb.Append(factory.CreateAliasTableSql(factory.CreateDataTableMappingSql(_mapping, state), _aliasTableName));
-                } else {
+                }
+                else {
                     sb.Append(factory.CreateDataTableMappingSql(_mapping, state));
                 }
             }

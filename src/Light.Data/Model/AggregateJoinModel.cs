@@ -61,7 +61,18 @@ namespace Light.Data
             }
         }
 
-        public AggregateJoinModel(AggregateModel model, string aliasTableName, JoinConnect connect, QueryExpression query, QueryExpression having, OrderExpression order)
+        bool _noDataSetEntityNull;
+
+        public bool NoDataSetEntityNull {
+            get {
+                return _noDataSetEntityNull;
+            }
+            set {
+                _noDataSetEntityNull = value;
+            }
+        }
+
+        public AggregateJoinModel(AggregateModel model, string aliasTableName, JoinConnect connect, QueryExpression query, QueryExpression having, OrderExpression order, JoinSetting setting)
         {
             this._model = model;
             this._connect = connect;
@@ -70,6 +81,9 @@ namespace Light.Data
             this._order = order;
             this._aliasTableName = aliasTableName;
             this._joinMapping = model.OutputMapping;
+            if ((setting & JoinSetting.NoDataSetEntityNull) == JoinSetting.NoDataSetEntityNull) {
+                _noDataSetEntityNull = true;
+            }
         }
 
         public string CreateSqlString(CommandFactory factory, CreateSqlState state)

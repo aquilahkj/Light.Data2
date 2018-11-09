@@ -19,6 +19,10 @@ namespace Light.Data
             get;
         }
 
+        bool NoDataSetEntityNull {
+            get;
+        }
+
         string CreateSqlString(CommandFactory factory, CreateSqlState state);
     }
 }

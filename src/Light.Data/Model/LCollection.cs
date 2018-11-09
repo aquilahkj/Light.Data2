@@ -7,7 +7,7 @@ namespace Light.Data
     /// <summary>
     /// L collection.
     /// </summary>
-    public sealed class LCollection<T> : ICollection<T> //where T : class, new()
+    public sealed class LCollection<T> : ICollection<T>
     {
         List<T> list;
 

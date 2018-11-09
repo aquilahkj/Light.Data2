@@ -25,6 +25,10 @@ namespace Light.Data
             get;
         }
 
+        public abstract JoinSetting JoinSetting {
+            get;
+        }
+
         public abstract SafeLevel Level {
             get;
         }
@@ -91,9 +95,11 @@ namespace Light.Data
 
         public abstract ISelect<K> Select<K>(Expression<Func<T, K>> expression);
 
-        public abstract int SelectInsert<K>(Expression<Func<T, K>> expression); //where K : class, new();
+        public abstract int SelectInsert<K>(Expression<Func<T, K>> expression);
 
         public abstract IQuery<T> SetDistinct(bool distinct);
+
+        public abstract IQuery<T> SetJoinSetting(JoinSetting setting);
 
         public abstract IQuery<T> Skip(int index);
 
@@ -147,6 +153,38 @@ namespace Light.Data
         public abstract IJoinTable<T, T1> LeftJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression);
 
         public abstract IJoinTable<T, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression);
+
+        public abstract IJoinTable<T, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> Join<T1>(Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> Join<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> LeftJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> RightJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> Join<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> LeftJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> RightJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> Join<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> LeftJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+        public abstract IJoinTable<T, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting);
+
+
 
         public abstract ISelectField<K> SelectField<K>(Expression<Func<T, K>> expression);
 

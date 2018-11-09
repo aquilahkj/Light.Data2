@@ -95,8 +95,6 @@ namespace Light.Data
             return this.GetEnumerator();
         }
 
-        public abstract ISelectJoin<K> NoDataSetEntityNull(int entityIndex);
-
         public abstract List<K> ToList();
 
         public abstract K[] ToArray();
