@@ -7,6 +7,7 @@ namespace Light.Data.Template
         static bool defaultValueStringMode = false;
         static Dictionary<string, string> specifiedDict = new Dictionary<string, string>();
         static Dictionary<string, string> defaultValueDict = new Dictionary<string, string>();
+        static Dictionary<string, string> dbTypeDict = new Dictionary<string, string>();
         static Dictionary<string, string> controlDict = new Dictionary<string, string>();
         static HashSet<string> tableHash = new HashSet<string>();
         static Dictionary<string, string> aliasTableDict = new Dictionary<string, string>();
@@ -20,6 +21,7 @@ namespace Light.Data.Template
             defaultValueStringMode = false;
             specifiedDict.Clear();
             defaultValueDict.Clear();
+            dbTypeDict.Clear();
             controlDict.Clear();
             tableHash.Clear();
             aliasTableDict.Clear();
@@ -52,6 +54,16 @@ namespace Light.Data.Template
         public static void SetDefaultValue(string fieldName, string value)
         {
             defaultValueDict[fieldName] = value;
+        }
+
+        public static bool GetDbType(string fieldName, out string value)
+        {
+            return dbTypeDict.TryGetValue(fieldName, out value);
+        }
+
+        public static void SetDbType(string fieldName, string value)
+        {
+            dbTypeDict[fieldName] = value;
         }
 
         public static bool GetDefaultValue(string fieldName, out string value)

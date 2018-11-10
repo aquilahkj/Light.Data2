@@ -21,6 +21,7 @@ namespace Light.Data
 
         protected Dictionary<JoinType, string> _joinCollectionPredicateDict = new Dictionary<JoinType, string>();
 
+
         protected void InitialPredicate()
         {
             _queryPredicateDict[QueryPredicate.Eq] = "=";
@@ -45,6 +46,21 @@ namespace Light.Data
             _joinCollectionPredicateDict[JoinType.LeftJoin] = "left join";
             _joinCollectionPredicateDict[JoinType.RightJoin] = "right join";
         }
+
+        protected CommandCache _batchInsertCache = new CommandCache();
+
+        protected CommandCache _baseInsertCache = new CommandCache();
+
+        protected CommandCache _baseUpdateCache = new CommandCache();
+
+        protected CommandCache _baseDeleteCache = new CommandCache();
+
+        protected CommandCache _selectByIdCache = new CommandCache();
+
+        protected CommandCache _selectByKeyCache = new CommandCache();
+
+        protected CommandCache _existsByKeyCache = new CommandCache();
+
 
         public virtual string GetJoinPredicate(JoinType joinType)
         {
@@ -113,25 +129,158 @@ namespace Light.Data
 
         #region 增删改操作命令
 
+        public virtual CommandData CreateSelectByIdCommand(DataTableEntityMapping mapping, object id, CreateSqlState state)
+        {
+            if (!mapping.HasIdentity) {
+                throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
+            }
+            if (id == null) {
+                throw new LightDataException(SR.KeyNotAllowNull);
+            }
+            string cachekey = null;
+            if (state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_selectByIdCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    DataFieldMapping field = mapping.IdentityField;
+                    state.AddDataParameter(this, id, field.DBType, DataParameterMode.Input, field.ObjectType);
+                    return command1;
+                }
+            }
+            DataFieldInfo idfield = mapping.IdentityField.DefaultFieldInfo;
+            QueryExpression queryExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, idfield, id);
+            RelationMap relationMap = mapping.GetRelationMap();
+            ISelector selector = relationMap.GetDefaultSelector();
+            Region region = new Region(0, 1);
+            CommandData command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region, state);
+            if (cachekey != null) {
+                _selectByIdCache.SetCommand(cachekey, command.CommandText);
+            }
+            return command;
+        }
+
+        public virtual CommandData CreateSelectByKeyCommand(DataTableEntityMapping mapping, object[] keys, CreateSqlState state)
+        {
+            if (keys.Length != mapping.PrimaryKeyCount) {
+                throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
+            }
+            foreach(object key in keys) {
+                if (key == null) {
+                    throw new LightDataException(SR.KeyNotAllowNull);
+                }
+            }
+            string cachekey = null;
+            if (state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_selectByKeyCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    int i = 0;
+                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                        state.AddDataParameter(this, keys[i], field.DBType, DataParameterMode.Input, field.ObjectType);
+                        i++;
+                    }
+                    return command1;
+                }
+            }
+            if (!mapping.HasPrimaryKey) {
+                throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
+            }
+            QueryExpression queryExpression = null;
+            int j = 0;
+            foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
+                DataFieldInfo info = fieldMapping.DefaultFieldInfo;
+                QueryExpression keyExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
+                queryExpression = QueryExpression.And(queryExpression, keyExpression);
+                j++;
+            }
+            RelationMap relationMap = mapping.GetRelationMap();
+            ISelector selector = relationMap.GetDefaultSelector();
+            Region region = new Region(0, 1);
+            CommandData command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region, state);
+            if (cachekey != null) {
+                _selectByKeyCache.SetCommand(cachekey, command.CommandText);
+            }
+            return command;
+        }
+
+        public virtual CommandData CreateExistsByKeyCommand(DataTableEntityMapping mapping, object[] keys, CreateSqlState state)
+        {
+            if (keys.Length != mapping.PrimaryKeyCount) {
+                throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
+            }
+            foreach (object key in keys) {
+                if (key == null) {
+                    throw new LightDataException(SR.KeyNotAllowNull);
+                }
+            }
+            string cachekey = null;
+            if (state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_existsByKeyCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    int i = 0;
+                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                        state.AddDataParameter(this, keys[i], field.DBType, DataParameterMode.Input, field.ObjectType);
+                        i++;
+                    }
+                    return command1;
+                }
+            }
+            if (!mapping.HasPrimaryKey) {
+                throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
+            }
+            QueryExpression queryExpression = null;
+            int j = 0;
+            foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
+                DataFieldInfo info = fieldMapping.DefaultFieldInfo;
+                QueryExpression keyExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
+                queryExpression = QueryExpression.And(queryExpression, keyExpression);
+                j++;
+            }
+            CommandData command = CreateExistsCommand(mapping, queryExpression, state);
+            if (cachekey != null) {
+                _existsByKeyCache.SetCommand(cachekey, command.CommandText);
+            }
+            return command;
+        }
+
+
         public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
         {
+            string cachekey = null;
+            if (state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_baseInsertCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    foreach (DataFieldMapping field in mapping.CreateFieldList) {
+                        object value = field.GetInsertData(entity, refresh);
+                        state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
+                    }
+                    return command1;
+                }
+            }
+
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
             int insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
+
             string[] insertList = new string[insertLen];
             string[] valuesList = new string[insertLen];
             for (int i = 0; i < insertLen; i++) {
                 DataFieldMapping field = fields[i];
                 object value = field.GetInsertData(entity, refresh);
                 insertList[i] = CreateDataFieldSql(field.Name);
-                valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input);
+                valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
             }
             string insert = string.Join(",", insertList);
             string values = string.Join(",", valuesList);
             string sql = string.Format("insert into {0}({1})values({2})", CreateDataTableMappingSql(mapping, state), insert, values);
             CommandData command = new CommandData(sql);
+            if (cachekey != null) {
+                _baseInsertCache.SetCommand(cachekey, command.CommandText);
+            }
             return command;
         }
 
@@ -147,6 +296,7 @@ namespace Light.Data
             IList<DataFieldMapping> columnFields;
             object[] keys = null;
             DataTableEntity tableEntity = null;
+            bool defaultUpdate = false;
             if (mapping.IsDataTableEntity) {
                 tableEntity = entity as DataTableEntity;
                 keys = tableEntity.GetRawPrimaryKeys();
@@ -175,6 +325,7 @@ namespace Light.Data
                 else {
                     if (keys == null) {
                         columnFields = mapping.UpdateFieldList;
+                        defaultUpdate = true;
                     }
                     else {
                         List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
@@ -187,7 +338,34 @@ namespace Light.Data
             else {
                 tableEntity = null;
                 columnFields = mapping.UpdateFieldList;
+                defaultUpdate = true;
             }
+
+            string cachekey = null;
+            if (defaultUpdate && state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_baseUpdateCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    foreach (DataFieldMapping field in columnFields) {
+                        object value;
+                        if (field.IsTimeStamp) {
+                            value = field.GetTimeStamp(entity, refresh);
+                        }
+                        else {
+                            object obj = field.Handler.Get(entity);
+                            value = field.ToParameter(obj);
+                        }
+                        state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
+                    }
+                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                        object obj = field.Handler.Get(entity);
+                        object value = field.ToParameter(obj);
+                        state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
+                    }
+                    return command1;
+                }
+            }
+
             if (columnFields.Count == 0) {
                 return null;
             }
@@ -207,25 +385,41 @@ namespace Light.Data
                     object obj = field.Handler.Get(entity);
                     value = field.ToParameter(obj);
                 }
-                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
             }
             for (int i = 0; i < keyLen; i++) {
                 DataFieldMapping field = keyFields[i];
                 object obj = keys == null ? field.Handler.Get(entity) : keys[i];
                 //object obj = field.Handler.Get(entity);
                 object value = field.ToParameter(obj);
-                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
             }
 
             string update = string.Join(",", updateList);
             string where = string.Join(" and ", whereList);
             string sql = string.Format("update {0} set {1} where {2}", CreateDataTableMappingSql(mapping, state), update, where);
             CommandData command = new CommandData(sql);
+            if (cachekey != null) {
+                _baseUpdateCache.SetCommand(cachekey, command.CommandText);
+            }
             return command;
         }
 
         public virtual CommandData CreateBaseDeleteCommand(DataTableEntityMapping mapping, object entity, CreateSqlState state)
         {
+            string cachekey = null;
+            if (state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_baseDeleteCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                        object obj = field.Handler.Get(entity);
+                        object value = field.ToParameter(obj);
+                        state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
+                    }
+                    return command1;
+                }
+            }
             if (!mapping.HasPrimaryKey) {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
@@ -236,11 +430,14 @@ namespace Light.Data
                 DataFieldMapping field = keyFields[i];
                 object obj = field.Handler.Get(entity);
                 object value = field.ToParameter(obj);
-                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
             }
             string where = string.Join(" and ", whereList);
             string sql = string.Format("delete from {0} where {1}", CreateDataTableMappingSql(mapping, state), where);
             CommandData command = new CommandData(sql);
+            if (cachekey != null) {
+                _baseDeleteCache.SetCommand(cachekey, command.CommandText);
+            }
             return command;
         }
 
@@ -606,6 +803,8 @@ namespace Light.Data
             return selectCommandData;
         }
 
+
+
         public virtual Tuple<CommandData, int> CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
@@ -617,14 +816,26 @@ namespace Light.Data
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
-            string[] insertList = new string[insertLen];
-            for (int i = 0; i < insertLen; i++) {
-                DataFieldMapping field = fields[i];
-                insertList[i] = CreateDataFieldSql(field.Name);
+            string insertSql = null;
+            string cachekey = null;
+            if (state.Seed == 0) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+                    insertSql = cache;
+                }
             }
-            string insert = string.Join(",", insertList);
-            string insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
-
+            if (insertSql == null) {
+                string[] insertList = new string[insertLen];
+                for (int i = 0; i < insertLen; i++) {
+                    DataFieldMapping field = fields[i];
+                    insertList[i] = CreateDataFieldSql(field.Name);
+                }
+                string insert = string.Join(",", insertList);
+                insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
+                if (cachekey != null) {
+                    _batchInsertCache.SetCommand(cachekey, insertSql);
+                }
+            }
             int createCount = 0;
 
             StringBuilder totalSql = new StringBuilder();
@@ -640,7 +851,7 @@ namespace Light.Data
                     //object obj = field.Handler.Get(entity);
                     //object value = field.ToColumn(obj);
                     object value = field.GetInsertData(entity, refresh);
-                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input);
+                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
                 }
                 string values = string.Join(",", valuesList);
                 totalSql.AppendFormat("{0}values({1});", insertSql, values);
@@ -675,6 +886,7 @@ namespace Light.Data
                 end = totalCount;
             }
             for (int index = start; index < end; index++) {
+                createCount++;
                 object entity = entitys[index];
                 IList<DataFieldMapping> columnFields;
                 object[] keys = null;
@@ -691,9 +903,7 @@ namespace Light.Data
                                 throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField, mapping.ObjectType, name));
                             }
                             if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
-                                // && keys == null
-                                //throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
-                                continue;
+                                throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
                             }
                             if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
                                 updateFields.Add(fm);
@@ -738,23 +948,23 @@ namespace Light.Data
                         object obj = field.Handler.Get(entity);
                         value = field.ToParameter(obj);
                     }
-                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
                 }
                 for (int i = 0; i < keyLen; i++) {
                     DataFieldMapping field = keyFields[i];
                     object obj = keys == null ? field.Handler.Get(entity) : keys[i];
                     //object obj = field.Handler.Get(entity);
                     object value = field.ToParameter(obj);
-                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
                 }
 
                 string update = string.Join(",", updateList);
                 string where = string.Join(" and ", whereList);
                 totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state), update, where);
-                createCount++;
+
             }
-            if (createCount == 0) {
-                return null;
+            if (totalSql.Length == 0) {
+                return new Tuple<CommandData, int>(null, createCount);
             }
             CommandData command = new CommandData(totalSql.ToString());
             Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
@@ -788,7 +998,7 @@ namespace Light.Data
                     DataFieldMapping field = keyFields[i];
                     object obj = field.Handler.Get(entity);
                     object value = field.ToParameter(obj);
-                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input));
+                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
                 }
                 string where = string.Join(" and ", whereList);
                 totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state), where);

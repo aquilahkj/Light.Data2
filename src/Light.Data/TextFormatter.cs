@@ -93,13 +93,11 @@ namespace Light.Data
             }
         }
 
-
         enum SectionType
         {
             NormalText,
             FormatText
         }
-
 
         static Dictionary<Type, Dictionary<string, GetPropertyHandler>> TypeDict = new Dictionary<Type, Dictionary<string, GetPropertyHandler>>();
 

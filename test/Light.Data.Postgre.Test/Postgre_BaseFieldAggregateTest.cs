@@ -5,6 +5,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Light.Data.Postgre.Test
 {
@@ -151,7 +152,7 @@ namespace Light.Data.Postgre.Test
             int ac = 0;
 
             ex = list.Count();
-            ac = (await context.Query<TeBaseFieldAggregateField>().AggregateFieldAsync(x => new { Count = Function.Count() })).Count;
+            ac = (await context.Query<TeBaseFieldAggregateField>().AggregateFieldAsync(x => new { Count = Function.Count() }, CancellationToken.None)).Count;
             Assert.Equal(ex, ac);
         }
 
@@ -1558,7 +1559,7 @@ namespace Light.Data.Postgre.Test
                 Min = g.Min(x => x.DateTimeField),
             }).ToList().OrderBy(x => x.KeyData).ToList();
 
-            var ac1 = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+            var ac1 = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                 KeyData = x.Int32Field,
                 Count = Function.Count(),
                 CountField = Function.Count(x.Int32FieldNull),
@@ -1581,7 +1582,7 @@ namespace Light.Data.Postgre.Test
                 Min = g.Min(x => x.DateTimeField),
             }).ToList().OrderBy(x => x.KeyData).ToList();
 
-            var ac1_1 = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new AggregateModel {
+            var ac1_1 = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new AggregateModel {
                 KeyData = x.Int32Field,
                 Count = Function.Count(),
                 CountField = Function.Count(x.Int32FieldNull),
@@ -1605,7 +1606,7 @@ namespace Light.Data.Postgre.Test
                 Min = g.Min(x => x.Int32Field),
             }).ToList().OrderBy(x => x.Key1).ThenBy(x => x.Key2).ToList();
 
-            var ac2 = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+            var ac2 = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                 Key1 = x.VarcharField,
                 Key2 = x.ByteField,
                 Count = Function.Count(),
@@ -1623,7 +1624,7 @@ namespace Light.Data.Postgre.Test
                 CountField = g.Count(x => x.Int32FieldNull != null)
             }).ToList().OrderBy(x => x.KeyData).ToList();
 
-            var ac3 = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+            var ac3 = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                 KeyData = x.VarcharField,
                 CountField = Function.Count(x.Int32FieldNull),
             }).ToList().OrderBy(x => x.KeyData).ToList();
@@ -1645,7 +1646,7 @@ namespace Light.Data.Postgre.Test
                 Min = g.Min(x => x.DateTimeField),
             }).ToList().OrderBy(x => x.KeyData).ToList();
 
-            var ac1 = (await context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+            var ac1 = (await context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                 KeyData = x.Int32Field,
                 Count = Function.Count(),
                 CountField = Function.Count(x.Int32FieldNull),
@@ -1654,7 +1655,7 @@ namespace Light.Data.Postgre.Test
                 Avg = Function.Avg(x.Int64Field),
                 Max = Function.Max(x.DateTimeField),
                 Min = Function.Min(x.DateTimeField),
-            }).ToListAsync()).OrderBy(x => x.KeyData).ToList();
+            }).ToListAsync(CancellationToken.None)).OrderBy(x => x.KeyData).ToList();
             AssertExtend.StrictEqual(ex1, ac1);
 
             var ex1_1 = list.GroupBy(x => x.Int32Field).Select(g => new AggregateModel {
@@ -1668,7 +1669,7 @@ namespace Light.Data.Postgre.Test
                 Min = g.Min(x => x.DateTimeField),
             }).ToList().OrderBy(x => x.KeyData).ToList();
 
-            var ac1_1 = (await context.Query<TeBaseFieldAggregateField>().GroupBy(x => new AggregateModel {
+            var ac1_1 = (await context.Query<TeBaseFieldAggregateField>().Aggregate(x => new AggregateModel {
                 KeyData = x.Int32Field,
                 Count = Function.Count(),
                 CountField = Function.Count(x.Int32FieldNull),
@@ -1677,7 +1678,7 @@ namespace Light.Data.Postgre.Test
                 Avg = Function.Avg(x.Int64Field),
                 Max = Function.Max(x.DateTimeField),
                 Min = Function.Min(x.DateTimeField),
-            }).ToListAsync()).OrderBy(x => x.KeyData).ToList();
+            }).ToListAsync(CancellationToken.None)).OrderBy(x => x.KeyData).ToList();
             AssertExtend.StrictEqual(ex1_1, ac1_1);
         }
 
@@ -1694,7 +1695,7 @@ namespace Light.Data.Postgre.Test
             var ex6 = list.Where(x => x.Int32FieldNull != null).Select(x => x.Int32FieldNull).Max();
             var ex7 = list.Where(x => x.Int32FieldNull != null).Select(x => x.Int32FieldNull).Min();
 
-            var obj = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+            var obj = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                 Count = Function.Count(),
                 CountField = Function.Count(x.Int32FieldNull),
                 CountCondition = Function.CountCondition(x.Int16Field > 10),
@@ -1734,7 +1735,7 @@ namespace Light.Data.Postgre.Test
 
             ac = context.Query<TeBaseFieldAggregateField>()
                 .Where(x => x.Id > 10)
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -1761,7 +1762,7 @@ namespace Light.Data.Postgre.Test
 
             ac = context.Query<TeBaseFieldAggregateField>()
                .Where(x => x.DateTimeFieldNull != null)
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1789,7 +1790,7 @@ namespace Light.Data.Postgre.Test
             ac = context.Query<TeBaseFieldAggregateField>()
                .Where(x => x.DateTimeFieldNull != null)
                .WhereWithAnd(x => x.Id > 10)
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1817,7 +1818,7 @@ namespace Light.Data.Postgre.Test
             ac = context.Query<TeBaseFieldAggregateField>()
                  .Where(x => x.DateTimeFieldNull != null)
                  .WhereWithOr(x => x.Id > 10)
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.Int32Field,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -1850,7 +1851,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -1875,7 +1876,7 @@ namespace Light.Data.Postgre.Test
               }).OrderBy(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1900,7 +1901,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderBy(x => x.Max).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1925,7 +1926,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderByDescending(x => x.Max).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1950,7 +1951,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderByDescending(x => x.Sum).ThenBy(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1975,7 +1976,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderBy(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1988,7 +1989,7 @@ namespace Light.Data.Postgre.Test
             AssertExtend.StrictEqual(ex, ac);
 
             ex = context.Query<TeBaseFieldAggregateField>()
-               .GroupBy(x => new AggregateModel {
+               .Aggregate(x => new AggregateModel {
                    KeyData = x.Int32Field,
                    Count = Function.Count(),
                    CountField = Function.Count(x.Int32FieldNull),
@@ -1999,7 +2000,7 @@ namespace Light.Data.Postgre.Test
                    Min = Function.Min(x.DateTimeField),
                }).ToList();
             ac = context.Query<TeBaseFieldAggregateField>()
-           .GroupBy(x => new AggregateModel {
+           .Aggregate(x => new AggregateModel {
                KeyData = x.Int32Field,
                Count = Function.Count(),
                CountField = Function.Count(x.Int32FieldNull),
@@ -2034,7 +2035,7 @@ namespace Light.Data.Postgre.Test
                 }).Where(x => x.Sum > 10).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2059,7 +2060,7 @@ namespace Light.Data.Postgre.Test
                  }).Where(x => x.Sum > 10 && x.Sum < 20).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2084,7 +2085,7 @@ namespace Light.Data.Postgre.Test
                  }).Where(x => x.Sum > 10 && x.Sum < 20).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2109,7 +2110,7 @@ namespace Light.Data.Postgre.Test
                 }).Where(x => x.Sum < 10 || x.Sum > 20).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2134,7 +2135,7 @@ namespace Light.Data.Postgre.Test
                 }).Where(x => x.Sum > 20).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2159,7 +2160,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                .GroupBy(x => new AggregateModel {
+                .Aggregate(x => new AggregateModel {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2190,7 +2191,7 @@ namespace Light.Data.Postgre.Test
                   }).OrderByDescending(x => x.KeyData).ToList();
 
             var ac = context.Query<TeBaseFieldAggregateField>()
-                  .GroupBy(x => new {
+                  .Aggregate(x => new {
                       KeyData = x.DateTimeField.Date,
                       Count = Function.Count(),
                       CountField = Function.Count(x.Int32FieldNull),
@@ -2224,7 +2225,7 @@ namespace Light.Data.Postgre.Test
                  }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Year,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2249,7 +2250,7 @@ namespace Light.Data.Postgre.Test
                }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Month,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2275,7 +2276,7 @@ namespace Light.Data.Postgre.Test
                }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Month,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2301,7 +2302,7 @@ namespace Light.Data.Postgre.Test
                 }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Month,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2327,7 +2328,7 @@ namespace Light.Data.Postgre.Test
                  }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Day,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2353,7 +2354,7 @@ namespace Light.Data.Postgre.Test
               }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Hour,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2378,7 +2379,7 @@ namespace Light.Data.Postgre.Test
                }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Minute,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2403,7 +2404,7 @@ namespace Light.Data.Postgre.Test
               }).OrderByDescending(x => x.KeyData).ToList();
 
             ac = context.Query<TeBaseFieldAggregateField>()
-                 .GroupBy(x => new AggregateModel {
+                 .Aggregate(x => new AggregateModel {
                      KeyData = x.DateTimeField.Second,
                      Count = Function.Count(),
                      CountField = Function.Count(x.Int32FieldNull),
@@ -2447,7 +2448,7 @@ namespace Light.Data.Postgre.Test
                       }).OrderByDescending(x => x.KeyData).ToList();
 
                 var ac = context.Query<TeBaseFieldAggregateField>()
-                      .GroupBy(x => new {
+                      .Aggregate(x => new {
                           KeyData = x.DateTimeField.ToString(format),
                           Count = Function.Count(),
                           CountField = Function.Count(x.Int32FieldNull),
@@ -2480,7 +2481,7 @@ namespace Light.Data.Postgre.Test
                   }).OrderByDescending(x => x.KeyData).ToList();
 
             var ac = context.Query<TeBaseFieldAggregateField>()
-                  .GroupBy(x => new {
+                  .Aggregate(x => new {
                       KeyData = x.VarcharField.Substring(0, 9),
                       Count = Function.Count(),
                       CountField = Function.Count(x.Int32FieldNull),
@@ -2518,7 +2519,7 @@ namespace Light.Data.Postgre.Test
 
             var ret = context.Query<TeBaseFieldAggregateField>()
                  .Where(x => x.Id > 10)
-                 .GroupBy(x => new {
+                 .Aggregate(x => new {
                      KeyData = x.Int32Field,
                      MonthData = x.DateTimeField.Month,
                      CountData = Function.Count(),
@@ -2570,7 +2571,7 @@ namespace Light.Data.Postgre.Test
 
             var ret = await context.Query<TeBaseFieldAggregateField>()
                  .Where(x => x.Id > 10)
-                 .GroupBy(x => new {
+                 .Aggregate(x => new {
                      KeyData = x.Int32Field,
                      MonthData = x.DateTimeField.Month,
                      CountData = Function.Count(),
@@ -2591,7 +2592,7 @@ namespace Light.Data.Postgre.Test
                      AvgData = x.AvgData,
                      MaxData = x.MaxData,
                      MinData = x.MinData
-                 });
+                 }, CancellationToken.None);
             Assert.Equal(ex.Count, ret);
             var ac = context.Query<TeBaseFieldAggregateFieldGroupBy>().ToList();
 
@@ -2614,7 +2615,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).First();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2639,7 +2640,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).ElementAt(5);
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2669,7 +2670,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).First();
 
-                var ac = await context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = await context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2678,7 +2679,7 @@ namespace Light.Data.Postgre.Test
                     Avg = Function.Avg(x.Int64Field),
                     Max = Function.Max(x.DateTimeField),
                     Min = Function.Min(x.DateTimeField),
-                }).OrderBy(x => x.KeyData).FirstAsync();
+                }).OrderBy(x => x.KeyData).FirstAsync(CancellationToken.None);
                 AssertExtend.StrictEqual(ex, ac);
             }
 
@@ -2694,7 +2695,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).ElementAt(5);
 
-                var ac = await context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = await context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2703,7 +2704,7 @@ namespace Light.Data.Postgre.Test
                     Avg = Function.Avg(x.Int64Field),
                     Max = Function.Max(x.DateTimeField),
                     Min = Function.Min(x.DateTimeField),
-                }).OrderBy(x => x.KeyData).ElementAtAsync(5);
+                }).OrderBy(x => x.KeyData).ElementAtAsync(5, CancellationToken.None);
                 AssertExtend.StrictEqual(ex, ac);
             }
         }
@@ -2731,7 +2732,7 @@ namespace Light.Data.Postgre.Test
                         Min = g.Min(x => x.DateTimeField),
                     }).OrderBy(x => x.KeyData).Skip(cnt * i).Take(cnt).ToList();
 
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                    var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                         KeyData = x.Int32Field,
                         Count = Function.Count(),
                         CountField = Function.Count(x.Int32FieldNull),
@@ -2756,7 +2757,7 @@ namespace Light.Data.Postgre.Test
                         Min = g.Min(x => x.DateTimeField),
                     }).OrderBy(x => x.KeyData).Skip(cnt * i).Take(cnt).ToList();
 
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                    var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                         KeyData = x.Int32Field,
                         Count = Function.Count(),
                         CountField = Function.Count(x.Int32FieldNull),
@@ -2782,7 +2783,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).Where(x => x.KeyData > cnt).Take(cnt).ToList();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2807,7 +2808,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderByDescending(x => x.KeyData).Take(cnt).ToList();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2832,7 +2833,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).Where(x => x.KeyData > cnt).Take(cnt).ToList();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2857,7 +2858,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderByDescending(x => x.KeyData).Take(cnt).ToList();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2896,7 +2897,7 @@ namespace Light.Data.Postgre.Test
                         Min = g.Min(x => x.DateTimeField),
                     }).OrderBy(x => x.KeyData).Skip(cnt * i).ToList();
 
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                    var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                         KeyData = x.Int32Field,
                         Count = Function.Count(),
                         CountField = Function.Count(x.Int32FieldNull),
@@ -2921,7 +2922,7 @@ namespace Light.Data.Postgre.Test
                         Min = g.Min(x => x.DateTimeField),
                     }).OrderBy(x => x.KeyData).Take(cnt * i).ToList();
 
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                    var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                         KeyData = x.Int32Field,
                         Count = Function.Count(),
                         CountField = Function.Count(x.Int32FieldNull),
@@ -2946,7 +2947,7 @@ namespace Light.Data.Postgre.Test
                         Min = g.Min(x => x.DateTimeField),
                     }).OrderBy(x => x.KeyData).Skip(cnt * i).Take(cnt).ToList();
 
-                    var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                    var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                         KeyData = x.Int32Field,
                         Count = Function.Count(),
                         CountField = Function.Count(x.Int32FieldNull),
@@ -2972,7 +2973,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderBy(x => x.KeyData).Where(x => x.KeyData > cnt).Take(cnt).ToList();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),
@@ -2997,7 +2998,7 @@ namespace Light.Data.Postgre.Test
                     Min = g.Min(x => x.DateTimeField),
                 }).OrderByDescending(x => x.KeyData).Take(cnt).ToList();
 
-                var ac = context.Query<TeBaseFieldAggregateField>().GroupBy(x => new {
+                var ac = context.Query<TeBaseFieldAggregateField>().Aggregate(x => new {
                     KeyData = x.Int32Field,
                     Count = Function.Count(),
                     CountField = Function.Count(x.Int32FieldNull),

@@ -56,11 +56,11 @@ namespace Light.Data
 			return _relationKeys.ToArray();
 		}
 
-		/// <summary>
-		/// 关联数据表对应字段数
-		/// </summary>
-		/// <value>The relation key count.</value>
-		public int RelationKeyCount {
+        /// <summary>
+        ///  Gets the relation keys count
+        /// </summary>
+        /// <value>The relation key count.</value>
+        public int RelationKeyCount {
 			get {
 				return _relationKeys.Count;
 			}

@@ -30,6 +30,7 @@ namespace Light.Data
             }
         }
 
+
         //public override object ToColumn(object value)
         //{
         //    if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {

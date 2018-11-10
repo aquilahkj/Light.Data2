@@ -70,7 +70,18 @@ namespace Light.Data
 			}
 		}
 
-        public SelectJoinModel (SelectModel model, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
+        bool _noDataSetEntityNull;
+
+        public bool NoDataSetEntityNull {
+            get {
+                return _noDataSetEntityNull;
+            }
+            set {
+                _noDataSetEntityNull = value;
+            }
+        }
+
+        public SelectJoinModel (SelectModel model, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order, JoinSetting setting)
 		{
 			this._model = model;
 			this._connect = connect;
@@ -78,7 +89,13 @@ namespace Light.Data
 			this._order = order;
 			this._aliasTableName = aliasTableName;
 			this._joinMapping = model.JoinTableMapping;
-		}
+            if ((setting & JoinSetting.QueryDistinct) == JoinSetting.QueryDistinct) {
+                _distinct = true;
+            }
+            if ((setting & JoinSetting.NoDataSetEntityNull) == JoinSetting.NoDataSetEntityNull) {
+                _noDataSetEntityNull = true;
+            }
+        }
 
 		public string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{

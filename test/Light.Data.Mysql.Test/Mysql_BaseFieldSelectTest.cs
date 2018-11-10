@@ -5,6 +5,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Light.Data.Mysql.Test
 {
@@ -81,11 +82,11 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var listEx = list.Select(x => x.Id).ToList();
-            var listAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ToListAsync();
+            var listAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = list.Select(x => x.Id).ToArray();
-            var arrayAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ToArrayAsync();
+            var arrayAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
         }
 
@@ -111,11 +112,11 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var firstEx = list.Select(x => x.Id).First();
-            var firstAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).FirstAsync();
+            var firstAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = list.Select(x => x.Id).ElementAt(10);
-            var elementAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ElementAtAsync(10);
+            var elementAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ElementAtAsync(10, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -466,11 +467,11 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var listEx = list.Select(x => x.Id).ToList();
-            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ToListAsync();
+            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = list.Select(x => x.Id).ToArray();
-            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ToArrayAsync();
+            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
         }
 
@@ -493,11 +494,11 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var firstEx = list.Select(x => x.Id).First();
-            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).FirstAsync();
+            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = list.Select(x => x.Id).ElementAt(10);
-            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ElementAtAsync(10);
+            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ElementAtAsync(10, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -1088,7 +1089,7 @@ namespace Light.Data.Mysql.Test
                 x.VarcharField,
                 x.TextField,
                 x.BigDataField
-            }).ToListAsync();
+            }).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = list.Select(x => new {
@@ -1128,7 +1129,7 @@ namespace Light.Data.Mysql.Test
                 x.VarcharField,
                 x.TextField,
                 x.BigDataField
-            }).ToArrayAsync();
+            }).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
             var firstEx = list.Select(x => new {
@@ -1168,7 +1169,7 @@ namespace Light.Data.Mysql.Test
                 x.VarcharField,
                 x.TextField,
                 x.BigDataField
-            }).FirstAsync();
+            }).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = list.Select(x => new {
@@ -1208,7 +1209,7 @@ namespace Light.Data.Mysql.Test
                 x.VarcharField,
                 x.TextField,
                 x.BigDataField
-            }).ElementAtAsync(10);
+            }).ElementAtAsync(10, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -1501,7 +1502,7 @@ namespace Light.Data.Mysql.Test
                 VarcharField = x.VarcharField,
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
-            }).ToListAsync();
+            }).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = list.Select(x => new BaseFieldSelectModel {
@@ -1541,7 +1542,7 @@ namespace Light.Data.Mysql.Test
                 VarcharField = x.VarcharField,
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
-            }).ToArrayAsync();
+            }).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
             var firstEx = list.Select(x => new BaseFieldSelectModel {
@@ -1581,7 +1582,7 @@ namespace Light.Data.Mysql.Test
                 VarcharField = x.VarcharField,
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
-            }).FirstAsync();
+            }).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = list.Select(x => new BaseFieldSelectModel {
@@ -1621,7 +1622,7 @@ namespace Light.Data.Mysql.Test
                 VarcharField = x.VarcharField,
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
-            }).ElementAtAsync(10);
+            }).ElementAtAsync(10, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 

@@ -241,7 +241,6 @@ namespace Light.Data
             int index = 0;
             List<FieldInfo> list = new List<FieldInfo>();
             foreach (PropertyInfo pi in propertys) {
-                //字段属性
                 DataFieldMapperConfig config = MapperConfigManager.LoadDataFieldConfig(ObjectType, pi);
                 if (config != null) {
                     index++;
@@ -395,9 +394,6 @@ namespace Light.Data
             QueryState queryState = state as QueryState;
             if (this._singleRelationFields.Count > 0) {
                 queryState.InitialJoinData();
-                //queryState.SetJoinData(string.Empty, item);
-                //LoadJoinTableData(context, datareader, item, queryState, string.Empty);
-                //return item;
                 return LoadJoinTableData(context, datareader, queryState, string.Empty);
             }
             object item = Activator.CreateInstance(ObjectType);

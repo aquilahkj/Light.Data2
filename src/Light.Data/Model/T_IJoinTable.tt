@@ -139,7 +139,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int SelectInsert<K> (Expression<Func<<#=GetAll(i) #>, K>> expression); //where K : class, new();
+		int SelectInsert<K> (Expression<Func<<#=GetAll(i) #>, K>> expression);
 
 		/// <summary>
 		/// Gets the datas count.
@@ -155,19 +155,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync();
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
 		Task<int> CountAsync(CancellationToken cancellationToken);
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
-		Task<long> LongCountAsync();
 
 		/// <summary>
 		/// Gets the datas long count.
@@ -180,14 +168,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression); //where K : class, new();
-
-		/// <summary>
-		/// Select fields data insert to the specified table K.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken); //where K : class, new();
+		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken);
 
 <#if(i<MaxCount){#>
 		/// <summary>
@@ -291,6 +272,123 @@ namespace Light.Data
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression); 
+
+		/// <summary>
+		/// Inner Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join table with specified specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified queryExpression and onExpression.
+		/// </summary>
+		/// <param name="queryExpression">Query expression.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join table with specified onExpression.
+		/// </summary>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join aggregate data with onExpression.
+		/// </summary>
+		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Inner Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Left Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
+
+		/// <summary>
+		/// Right Join select data with onExpression.
+		/// </summary>
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <param name="joinSetting">Set join setting</param>
+		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 <# } #>
 

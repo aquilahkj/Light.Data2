@@ -81,7 +81,12 @@
 	//DbSetting.SetDefaultValue("Te_Table.StringField","mytestmytest");
     //DbSetting.SetDefaultValue("Te_Table.EnumField","MyEnumType.Positive1");
 	//DbSetting.SetDefaultValue("*.TimeStampField","DefaultTime.TimeStamp");
-
+	
+	//设置字段数据类型,设置"表名.字段名"指定表字段使用数据类型,设置"*.字段名"所有表符合字段名的都使用该数据类型
+	//数据库类型可以使用该数据专用类型
+    //方法:DbSetting.SetDbType(tableName.fieldName,dbType);
+	//DbSetting.SetDbType("Te_Table.StringField","varchar(10)");
+	//DbSetting.SetDbType("*.StringField","varchar");
 
     var dbSchema = new MssqlSchema(dataBase, connection);
     var tableList = dbSchema.GetTables();

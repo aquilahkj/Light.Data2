@@ -37,6 +37,15 @@
 	DbSetting.SetDefaultValue("MyConfig1.Varchar_FieldNull","testtest");
 	DbSetting.SetDefaultValue("MyConfig1.EnumInt32_FieldNull","EnumInt32Type.Positive1");
 
+	DbSetting.SetTable("Te_BaseField_Config","MyConfig2");
+	DbSetting.SetDbType("MyConfig2.Varchar_Field","varchar(6)");
+	DbSetting.SetDefaultValue("MyConfig2.Now_Field", "DefaultTime.TimeStamp");
+	DbSetting.SetDefaultValue("MyConfig2.Decimal_FieldNull","20.5");
+	DbSetting.SetDefaultValue("MyConfig2.DateTime_Field","2017-01-02 12:00:00");
+	DbSetting.SetDefaultValue("MyConfig2.DateTime_FieldNull","2017-01-02 12:00:00");
+	DbSetting.SetDefaultValue("MyConfig2.Varchar_FieldNull","testtest");
+	DbSetting.SetDefaultValue("MyConfig2.EnumInt32_FieldNull","EnumInt32Type.Positive1");
+
 	//设置需要生成的数据表,数据类型继承DataTableEntity
 	//DbSetting.SetEntityTable("Te_BaseField_Entity");
 

@@ -93,7 +93,7 @@ namespace Light.Data
 		}
 
 <#if(i==1){#>
-		public <#=ClassFaceName#> (QueryBase<<#= GetRaw() #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<T, T1, bool>> onExpression)
+		public <#=ClassFaceName#> (QueryBase<<#= GetRaw() #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			DataEntityMapping entityMapping1 = left.Mapping;
@@ -102,15 +102,13 @@ namespace Light.Data
 			_maps.Add (entityMapping2.GetRelationMap ());
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model1 = new EntityJoinModel (entityMapping1, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression);
-			model1.Distinct = left.Distinct;
-			EntityJoinModel model2 = new EntityJoinModel (entityMapping2, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model2.Distinct = right.Distinct;
+			EntityJoinModel model1 = new EntityJoinModel (entityMapping1, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			EntityJoinModel model2 = new EntityJoinModel (entityMapping2, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (QueryBase<<#= GetRaw() #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (QueryBase<<#= GetRaw() #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			DataEntityMapping entityMapping1 = left.Mapping;
@@ -118,14 +116,13 @@ namespace Light.Data
 			_maps.Add (new AggregateMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model1 = new EntityJoinModel (entityMapping1, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression);
-			model1.Distinct = left.Distinct;
-			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression);
+			EntityJoinModel model1 = new EntityJoinModel (entityMapping1, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (AggregateBase<<#= GetRaw() #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (AggregateBase<<#= GetRaw() #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			DataEntityMapping entityMapping1 = right.Mapping;
@@ -133,27 +130,26 @@ namespace Light.Data
 			_maps.Add (entityMapping1.GetRelationMap ());
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.HavingExpression, left.OrderExpression);
-			EntityJoinModel model2 = new EntityJoinModel (entityMapping1, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model2.Distinct = right.Distinct;
+			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
+			EntityJoinModel model2 = new EntityJoinModel (entityMapping1, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (AggregateBase<<#= GetRaw() #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (AggregateBase<<#= GetRaw() #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			_maps.Add (new AggregateMap (left.Model));
 			_maps.Add (new AggregateMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.HavingExpression, left.OrderExpression);
-			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression);
+			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
+			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (SelectBase<<#= GetRaw() #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (SelectBase<<#= GetRaw() #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			DataEntityMapping entityMapping = right.Mapping;
@@ -161,15 +157,13 @@ namespace Light.Data
 			_maps.Add (entityMapping.GetRelationMap ());
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model1 = new SelectJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression);
-			model1.Distinct = left.Distinct;
-			EntityJoinModel model2 = new EntityJoinModel (entityMapping, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model2.Distinct = right.Distinct;
+			SelectJoinModel model1 = new SelectJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			EntityJoinModel model2 = new EntityJoinModel (entityMapping, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (QueryBase<<#= GetRaw() #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (QueryBase<<#= GetRaw() #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			DataEntityMapping entityMapping = left.Mapping;
@@ -177,58 +171,52 @@ namespace Light.Data
 			_maps.Add (new SelectMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model1 = new EntityJoinModel (entityMapping, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression);
-			model1.Distinct = left.Distinct;
-			SelectJoinModel model2 = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model2.Distinct = right.Distinct;
+			EntityJoinModel model1 = new EntityJoinModel (entityMapping, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			SelectJoinModel model2 = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (SelectBase<<#= GetRaw() #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (SelectBase<<#= GetRaw() #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			_maps.Add (new SelectMap (left.Model));
 			_maps.Add (new SelectMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model1 = new SelectJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression);
-			model1.Distinct = left.Distinct;
-			SelectJoinModel model2 = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model2.Distinct = right.Distinct;
+			SelectJoinModel model1 = new SelectJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			SelectJoinModel model2 = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (AggregateBase<<#= GetRaw() #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (AggregateBase<<#= GetRaw() #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			_maps.Add (new AggregateMap (left.Model));
 			_maps.Add (new SelectMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.HavingExpression, left.OrderExpression);
-			SelectJoinModel model2 = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model2.Distinct = right.Distinct;
+			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
+			SelectJoinModel model2 = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 
-		public <#=ClassFaceName#> (SelectBase<<#= GetRaw() #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (SelectBase<<#= GetRaw() #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
 			_context = left.Context;
 			_maps.Add (new SelectMap (left.Model));
 			_maps.Add (new AggregateMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model1 = new SelectJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression);
-			model1.Distinct = left.Distinct;
-			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression);
+			SelectJoinModel model1 = new SelectJoinModel (left.Model, "<#= GetFirst() #>", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model1);
 			_modelList.Add (model2);
 		}
 <# }else{ #>
-		public <#=ClassFaceName#> (<#=ClassFaceName#><<#= GetPrev(i) #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (<#=ClassFaceName#><<#= GetPrev(i) #>> left, JoinType joinType, QueryBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting rightSetting)
 		{
 			_query = left.Query;
 			_order = left.Order;
@@ -239,12 +227,11 @@ namespace Light.Data
 			_maps.Add (entityMapping.GetRelationMap ());
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model.Distinct = right.Distinct;
+			EntityJoinModel model = new EntityJoinModel (entityMapping, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model);
 		}
 
-		public <#=ClassFaceName#> (<#=ClassFaceName#><<#= GetPrev(i) #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (<#=ClassFaceName#><<#= GetPrev(i) #>> left, JoinType joinType, AggregateBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting rightSetting)
 		{
 			_query = left.Query;
 			_order = left.Order;
@@ -254,11 +241,11 @@ namespace Light.Data
 			_maps.Add (new AggregateMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression);
+			AggregateJoinModel model = new AggregateJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model);
 		}
 
-		public <#=ClassFaceName#> (<#=ClassFaceName#><<#= GetPrev(i) #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression)
+		public <#=ClassFaceName#> (<#=ClassFaceName#><<#= GetPrev(i) #>> left, JoinType joinType, SelectBase<<#= GetMax(i) #>> right, Expression<Func<<#= GetAll(i) #>, bool>> onExpression, JoinSetting rightSetting)
 		{
 			_query = left.Query;
 			_order = left.Order;
@@ -268,8 +255,7 @@ namespace Light.Data
 			_maps.Add (new SelectMap (right.Model));
 			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
 			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression);
-			model.Distinct = right.Distinct;
+			SelectJoinModel model = new SelectJoinModel (right.Model, "<#= GetMax(i) #>", connect, right.QueryExpression, right.OrderExpression, rightSetting);
 			_modelList.Add (model);
 		}
 <# } #>
@@ -403,30 +389,35 @@ namespace Light.Data
 			return this;
 		}
 
-		public ISelectJoin<K> Select<K> (Expression<Func<<#= GetAll(i) #>, K>> expression) //where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<<#= GetAll(i) #>, K>> expression) 
 		{
 			LightSelectJoin<K> selectable = new LightSelectJoin<<#= GetAll(i) #>, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
-		public int SelectInsert<K> (Expression<Func<<#= GetAll(i) #>, K>> expression) //where K : class, new()
+		public int SelectInsert<K> (Expression<Func<<#= GetAll(i) #>, K>> expression)
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			return this._context.SelectInsertWithJoinTable (selector, _modelList, _query, _order, _distinct, _level);
+			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
+            return _context.ExecuteNonQuery(queryCommand.Command, _level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			return Convert.ToInt32(this._context.AggregateJoinTableCount(_modelList, _query, _level));
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+            return Convert.ToInt32(value);
 		}
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			return Convert.ToInt64(this._context.AggregateJoinTableCount(_modelList, _query, _level));
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+            return Convert.ToInt64(value);
 		}
 
 		/// <summary>
@@ -435,16 +426,9 @@ namespace Light.Data
 		/// <value>The count.</value>
 		public async Task<int> CountAsync(CancellationToken cancellationToken)
 		{
-			return Convert.ToInt32(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
-		}
-
-		/// <summary>
-		/// Gets the datas count.
-		/// </summary>
-		/// <value>The count.</value>
-		public async Task<int> CountAsync()
-		{
-			return await CountAsync(CancellationToken.None);
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+            return Convert.ToInt32(value);
 		}
 
 		/// <summary>
@@ -453,162 +437,273 @@ namespace Light.Data
 		/// <value>The long count.</value>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken)
 		{
-			return Convert.ToInt64(await this._context.AggregateJoinTableCountAsync(_modelList, _query, _level, cancellationToken));
-		}
-
-		/// <summary>
-		/// Gets the datas long count.
-		/// </summary>
-		/// <value>The long count.</value>
-		public async Task<long> LongCountAsync()
-		{
-			return await LongCountAsync(CancellationToken.None);
+			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
+            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+            return Convert.ToInt64(value);
 		}
 
 		/// <summary>
 		/// Insert the select data
 		/// </summary>
 		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<<#= GetAll(i) #>, K>> expression, CancellationToken cancellationToken) //where K : class, new()
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<<#= GetAll(i) #>, K>> expression, CancellationToken cancellationToken)
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			return await this._context.SelectInsertWithJoinTableAsync (selector, _modelList, _query, _order, _distinct, _level, cancellationToken);
-		}
-
-		/// <summary>
-		/// Insert the select data
-		/// </summary>
-		/// <value>insert count.</value>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<<#= GetAll(i) #>, K>> expression) //where K : class, new()
-		{
-			return await SelectInsertAsync(expression, CancellationToken.None);
+			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
+            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
 		}
 
 <#if(i<MaxCount){#>
-		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, lightQuery, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, lightQuery, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
-		{
-			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
-			if (queryExpression != null) {
-				lightQuery.Where (queryExpression);
-			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, lightQuery, onExpression);
-		}
-
-		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
-		{
-			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, lightQuery, onExpression);
-		}
-
-		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, lightQuery, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, lightQuery, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			QueryBase<<#= GetAdd(i) #>> queryBase = query as QueryBase<<#= GetAdd(i) #>>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, queryBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, queryBase, onExpression, queryBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			QueryBase<<#= GetAdd(i) #>> queryBase = query as QueryBase<<#= GetAdd(i) #>>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, queryBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, queryBase, onExpression, queryBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			QueryBase<<#= GetAdd(i) #>> queryBase = query as QueryBase<<#= GetAdd(i) #>>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, queryBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, queryBase, onExpression, queryBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			AggregateBase<<#= GetAdd(i) #>> aggregateBase = aggregate as AggregateBase<<#= GetAdd(i) #>>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, aggregateBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, aggregateBase, onExpression, aggregateBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			AggregateBase<<#= GetAdd(i) #>> aggregateBase = aggregate as AggregateBase<<#= GetAdd(i) #>>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, aggregateBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, aggregateBase, onExpression, aggregateBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			AggregateBase<<#= GetAdd(i) #>> aggregateBase = aggregate as AggregateBase<<#= GetAdd(i) #>>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, aggregateBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, aggregateBase, onExpression, aggregateBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			SelectBase<<#= GetAdd(i) #>> selectBase = select as SelectBase<<#= GetAdd(i) #>>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, selectBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, selectBase, onExpression, selectBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			SelectBase<<#= GetAdd(i) #>> selectBase = select as SelectBase<<#= GetAdd(i) #>>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, selectBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, selectBase, onExpression, selectBase.JoinSetting);
 		}
 
-		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression) //where <#= GetAdd(i) #> : class
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression)
 		{
 			SelectBase<<#= GetAdd(i) #>> selectBase = select as SelectBase<<#= GetAdd(i) #>>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
-			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, selectBase, onExpression);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, selectBase, onExpression, selectBase.JoinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			LightQuery<<#= GetAdd(i) #>> lightQuery = new LightQuery<<#= GetAdd(i) #>> (_context);
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			QueryBase<<#= GetAdd(i) #>> queryBase = query as QueryBase<<#= GetAdd(i) #>>;
+			if (queryBase == null) {
+				throw new ArgumentException (nameof (queryBase));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, queryBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			QueryBase<<#= GetAdd(i) #>> queryBase = query as QueryBase<<#= GetAdd(i) #>>;
+			if (queryBase == null) {
+				throw new ArgumentException (nameof (queryBase));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, queryBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (IQuery<<#= GetAdd(i) #>> query, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			QueryBase<<#= GetAdd(i) #>> queryBase = query as QueryBase<<#= GetAdd(i) #>>;
+			if (queryBase == null) {
+				throw new ArgumentException (nameof (queryBase));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, queryBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			AggregateBase<<#= GetAdd(i) #>> aggregateBase = aggregate as AggregateBase<<#= GetAdd(i) #>>;
+			if (aggregateBase == null) {
+				throw new ArgumentException (nameof (aggregate));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, aggregateBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			AggregateBase<<#= GetAdd(i) #>> aggregateBase = aggregate as AggregateBase<<#= GetAdd(i) #>>;
+			if (aggregateBase == null) {
+				throw new ArgumentException (nameof (aggregate));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, aggregateBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (IAggregate<<#= GetAdd(i) #>> aggregate, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			AggregateBase<<#= GetAdd(i) #>> aggregateBase = aggregate as AggregateBase<<#= GetAdd(i) #>>;
+			if (aggregateBase == null) {
+				throw new ArgumentException (nameof (aggregate));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, aggregateBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> Join<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			SelectBase<<#= GetAdd(i) #>> selectBase = select as SelectBase<<#= GetAdd(i) #>>;
+			if (selectBase == null) {
+				throw new ArgumentException (nameof (select));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.InnerJoin, selectBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> LeftJoin<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			SelectBase<<#= GetAdd(i) #>> selectBase = select as SelectBase<<#= GetAdd(i) #>>;
+			if (selectBase == null) {
+				throw new ArgumentException (nameof (select));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.LeftJoin, selectBase, onExpression, joinSetting);
+		}
+
+		public <#=InterFaceName#><<#= GetNext(i) #>> RightJoin<<#= GetAdd(i) #>> (ISelect<<#= GetAdd(i) #>> select, Expression<Func<<#= GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting)
+		{
+			SelectBase<<#= GetAdd(i) #>> selectBase = select as SelectBase<<#= GetAdd(i) #>>;
+			if (selectBase == null) {
+				throw new ArgumentException (nameof (select));
+			}
+			return new <#=ClassFaceName#><<#= GetNext(i) #>> (this, JoinType.RightJoin, selectBase, onExpression, joinSetting);
 		}
 
 <# } #>

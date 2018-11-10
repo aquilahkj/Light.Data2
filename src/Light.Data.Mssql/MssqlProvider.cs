@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -15,13 +16,13 @@ namespace Light.Data.Mssql
             if (!string.IsNullOrWhiteSpace(version)) {
                 string[] arr = version.Split('.');
                 string vc;
-                if(arr.Length>1) {
+                if (arr.Length > 1) {
                     vc = string.Concat(arr[0].Trim(), ".", arr[1].Trim());
                 }
                 else {
                     vc = arr[0].Trim();
                 }
-                if(decimal.TryParse(vc, out decimal v)) {
+                if (decimal.TryParse(vc, out decimal v)) {
                     if (v >= 11) {
                         mssqlCommandFactory = new MssqlCommandFactory_2012();
                     }
@@ -72,7 +73,12 @@ namespace Light.Data.Mssql
             return command;
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction)
+        public override DataAdapter CreateDataAdapter(DbCommand command)
+        {
+            return new SqlDataAdapter((SqlCommand)command);
+        }
+
+        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType)
         {
             string parameterName = name;
             if (!parameterName.StartsWith("@", StringComparison.Ordinal)) {
@@ -84,6 +90,11 @@ namespace Light.Data.Mssql
             };
             if (value == null) {
                 sp.Value = DBNull.Value;
+                if (string.IsNullOrEmpty(dbType) && dataType != null) {
+                    if (ConvertDbType(dataType, out SqlDbType sqlType)) {
+                        sp.SqlDbType = sqlType;
+                    }
+                }
             }
             else if (value is SByte) {
                 sp.Value = Convert.ToInt16(value);
@@ -101,17 +112,55 @@ namespace Light.Data.Mssql
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                //if (ParseSqlDbType(dbType, out System.Data.SqlDbType sqltype)) {
-                //    sp.SqlDbType = sqltype;
-                //}
-                //else
-                if (Utility.ParseDbType(dbType, out DbType dType)) {
-                    sp.DbType = dType;
+                if (!dbTypeDict.TryGetValue(dbType, out DbTypeInfo info)) {
+                    lock (dbTypeDict) {
+                        if (!dbTypeDict.TryGetValue(dbType, out info)) {
+                            info = new DbTypeInfo();
+                            try {
+                                if (ParseSqlDbType(dbType, out SqlDbType sqltype)) {
+                                    info.SqlDbType = sqltype;
+                                }
+                                else if (Utility.ParseDbType(dbType, out DbType dType)) {
+                                    info.DbType = dType;
+                                }
+                                if (Utility.ParseSize(dbType, out int size, out byte? scale)) {
+                                    info.Size = size;
+                                    info.Scale = scale;
+                                }
+                            }
+                            catch (Exception ex) {
+                                info.InnerException = ex;
+                            }
+                            finally {
+                                dbTypeDict.Add(dbType, info);
+                            }
+                        }
+                    }
                 }
-                if (Utility.ParseSize(dbType, out int size)) {
-                    sp.Size = size;
+                if (info != null) {
+                    if (info.InnerException != null) {
+                        throw info.InnerException;
+                    }
+                    if (info.SqlDbType != null) {
+                        sp.SqlDbType = info.SqlDbType.Value;
+                    }
+                    else if (info.DbType != null) {
+                        sp.DbType = info.DbType.Value;
+                    }
+                    if (info.Size != null) {
+                        if (sp.SqlDbType == SqlDbType.Decimal) {
+                            sp.Precision = (byte)info.Size.Value;
+                        }
+                        else {
+                            sp.Size = info.Size.Value;
+                        }
+                    }
+                    if (info.Scale != null) {
+                        sp.Scale = info.Scale.Value;
+                    }
                 }
             }
+
             return sp;
         }
 
@@ -122,28 +171,94 @@ namespace Light.Data.Mssql
 
         #endregion
 
-        //private static bool ParseSqlDbType(string dbType, out System.Data.SqlDbType type)
-        //{
-        //    type = SqlDbType.VarChar;
-        //    int index = dbType.IndexOf('(');
-        //    string typeString;
-        //    if (index < 0) {
-        //        typeString = dbType;
-        //    }
-        //    else if (index == 0) {
-        //        return false;
-        //    }
-        //    else {
-        //        typeString = dbType.Substring(0, index);
-        //    }
-        //    try {
-        //        type = (SqlDbType)Enum.Parse(typeof(SqlDbType), typeString, true);
-        //        return true;
-        //    }
-        //    catch {
-        //        return false;
-        //    }
-        //}
+        bool ConvertDbType(Type type, out SqlDbType sqlType)
+        {
+            bool ret = true;
+            if (type == typeof(Byte[])) {
+                sqlType = SqlDbType.VarBinary;
+            }
+            else if (type == typeof(String)) {
+                sqlType = SqlDbType.VarChar;
+            }
+            else if (type == typeof(Boolean)) {
+                sqlType = SqlDbType.Bit;
+            }
+            else if (type == typeof(Byte)) {
+                sqlType = SqlDbType.TinyInt;
+            }
+            else if (type == typeof(SByte)) {
+                sqlType = SqlDbType.SmallInt;
+            }
+            else if (type == typeof(Int16)) {
+                sqlType = SqlDbType.SmallInt;
+            }
+            else if (type == typeof(Int32)) {
+                sqlType = SqlDbType.Int;
+            }
+            else if (type == typeof(Int64)) {
+                sqlType = SqlDbType.BigInt;
+            }
+            else if (type == typeof(UInt16)) {
+                sqlType = SqlDbType.Int;
+            }
+            else if (type == typeof(UInt32)) {
+                sqlType = SqlDbType.BigInt;
+            }
+            else if (type == typeof(UInt64)) {
+                sqlType = SqlDbType.Decimal;
+            }
+            else if (type == typeof(Single)) {
+                sqlType = SqlDbType.Real;
+            }
+            else if (type == typeof(Double)) {
+                sqlType = SqlDbType.Float;
+            }
+            else if (type == typeof(Decimal)) {
+                sqlType = SqlDbType.Decimal;
+            }
+            else if (type == typeof(DateTime)) {
+                sqlType = SqlDbType.DateTime;
+            }
+            else {
+                sqlType = SqlDbType.VarChar;
+                ret = false;
+            }
+            return ret;
+        }
+
+        private static bool ParseSqlDbType(string dbType, out SqlDbType type)
+        {
+            type = SqlDbType.VarChar;
+            int index = dbType.IndexOf('(');
+            string typeString;
+            if (index < 0) {
+                typeString = dbType;
+            }
+            else if (index == 0) {
+                return false;
+            }
+            else {
+                typeString = dbType.Substring(0, index);
+            }
+            try {
+                type = (SqlDbType)Enum.Parse(typeof(SqlDbType), typeString, true);
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
+        Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
+
+        class DbTypeInfo
+        {
+            public SqlDbType? SqlDbType;
+            public DbType? DbType;
+            public int? Size;
+            public byte? Scale;
+            public Exception InnerException;
+        }
     }
 }
 

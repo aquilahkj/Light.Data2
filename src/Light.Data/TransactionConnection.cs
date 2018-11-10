@@ -12,7 +12,7 @@ namespace Light.Data
 
 		DbConnection _connection;
 
-		SafeLevel _level = SafeLevel.Default;
+		SafeLevel _level;
 
 		bool _isOpen;
 
@@ -84,7 +84,10 @@ namespace Light.Data
 					case SafeLevel.High:
 						isoLevel = IsolationLevel.RepeatableRead;
 						break;
-					default:
+                    case SafeLevel.Serializable:
+                        isoLevel = IsolationLevel.Serializable;
+                        break;
+                    default:
 						isoLevel = IsolationLevel.ReadCommitted;
 						break;
 				}

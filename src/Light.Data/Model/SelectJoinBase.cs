@@ -29,7 +29,7 @@ namespace Light.Data
             get;
         }
 
-        readonly DataContext _context;
+        protected readonly DataContext _context;
 
         LambdaExpression _expression;
 
@@ -95,8 +95,6 @@ namespace Light.Data
             return this.GetEnumerator();
         }
 
-        public abstract ISelectJoin<K> NoDataSetEntityNull(int entityIndex);
-
         public abstract List<K> ToList();
 
         public abstract K[] ToArray();
@@ -104,14 +102,6 @@ namespace Light.Data
         public abstract K First();
 
         public abstract K ElementAt(int index);
-
-        public abstract Task<List<K>> ToListAsync();
-
-        public abstract Task<K[]> ToArrayAsync();
-
-        public abstract Task<K> FirstAsync();
-
-        public abstract Task<K> ElementAtAsync(int index);
 
         public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken);
 

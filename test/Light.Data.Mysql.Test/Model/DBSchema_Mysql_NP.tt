@@ -28,6 +28,8 @@
 	DbSetting.SetTable("Te_BaseField_Config","MyConfig1");
 	//DbSetting.SetTable("Te_RelateMain_Config");
 	//DbSetting.SetTable("Te_RelateSub_Config");
+	DbSetting.SetTable("Te_BaseField_Config","MyConfig2");
+
 
    //设置字段的转换类型,设置"表名.字段名"指定表字段转换,设置"*.字段名"所有表符合字段名的都转换
     DbSetting.SetSpecifiedType("*.EnumInt32_Field","EnumInt32Type");
@@ -72,7 +74,7 @@ namespace <#=namespaceName#>
 		/// </summary>
 		/// <value></value>
 <# if(useLightData){ #>
-		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DbType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
 <# } #>
         public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
         {
@@ -93,7 +95,7 @@ namespace <#=namespaceName#>
         /// </summary>
         /// <value></value>
 <# if(useLightData){ #>
-        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
+        [DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DbType = "<#=c.DBType#>"<# } #><# if (c.DefaultValue!=null) { #>, DefaultValue = <#=c.DefaultValue#><# } #><# if (c.Control!=null) { #>, FunctionControl = <#=c.Control#><# } #>)]
 <# } #>
 	    public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.FieldName)#>
         {

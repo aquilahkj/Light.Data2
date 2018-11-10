@@ -18,10 +18,6 @@
 
         public override DataFieldInfo CreateAliasTableInfo(string aliasTableName)
         {
-			//DataFieldInfo info = _fieldInfo.CreateAliasTableInfo(aliasTableName);
-			//SpecifiedDataFieldInfo newinfo = new SpecifiedDataFieldInfo(info, FieldName);
-			//newinfo._aliasTableName = aliasTableName;
-			//return newinfo;
 			DataFieldInfo info = new DataFieldInfo(_fieldInfo.TableMapping, true, FieldName, aliasTableName);
 			return info;
 

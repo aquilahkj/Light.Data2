@@ -20,7 +20,6 @@ namespace Light.Data
             //}
 
             DataFieldMapping fieldMapping;
-
             if (typeInfo.IsGenericType) {
                 Type frameType = type.GetGenericTypeDefinition();
                 if (frameType.FullName == "System.Nullable`1") {
@@ -181,6 +180,21 @@ namespace Light.Data
         public virtual object GetTimeStamp(object entity, bool refreshField)
         {
             return null;
+        }
+
+        DataFieldInfo fieldInfo;
+
+        public DataFieldInfo DefaultFieldInfo {
+            get {
+                if (fieldInfo == null) {
+                    lock (this) {
+                        if (fieldInfo == null) {
+                            fieldInfo = new DataFieldInfo(this);
+                        }
+                    }
+                }
+                return fieldInfo;
+            }
         }
     }
 }
