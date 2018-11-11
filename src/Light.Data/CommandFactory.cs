@@ -164,7 +164,7 @@ namespace Light.Data
             if (keys.Length != mapping.PrimaryKeyCount) {
                 throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
             }
-            foreach(object key in keys) {
+            foreach (object key in keys) {
                 if (key == null) {
                     throw new LightDataException(SR.KeyNotAllowNull);
                 }
@@ -803,9 +803,7 @@ namespace Light.Data
             return selectCommandData;
         }
 
-
-
-        public virtual Tuple<CommandData, int> CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
@@ -836,15 +834,8 @@ namespace Light.Data
                     _batchInsertCache.SetCommand(cachekey, insertSql);
                 }
             }
-            int createCount = 0;
-
             StringBuilder totalSql = new StringBuilder();
-            int end = start + batchCount;
-            if (end > totalCount) {
-                end = totalCount;
-            }
-            for (int index = start; index < end; index++) {
-                object entity = entitys[index];
+            foreach (var entity in entitys) {
                 string[] valuesList = new string[insertLen];
                 for (int i = 0; i < insertLen; i++) {
                     DataFieldMapping field = fields[i];
@@ -855,14 +846,70 @@ namespace Light.Data
                 }
                 string values = string.Join(",", valuesList);
                 totalSql.AppendFormat("{0}values({1});", insertSql, values);
-                createCount++;
             }
             CommandData command = new CommandData(totalSql.ToString());
-            Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
-            return result;
+            return command;
         }
 
-        public virtual Tuple<CommandData, int> CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
+        //public virtual Tuple<CommandData, int> CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
+        //{
+        //    if (entitys == null || entitys.Count == 0) {
+        //        throw new ArgumentNullException(nameof(entitys));
+        //    }
+        //    int totalCount = entitys.Count;
+        //    IList<DataFieldMapping> fields = mapping.CreateFieldList;
+        //    int insertLen = fields.Count;
+        //    if (insertLen == 0) {
+        //        throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
+        //    }
+        //    string insertSql = null;
+        //    string cachekey = null;
+        //    if (state.Seed == 0) {
+        //        cachekey = CommandCache.CreateKey(mapping, state);
+        //        if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+        //            insertSql = cache;
+        //        }
+        //    }
+        //    if (insertSql == null) {
+        //        string[] insertList = new string[insertLen];
+        //        for (int i = 0; i < insertLen; i++) {
+        //            DataFieldMapping field = fields[i];
+        //            insertList[i] = CreateDataFieldSql(field.Name);
+        //        }
+        //        string insert = string.Join(",", insertList);
+        //        insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
+        //        if (cachekey != null) {
+        //            _batchInsertCache.SetCommand(cachekey, insertSql);
+        //        }
+        //    }
+        //    int createCount = 0;
+
+        //    StringBuilder totalSql = new StringBuilder();
+        //    int end = start + batchCount;
+        //    if (end > totalCount) {
+        //        end = totalCount;
+        //    }
+        //    for (int index = start; index < end; index++) {
+        //        object entity = entitys[index];
+        //        string[] valuesList = new string[insertLen];
+        //        for (int i = 0; i < insertLen; i++) {
+        //            DataFieldMapping field = fields[i];
+        //            //object obj = field.Handler.Get(entity);
+        //            //object value = field.ToColumn(obj);
+        //            object value = field.GetInsertData(entity, refresh);
+        //            valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
+        //        }
+        //        string values = string.Join(",", valuesList);
+        //        totalSql.AppendFormat("{0}values({1});", insertSql, values);
+        //        createCount++;
+        //    }
+        //    CommandData command = new CommandData(totalSql.ToString());
+        //    Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
+        //    return result;
+        //}
+
+
+        public virtual CommandData CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
@@ -881,13 +928,8 @@ namespace Light.Data
             int createCount = 0;
 
             StringBuilder totalSql = new StringBuilder();
-            int end = start + batchCount;
-            if (end > totalCount) {
-                end = totalCount;
-            }
-            for (int index = start; index < end; index++) {
-                createCount++;
-                object entity = entitys[index];
+
+            foreach (var entity in entitys) {
                 IList<DataFieldMapping> columnFields;
                 object[] keys = null;
                 DataTableEntity tableEntity = null;
@@ -961,17 +1003,127 @@ namespace Light.Data
                 string update = string.Join(",", updateList);
                 string where = string.Join(" and ", whereList);
                 totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state), update, where);
-
+                createCount++;
             }
-            if (totalSql.Length == 0) {
-                return new Tuple<CommandData, int>(null, createCount);
+            if (createCount == 0) {
+                return null;
             }
             CommandData command = new CommandData(totalSql.ToString());
-            Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
-            return result;
+            return command;
         }
 
-        public virtual Tuple<CommandData, int> CreateBatchDeleteCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, CreateSqlState state)
+
+
+        //public virtual Tuple<CommandData, int> CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
+        //{
+        //    if (entitys == null || entitys.Count == 0) {
+        //        throw new ArgumentNullException(nameof(entitys));
+        //    }
+        //    if (!mapping.HasPrimaryKey) {
+        //        throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
+        //    }
+        //    //if (mapping.UpdateFieldList.Count == 0 && !mapping.IsDataTableEntity) {
+        //    //    throw new LightDataException(string.Format(SR.NotContainNonPrimaryKeyFields, mapping.ObjectType));
+        //    //}
+
+        //    IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
+        //    int keyLen = keyFields.Count;
+
+        //    int totalCount = entitys.Count;
+        //    int createCount = 0;
+
+        //    StringBuilder totalSql = new StringBuilder();
+        //    int end = start + batchCount;
+        //    if (end > totalCount) {
+        //        end = totalCount;
+        //    }
+        //    for (int index = start; index < end; index++) {
+        //        createCount++;
+        //        object entity = entitys[index];
+        //        IList<DataFieldMapping> columnFields;
+        //        object[] keys = null;
+        //        DataTableEntity tableEntity = null;
+        //        if (mapping.IsDataTableEntity) {
+        //            tableEntity = entity as DataTableEntity;
+        //            keys = tableEntity.GetRawPrimaryKeys();
+        //            string[] updatefieldNames = tableEntity.GetUpdateFields();
+        //            if (updatefieldNames != null && updatefieldNames.Length > 0) {
+        //                List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
+        //                foreach (string name in updatefieldNames) {
+        //                    DataFieldMapping fm = mapping.FindDataEntityField(name);
+        //                    if (fm == null) {
+        //                        throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField, mapping.ObjectType, name));
+        //                    }
+        //                    if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
+        //                        throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
+        //                    }
+        //                    if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+        //                        updateFields.Add(fm);
+        //                    }
+        //                }
+        //                foreach (DataFieldMapping tm in mapping.TimeStampFieldList) {
+        //                    if (!updateFields.Contains(tm) && (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+        //                        updateFields.Add(tm);
+        //                    }
+        //                }
+        //                columnFields = updateFields;
+        //            }
+        //            else {
+        //                if (keys == null) {
+        //                    columnFields = mapping.UpdateFieldList;
+        //                }
+        //                else {
+        //                    List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
+        //                    updateFields.AddRange(mapping.PrimaryKeyFields);
+        //                    updateFields.AddRange(mapping.UpdateFieldList);
+        //                    columnFields = updateFields;
+        //                }
+        //            }
+        //        }
+        //        else {
+        //            tableEntity = null;
+        //            columnFields = mapping.UpdateFieldList;
+        //        }
+        //        if (columnFields.Count == 0) {
+        //            continue;
+        //        }
+        //        int updateLen = columnFields.Count;
+        //        string[] updateList = new string[updateLen];
+        //        string[] whereList = new string[keyLen];
+        //        for (int i = 0; i < updateLen; i++) {
+        //            DataFieldMapping field = columnFields[i];
+        //            object value;
+        //            if (field.IsTimeStamp) {
+        //                value = field.GetTimeStamp(entity, refresh);
+        //            }
+        //            else {
+        //                object obj = field.Handler.Get(entity);
+        //                value = field.ToParameter(obj);
+        //            }
+        //            updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
+        //        }
+        //        for (int i = 0; i < keyLen; i++) {
+        //            DataFieldMapping field = keyFields[i];
+        //            object obj = keys == null ? field.Handler.Get(entity) : keys[i];
+        //            //object obj = field.Handler.Get(entity);
+        //            object value = field.ToParameter(obj);
+        //            whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
+        //        }
+
+        //        string update = string.Join(",", updateList);
+        //        string where = string.Join(" and ", whereList);
+        //        totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state), update, where);
+
+        //    }
+        //    if (totalSql.Length == 0) {
+        //        return new Tuple<CommandData, int>(null, createCount);
+        //    }
+        //    CommandData command = new CommandData(totalSql.ToString());
+        //    Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
+        //    return result;
+        //}
+
+        public virtual CommandData CreateBatchDeleteCommand(DataTableEntityMapping mapping, IList entitys, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
@@ -982,17 +1134,8 @@ namespace Light.Data
 
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
             int keyLen = keyFields.Count;
-
-            int totalCount = entitys.Count;
-            int createCount = 0;
-
             StringBuilder totalSql = new StringBuilder();
-            int end = start + batchCount;
-            if (end > totalCount) {
-                end = totalCount;
-            }
-            for (int index = start; index < end; index++) {
-                object entity = entitys[index];
+            foreach (object entity in entitys) {
                 string[] whereList = new string[keyLen];
                 for (int i = 0; i < keyLen; i++) {
                     DataFieldMapping field = keyFields[i];
@@ -1002,12 +1145,49 @@ namespace Light.Data
                 }
                 string where = string.Join(" and ", whereList);
                 totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state), where);
-                createCount++;
+
             }
             CommandData command = new CommandData(totalSql.ToString());
-            Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
-            return result;
+            return command;
         }
+
+        //public virtual Tuple<CommandData, int> CreateBatchDeleteCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, CreateSqlState state)
+        //{
+        //    if (entitys == null || entitys.Count == 0) {
+        //        throw new ArgumentNullException(nameof(entitys));
+        //    }
+        //    if (!mapping.HasPrimaryKey) {
+        //        throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
+        //    }
+
+        //    IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
+        //    int keyLen = keyFields.Count;
+
+        //    int totalCount = entitys.Count;
+        //    int createCount = 0;
+
+        //    StringBuilder totalSql = new StringBuilder();
+        //    int end = start + batchCount;
+        //    if (end > totalCount) {
+        //        end = totalCount;
+        //    }
+        //    for (int index = start; index < end; index++) {
+        //        object entity = entitys[index];
+        //        string[] whereList = new string[keyLen];
+        //        for (int i = 0; i < keyLen; i++) {
+        //            DataFieldMapping field = keyFields[i];
+        //            object obj = field.Handler.Get(entity);
+        //            object value = field.ToParameter(obj);
+        //            whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType));
+        //        }
+        //        string where = string.Join(" and ", whereList);
+        //        totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state), where);
+        //        createCount++;
+        //    }
+        //    CommandData command = new CommandData(totalSql.ToString());
+        //    Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
+        //    return result;
+        //}
 
         public virtual CommandData CreateIdentityCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {

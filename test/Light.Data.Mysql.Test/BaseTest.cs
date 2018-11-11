@@ -65,6 +65,9 @@ namespace Light.Data.Mysql.Test
                 builder.UseMysql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
+                builder.SetBatchInsertCount(10);
+                builder.SetBatchUpdateCount(10);
+                builder.SetBatchDeleteCount(10);
             }, ServiceLifetime.Transient);
             var provider = service.BuildServiceProvider();
             TestContext context = provider.GetRequiredService<TestContext>();

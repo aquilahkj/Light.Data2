@@ -8,7 +8,7 @@ namespace Light.Data.Mssql
 {
     class MssqlCommandFactory_2008 : MssqlCommandFactory
     {
-        public override Tuple<CommandData, int> CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, int start, int batchCount, bool refresh, CreateSqlState state)
+        public override CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
@@ -39,17 +39,12 @@ namespace Light.Data.Mssql
                     _batchInsertCache.SetCommand(cachekey, insertSql);
                 }
             }
-            int createCount = 0;
-
             StringBuilder totalSql = new StringBuilder();
-            int end = start + batchCount;
-            if (end > totalCount) {
-                end = totalCount;
-            }
 
             totalSql.AppendFormat("{0}values", insertSql);
-            for (int index = start; index < end; index++) {
-                object entity = entitys[index];
+            int cur = 0;
+            int end = entitys.Count;
+            foreach (object entity in entitys) {
                 string[] valuesList = new string[insertLen];
                 for (int i = 0; i < insertLen; i++) {
                     DataFieldMapping field = fields[i];
@@ -60,16 +55,16 @@ namespace Light.Data.Mssql
                 }
                 string values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);
-                if (index < end - 1) {
+                cur++;
+                if (cur < end) {
                     totalSql.Append(',');
-                } else {
+                }
+                else {
                     totalSql.Append(';');
                 }
-                createCount++;
             }
             CommandData command = new CommandData(totalSql.ToString());
-            Tuple<CommandData, int> result = new Tuple<CommandData, int>(command, createCount);
-            return result;
+            return command;
         }
     }
 }

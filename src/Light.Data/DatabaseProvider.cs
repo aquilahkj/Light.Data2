@@ -197,8 +197,8 @@ namespace Light.Data
             CommandData commandData = _factory.CreateSelectJoinTableCommand(selector, models, query, order, distinct, region, state);
             DbCommand command = commandData.CreateCommand(this, state);
             QueryState queryState = new QueryState();
-            foreach(IJoinModel model in models) {
-                if(model.NoDataSetEntityNull) {
+            foreach (IJoinModel model in models) {
+                if (model.NoDataSetEntityNull) {
                     queryState.SetNoDataSetNull(model.AliasTableName);
                 }
             }
@@ -459,107 +459,40 @@ namespace Light.Data
             return queryCommand;
         }
 
-
-        public virtual QueryCommands BatchInsert(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
+        public virtual QueryCommand BatchInsert(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
         {
-            List<DbCommand> commands = new List<DbCommand>();
-            int batchCount;
-            if (_batchInsertCount > 0)
-                batchCount = _batchInsertCount;
-            else
-                batchCount = 10;
-            int start = 0;
-            while (true) {
-                CreateSqlState state = new CreateSqlState(context);
-                Tuple<CommandData, int> commandDataResult = _factory.CreateBatchInsertCommand(mapping, datas, start, batchCount, refresh, state);
-                if (commandDataResult == null) {
-                    start += batchCount;
-                    if (start >= datas.Count) {
-                        break;
-                    }
-                    else {
-                        continue;
-                    }
-                }
-                CommandData commandData = commandDataResult.Item1;
-                int count = commandDataResult.Item2;
-                if (count == 0) {
-                    break;
-                }
-                DbCommand command = commandData.CreateCommand(this, state);
-                commands.Add(command);
-                start += count;
-                if (start >= datas.Count) {
-                    break;
-                }
-            }
-            QueryCommands queryCommands = new QueryCommands() {
-                Commands = commands
+            CreateSqlState state = new CreateSqlState(context, false);
+            CommandData commandData = _factory.CreateBatchInsertCommand(mapping, datas, refresh, state);
+            DbCommand command = commandData.CreateCommand(this, state);
+            QueryCommand queryCommand = new QueryCommand() {
+                Command = command
             };
-            return queryCommands;
+            return queryCommand;
         }
 
-        public virtual QueryCommands BatchUpdate(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
+        public virtual QueryCommand BatchUpdate(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
         {
-            List<DbCommand> commands = new List<DbCommand>();
-            int batchCount;
-            if (_batchUpdateCount > 0)
-                batchCount = _batchUpdateCount;
-            else
-                batchCount = 10;
-            int start = 0;
-            while (true) {
-                CreateSqlState state = new CreateSqlState(context);
-                Tuple<CommandData, int> commandDataResult = _factory.CreateBatchUpdateCommand(mapping, datas, start, batchCount, refresh, state);
-                CommandData commandData = commandDataResult.Item1;
-                int count = commandDataResult.Item2;
-                if (count == 0) {
-                    break;
-                }
-                if (commandData != null) {
-                    DbCommand command = commandData.CreateCommand(this, state);
-                    commands.Add(command);
-                }
-                start += count;
-                if (start >= datas.Count) {
-                    break;
-                }
+            CreateSqlState state = new CreateSqlState(context, false);
+            CommandData commandData = _factory.CreateBatchUpdateCommand(mapping, datas, refresh, state);
+            if (commandData == null) {
+                return null;
             }
-            QueryCommands queryCommands = new QueryCommands() {
-                Commands = commands
+            DbCommand command = commandData.CreateCommand(this, state);
+            QueryCommand queryCommand = new QueryCommand() {
+                Command = command
             };
-            return queryCommands;
+            return queryCommand;
         }
 
-        public virtual QueryCommands BatchDelete(DataContext context, DataTableEntityMapping mapping, IList datas)
+        public virtual QueryCommand BatchDelete(DataContext context, DataTableEntityMapping mapping, IList datas)
         {
-            List<DbCommand> commands = new List<DbCommand>();
-            int batchCount;
-            if (_batchUpdateCount > 0)
-                batchCount = _batchUpdateCount;
-            else
-                batchCount = 10;
-            int start = 0;
-            List<Tuple<CommandData, CreateSqlState>> commandDatas = new List<Tuple<CommandData, CreateSqlState>>();
-            while (true) {
-                CreateSqlState state = new CreateSqlState(context);
-                Tuple<CommandData, int> commandDataResult = _factory.CreateBatchDeleteCommand(mapping, datas, start, batchCount, state);
-                CommandData commandData = commandDataResult.Item1;
-                int count = commandDataResult.Item2;
-                if (count == 0) {
-                    break;
-                }
-                DbCommand command = commandData.CreateCommand(this, state);
-                commands.Add(command);
-                start += count;
-                if (start >= datas.Count) {
-                    break;
-                }
-            }
-            QueryCommands queryCommands = new QueryCommands() {
-                Commands = commands
+            CreateSqlState state = new CreateSqlState(context, false);
+            CommandData commandData = _factory.CreateBatchDeleteCommand(mapping, datas, state);
+            DbCommand command = commandData.CreateCommand(this, state);
+            QueryCommand queryCommand = new QueryCommand() {
+                Command = command
             };
-            return queryCommands;
+            return queryCommand;
         }
 
         public virtual QueryCommand SelectById(DataContext context, DataTableEntityMapping mapping, object id)

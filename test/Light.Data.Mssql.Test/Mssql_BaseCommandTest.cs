@@ -372,6 +372,87 @@ namespace Light.Data.Mssql.Test
         }
 
         [Fact]
+        public void TestCase_CUD_Bulk_NoIdentity()
+        {
+            context.TruncateTable<TeBaseFieldNoIdentity>();
+            int count = 50;
+            List<TeBaseFieldNoIdentity> list = new List<TeBaseFieldNoIdentity>();
+            for (int i = 0; i < count; i++) {
+                var item1 = context.CreateNew<TeBaseFieldNoIdentity>();
+                item1.Id = i + 1;
+                item1.Int32Field = 1;
+                item1.DoubleField = 0.1;
+                item1.VarcharField = "level1";
+                item1.DateTimeField = GetNow();
+                item1.EnumInt32Field = EnumInt32Type.Positive1;
+                list.Add(item1);
+            }
+            var retInsert = context.BatchInsert(list, 2, 38);
+            Assert.Equal(38, retInsert);
+            var ac = context.Query<TeBaseFieldNoIdentity>().ToList();
+            var ex = list.Skip(2).Take(38).ToList();
+            AssertExtend.StrictEqual(ex, ac);
+        }
+
+        [Fact]
+        public void TestCase_CUD_Bulk_NoIdentityNull()
+        {
+            context.TruncateTable<TeBaseFieldNoIdentity>();
+            int count = 50;
+            List<TeBaseFieldNoIdentity> list = new List<TeBaseFieldNoIdentity>();
+            for (int i = 0; i < count; i++) {
+                var item1 = context.CreateNew<TeBaseFieldNoIdentity>();
+                item1.Id = i + 1;
+                item1.Int32Field = 1;
+                item1.DoubleField = 0.1;
+                item1.VarcharField = "level1";
+                item1.DateTimeField = GetNow();
+                item1.EnumInt32Field = EnumInt32Type.Positive1;
+                list.Add(item1);
+            }
+            list[0] = null;
+            list[2] = null;
+            list[28] = null;
+            var retInsert = context.BatchInsert(list, 2, 38);
+            Assert.Equal(36, retInsert);
+            var ac = context.Query<TeBaseFieldNoIdentity>().ToList();
+            var ex = list.Skip(2).Take(38).Where(x => x != null).ToList();
+            AssertExtend.StrictEqual(ex, ac);
+
+            list.Clear();
+            Assert.Equal(0, context.BatchInsert(list));
+            for (int i = 0; i < count; i++) {
+                list.Add(null);
+            }
+            Assert.Equal(0, context.BatchInsert(list));
+            Assert.Equal(0, context.BatchInsert(list, 6, 10));
+        }
+
+        [Fact]
+        public async Task TestCase_CUD_Bulk_NoIdentity_Async()
+        {
+            context.TruncateTable<TeBaseFieldNoIdentity>();
+            int count = 50;
+            List<TeBaseFieldNoIdentity> list = new List<TeBaseFieldNoIdentity>();
+            for (int i = 0; i < count; i++) {
+                var item1 = context.CreateNew<TeBaseFieldNoIdentity>();
+                item1.Id = i + 1;
+                item1.Int32Field = 1;
+                item1.DoubleField = 0.1;
+                item1.VarcharField = "level1";
+                item1.DateTimeField = GetNow();
+                item1.EnumInt32Field = EnumInt32Type.Positive1;
+                list.Add(item1);
+            }
+            var retInsert = await context.BatchInsertAsync(list, 2, 38, CancellationToken.None);
+            Assert.Equal(38, retInsert);
+            var ac = await context.Query<TeBaseFieldNoIdentity>().ToListAsync(CancellationToken.None);
+            var ex = list.Skip(2).Take(38).ToList();
+            AssertExtend.StrictEqual(ex, ac);
+
+        }
+
+        [Fact]
         public void TestCase_Exists()
         {
             context.TruncateTable<TeBaseFieldNoIdentity>();
@@ -565,6 +646,82 @@ namespace Light.Data.Mssql.Test
             const int count = 33;
             var listEx = CreateBaseFieldTableList(count);
             List<TeBaseField> listAc;
+            context.TruncateTable<TeBaseField>();
+            var retInsert = await context.BatchInsertAsync(listEx, CancellationToken.None);
+            Assert.Equal(count, retInsert);
+            listAc = await context.Query<TeBaseField>().ToListAsync(CancellationToken.None);
+            AssertExtend.Equal(listEx, listAc);
+            DateTime d = GetNow();
+            listEx.ForEach(x =>
+            {
+                x.DateTimeField = d;
+                x.DateTimeFieldNull = null;
+                x.Int32Field = 2;
+                x.Int32FieldNull = null;
+                x.DoubleField = 2.0d;
+                x.DoubleFieldNull = null;
+                x.VarcharField = "abc";
+                x.VarcharFieldNull = null;
+                x.EnumInt32Field = EnumInt32Type.Zero;
+                x.EnumInt32FieldNull = null;
+                x.EnumInt64Field = EnumInt64Type.Zero;
+                x.EnumInt64FieldNull = null;
+            });
+            var retUpdate = await context.BatchUpdateAsync(listEx, CancellationToken.None);
+            Assert.Equal(count, retUpdate);
+            listAc = await context.Query<TeBaseField>().ToListAsync(CancellationToken.None);
+            AssertExtend.Equal(listEx, listAc);
+            var retDelete = await context.BatchDeleteAsync(listEx, CancellationToken.None);
+            Assert.Equal(count, retDelete);
+            listAc = await context.Query<TeBaseField>().ToListAsync(CancellationToken.None);
+            AssertExtend.Equal(0, listAc.Count);
+        }
+
+        [Fact]
+        public void TestCase_CUD_Bulk2()
+        {
+            const int count = 33;
+            var listEx = CreateBaseFieldTableList(count);
+            List<TeBaseField> listAc;
+            DataContext context = CreateBuilderContextByDi();
+            context.TruncateTable<TeBaseField>();
+            var retInsert = context.BatchInsert(listEx);
+            Assert.Equal(count, retInsert);
+            listAc = context.Query<TeBaseField>().ToList();
+            AssertExtend.Equal(listEx, listAc);
+            DateTime d = GetNow();
+            listEx.ForEach(x =>
+            {
+                x.DateTimeField = d;
+                x.DateTimeFieldNull = null;
+                x.Int32Field = 2;
+                x.Int32FieldNull = null;
+                x.DoubleField = 2.0d;
+                x.DoubleFieldNull = null;
+                x.VarcharField = "abc";
+                x.VarcharFieldNull = null;
+                x.EnumInt32Field = EnumInt32Type.Zero;
+                x.EnumInt32FieldNull = null;
+                x.EnumInt64Field = EnumInt64Type.Zero;
+                x.EnumInt64FieldNull = null;
+            });
+            var retUpdate = context.BatchUpdate(listEx);
+            Assert.Equal(count, retUpdate);
+            listAc = context.Query<TeBaseField>().ToList();
+            AssertExtend.Equal(listEx, listAc);
+            var retDelete = context.BatchDelete(listEx);
+            Assert.Equal(count, retDelete);
+            listAc = context.Query<TeBaseField>().ToList();
+            AssertExtend.Equal(0, listAc.Count);
+        }
+
+        [Fact]
+        public async Task TestCase_CUD_Bulk2_Async()
+        {
+            const int count = 33;
+            var listEx = CreateBaseFieldTableList(count);
+            List<TeBaseField> listAc;
+            DataContext context = CreateBuilderContextByDi();
             context.TruncateTable<TeBaseField>();
             var retInsert = await context.BatchInsertAsync(listEx, CancellationToken.None);
             Assert.Equal(count, retInsert);

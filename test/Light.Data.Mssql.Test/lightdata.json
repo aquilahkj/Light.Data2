@@ -6,7 +6,8 @@
         "connectionString": "Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;",
         "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
         "configParams": {
-          "strictMode": true
+          "strictMode": true,
+          "batchInsertCount": 10
         }
       },
       {
