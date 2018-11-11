@@ -747,7 +747,7 @@ namespace Light.Data
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return BatchInsert(mapping, datas, index, count, refresh, updateIdentity);
         }
-        
+
         internal int BatchInsert(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity)
         {
             if (datas == null) {
@@ -952,52 +952,6 @@ namespace Light.Data
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await BatchInsertAsync(mapping, datas, index, count, refresh, updateIdentity, cancellationToken);
         }
-
-        //internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IList datas, bool refresh, bool updateIdentity, CancellationToken cancellationToken)
-        //{
-        //    int result = 0;
-        //    if (mapping.HasIdentity && updateIdentity) {
-        //        QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-        //        QueryCommand[] queryCommands = new QueryCommand[datas.Count];
-        //        for (int i = 0; i < datas.Count; i++) {
-        //            queryCommands[i] = _database.Insert(this, mapping, datas[i], refresh);
-        //        }
-        //        TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
-        //        try {
-        //            for (int j = 0; j < queryCommands.Length; j++) {
-        //                int rInt = await ExecuteNonQueryAsync(queryCommands[j].Command, SafeLevel.Default, cancellationToken, transaction);
-        //                if (rInt > 0) {
-        //                    object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
-        //                    _database.UpdateDataIdentity(mapping, datas[j], id);
-        //                }
-        //                result += rInt;
-        //            }
-        //        }
-        //        finally {
-        //            CommitInnerTransaction(transaction);
-        //        }
-        //    }
-        //    else {
-        //        QueryCommands queryCommands = _database.BatchInsertOld(this, mapping, datas, refresh);
-        //        TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
-        //        try {
-        //            foreach (DbCommand command in queryCommands.Commands) {
-        //                int rInt = await ExecuteNonQueryAsync(command, SafeLevel.Default, cancellationToken, transaction);
-        //                result += rInt;
-        //            }
-        //        }
-        //        finally {
-        //            CommitInnerTransaction(transaction);
-        //        }
-        //    }
-
-        //    if (mapping.IsDataTableEntity) {
-        //        foreach (object data in datas) {
-        //            UpdateDateTableEntity(mapping, data);
-        //        }
-        //    }
-        //    return result;
-        //}
 
         internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken)
         {
@@ -1337,7 +1291,7 @@ namespace Light.Data
             }
             return result;
         }
-        
+
         /// <summary>
         /// Batch update datas.
         /// </summary>
@@ -1533,7 +1487,7 @@ namespace Light.Data
             }
             return result;
         }
-        
+
         /// <summary>
         /// Batchs delete data.
         /// </summary>
@@ -1695,7 +1649,7 @@ namespace Light.Data
             }
             return result;
         }
-        
+
         /// <summary>
         /// Batchs delete data.
         /// </summary>
@@ -2213,7 +2167,7 @@ namespace Light.Data
                     await transaction.OpenAsync(cancellationToken);
                 }
                 transaction.SetupCommand(dbcommand);
-                rInt = await dbcommand.ExecuteNonQueryAsync(CancellationToken.None);
+                rInt = await dbcommand.ExecuteNonQueryAsync(cancellationToken);
                 result = rInt;
                 success = true;
                 if (commit) {
@@ -2331,7 +2285,7 @@ namespace Light.Data
                     await transaction.OpenAsync(cancellationToken);
                 }
                 transaction.SetupCommand(dbcommand);
-                resultObj = await dbcommand.ExecuteScalarAsync();
+                resultObj = await dbcommand.ExecuteScalarAsync(cancellationToken);
                 result = resultObj;
                 success = true;
                 if (commit) {
@@ -2822,7 +2776,7 @@ namespace Light.Data
                     await transaction.OpenAsync(cancellationToken);
                 }
                 transaction.SetupCommand(dbcommand);
-                reader = await dbcommand.ExecuteReaderAsync();
+                reader = await dbcommand.ExecuteReaderAsync(cancellationToken);
                 success = true;
 
                 while (reader.Read()) {
