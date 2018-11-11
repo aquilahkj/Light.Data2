@@ -65,6 +65,9 @@ namespace Light.Data.Mssql.Test
                 builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
+                builder.SetBatchInsertCount(10);
+                builder.SetBatchUpdateCount(10);
+                builder.SetBatchDeleteCount(10);
             }, ServiceLifetime.Transient);
             var provider = service.BuildServiceProvider();
             TestContext context = provider.GetRequiredService<TestContext>();
