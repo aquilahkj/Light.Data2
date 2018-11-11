@@ -1579,7 +1579,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchUpdateCount;
+            int batchCount = _database.BatchDeleteCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -1695,30 +1695,7 @@ namespace Light.Data
             }
             return result;
         }
-
-
-        //internal int BatchDelete(DataTableEntityMapping mapping, IList datas)
-        //{
-        //    int result = 0;
-        //    QueryCommands queryCommands = _database.BatchDelete(this, mapping, datas);
-        //    TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
-        //    try {
-        //        foreach (DbCommand command in queryCommands.Commands) {
-        //            int rInt = ExecuteNonQuery(command, SafeLevel.Default, transaction);
-        //            result += rInt;
-        //        }
-        //    }
-        //    finally {
-        //        CommitInnerTransaction(transaction);
-        //    }
-        //    if (mapping.IsDataTableEntity) {
-        //        foreach (object data in datas) {
-        //            UpdateDateTableEntity(mapping, data);
-        //        }
-        //    }
-        //    return result;
-        //}
-
+        
         /// <summary>
         /// Batchs delete data.
         /// </summary>
@@ -1766,7 +1743,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchUpdateCount;
+            int batchCount = _database.BatchDeleteCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
