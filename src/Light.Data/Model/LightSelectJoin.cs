@@ -95,24 +95,24 @@ namespace Light.Data
 
         #region async
 
-        public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken)
+        public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, _region);
             return await _context.QueryDataDefineListAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele, cancellationToken);
         }
 
-        public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken)
+        public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             List<K> list = await ToListAsync(cancellationToken);
             return list.ToArray();
         }
 
-        public async override Task<K> FirstAsync(CancellationToken cancellationToken)
+        public async override Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken)
+        public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken))
         {
             Region region = new Region(index, 1);
             QueryCommand queryCommand = _context.Database.QueryJoinData(_context, Mapping, Selector, Models, _query, _order, _distinct, region);

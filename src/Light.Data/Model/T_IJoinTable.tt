@@ -155,20 +155,20 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
-		Task<int> CountAsync(CancellationToken cancellationToken);
+		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <value>The long count.</value>
-		Task<long> LongCountAsync(CancellationToken cancellationToken);
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken);
+		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
 <#if(i<MaxCount){#>
 		/// <summary>

@@ -103,12 +103,12 @@ namespace Light.Data
 
         public abstract K ElementAt(int index);
 
-        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken);
+        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken);
+        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<K> FirstAsync(CancellationToken cancellationToken);
+        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken);
+        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

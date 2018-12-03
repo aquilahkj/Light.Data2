@@ -190,28 +190,28 @@ namespace Light.Data
 
         public abstract K AggregateField<K>(Expression<Func<T, K>> expression);
 
-        public abstract Task<int> CountAsync(CancellationToken cancellationToken);
+        public abstract Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<long> LongCountAsync(CancellationToken cancellationToken);
+        public abstract Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<bool> ExistsAsync(CancellationToken cancellationToken);
+        public abstract Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<T> FirstAsync(CancellationToken cancellationToken);
+        public abstract Task<T> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<T> ElementAtAsync(int index, CancellationToken cancellationToken);
+        public abstract Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<List<T>> ToListAsync(CancellationToken cancellationToken);
+        public abstract Task<List<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<T[]> ToArrayAsync(CancellationToken cancellationToken);
+        public abstract Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<int> InsertAsync<K>(CancellationToken cancellationToken);
+        public abstract Task<int> InsertAsync<K>(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken);
+        public abstract Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken);
+        public abstract Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<int> DeleteAsync(CancellationToken cancellationToken);
+        public abstract Task<int> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        public abstract Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken);
+        public abstract Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

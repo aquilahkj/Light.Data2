@@ -61,6 +61,7 @@ namespace Light.Data
 
         protected CommandCache _existsByKeyCache = new CommandCache();
 
+        protected CommandCache _deleteByKeyCache = new CommandCache();
 
         public virtual string GetJoinPredicate(JoinType joinType)
         {
@@ -244,6 +245,46 @@ namespace Light.Data
             return command;
         }
 
+        public virtual CommandData CreateDeleteKeyCommand(DataTableEntityMapping mapping, object[] keys, CreateSqlState state)
+        {
+            if (keys.Length != mapping.PrimaryKeyCount) {
+                throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
+            }
+            foreach (object key in keys) {
+                if (key == null) {
+                    throw new LightDataException(SR.KeyNotAllowNull);
+                }
+            }
+            string cachekey = null;
+            if (state.Seed == 0 && !state.UseDirectNull) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_deleteByKeyCache.TryGetCommand(cachekey, out string cache)) {
+                    CommandData command1 = new CommandData(cache);
+                    int i = 0;
+                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                        state.AddDataParameter(this, keys[i], field.DBType, DataParameterMode.Input, field.ObjectType);
+                        i++;
+                    }
+                    return command1;
+                }
+            }
+            if (!mapping.HasPrimaryKey) {
+                throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
+            }
+            QueryExpression queryExpression = null;
+            int j = 0;
+            foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
+                DataFieldInfo info = fieldMapping.DefaultFieldInfo;
+                QueryExpression keyExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
+                queryExpression = QueryExpression.And(queryExpression, keyExpression);
+                j++;
+            }
+            CommandData command = CreateMassDeleteCommand(mapping, queryExpression, state);
+            if (cachekey != null) {
+                _deleteByKeyCache.SetCommand(cachekey, command.CommandText);
+            }
+            return command;
+        }
 
         public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
         {
@@ -289,9 +330,6 @@ namespace Light.Data
             if (!mapping.HasPrimaryKey) {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
-            //if (mapping.UpdateFieldList.Count == 0 && !mapping.IsDataTableEntity) {
-            //    throw new LightDataException(string.Format(SR.NotContainNonPrimaryKeyFields, mapping.ObjectType));
-            //}
 
             IList<DataFieldMapping> columnFields;
             object[] keys = null;

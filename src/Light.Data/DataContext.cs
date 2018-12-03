@@ -74,7 +74,7 @@ namespace Light.Data
             }
         }
 
-        internal DataContextOptions Options {
+        protected internal DataContextOptions Options {
             get {
                 return _options;
             }
@@ -89,7 +89,7 @@ namespace Light.Data
         /// <summary>
         /// The command output interface.
         /// </summary>
-        protected ICommandOutput _output;
+        ICommandOutput _output;
 
         /// <summary>
         /// Sets the command output.
@@ -182,6 +182,7 @@ namespace Light.Data
             }
             tableEntity.ClearUpdateFields();
         }
+
 
 
         /// <summary>
@@ -324,7 +325,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> InsertOrUpdateAsync<T>(T data, CancellationToken cancellationToken)
+        public async Task<int> InsertOrUpdateAsync<T>(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await InsertOrUpdateAsync(data, SafeLevel.Default, false, cancellationToken);
         }
@@ -336,7 +337,7 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         /// <param name="level">safe level</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, CancellationToken cancellationToken)
+        public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await InsertOrUpdateAsync(data, level, false, cancellationToken);
         }
@@ -348,7 +349,7 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> InsertOrUpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken)
+        public async Task<int> InsertOrUpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await InsertOrUpdateAsync(data, SafeLevel.Default, refresh, cancellationToken);
         }
@@ -361,14 +362,14 @@ namespace Light.Data
         /// <param name="level">safe level</param>
         /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, bool refresh, CancellationToken cancellationToken)
+        public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await InsertOrUpdateAsync(mapping, data, level, refresh, cancellationToken);
         }
 
-        internal async Task<int> InsertOrUpdateAsync(DataTableEntityMapping mapping, object data, SafeLevel level, bool refresh, CancellationToken cancellationToken)
+        internal async Task<int> InsertOrUpdateAsync(DataTableEntityMapping mapping, object data, SafeLevel level, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (data == null) {
                 throw new ArgumentNullException(nameof(data));
@@ -499,7 +500,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> InsertAsync<T>(T data, CancellationToken cancellationToken)
+        public async Task<int> InsertAsync<T>(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await InsertAsync(data, false, cancellationToken);
         }
@@ -511,14 +512,14 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> InsertAsync<T>(T data, bool refresh, CancellationToken cancellationToken)
+        public async Task<int> InsertAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await InsertAsync(mapping, data, refresh, cancellationToken);
         }
 
-        internal async Task<int> InsertAsync(DataTableEntityMapping mapping, object data, bool refresh, CancellationToken cancellationToken)
+        internal async Task<int> InsertAsync(DataTableEntityMapping mapping, object data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (data == null) {
                 throw new ArgumentNullException(nameof(data));
@@ -548,7 +549,7 @@ namespace Light.Data
             if (mapping.IsDataTableEntity) {
                 UpdateDateTableEntity(mapping, data);
             }
-            return rInt;//return rInt;
+            return rInt;
         }
 
         /// <summary>
@@ -599,7 +600,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> UpdateAsync<T>(T data, CancellationToken cancellationToken)
+        public async Task<int> UpdateAsync<T>(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await UpdateAsync(data, false, cancellationToken);
         }
@@ -611,14 +612,14 @@ namespace Light.Data
         /// <param name="data">Data.</param>
         /// <param name="refresh">Is refresh data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> UpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken)
+        public async Task<int> UpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await UpdateAsync(mapping, data, refresh, cancellationToken);
         }
 
-        internal async Task<int> UpdateAsync(DataTableEntityMapping mapping, object data, bool refresh, CancellationToken cancellationToken)
+        internal async Task<int> UpdateAsync(DataTableEntityMapping mapping, object data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (data == null) {
                 throw new ArgumentNullException(nameof(data));
@@ -672,14 +673,14 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> DeleteAsync<T>(T data, CancellationToken cancellationToken)
+        public async Task<int> DeleteAsync<T>(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await DeleteAsync(mapping, data, cancellationToken);
         }
 
-        internal async Task<int> DeleteAsync(DataTableEntityMapping mapping, object data, CancellationToken cancellationToken)
+        internal async Task<int> DeleteAsync(DataTableEntityMapping mapping, object data, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (data == null) {
                 throw new ArgumentNullException(nameof(data));
@@ -902,7 +903,7 @@ namespace Light.Data
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken)
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, 0, int.MaxValue, false, true, cancellationToken);
         }
@@ -916,7 +917,7 @@ namespace Light.Data
         /// <param name="updateIdentity">is update data identity field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity, CancellationToken cancellationToken)
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, 0, int.MaxValue, refresh, updateIdentity, cancellationToken);
         }
@@ -930,7 +931,7 @@ namespace Light.Data
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, index, count, false, true, cancellationToken);
         }
@@ -946,14 +947,14 @@ namespace Light.Data
         /// <param name="updateIdentity">is update data identity field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken)
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await BatchInsertAsync(mapping, datas, index, count, refresh, updateIdentity, cancellationToken);
         }
 
-        internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken)
+        internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -1299,7 +1300,7 @@ namespace Light.Data
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken)
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, 0, int.MaxValue, false, cancellationToken);
         }
@@ -1312,7 +1313,7 @@ namespace Light.Data
         /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, bool refresh, CancellationToken cancellationToken)
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, 0, int.MaxValue, refresh, cancellationToken);
         }
@@ -1326,7 +1327,7 @@ namespace Light.Data
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, index, count, false, cancellationToken);
         }
@@ -1341,14 +1342,14 @@ namespace Light.Data
         /// <param name="refresh">is refresh null data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, CancellationToken cancellationToken)
+        public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await BatchUpdateAsync(mapping, datas, index, count, refresh, cancellationToken);
         }
 
-        internal async Task<int> BatchUpdateAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, CancellationToken cancellationToken)
+        internal async Task<int> BatchUpdateAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -1489,7 +1490,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batchs delete data.
+        /// Batch delete data.
         /// </summary>
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
@@ -1500,7 +1501,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batchs delete datas.
+        /// Batch delete datas.
         /// </summary>
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
@@ -1651,19 +1652,19 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batchs delete data.
+        /// Batch delete data.
         /// </summary>
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken)
+        public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchDeleteAsync(datas, 0, int.MaxValue, cancellationToken);
         }
 
         /// <summary>
-        /// Batchs delete datas.
+        /// Batch delete datas.
         /// </summary>
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
@@ -1671,14 +1672,14 @@ namespace Light.Data
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
             return await BatchDeleteAsync(mapping, datas, index, count, cancellationToken);
         }
 
-        internal async Task<int> BatchDeleteAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, CancellationToken cancellationToken)
+        internal async Task<int> BatchDeleteAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -1815,7 +1816,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Selects the single object from key.
+        /// Select the single object by keys.
         /// </summary>
         /// <returns>object.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
@@ -1830,13 +1831,13 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Selects the single object from key.
+        /// Select the single object by keys.
         /// </summary>
         /// <returns>object.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<T> SelectByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
                 throw new ArgumentNullException(nameof(primaryKeys));
@@ -1846,32 +1847,32 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Selects the single object from key.
+        /// Select the single object by keys.
         /// </summary>
         /// <returns>object.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<T> SelectByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey }, cancellationToken);
         }
 
         /// <summary>
-        /// Selects the single object from key.
+        /// Select the single object by keys.
         /// </summary>
         /// <returns>object.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
         }
 
         /// <summary>
-        /// Selects the single object from key.
+        /// Select the single object by keys.
         /// </summary>
         /// <returns>object.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
@@ -1879,15 +1880,15 @@ namespace Light.Data
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
         }
 
         /// <summary>
-        /// Check exist the object from key.
+        /// Check exist the object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>exists or not.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public bool Exists<T>(params object[] primaryKeys)
@@ -1902,52 +1903,52 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Check exist the object from key.
+        /// Check exist the object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>exists or not.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<bool> ExistsAsync<T>(object primaryKey, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey }, cancellationToken);
         }
 
         /// <summary>
-        /// Check exist the object from key.
+        /// Check exist the object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>exists or not.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
         }
 
         /// <summary>
-        /// Check exist the object from key.
+        /// Check exist the object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>exists or not.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
         }
 
         /// <summary>
-        /// Check exist the object from key.
+        /// Check exist the object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>exists or not.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<bool> ExistsAsync<T>(object[] primaryKeys, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
                 throw new ArgumentNullException(nameof(primaryKeys));
@@ -1958,6 +1959,84 @@ namespace Light.Data
             return obj.HasValue;
         }
 
+        /// <summary>
+        /// Delete the object by keys.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="primaryKeys">Primary key.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public int DeleteByKey<T>(params object[] primaryKeys)
+        {
+            if (primaryKeys == null || primaryKeys.Length == 0)
+                throw new ArgumentNullException(nameof(primaryKeys));
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            QueryCommand queryCommand = _database.DeleteByKey(this, mapping, primaryKeys);
+            int rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default);
+            return rInt;
+        }
+
+        /// <summary>
+        /// Delete the object by keys.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="primaryKey">Primary key.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> DeleteByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await DeleteByKeyAsync<T>(new object[] { primaryKey }, cancellationToken);
+        }
+
+        /// <summary>
+        /// Delete the object by keys.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="primaryKey1">Primary key 1.</param>
+        /// <param name="primaryKey2">Primary key 2.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> DeleteByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await DeleteByKeyAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
+        }
+
+        /// <summary>
+        /// Delete the object by keys.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="primaryKey1">Primary key 1.</param>
+        /// <param name="primaryKey2">Primary key 2.</param>
+        /// <param name="primaryKey3">Primary key 3.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> DeleteByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await DeleteByKeyAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
+        }
+
+        /// <summary>
+        /// Delete the object by keys.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="primaryKeys">Primary keys.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async Task<int> DeleteByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (primaryKeys == null || primaryKeys.Length == 0)
+                throw new ArgumentNullException(nameof(primaryKeys));
+            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            QueryCommand queryCommand = _database.DeleteByKey(this, mapping, primaryKeys);
+            int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken);
+            return rInt;
+        }
+
+        /// <summary>
+        /// Select the single object by id.
+        /// </summary>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="id">id</param>
+        /// <returns>object.</returns>
         public T SelectById<T>(object id)
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -1965,7 +2044,14 @@ namespace Light.Data
             return QueryDataDefineSingle<T>(mapping, SafeLevel.Default, queryCommand.Command, 0, queryCommand.State, null);
         }
 
-        public async Task<T> SelectByIdAsync<T>(object id, CancellationToken cancellationToken)
+        /// <summary>
+        /// Select the single object by id.
+        /// </summary>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="id">id</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns>object.</returns>
+        public async Task<T> SelectByIdAsync<T>(object id, CancellationToken cancellationToken = default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
             QueryCommand queryCommand = _database.SelectById(this, mapping, id);
@@ -1999,7 +2085,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>The table.</returns>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> TruncateTableAsync<T>(CancellationToken cancellationToken)
+        public async Task<int> TruncateTableAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
             QueryCommand queryCommand = _database.TruncateTable(this, mapping);
@@ -2082,22 +2168,7 @@ namespace Light.Data
         {
             CheckStatus();
             int rInt;
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2117,13 +2188,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2137,26 +2202,36 @@ namespace Light.Data
             return rInt;
         }
 
+        private void ProcessExceptionTransaction(TransactionConnection transaction, bool trans)
+        {
+            if (trans) {
+                if (transaction.IsOpen) {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                    if (_autoRelease) {
+                        _transaction = null;
+                        _transguid = null;
+                    }
+                }
+                else {
+                    transaction.Dispose();
+                    if (_autoRelease) {
+                        _transaction = null;
+                        _transguid = null;
+                    }
+                }
+            }
+            else {
+                transaction.Rollback();
+                transaction.Dispose();
+            }
+        }
+
         internal async Task<int> ExecuteNonQueryAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken, TransactionConnection transaction = null)
         {
             CheckStatus();
             int rInt;
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2176,13 +2251,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2200,22 +2269,7 @@ namespace Light.Data
         {
             CheckStatus();
             object resultObj;
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2235,13 +2289,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2259,22 +2307,7 @@ namespace Light.Data
         {
             CheckStatus();
             object resultObj;
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2294,13 +2327,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2327,22 +2354,7 @@ namespace Light.Data
                 start = 0;
                 size = int.MaxValue;
             }
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2404,13 +2416,7 @@ namespace Light.Data
                     catch (Exception ex) {
                         error = true;
                         exceptionMessage = ex.Message;
-                        if (trans) {
-                            RollbackTrans(false);
-                        }
-                        else {
-                            transaction.Rollback();
-                            transaction.Dispose();
-                        }
+                        ProcessExceptionTransaction(transaction, trans);
                         throw ex;
                     }
                     yield return data;
@@ -2444,22 +2450,7 @@ namespace Light.Data
             if (start < 0)
                 start = 0;
 
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2511,13 +2502,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2548,22 +2533,7 @@ namespace Light.Data
                 start = 0;
                 size = int.MaxValue;
             }
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2614,13 +2584,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2644,22 +2608,7 @@ namespace Light.Data
             if (start < 0)
                 start = 0;
 
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2710,13 +2659,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2747,22 +2690,7 @@ namespace Light.Data
                 start = 0;
                 size = int.MaxValue;
             }
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2813,13 +2741,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2840,22 +2762,7 @@ namespace Light.Data
         internal DataSet QueryDataSet(SafeLevel level, DbCommand dbcommand, TransactionConnection transaction = null)
         {
             CheckStatus();
-            bool commit;
-            bool trans = false;
-            if (transaction == null) {
-                if (_transaction != null) {
-                    transaction = _transaction;
-                    commit = false;
-                    trans = true;
-                }
-                else {
-                    transaction = CreateTransactionConnection(level);
-                    commit = true;
-                }
-            }
-            else {
-                commit = false;
-            }
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
 
             DateTime startTime = DateTime.Now;
             bool success = false;
@@ -2880,13 +2787,7 @@ namespace Light.Data
             }
             catch (Exception ex) {
                 exceptionMessage = ex.Message;
-                if (trans) {
-                    RollbackTrans(false);
-                }
-                else {
-                    transaction.Rollback();
-                    transaction.Dispose();
-                }
+                ProcessExceptionTransaction(transaction, trans);
                 throw ex;
             }
             finally {
@@ -2899,6 +2800,8 @@ namespace Light.Data
 
             return dataSet;
         }
+
+
 
 
         #endregion
@@ -3079,6 +2982,7 @@ namespace Light.Data
                         }
                         _transaction.Dispose();
                         _transaction = null;
+                        _transguid = null;
                     }
                 }
 
@@ -3115,27 +3019,47 @@ namespace Light.Data
 
         TransactionConnection _transaction;
 
-        bool _isCreateTrans;
+        Guid? _transguid = null;
 
-        public TransactionScope CreateTransactionScope()
+        bool _autoRelease;
+
+        /// <summary>
+        /// Begin the transaction and set default level and not auto close.
+        /// </summary>
+        /// <param name="level">Level.</param>
+        public TransactionScope BeginTrans()
         {
-            if (_isCreateTrans) {
-                throw new LightDataException(SR.TransactionScopeHasBeenCreated);
-            }
-            _isCreateTrans = true;
-            TransactionScope scope = new TransactionScope(this);
-            return scope;
+            return BeginTrans(SafeLevel.Default, false);
         }
 
         /// <summary>
-        /// Begins the transaction.
+        /// Begin the transaction and set not auto close.
         /// </summary>
         /// <param name="level">Level.</param>
-        internal bool BeginTrans(SafeLevel level)
+        public TransactionScope BeginTrans(SafeLevel level)
+        {
+            return BeginTrans(level, false);
+        }
+
+        /// <summary>
+        /// Begin the transaction and set default level.
+        /// </summary>
+        /// <param name="autoRelease">Auto release.</param>
+        public TransactionScope BeginTrans(bool autoRelease)
+        {
+            return BeginTrans(SafeLevel.Default, autoRelease);
+        }
+
+        /// <summary>
+        /// Begin the transaction.
+        /// </summary>
+        /// <param name="level">Level.</param>
+        /// <param name="autoRelease">Auto release.</param>
+        public TransactionScope BeginTrans(SafeLevel level, bool autoRelease)
         {
             CheckStatus();
             if (_transaction != null) {
-                return false;
+                throw new LightDataException(SR.TransactionHasBegun);
             }
             else {
                 if (level == SafeLevel.None) {
@@ -3144,71 +3068,116 @@ namespace Light.Data
                 else {
                     _transaction = CreateTransactionConnection(level);
                 }
-                return true;
+                _transguid = Guid.NewGuid();
+                _autoRelease = autoRelease;
+                TransactionScope scope = new TransactionScope(this, _transguid.Value);
+                return scope;
             }
         }
 
         /// <summary>
-        /// Commits the transaction.
+        /// Commit the transaction.
         /// </summary>
-        internal bool CommitTrans()
+        public bool CommitTrans()
         {
             CheckStatus();
             if (_transaction != null) {
+                if (_transaction.IsDisposed) {
+                    throw new LightDataException(SR.TransactionHasClosed);
+                }
                 if (_transaction.IsOpen) {
                     _transaction.Commit();
                     _transaction.Dispose();
-                    _transaction = null;
+                    if (_autoRelease) {
+                        _transaction = null;
+                        _transguid = null;
+                    }
                     return true;
                 }
                 else {
                     _transaction.Dispose();
-                    _transaction = null;
+                    if (_autoRelease) {
+                        _transaction = null;
+                        _transguid = null;
+                    }
                     return false;
                 }
             }
             else {
-                return false;
+                throw new LightDataException(SR.TransactionNotBegin);
             }
         }
 
         /// <summary>
-        /// Rollbacks the transaction.
+        /// Rollback the transaction.
         /// </summary>
-        internal bool RollbackTrans(bool check)
+        public bool RollbackTrans()
         {
-            if (check)
-                CheckStatus();
+            CheckStatus();
             if (_transaction != null) {
+                if (_transaction.IsDisposed) {
+                    throw new LightDataException(SR.TransactionHasClosed);
+                }
                 if (_transaction.IsOpen) {
                     _transaction.Rollback();
                     _transaction.Dispose();
-                    _transaction = null;
+                    if (_autoRelease) {
+                        _transaction = null;
+                        _transguid = null;
+                    }
                     return true;
                 }
                 else {
                     _transaction.Dispose();
-                    _transaction = null;
+                    if (_autoRelease) {
+                        _transaction = null;
+                        _transguid = null;
+                    }
                     return false;
                 }
             }
             else {
-                return false;
+                throw new LightDataException(SR.TransactionNotBegin);
             }
         }
 
-        internal void CloseTrans(bool check)
+
+        public void ReleaseTrans()
         {
-            if (check)
-                CheckStatus();
-            _isCreateTrans = false;
             if (_transaction != null) {
                 if (_transaction.ExecuteFlag) {
                     _transaction.Rollback();
                 }
-                _transaction.Dispose();
+                if (!_transaction.IsDisposed) {
+                    _transaction.Dispose();
+                }
                 _transaction = null;
+                _transguid = null;
             }
+        }
+
+        internal void ScopeCloseTrans(Guid transguid)
+        {
+            if (_transguid == null || _transguid.Value != transguid)
+                return;
+
+            if (_transaction != null) {
+                if (_transaction.ExecuteFlag) {
+                    _transaction.Rollback();
+                }
+                if (!_transaction.IsDisposed) {
+                    _transaction.Dispose();
+                }
+                _transaction = null;
+                _transguid = null;
+            }
+        }
+
+        internal bool ScopeCheckTrans(Guid transguid)
+        {
+            if (_transguid == null || _transguid.Value != transguid)
+                return false;
+            return true;
         }
 
         TransactionConnection CreateInnerTransaction(SafeLevel level)
@@ -3239,6 +3208,27 @@ namespace Light.Data
             }
         }
 
+        TransactionConnection BuildTransaction(SafeLevel level, TransactionConnection transaction, out bool commit, out bool trans)
+        {
+            if (transaction == null) {
+                if (_transaction != null) {
+                    transaction = _transaction;
+                    commit = false;
+                    trans = true;
+                }
+                else {
+                    transaction = CreateTransactionConnection(level);
+                    commit = true;
+                    trans = false;
+                }
+            }
+            else {
+                commit = false;
+                trans = false;
+            }
+            return transaction;
+        }
+
         void CheckStatus()
         {
             if (this._isDisposed) {
@@ -3248,50 +3238,3 @@ namespace Light.Data
 
     }
 }
-
-
-
-
-//internal int QueryDelete(DataTableEntityMapping mapping, QueryExpression query, SafeLevel level)
-//{
-//    int rInt;
-//    CreateSqlState state = new CreateSqlState(this);
-//    CommandData commandData = _database.Factory.CreateMassDeleteCommand(mapping, query, state);
-//    using (DbCommand command = commandData.CreateCommand(_database, state)) {
-//        rInt = ExecuteNonQuery(command, level);
-//    }
-//    return rInt;
-//}
-
-//internal async Task<int> QueryDeleteAsync(DataTableEntityMapping mapping, QueryExpression query, SafeLevel level, CancellationToken cancellationToken)
-//{
-//    int rInt;
-//    CreateSqlState state = new CreateSqlState(this);
-//    CommandData commandData = _database.Factory.CreateMassDeleteCommand(mapping, query, state);
-//    using (DbCommand command = commandData.CreateCommand(_database, state)) {
-//        rInt = await ExecuteNonQueryAsync(command, level, cancellationToken);
-//    }
-//    return rInt;
-//}
-
-//internal int QueryUpdate(DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, SafeLevel level)
-//{
-//    int rInt;
-//    CreateSqlState state = new CreateSqlState(this);
-//    CommandData commandData = _database.Factory.CreateMassUpdateCommand(mapping, updator, query, state);
-//    using (DbCommand command = commandData.CreateCommand(_database, state)) {
-//        rInt = ExecuteNonQuery(command, level);
-//    }
-//    return rInt;
-//}
-
-//internal async Task<int> QueryUpdateAsync(DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, SafeLevel level, CancellationToken cancellationToken)
-//{
-//    int rInt;
-//    CreateSqlState state = new CreateSqlState(this);
-//    CommandData commandData = _database.Factory.CreateMassUpdateCommand(mapping, updator, query, state);
-//    using (DbCommand command = commandData.CreateCommand(_database, state)) {
-//        rInt = await ExecuteNonQueryAsync(command, level, cancellationToken);
-//    }
-//    return rInt;
-//}

@@ -528,6 +528,17 @@ namespace Light.Data
             return queryCommand;
         }
 
+        public virtual QueryCommand DeleteByKey(DataContext context, DataTableEntityMapping mapping, object[] keys)
+        {
+            CreateSqlState state = new CreateSqlState(context, false);
+            CommandData commandData = _factory.CreateDeleteKeyCommand(mapping, keys, state);
+            DbCommand command = commandData.CreateCommand(this, state);
+            QueryCommand queryCommand = new QueryCommand() {
+                Command = command
+            };
+            return queryCommand;
+        }
+
     }
 }
 

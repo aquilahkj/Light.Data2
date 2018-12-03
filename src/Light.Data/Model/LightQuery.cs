@@ -589,45 +589,45 @@ namespace Light.Data
 
 
         #region async
-        public async override Task<List<T>> ToListAsync(CancellationToken cancellationToken)
+        public async override Task<List<T>> ToListAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return await _context.QueryDataDefineListAsync<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null, cancellationToken);
         }
 
-        public async override Task<T[]> ToArrayAsync(CancellationToken cancellationToken)
+        public async override Task<T[]> ToArrayAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             List<T> list = await ToListAsync(CancellationToken.None);
             return list.ToArray();
         }
 
-        public async override Task<T> FirstAsync(CancellationToken cancellationToken)
+        public async override Task<T> FirstAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<T> ElementAtAsync(int index, CancellationToken cancellationToken)
+        public async override Task<T> ElementAtAsync(int index, CancellationToken cancellationToken=default(CancellationToken))
         {
             Region region = new Region(index, 1);
             QueryCommand queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
             return await _context.QueryDataDefineSingleAsync<T>(_mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
         }
 
-        public async override Task<int> InsertAsync<K>(CancellationToken cancellationToken)
+        public async override Task<int> InsertAsync<K>(CancellationToken cancellationToken=default(CancellationToken))
         {
             DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
             QueryCommand queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken)
+        public async override Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken=default(CancellationToken))
         {
             InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector(expression);
             QueryCommand queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken)
+        public async override Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken=default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
             MassUpdator updator = LambdaExpressionExtend.CreateMassUpdator(expression);
@@ -635,28 +635,28 @@ namespace Light.Data
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> DeleteAsync(CancellationToken cancellationToken)
+        public async override Task<int> DeleteAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
             QueryCommand queryCommand = _context.Database.QueryDelete(_context, mapping, _query);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> CountAsync(CancellationToken cancellationToken)
+        public async override Task<int> CountAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt32(value);
         }
 
-        public async override Task<long> LongCountAsync(CancellationToken cancellationToken)
+        public async override Task<long> LongCountAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt64(value);
         }
 
-        public async override Task<bool> ExistsAsync(CancellationToken cancellationToken)
+        public async override Task<bool> ExistsAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             QueryCommand queryCommand = _context.Database.Exists(_context, _mapping, _query);
             DataDefine define = DataDefine.GetDefine(typeof(int?));
@@ -664,7 +664,7 @@ namespace Light.Data
             return obj.HasValue;
         }
 
-        public async override Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken)
+        public async override Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken=default(CancellationToken))
         {
             AggregateModel model = LambdaExpressionExtend.CreateAggregateModel(expression);
             model.OnlyAggregate = true;

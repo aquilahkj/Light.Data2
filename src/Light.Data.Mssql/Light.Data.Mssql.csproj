@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.8.2</Version>
+    <Version>2.1.0</Version>
     <Authors>Aquila Huang</Authors>
     <Company>Aquila Huang</Company>
     <Description>Mssql provider for Light.Data</Description>
@@ -10,12 +10,12 @@
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
     <PackageTags>Database, Data, ORM, ADO.NET, SQL, SQLSERVER</PackageTags>
-    <AssemblyVersion>2.0.8.0</AssemblyVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
-    <FileVersion>2.0.8.2</FileVersion>
+    <FileVersion>2.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -405,25 +405,25 @@ namespace Light.Data
         /// To the list.
         /// </summary>
         /// <returns>The list.</returns>
-        Task<List<K>> ToListAsync(CancellationToken cancellationToken);
+        Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// To the array.
         /// </summary>
         /// <returns>The array.</returns>
-        Task<K[]> ToArrayAsync(CancellationToken cancellationToken);
+        Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get first instance.
         /// </summary>
-        Task<K> FirstAsync(CancellationToken cancellationToken);
+        Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Elements at index.
         /// </summary>
         /// <returns>The <see cref="!:K"/>.</returns>
         /// <param name="index">Index.</param>
-        Task<K> ElementAtAsync(int index, CancellationToken cancellationToken);
+        Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Select insert aggregate data to specified table
@@ -431,7 +431,7 @@ namespace Light.Data
         /// <typeparam name="P"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression, CancellationToken cancellationToken) where P : class;
+        Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression, CancellationToken cancellationToken = default(CancellationToken)) where P : class;
         #endregion
     }
 }

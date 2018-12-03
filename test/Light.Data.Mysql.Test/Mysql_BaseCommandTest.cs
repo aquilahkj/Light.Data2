@@ -6,6 +6,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 using System.Threading;
+using System.Data;
 
 namespace Light.Data.Mysql.Test
 {
@@ -395,7 +396,7 @@ namespace Light.Data.Mysql.Test
             var ex = list.Skip(2).Take(38).ToList();
             AssertExtend.StrictEqual(ex, ac);
         }
-        
+
         [Fact]
         public void TestCase_CUD_Bulk_NoIdentityNull()
         {
@@ -1071,27 +1072,27 @@ namespace Light.Data.Mysql.Test
             context.TruncateTable<TeBaseField>();
 
             ex = list[0];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Insert(ex);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
 
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Insert(ex);
-                trans.RollbackTrans();
+                context.RollbackTrans();
             }
             Assert.True(ex.Id > 0);
             ac = context.SelectById<TeBaseField>(ex.Id);
             Assert.Null(ac);
 
             ex = list[2];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Insert(ex);
             }
             Assert.True(ex.Id > 0);
@@ -1109,10 +1110,10 @@ namespace Light.Data.Mysql.Test
 
             ex = list[0];
             ex.Int32Field = 10000;
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Update(ex);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
@@ -1120,10 +1121,10 @@ namespace Light.Data.Mysql.Test
             ex = list[1];
             tg = context.SelectById<TeBaseField>(ex.Id);
             tg.Int32Field = 10000;
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Update(tg);
-                trans.RollbackTrans();
+                context.RollbackTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
@@ -1131,8 +1132,8 @@ namespace Light.Data.Mysql.Test
             ex = list[1];
             tg = context.SelectById<TeBaseField>(ex.Id);
             tg.Int32Field = 10000;
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Update(tg);
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
@@ -1149,28 +1150,28 @@ namespace Light.Data.Mysql.Test
             DataContext transContext = null;
 
             ex = list[0];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Delete(ex);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             Assert.Null(ac);
 
             transContext = CreateContext();
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Delete(ex);
-                trans.RollbackTrans();
+                context.RollbackTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
 
             transContext = CreateContext();
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Delete(ex);
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
@@ -1185,23 +1186,41 @@ namespace Light.Data.Mysql.Test
             TeBaseField ac = null;
             context.TruncateTable<TeBaseField>();
 
+            Assert.Throws<LightDataException>(() =>
+            {
+                using (var trans = context.BeginTrans()) {
+                    context.BeginTrans();
+
+                }
+            });
+
+            Assert.Throws<LightDataException>(() =>
+            {
+                context.CommitTrans();
+            });
+
+            Assert.Throws<LightDataException>(() =>
+            {
+                context.RollbackTrans();
+            });
+
             BaseErrorTable error = new BaseErrorTable();
 
 
             ex = list[1];
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
-                Assert.True(context.IsTransactionMode);
-                try {
+
+            Assert.ThrowsAny<Exception>(() =>
+            {
+                using (var trans = context.BeginTrans()) {
+                    //trans.BeginTrans();
+                    Assert.True(context.IsTransactionMode);
                     context.Insert(ex);
                     context.Insert(error);
                 }
-                catch (Exception exception) {
-                    output.WriteLine(exception.ToString());
-                }
-                Assert.False(trans.CommitTrans());
-                Assert.False(context.IsTransactionMode);
-            }
+            });
+
+
+            Assert.False(context.IsTransactionMode);
 
             Assert.True(ex.Id > 0);
             ac = context.SelectById<TeBaseField>(ex.Id);
@@ -1223,11 +1242,11 @@ namespace Light.Data.Mysql.Test
             ex.Id = 0;
             ex1 = list[1];
             ex1.Int32Field = 3000;
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Insert(ex);
                 context.Update(ex1);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
@@ -1248,21 +1267,21 @@ namespace Light.Data.Mysql.Test
             ex.Id = 0;
             ex1 = list[1];
             ex1.Int32Field = 3000;
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Insert(ex);
                 context.Delete(list[2]);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
             ac = context.SelectById<TeBaseField>(list[2].Id);
             Assert.Null(ac);
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Update(ex1);
                 context.Delete(list[3]);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac1 = context.SelectById<TeBaseField>(ex1.Id);
             AssertExtend.StrictEqual(ex1, ac1);
@@ -1278,11 +1297,11 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> ac = null;
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.Insert(list[0]);
                 context.BatchInsert(list, 1, list.Count - 1);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
 
             ex = list;
@@ -1290,11 +1309,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(ex, ac);
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 context.BatchInsert(list, 0, list.Count - 1);
                 context.Insert(list[list.Count - 1]);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
 
             ex = list;
@@ -1310,8 +1329,8 @@ namespace Light.Data.Mysql.Test
             TeBaseField ac = null;
 
             DataContext context1 = CreateContext();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.Normal);
+            using (var trans = context.BeginTrans(SafeLevel.Normal)) {
+                //trans.BeginTrans(SafeLevel.Normal);
                 ex = context.SelectById<TeBaseField>(list[0].Id);
                 Task.Run(() =>
                 {
@@ -1320,13 +1339,13 @@ namespace Light.Data.Mysql.Test
                 System.Threading.Thread.Sleep(500);
                 ex.Int32Field = 1000;
                 context.Update(ex);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             AssertExtend.StrictEqual(list[0], ac);
 
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.High);
+            using (var trans = context.BeginTrans(SafeLevel.High)) {
+                //trans.BeginTrans(SafeLevel.High);
                 ex = context.SelectById<TeBaseField>(list[0].Id);
                 Task.Run(() =>
                 {
@@ -1335,7 +1354,7 @@ namespace Light.Data.Mysql.Test
                 System.Threading.Thread.Sleep(500);
                 ex.Int32Field = 1000;
                 context.Update(ex);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             AssertExtend.StrictEqual(ex, ac);
@@ -1351,8 +1370,8 @@ namespace Light.Data.Mysql.Test
             int ac = 0;
 
             DataContext context1 = CreateContext();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.Normal);
+            using (var trans = context.BeginTrans(SafeLevel.Normal)) {
+                //trans.BeginTrans(SafeLevel.Normal);
                 ex = context.Query<TeBaseField>().Where(x => x.Id > 5).Count();
                 Task.Run(() =>
                 {
@@ -1360,13 +1379,13 @@ namespace Light.Data.Mysql.Test
                 });
                 System.Threading.Thread.Sleep(500);
                 ac = context.Query<TeBaseField>().Where(x => x.Id > 5).Count();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             Assert.Equal(ex + 1, ac);
 
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.High);
+            using (var trans = context.BeginTrans(SafeLevel.High)) {
+                //trans.BeginTrans(SafeLevel.High);
                 ex = context.Query<TeBaseField>().Where(x => x.Id > 5).Count();
                 Task.Run(() =>
                 {
@@ -1374,13 +1393,13 @@ namespace Light.Data.Mysql.Test
                 });
                 System.Threading.Thread.Sleep(500);
                 ac = context.Query<TeBaseField>().Where(x => x.Id > 5).Count();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             Assert.Equal(ex, ac);
 
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.Serializable);
+            using (var trans = context.BeginTrans(SafeLevel.Serializable)) {
+                //trans.BeginTrans(SafeLevel.Serializable);
                 ex = context.Query<TeBaseField>().Where(x => x.Id > 5).Count();
                 Task.Run(() =>
                 {
@@ -1388,7 +1407,7 @@ namespace Light.Data.Mysql.Test
                 });
                 System.Threading.Thread.Sleep(500);
                 ac = context.Query<TeBaseField>().Where(x => x.Id > 5).Count();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             Assert.Equal(ex, ac);
@@ -1402,8 +1421,8 @@ namespace Light.Data.Mysql.Test
             TeBaseField ac = null;
 
             DataContext context1 = CreateContext();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.Normal);
+            using (var trans = context.BeginTrans(SafeLevel.Normal)) {
+                //trans.BeginTrans(SafeLevel.Normal);
                 ex = context.SelectById<TeBaseField>(list[0].Id);
                 Task.Run(() =>
                 {
@@ -1411,14 +1430,14 @@ namespace Light.Data.Mysql.Test
                 });
                 System.Threading.Thread.Sleep(500);
                 ac = context.SelectById<TeBaseField>(list[0].Id);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             Assert.Null(ac);
             list.Remove(list[0]);
 
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.Normal);
+            using (var trans = context.BeginTrans(SafeLevel.Normal)) {
+                //trans.BeginTrans(SafeLevel.Normal);
                 ex = context.SelectById<TeBaseField>(list[0].Id);
                 Task.Run(() =>
                 {
@@ -1426,14 +1445,14 @@ namespace Light.Data.Mysql.Test
                 });
                 System.Threading.Thread.Sleep(500);
                 ac = context.SelectById<TeBaseField>(list[0].Id);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             Assert.Null(ac);
             list.Remove(list[0]);
 
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans(SafeLevel.Serializable);
+            using (var trans = context.BeginTrans(SafeLevel.Serializable)) {
+                //trans.BeginTrans(SafeLevel.Serializable);
                 ex = context.SelectById<TeBaseField>(list[0].Id);
                 Task.Run(() =>
                 {
@@ -1441,7 +1460,7 @@ namespace Light.Data.Mysql.Test
                 });
                 System.Threading.Thread.Sleep(500);
                 ac = context.SelectById<TeBaseField>(list[0].Id);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             System.Threading.Thread.Sleep(500);
             AssertExtend.StrictEqual(ex, ac);
@@ -1462,11 +1481,11 @@ namespace Light.Data.Mysql.Test
             ex.Id = 0;
             ex1 = list[1];
             ex1.Int32Field = 3000;
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 await context.InsertAsync(ex, CancellationToken.None);
                 await context.UpdateAsync(ex1, CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             ac = context.SelectById<TeBaseField>(ex.Id);
             AssertExtend.StrictEqual(ex, ac);
@@ -1482,11 +1501,11 @@ namespace Light.Data.Mysql.Test
             List<TeBaseField> ac = null;
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 await context.InsertAsync(list[0], CancellationToken.None);
                 await context.BatchInsertAsync(list, 1, list.Count - 1, CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
 
             ex = list;
@@ -1494,11 +1513,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(ex, ac);
 
             context.TruncateTable<TeBaseField>();
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 await context.BatchInsertAsync(list, 0, list.Count - 1, CancellationToken.None);
                 await context.InsertAsync(list[list.Count - 1], CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
 
             ex = list;
@@ -1545,11 +1564,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "select * from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 listAc = executor.QueryList<TeBaseField>();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
@@ -1599,11 +1618,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "select * from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 listAc = await executor.QueryListAsync<TeBaseField>(CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
@@ -1654,11 +1673,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "select * from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 listAc = new List<TeBaseField>(executor.Query<TeBaseField>());
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
@@ -1701,12 +1720,12 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", itemEx.Id);
             ps[1] = new DataParameter("P2", "cdf");
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql, ps);
                 ret = executor.ExecuteNonQuery();
                 Assert.Equal(1, ret);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             itemAc = context.SelectById<TeBaseField>(itemEx.Id);
             itemEx.VarcharField = "cdf";
@@ -1750,12 +1769,12 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", itemEx.Id);
             ps[1] = new DataParameter("P2", "cdf");
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql, ps);
                 ret = await executor.ExecuteNonQueryAsync(CancellationToken.None);
                 Assert.Equal(1, ret);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             itemAc = context.SelectById<TeBaseField>(itemEx.Id);
             itemEx.VarcharField = "cdf";
@@ -1784,11 +1803,11 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "select count(1) from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 ac = Convert.ToInt32(executor.ExecuteScalar());
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             Assert.Equal(list.Count, ac);
         }
@@ -1815,11 +1834,11 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "select count(1) from Te_BaseField";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateSqlStringExecutor(sql);
                 ac = Convert.ToInt32(await executor.ExecuteScalarAsync(CancellationToken.None));
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             Assert.Equal(list.Count, ac);
         }
@@ -1844,11 +1863,11 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
             ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 executor.ExecuteNonQuery();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
         }
@@ -1873,11 +1892,11 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
             ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 await executor.ExecuteNonQueryAsync(CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
         }
@@ -1914,11 +1933,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "sptest1";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 listAc = executor.QueryList<TeBaseField>();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
@@ -1962,11 +1981,11 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "sptest1";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 listAc = await executor.QueryListAsync<TeBaseField>(CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
@@ -2011,16 +2030,17 @@ namespace Light.Data.Mysql.Test
             AssertExtend.StrictEqual(listEx, listAc);
 
             sql = "sptest1";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 listAc = new List<TeBaseField>(executor.QueryList<TeBaseField>());
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             listEx = list;
             AssertExtend.StrictEqual(listEx, listAc);
         }
 
+       
         [Fact]
         public void TestCase_StoreProcedure_Execute()
         {
@@ -2051,11 +2071,11 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 3);
             ps[1] = new DataParameter("P2", "abc");
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 executor.ExecuteNonQuery();
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             user = context.SelectById<TeBaseField>(3);
             Assert.NotNull(user);
@@ -2092,11 +2112,11 @@ namespace Light.Data.Mysql.Test
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 3);
             ps[1] = new DataParameter("P2", "abc");
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
                 await executor.ExecuteNonQueryAsync(CancellationToken.None);
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             user = context.SelectById<TeBaseField>(3);
             Assert.NotNull(user);
@@ -2125,11 +2145,11 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "sptest5";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 ac = Convert.ToInt32(executor.ExecuteScalar());
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             Assert.Equal(10, ac);
         }
@@ -2156,11 +2176,11 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(5, ac);
 
             sql = "sptest5";
-            using (var trans = context.CreateTransactionScope()) {
-                trans.BeginTrans();
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql);
                 ac = Convert.ToInt32(await executor.ExecuteScalarAsync(CancellationToken.None));
-                trans.CommitTrans();
+                context.CommitTrans();
             }
             Assert.Equal(10, ac);
         }
@@ -2436,5 +2456,140 @@ namespace Light.Data.Mysql.Test
             //Assert.Equal(2312.4m, item2.DecimalFieldNull);
         }
 
+        [Fact]
+        public void TestCase_DeleteByKey()
+        {
+            context.TruncateTable<TeBaseFieldNoIdentity>();
+            var item1 = context.CreateNew<TeBaseFieldNoIdentity>();
+            item1.Id = 0;
+            item1.Int32Field = 1;
+            item1.DoubleField = 0.1;
+            item1.VarcharField = "level1";
+            item1.DateTimeField = GetNow();
+            item1.EnumInt32Field = EnumInt32Type.Positive1;
+            var retInsert = context.Insert(item1);
+            Assert.Equal(0, item1.Id);
+            Assert.Equal(1, retInsert);
+            var ac = context.DeleteByKey<TeBaseFieldNoIdentity>(item1.Id);
+            Assert.Equal(1, ac);
+            var ac1 = context.Exists<TeBaseFieldNoIdentity>(item1.Id);
+            Assert.False(ac1);
+        }
+
+        [Fact]
+        public async void TestCase_DeleteByKey_Async()
+        {
+            context.TruncateTable<TeBaseFieldNoIdentity>();
+            var item1 = context.CreateNew<TeBaseFieldNoIdentity>();
+            item1.Id = 0;
+            item1.Int32Field = 1;
+            item1.DoubleField = 0.1;
+            item1.VarcharField = "level1";
+            item1.DateTimeField = GetNow();
+            item1.EnumInt32Field = EnumInt32Type.Positive1;
+            var retInsert = await context.InsertAsync(item1);
+            Assert.Equal(0, item1.Id);
+            Assert.Equal(1, retInsert);
+            var ac = await context.DeleteByKeyAsync<TeBaseFieldNoIdentity>(item1.Id);
+            Assert.Equal(1, ac);
+            var ac1 = await context.ExistsAsync<TeBaseFieldNoIdentity>(item1.Id);
+            Assert.False(ac1);
+        }
+
+        [Fact]
+        public void TestCase_DataSet_Query()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            SqlExecutor executor;
+            DataParameter[] ps;
+            List<TeBaseField> listEx;
+            DataSet ds;
+
+            sql = "sptest1";
+            executor = context.CreateStoreProcedureExecutor(sql);
+            ds = executor.QueryDataSet();
+            listEx = list;
+            Assert.Equal(listEx.Count, ds.Tables[0].Rows.Count);
+
+            sql = "sptest2";
+            ps = new DataParameter[2];
+            ps[0] = new DataParameter("P1", 5);
+            ps[1] = new DataParameter("P2", 8);
+            executor = context.CreateStoreProcedureExecutor(sql, ps);
+            ds = executor.QueryDataSet();
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            Assert.Equal(listEx.Count, ds.Tables[0].Rows.Count);
+
+            sql = "select * from Te_BaseField";
+            executor = context.CreateSqlStringExecutor(sql);
+            ds = executor.QueryDataSet();
+            listEx = list;
+            Assert.Equal(listEx.Count, ds.Tables[0].Rows.Count);
+        }
+
+        [Fact]
+        public void TestCase_Trans_Rollback()
+        {
+            List<TeBaseField> list = CreateBaseFieldTableList(10);
+            TeBaseField ex = null;
+            TeBaseField ac = null;
+            context.TruncateTable<TeBaseField>();
+
+            ex = list[0];
+            using (var trans = context.BeginTrans(false)) {
+                //trans.BeginTrans();
+                Assert.True(trans.CheckTrans());
+                context.Insert(ex);
+                context.RollbackTrans();
+                Assert.Throws<LightDataException>(() =>
+                {
+                    context.Insert(ex);
+                });
+                Assert.ThrowsAny<Exception>(() =>
+                {
+                    context.CommitTrans();
+                });
+            }
+            Assert.Equal(1, ex.Id);
+            ac = context.SelectById<TeBaseField>(ex.Id);
+            Assert.Null(ac);
+
+            ex = list[1];
+            var t = context.BeginTrans(true);
+            Assert.True(t.CheckTrans());
+            //trans.BeginTrans();
+            context.Insert(ex);
+            context.RollbackTrans();
+            Assert.False(t.CheckTrans());
+            ex = list[2];
+            context.Insert(ex);
+            Assert.Throws<LightDataException>(() =>
+            {
+                context.CommitTrans();
+            });
+
+            Assert.True(ex.Id > 0);
+            ac = context.SelectById<TeBaseField>(ex.Id);
+            AssertExtend.StrictEqual(ex, ac);
+
+            BaseErrorTable error = new BaseErrorTable();
+            ex = list[3];
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                Assert.True(context.IsTransactionMode);
+                context.Insert(ex);
+                Assert.ThrowsAny<Exception>(() =>
+                {
+                    context.Insert(error);
+                });
+                Assert.Throws<LightDataException>(() =>
+                {
+                    context.CommitTrans();
+                });
+            }
+            ac = context.SelectById<TeBaseField>(ex.Id);
+            Assert.Null(ac);
+        }
     }
 }

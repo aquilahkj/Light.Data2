@@ -358,11 +358,29 @@ namespace Light.Data {
         }
         
         /// <summary>
-        ///   查找类似 The TransactionScope Has Been Created 的本地化字符串。
+        ///   查找类似 The transaction has begun 的本地化字符串。
         /// </summary>
-        internal static string TransactionScopeHasBeenCreated {
+        internal static string TransactionHasBegun {
             get {
-                return ResourceManager.GetString("TransactionScopeHasBeenCreated", resourceCulture);
+                return ResourceManager.GetString("TransactionHasBegun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The transaction has closed 的本地化字符串。
+        /// </summary>
+        internal static string TransactionHasClosed {
+            get {
+                return ResourceManager.GetString("TransactionHasClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The transaction not begin 的本地化字符串。
+        /// </summary>
+        internal static string TransactionNotBegin {
+            get {
+                return ResourceManager.GetString("TransactionNotBegin", resourceCulture);
             }
         }
         

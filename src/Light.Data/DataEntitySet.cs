@@ -26,12 +26,12 @@ namespace Light.Data
             return context.BatchDelete(datas);
         }
 
-        public async Task<int> BatchDeleteAsync(IEnumerable<T> datas, CancellationToken cancellationToken)
+        public async Task<int> BatchDeleteAsync(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.BatchDeleteAsync(datas, cancellationToken);
         }
 
-        public async Task<int> BatchDeleteAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        public async Task<int> BatchDeleteAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.BatchDeleteAsync(datas, index, count, cancellationToken);
         }
@@ -46,12 +46,12 @@ namespace Light.Data
             return context.BatchInsert(datas, index, count);
         }
 
-        public async Task<int> BatchInsertAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        public async Task<int> BatchInsertAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.BatchInsertAsync(datas, index, count, cancellationToken);
         }
 
-        public async Task<int> BatchInsertAsync(IEnumerable<T> datas, CancellationToken cancellationToken)
+        public async Task<int> BatchInsertAsync(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.BatchInsertAsync(datas, cancellationToken);
         }
@@ -66,12 +66,12 @@ namespace Light.Data
             return context.BatchUpdate(datas);
         }
 
-        public async Task<int> BatchUpdateAsync(IEnumerable<T> datas, CancellationToken cancellationToken)
+        public async Task<int> BatchUpdateAsync(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.BatchUpdateAsync(datas, cancellationToken);
         }
 
-        public async Task<int> BatchUpdateAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken)
+        public async Task<int> BatchUpdateAsync(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.BatchUpdateAsync(datas, index, count, cancellationToken);
         }
@@ -81,7 +81,7 @@ namespace Light.Data
             return context.Delete(data);
         }
 
-        public async Task<int> DeleteAsync(T data, CancellationToken cancellationToken)
+        public async Task<int> DeleteAsync(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.DeleteAsync(data, cancellationToken);
         }
@@ -91,7 +91,7 @@ namespace Light.Data
             return context.Insert(data);
         }
 
-        public async Task<int> InsertAsync(T data, CancellationToken cancellationToken)
+        public async Task<int> InsertAsync(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.InsertAsync(data, cancellationToken);
         }
@@ -101,7 +101,7 @@ namespace Light.Data
             return context.InsertOrUpdate(data);
         }
 
-        public async Task<int> InsertOrUpdateAsync(T data, CancellationToken cancellationToken)
+        public async Task<int> InsertOrUpdateAsync(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.InsertOrUpdateAsync(data, cancellationToken);
         }
@@ -111,7 +111,7 @@ namespace Light.Data
             return context.SelectById<T>(id);
         }
 
-        public async Task<T> SelectByIdAsync(object id, CancellationToken cancellationToken)
+        public async Task<T> SelectByIdAsync(object id, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.SelectByIdAsync<T>(id, cancellationToken);
         }
@@ -121,22 +121,22 @@ namespace Light.Data
             return context.SelectByKey<T>(primaryKeys);
         }
 
-        public async Task<T> SelectByKeyAsync(object primaryKey, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.SelectByKeyAsync<T>(primaryKey, cancellationToken);
         }
 
-        public async Task<T> SelectByKeyAsync(object primaryKey1, object primaryKey2, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.SelectByKeyAsync<T>(primaryKey1, primaryKey2, cancellationToken);
         }
 
-        public async Task<T> SelectByKeyAsync(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.SelectByKeyAsync<T>(primaryKey1, primaryKey2, primaryKey3, cancellationToken);
         }
 
-        public async Task<T> SelectByKeyAsync(object[] primaryKeys, CancellationToken cancellationToken)
+        public async Task<T> SelectByKeyAsync(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.SelectByKeyAsync<T>(primaryKeys, cancellationToken);
         }
@@ -146,22 +146,22 @@ namespace Light.Data
             return context.Exists<T>(primaryKeys);
         }
 
-        public async Task<bool> ExistsAsync(object primaryKey, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.ExistsAsync<T>(primaryKey, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(object primaryKey1, object primaryKey2, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.ExistsAsync<T>(primaryKey1, primaryKey2, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.ExistsAsync<T>(primaryKey1, primaryKey2, primaryKey3, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(object[] primaryKeys, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.ExistsAsync<T>(primaryKeys, cancellationToken);
         }
@@ -171,7 +171,7 @@ namespace Light.Data
             return context.Update(data);
         }
 
-        public async Task<int> UpdateAsync(T data, CancellationToken cancellationToken)
+        public async Task<int> UpdateAsync(T data, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await context.UpdateAsync(data, cancellationToken);
         }

@@ -168,13 +168,21 @@ namespace Light.Data
             return Query<T>(null);
         }
 
+        /// <summary>
+        /// Query and return dataset
+        /// </summary>
+        /// <returns>DataSet</returns>
+        public DataSet QueryDataSet()
+        {
+            return _context.QueryDataSet(_level, _command);
+        }
 
         #region async
         /// <summary>
         /// Executes the non query.
         /// </summary>
         /// <returns>The non query.</returns>
-        public async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
+        public async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             return await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
         }
@@ -183,7 +191,7 @@ namespace Light.Data
         /// Executes the scalar.
         /// </summary>
         /// <returns>The scalar.</returns>
-        public async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
+        public async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
             return await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
         }
@@ -193,7 +201,7 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         /// <returns>First data</returns>
-        public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken)
+        public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken=default(CancellationToken))
         {
             T target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null, cancellationToken);
             return target;
@@ -205,7 +213,7 @@ namespace Light.Data
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         /// <param name="region">Query region</param>
         /// <returns>Data list</returns>
-        private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken)
+        private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken=default(CancellationToken))
         {
             List<T> list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null, cancellationToken);
             return list;
@@ -216,7 +224,7 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         /// <returns>Data list</returns>
-        public async Task<List<T>> QueryListAsync<T>(CancellationToken cancellationToken)
+        public async Task<List<T>> QueryListAsync<T>(CancellationToken cancellationToken=default(CancellationToken))
         {
             return await QueryListAsync<T>(null, cancellationToken);
         }
@@ -227,7 +235,7 @@ namespace Light.Data
         /// <param name="start">Start index. start from 0</param>
         /// <param name="size">Size.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<List<T>> QueryListAsync<T>(int start, int size, CancellationToken cancellationToken)
+        public async Task<List<T>> QueryListAsync<T>(int start, int size, CancellationToken cancellationToken=default(CancellationToken))
         {
             if (start < 0) {
                 throw new ArgumentOutOfRangeException(nameof(size));

@@ -173,14 +173,14 @@ namespace Light.Data
         public abstract IJoinTable<K, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression, JoinSetting joinSetting);
 
 
-        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken);
+        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken=default(CancellationToken));
 
-        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken);
+        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken=default(CancellationToken));
 
-        public abstract Task<K> FirstAsync(CancellationToken cancellationToken);
+        public abstract Task<K> FirstAsync(CancellationToken cancellationToken=default(CancellationToken));
 
-        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken);
+        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken=default(CancellationToken));
 
-        public abstract Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression, CancellationToken cancellationToken) where P : class;
+        public abstract Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression, CancellationToken cancellationToken=default(CancellationToken)) where P : class;
     }
 }

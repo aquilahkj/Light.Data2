@@ -9,10 +9,10 @@
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <Version>2.0.8.2</Version>
+    <Version>2.1.0</Version>
     <PackageTags>Database, Data, ORM, ADO.NET, SQL, MYSQL</PackageTags>
-    <AssemblyVersion>2.0.8.0</AssemblyVersion>
-    <FileVersion>2.0.8.2</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>

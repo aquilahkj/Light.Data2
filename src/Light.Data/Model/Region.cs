@@ -7,7 +7,7 @@ namespace Light.Data
 	/// </summary>
 	class Region
 	{
-		static Region region = new Region (0, 1);
+		static readonly Region region = new Region (0, 1);
 
 		public static Region OneTimes {
 			get {

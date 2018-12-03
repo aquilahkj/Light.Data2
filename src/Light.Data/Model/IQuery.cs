@@ -490,68 +490,68 @@ namespace Light.Data
         /// Gets the datas count.
         /// </summary>
         /// <value>The count.</value>
-        Task<int> CountAsync(CancellationToken cancellationToken);
+        Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the datas long count.
         /// </summary>
         /// <value>The long count.</value>
-        Task<long> LongCountAsync(CancellationToken cancellationToken);
+        Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the data is exists with query expression.
         /// </summary>
         /// <value><c>true</c> if exists; otherwise, <c>false</c>.</value>
-        Task<bool> ExistsAsync(CancellationToken cancellationToken);
+        Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get single instance.
         /// </summary>
         /// <returns>instance.</returns>
-        Task<T> FirstAsync(CancellationToken cancellationToken);
+        Task<T> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Elements at index.
         /// </summary>
         /// <returns>instance.</returns>
         /// <param name="index">Index.</param>
-        Task<T> ElementAtAsync(int index, CancellationToken cancellationToken);
+        Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// To the list.
         /// </summary>
         /// <returns>The list.</returns>
-        Task<List<T>> ToListAsync(CancellationToken cancellationToken);
+        Task<List<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// To the array.
         /// </summary>
         /// <returns>The array.</returns>
-        Task<T[]> ToArrayAsync(CancellationToken cancellationToken);
+        Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// All fields data insert to the special table K.
         /// </summary>
         /// <typeparam name="K">The 1st type parameter.</typeparam>
-        Task<int> InsertAsync<K>(CancellationToken cancellationToken);
+        Task<int> InsertAsync<K>(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Select fields data insert to the special table K.
         /// </summary>
         /// <param name="expression">Expression.</param>
         /// <typeparam name="K">The 1st type parameter.</typeparam>
-        Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken);
+        Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update datas.
         /// </summary>
         /// <param name="expression">Expression.</param>
-        Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken);
+        Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete datas
         /// </summary>
-        Task<int> DeleteAsync(CancellationToken cancellationToken);
+        Task<int> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Aggregates the fields.
@@ -559,7 +559,7 @@ namespace Light.Data
         /// <returns>The field.</returns>
         /// <param name="expression">Expression.</param>
         /// <typeparam name="K">The 1st type parameter.</typeparam>
-        Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken);
+        Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion
 
