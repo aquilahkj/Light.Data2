@@ -14,19 +14,16 @@ namespace Light.Data
     public class DataContext : IDisposable
     {
         /// <summary>
-        /// Gets the name of the mapping table.
+        /// Get the name of the mapping table.
         /// </summary>
         /// <returns>The table name.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Specified object type.</typeparam>
         public static string GetTableName<T>()
         {
             DataEntityMapping mapping = DataEntityMapping.GetEntityMapping(typeof(T));
             return mapping.TableName;
         }
 
-        ///// <summary>
-        ///// The connection string.
-        ///// </summary>
         private string _connectionString;
 
         private DatabaseProvider _database;
@@ -35,6 +32,11 @@ namespace Light.Data
 
         private Dictionary<DataEntityMapping, string> _aliasTableDict;
 
+        /// <summary>
+        /// Set the mapping table alias name for the specified object type
+        /// </summary>
+        /// <typeparam name="T">Specified object type.</typeparam>
+        /// <param name="name">Alias name.</param>
         public void SetAliasTableName<T>(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -47,6 +49,11 @@ namespace Light.Data
             _aliasTableDict[mapping] = name;
         }
 
+        /// <summary>
+        /// Clear the mapping table alias name for the specified object type
+        /// </summary>
+        /// <typeparam name="T">Specified object type.</typeparam>
+        /// <returns>Clear success or not</returns>
         public bool ResetAliasTableName<T>()
         {
             if (_aliasTableDict == null) {
@@ -56,6 +63,9 @@ namespace Light.Data
             return _aliasTableDict.Remove(mapping);
         }
 
+        /// <summary>
+        /// Clear all the mapping table alias name
+        /// </summary>
         public void ClearAliasTableName()
         {
             if (_aliasTableDict != null) {
@@ -127,7 +137,7 @@ namespace Light.Data
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Light.Data.DataContext"/> class.
         /// </summary>
-        /// <param name="setting">Setting.</param>
+        /// <param name="setting">Connection setting.</param>
         public DataContext(IConnectionSetting setting)
         {
             if (setting == null)
@@ -136,6 +146,10 @@ namespace Light.Data
             Internal_DataContext(options);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Light.Data.DataContext"/> class.
+        /// </summary>
+        /// <param name="options">Context options.</param>
         public DataContext(DataContextOptions options)
         {
             if (options == null) {
@@ -183,12 +197,10 @@ namespace Light.Data
             tableEntity.ClearUpdateFields();
         }
 
-
-
         /// <summary>
-        /// Creates the new object.
+        /// Create a new object.
         /// </summary>
-        /// <returns>The new.</returns>
+        /// <returns>The new object.</returns>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public T CreateNew<T>() where T : class, new()
         {
@@ -698,58 +710,60 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batch insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas)
         {
             return BatchInsert(datas, 0, int.MaxValue, false, true);
         }
 
-        /// Batch insert data.
+        /// <summary>
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <param name="updateIdentity">is update data identity field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity)
         {
             return BatchInsert(datas, 0, int.MaxValue, refresh, updateIdentity);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public int BatchInsert<T>(IEnumerable<T> datas, int index, int count)
+        /// <param name="size">Size.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public int BatchInsert<T>(IEnumerable<T> datas, int index, int size)
         {
-            return BatchInsert(datas, index, count, false, true);
+            return BatchInsert(datas, index, size, false, true);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public int BatchInsert<T>(IEnumerable<T> datas, int index, int count, bool refresh, bool updateIdentity)
+        /// <param name="size">Size.</param>
+        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public int BatchInsert<T>(IEnumerable<T> datas, int index, int size, bool refresh, bool updateIdentity)
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
-            return BatchInsert(mapping, datas, index, count, refresh, updateIdentity);
+            return BatchInsert(mapping, datas, index, size, refresh, updateIdentity);
         }
 
-        internal int BatchInsert(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity)
+        internal int BatchInsert(DataTableEntityMapping mapping, IEnumerable datas, int index, int size, bool refresh, bool updateIdentity)
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -757,10 +771,10 @@ namespace Light.Data
             if (index < 0) {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            if (count < 0) {
-                throw new ArgumentOutOfRangeException(nameof(count));
+            if (size < 0) {
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
-            if (count == 0) {
+            if (size == 0) {
                 return 0;
             }
             IEnumerator enumerator = datas.GetEnumerator();
@@ -808,7 +822,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -843,7 +857,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -897,64 +911,64 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batch insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, 0, int.MaxValue, false, true, cancellationToken);
         }
 
         /// <summary>
-        /// Batch insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <param name="updateIdentity">is update data identity field</param>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, 0, int.MaxValue, refresh, updateIdentity, cancellationToken);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
+        /// <param name="size">Size.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int size, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await BatchInsertAsync(datas, index, count, false, true, cancellationToken);
+            return await BatchInsertAsync(datas, index, size, false, true, cancellationToken);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>The insert rows count.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <param name="updateIdentity">is update data identity field</param>
+        /// <param name="size">Size.</param>
+        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int size, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
-            return await BatchInsertAsync(mapping, datas, index, count, refresh, updateIdentity, cancellationToken);
+            return await BatchInsertAsync(mapping, datas, index, size, refresh, updateIdentity, cancellationToken);
         }
 
-        internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
+        internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int size, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -962,10 +976,10 @@ namespace Light.Data
             if (index < 0) {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            if (count < 0) {
-                throw new ArgumentOutOfRangeException(nameof(count));
+            if (size < 0) {
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
-            if (count == 0) {
+            if (size == 0) {
                 return 0;
             }
             IEnumerator enumerator = datas.GetEnumerator();
@@ -1013,7 +1027,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -1048,7 +1062,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -2061,7 +2075,7 @@ namespace Light.Data
         /// <summary>
         /// Create query expression.
         /// </summary>
-        /// <returns>The ueryable.</returns>
+        /// <returns>The queryable.</returns>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public IQuery<T> Query<T>()
         {
@@ -2102,8 +2116,14 @@ namespace Light.Data
         /// <param name="action">Action.</param>
         /// <param name="command">Command.</param>
         /// <param name="level">Level.</param>
+        /// <param name="isTransaction">IsTransaction.</param>
         /// <param name="start">Start.</param>
         /// <param name="size">Size.</param>
+        /// <param name="startTime">StartTime.</param>
+        /// <param name="endTime">EndTime.</param>
+        /// <param name="success">Success.</param>
+        /// <param name="result">Result.</param>
+        /// <param name="exceptionMessage">Exception Message.</param>
         private void OutputCommand(string action, DbCommand command, SafeLevel level, bool isTransaction, int start, int size, DateTime startTime, DateTime endTime, bool success, object result, string exceptionMessage)
         {
             if (this._output != null) {
@@ -2965,12 +2985,19 @@ namespace Light.Data
         #region IDisposable Support
         private bool _isDisposed; // To detect redundant calls
 
+        /// <summary>
+        /// Check the context is disposed
+        /// </summary>
         public bool IsDisposed {
             get {
                 return _isDisposed;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_isDisposed) {
@@ -2993,14 +3020,18 @@ namespace Light.Data
             }
         }
 
-        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        /// <summary>
+        /// 
+        /// </summary>
         ~DataContext()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Dispose the context
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -3010,7 +3041,9 @@ namespace Light.Data
         }
         #endregion
 
-
+        /// <summary>
+        /// Check the context is in the transaction mode.
+        /// </summary>
         public bool IsTransactionMode {
             get {
                 return _transaction != null;
@@ -3026,7 +3059,6 @@ namespace Light.Data
         /// <summary>
         /// Begin the transaction and set default level and not auto close.
         /// </summary>
-        /// <param name="level">Level.</param>
         public TransactionScope BeginTrans()
         {
             return BeginTrans(SafeLevel.Default, false);
@@ -3141,7 +3173,9 @@ namespace Light.Data
             }
         }
 
-
+        /// <summary>
+        /// Release the transaction
+        /// </summary>
         public void ReleaseTrans()
         {
             if (_transaction != null) {

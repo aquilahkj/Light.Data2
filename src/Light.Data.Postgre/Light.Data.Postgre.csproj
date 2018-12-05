@@ -17,6 +17,10 @@
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\Light.Data.Postgre.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="4.0.3" />
   </ItemGroup>
