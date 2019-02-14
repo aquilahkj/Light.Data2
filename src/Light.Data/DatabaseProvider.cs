@@ -46,6 +46,12 @@ namespace Light.Data
             }
         }
 
+        public virtual string ParameterPrefix {
+            get {
+                return _factory.ParameterPrefix;
+            }
+        }
+
         /// <summary>
         /// Creates the connection.
         /// </summary>
@@ -86,7 +92,7 @@ namespace Light.Data
         /// <param name="value">Value.</param>
         /// <param name="dbType">Db type.</param>
         /// <param name="direction">Direction.</param>
-        public abstract IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType);
+        public abstract IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType);
 
         /// <summary>
         /// Gets the factory.
@@ -162,11 +168,11 @@ namespace Light.Data
             }
         }
 
-        /// <summary>
-        /// Formats the stored procedure parameter.
-        /// </summary>
-        /// <param name="dataParameter">Data parmeter.</param>
-        public abstract void FormatStoredProcedureParameter(IDataParameter dataParameter);
+        ///// <summary>
+        ///// Formats the stored procedure parameter.
+        ///// </summary>
+        ///// <param name="dataParameter">Data parmeter.</param>
+        //public abstract void FormatStoredProcedureParameter(IDataParameter dataParameter);
 
 
 

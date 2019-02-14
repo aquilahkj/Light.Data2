@@ -234,4 +234,7 @@
   <data name="TransactionHasClosed" xml:space="preserve">
     <value>The transaction has closed</value>
   </data>
+  <data name="OutputParameterNotSupportObjectType" xml:space="preserve">
+    <value>The output parameter not support object type</value>
+  </data>
 </root>

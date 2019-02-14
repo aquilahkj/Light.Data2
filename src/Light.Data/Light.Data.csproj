@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <SignAssembly>true</SignAssembly>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>The light weight object relational mapping framework for sqlserver</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
@@ -12,17 +11,22 @@
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <FileVersion>2.1.1.0</FileVersion>
     <PackageReleaseNotes>Light.Data.Mssql for SqlServer
 Light.Data.Mysql for Mysql
 Light.Data.Postgre for Postgre</PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType></DebugType>
     <DocumentationFile>bin\Release\netstandard2.0\Light.Data.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\Aquila\Documents\Projects\light_data_v2\src\Light.Data\Light.Data.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

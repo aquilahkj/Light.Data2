@@ -4,19 +4,22 @@ using System.Text;
 
 namespace Light.Data
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum DataParameterMode
     {
-        //
-        // 摘要:
-        //     参数是输入参数。
+        /// <summary>
+        /// Input
+        /// </summary>
         Input = 1,
-        //
-        // 摘要:
-        //     参数是输出参数。
+        /// <summary>
+        /// Output
+        /// </summary>
         Output = 2,
-        //
-        // 摘要:
-        //     参数既能输入，也能输出。
+        /// <summary>
+        /// Input or output
+        /// </summary>
         InputOutput = 3,
     }
 }

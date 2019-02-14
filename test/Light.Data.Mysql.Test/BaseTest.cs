@@ -41,7 +41,7 @@ namespace Light.Data.Mysql.Test
         public DataContext CreateBuilderContextByConnection()
         {
             var builder = new DataContextOptionsBuilder<DataContext>();
-            builder.UseMysql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
+            builder.UseMysql("server=mysql_test;Port=3306;User Id=root;password=1qazxsw23edC;database=LightData_Test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
             DataContext context = new DataContext(options);
@@ -62,7 +62,7 @@ namespace Light.Data.Mysql.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder => {
-                builder.UseMysql("server=192.168.210.1;Port=3306;User Id=root;password=qwerty;database=lightdata_test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
+                builder.UseMysql("server=mysql_test;Port=3306;User Id=root;password=1qazxsw23edC;database=LightData_Test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
                 builder.SetBatchInsertCount(10);

@@ -17,7 +17,7 @@
 	//设置命名空间
     var namespaceName="Light.Data.Postgre.Test";
 	//设置数据库连接
-    var connection="Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;Pooling=false;";
+    var connection="Server=postgre_test;Port=5432;UserId=postgres;Password=1qazxsw23edC;Database=LightData_Test;Pooling=false;";
 	//设置需要生成的数据库
     var dataBase="LightData_Test";
 

@@ -33,6 +33,15 @@ namespace Light.Data
         private Dictionary<DataEntityMapping, string> _aliasTableDict;
 
         /// <summary>
+        /// Sql Parameter Prefix
+        /// </summary>
+        public string ParameterPrefix {
+            get {
+                return _database.ParameterPrefix;
+            }
+        }
+
+        /// <summary>
         /// Set the mapping table alias name for the specified object type
         /// </summary>
         /// <typeparam name="T">Specified object type.</typeparam>
@@ -2184,44 +2193,6 @@ namespace Light.Data
             }
         }
 
-        internal int ExecuteNonQuery(DbCommand dbcommand, SafeLevel level, TransactionConnection transaction = null)
-        {
-            CheckStatus();
-            int rInt;
-            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
-
-            DateTime startTime = DateTime.Now;
-            bool success = false;
-            string exceptionMessage = null;
-            object result = null;
-            try {
-                if (!transaction.IsOpen) {
-                    transaction.Open();
-                }
-                transaction.SetupCommand(dbcommand);
-                rInt = dbcommand.ExecuteNonQuery();
-                result = rInt;
-                success = true;
-                if (commit) {
-                    transaction.Commit();
-                }
-            }
-            catch (Exception ex) {
-                exceptionMessage = ex.Message;
-                ProcessExceptionTransaction(transaction, trans);
-                throw ex;
-            }
-            finally {
-                if (commit && !transaction.IsDisposed) {
-                    transaction.Dispose();
-                }
-                DateTime endTime = DateTime.Now;
-                OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
-            }
-
-            return rInt;
-        }
-
         private void ProcessExceptionTransaction(TransactionConnection transaction, bool trans)
         {
             if (trans) {
@@ -2247,6 +2218,49 @@ namespace Light.Data
             }
         }
 
+        internal int ExecuteNonQuery(DbCommand dbcommand, SafeLevel level, TransactionConnection transaction = null)
+        {
+            CheckStatus();
+            int rInt;
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
+
+            DateTime startTime = DateTime.Now;
+            bool success = false;
+            string exceptionMessage = null;
+            object result = null;
+            try {
+                if (!transaction.IsOpen) {
+                    transaction.Open();
+                }
+                transaction.SetupCommand(dbcommand);
+                rInt = dbcommand.ExecuteNonQuery();
+                result = rInt;
+                success = true;
+                if (commit) {
+                    transaction.Commit();
+                }
+            }
+            catch (LightDataException ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
+            }
+            finally {
+                if (commit && !transaction.IsDisposed) {
+                    transaction.Dispose();
+                }
+                DateTime endTime = DateTime.Now;
+                OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            }
+
+            return rInt;
+        }
+
         internal async Task<int> ExecuteNonQueryAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken, TransactionConnection transaction = null)
         {
             CheckStatus();
@@ -2269,10 +2283,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2307,10 +2326,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2345,10 +2369,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2391,11 +2420,17 @@ namespace Light.Data
                     transaction.SetupCommand(dbcommand);
                     reader = dbcommand.ExecuteReader();
                 }
+                catch (LightDataException ex) {
+                    DateTime endTime = DateTime.Now;
+                    exceptionMessage = ex.Message;
+                    ProcessExceptionTransaction(transaction, trans);
+                    throw ex;
+                }
                 catch (Exception ex) {
                     DateTime endTime = DateTime.Now;
                     exceptionMessage = ex.Message;
                     OutputCommand<T>(nameof(QueryDataDefineReader), dbcommand, level, trans, start, size, startTime, endTime, success, 0, exceptionMessage);
-                    throw ex;
+                    throw new LightDataDbException(ex.Message, ex);
                 }
 
                 success = true;
@@ -2433,11 +2468,17 @@ namespace Light.Data
                             continue;
                         }
                     }
-                    catch (Exception ex) {
+                    catch (LightDataException ex) {
                         error = true;
                         exceptionMessage = ex.Message;
                         ProcessExceptionTransaction(transaction, trans);
                         throw ex;
+                    }
+                    catch (Exception ex) {
+                        error = true;
+                        exceptionMessage = ex.Message;
+                        ProcessExceptionTransaction(transaction, trans);
+                        throw new LightDataDbException(ex.Message, ex);
                     }
                     yield return data;
                 }
@@ -2487,7 +2528,6 @@ namespace Light.Data
                 reader = dbcommand.ExecuteReader();
                 success = true;
 
-
                 bool flat = false;
 
                 while (reader.Read()) {
@@ -2520,10 +2560,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2602,10 +2647,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2677,10 +2727,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2759,10 +2814,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2805,10 +2865,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2873,6 +2938,32 @@ namespace Light.Data
         /// </summary>
         /// <returns>The sql string executor.</returns>
         /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="level">Level.</param>
+        public SqlExecutor CreateSqlStringExecutor(string sqlString, object value, SafeLevel level)
+        {
+            TextFormatter textFormatter = new TextFormatter(sqlString, TextTemplateOptions.Compiled | TextTemplateOptions.NotAllowExtend);
+            string sql = textFormatter.FormatSql(value, this.ParameterPrefix, out DataParameter[] parameters);
+            return CreateSqlStringExecutor(sql, parameters, level);
+        }
+
+        /// <summary>
+        /// Creates the sql string executor.
+        /// </summary>
+        /// <returns>The sql string executor.</returns>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Value.</param>
+        public SqlExecutor CreateSqlStringExecutor(string sqlString, object value)
+        {
+            return CreateSqlStringExecutor(sqlString, value, SafeLevel.Default);
+        }
+
+
+        /// <summary>
+        /// Creates the sql string executor.
+        /// </summary>
+        /// <returns>The sql string executor.</returns>
+        /// <param name="sqlString">Sql string.</param>
         /// <param name="level">Level.</param>
         public SqlExecutor CreateSqlStringExecutor(string sqlString, SafeLevel level)
         {
@@ -2911,6 +3002,30 @@ namespace Light.Data
         public SqlExecutor CreateStoreProcedureExecutor(string storeProcedure, DataParameter[] param)
         {
             return CreateStoreProcedureExecutor(storeProcedure, param, SafeLevel.Default);
+        }
+
+        /// <summary>
+        /// Creates the store procedure executor.
+        /// </summary>
+        /// <returns>The store procedure executor.</returns>
+        /// <param name="storeProcedure">Store procedure.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="level">Level.</param>
+        public SqlExecutor CreateStoreProcedureExecutor(string storeProcedure, object value, SafeLevel level)
+        {
+            DataParameter[] parameters = ParameterConvert.ConvertParameter(value);
+            return CreateStoreProcedureExecutor(storeProcedure, parameters, level);
+        }
+
+        /// <summary>
+        /// Creates the store procedure executor.
+        /// </summary>
+        /// <returns>The store procedure executor.</returns>
+        /// <param name="storeProcedure">Store procedure.</param>
+        /// <param name="value">Value.</param>
+        public SqlExecutor CreateStoreProcedureExecutor(string storeProcedure, object value)
+        {
+            return CreateStoreProcedureExecutor(storeProcedure, value, SafeLevel.Default);
         }
 
         /// <summary>
@@ -2972,15 +3087,15 @@ namespace Light.Data
             return _database.CreateCommand(sql);
         }
 
-        internal IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction)
+        internal IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, CommandType commandType)
         {
-            return _database.CreateParameter(name, value, dbType, direction, null);
+            return _database.CreateParameter(name, value, dbType, direction, null, commandType);
         }
 
-        internal void FormatStoredProcedureParameter(IDataParameter dataParameter)
-        {
-            _database.FormatStoredProcedureParameter(dataParameter);
-        }
+        //internal void FormatStoredProcedureParameter(IDataParameter dataParameter)
+        //{
+        //    _database.FormatStoredProcedureParameter(dataParameter);
+        //}
 
         #region IDisposable Support
         private bool _isDisposed; // To detect redundant calls
@@ -3270,5 +3385,509 @@ namespace Light.Data
             }
         }
 
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString)
+        {
+            return QuerySqlList<T>(sqlString, null);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.QueryList<T>();
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString, int start, int size)
+        {
+            return QuerySqlList<T>(sqlString, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.QueryList<T>(start, size);
+        }
+
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString)
+        {
+            return await QuerySqlListAsync<T>(sqlString, null);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.QueryListAsync<T>();
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString, int start, int size)
+        {
+            return await QuerySqlListAsync<T>(sqlString, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.QueryListAsync<T>(start, size);
+        }
+
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public T QuerySqlFirst<T>(string sqlString)
+        {
+            return QuerySqlFirst<T>(sqlString, null);
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public T QuerySqlFirst<T>(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.QueryFirst<T>();
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public async Task<T> QuerySqlFirstAsync<T>(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await QuerySqlFirstAsync<T>(sqlString, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<T> QuerySqlFirstAsync<T>(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.QueryFirstAsync<T>();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public int ExecuteNonQuerySqlString(string sqlString)
+        {
+            return ExecuteNonQuerySqlString(sqlString, null);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public int ExecuteNonQuerySqlString(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQuerySqlStringAsync(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteNonQuerySqlStringAsync(sqlString, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQuerySqlStringAsync(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public object ExecuteScalarSqlString(string sqlString)
+        {
+            return ExecuteScalarSqlString(sqlString, null);
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public object ExecuteScalarSqlString(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarSqlStringAsync(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteScalarSqlStringAsync(sqlString, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarSqlStringAsync(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.ExecuteScalarAsync();
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure)
+        {
+            return QueryStoreProcedureList<T>(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.QueryList<T>();
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure, int start, int size)
+        {
+            return QueryStoreProcedureList<T>(storeProcedure, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.QueryList<T>(start, size);
+        }
+
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure)
+        {
+            return await QueryStoreProcedureListAsync<T>(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.QueryListAsync<T>();
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure, int start, int size)
+        {
+            return await QueryStoreProcedureListAsync<T>(storeProcedure, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.QueryListAsync<T>(start, size);
+        }
+
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public T QueryStoreProcedureFirst<T>(string storeProcedure)
+        {
+            return QueryStoreProcedureFirst<T>(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public T QueryStoreProcedureFirst<T>(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.QueryFirst<T>();
+        }
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public async Task<T> QueryStoreProcedureFirstAsync<T>(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await QueryStoreProcedureFirstAsync<T>(storeProcedure, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<T> QueryStoreProcedureFirstAsync<T>(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.QueryFirstAsync<T>();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public int ExecuteNonQueryStoreProcedure(string storeProcedure)
+        {
+            return ExecuteNonQueryStoreProcedure(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public int ExecuteNonQueryStoreProcedure(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQueryStoreProcedureAsync(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteNonQueryStoreProcedureAsync(storeProcedure, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQueryStoreProcedureAsync(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public object ExecuteScalarStoreProcedure(string storeProcedure)
+        {
+            return ExecuteScalarStoreProcedure(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public object ExecuteScalarStoreProcedure(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarStoreProcedureAsync(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteScalarStoreProcedureAsync(storeProcedure, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarStoreProcedureAsync(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.ExecuteScalarAsync();
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

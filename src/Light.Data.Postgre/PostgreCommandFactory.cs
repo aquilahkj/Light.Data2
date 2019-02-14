@@ -464,16 +464,6 @@ namespace Light.Data.Postgre
             return "current_time";
         }
 
-        public override string CreateParamName(string name)
-        {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
-            if (!name.StartsWith(":", StringComparison.Ordinal)) {
-                return ":" + name;
-            }
-            else {
-                return name;
-            }
-        }
+        public override string ParameterPrefix => ":";
     }
 }

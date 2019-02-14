@@ -19,6 +19,8 @@ namespace Light.Data
 
         SafeLevel _level = SafeLevel.None;
 
+        List<CallbackDataParameter> callbackList;
+
         /// <summary>
         /// Gets or sets the command time out.
         /// </summary>
@@ -49,11 +51,14 @@ namespace Light.Data
             if (parameters != null) {
                 foreach (DataParameter param in parameters) {
                     string parameterName = param.ParameterName;
-                    IDataParameter dataParameter = context.CreateParameter(parameterName, param.Value, param.DbType, (ParameterDirection)param.Direction);
+                    IDataParameter dataParameter = context.CreateParameter(parameterName, param.Value, param.DbType, (ParameterDirection)param.Direction, commandType);
                     param.SetDataParameter(dataParameter);
                     _command.Parameters.Add(dataParameter);
-                    if (commandType == CommandType.StoredProcedure) {
-                        context.FormatStoredProcedureParameter(dataParameter);
+                    if (param is CallbackDataParameter callbackParam) {
+                        if (callbackList == null) {
+                            callbackList = new List<CallbackDataParameter>();
+                        }
+                        callbackList.Add(callbackParam);
                     }
                 }
             }
@@ -65,7 +70,9 @@ namespace Light.Data
         /// <returns>The non query.</returns>
         public int ExecuteNonQuery()
         {
-            return _context.ExecuteNonQuery(_command, _level);
+            int ret = _context.ExecuteNonQuery(_command, _level);
+            Callback();
+            return ret;
         }
 
         /// <summary>
@@ -74,7 +81,9 @@ namespace Light.Data
         /// <returns>The scalar.</returns>
         public object ExecuteScalar()
         {
-            return _context.ExecuteScalar(_command, _level);
+            object ret = _context.ExecuteScalar(_command, _level);
+            Callback();
+            return ret;
         }
 
         /// <summary>
@@ -85,9 +94,10 @@ namespace Light.Data
         public T QueryFirst<T>()
         {
             T target = _context.QueryDataDefineSingle<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null);
+            Callback();
             return target;
         }
-        
+
         /// <summary>
         /// Query and return data list
         /// </summary>
@@ -97,6 +107,7 @@ namespace Light.Data
         private List<T> QueryList<T>(Region region)
         {
             List<T> list = _context.QueryDataDefineList<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
+            Callback();
             return list;
         }
 
@@ -155,7 +166,9 @@ namespace Light.Data
         /// <returns>Data enumerable</returns>
         private IEnumerable<T> Query<T>(Region region)
         {
-            return _context.QueryDataDefineReader<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
+            IEnumerable<T> enumable = _context.QueryDataDefineReader<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
+            Callback();
+            return enumable;
         }
 
         /// <summary>
@@ -174,7 +187,9 @@ namespace Light.Data
         /// <returns>DataSet</returns>
         public DataSet QueryDataSet()
         {
-            return _context.QueryDataSet(_level, _command);
+            DataSet ds = _context.QueryDataSet(_level, _command);
+            Callback();
+            return ds;
         }
 
         #region async
@@ -184,16 +199,20 @@ namespace Light.Data
         /// <returns>The non query.</returns>
         public async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
+            int ret = await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
+            Callback();
+            return ret;
         }
-        
+
         /// <summary>
         /// Executes the scalar.
         /// </summary>
         /// <returns>The scalar.</returns>
         public async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
+            object ret = await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
+            Callback();
+            return ret;
         }
 
         /// <summary>
@@ -204,6 +223,7 @@ namespace Light.Data
         public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
         {
             T target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null, cancellationToken);
+            Callback();
             return target;
         }
 
@@ -216,6 +236,7 @@ namespace Light.Data
         private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken = default(CancellationToken))
         {
             List<T> list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null, cancellationToken);
+            Callback();
             return list;
         }
 
@@ -246,7 +267,16 @@ namespace Light.Data
             Region region = new Region(start, size);
             return await QueryListAsync<T>(region, cancellationToken);
         }
-        
+
         #endregion
+
+        void Callback()
+        {
+            if (callbackList != null) {
+                foreach (CallbackDataParameter callbackParam in callbackList) {
+                    callbackParam.Callback();
+                }
+            }
+        }
     }
 }

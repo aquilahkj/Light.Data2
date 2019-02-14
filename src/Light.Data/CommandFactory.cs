@@ -63,6 +63,8 @@ namespace Light.Data
 
         protected CommandCache _deleteByKeyCache = new CommandCache();
 
+        public abstract string ParameterPrefix { get; }
+
         public virtual string GetJoinPredicate(JoinType joinType)
         {
             return _joinCollectionPredicateDict[joinType];
@@ -1871,8 +1873,8 @@ namespace Light.Data
 
         public virtual string CreateParamName(string name)
         {
-            if (!name.StartsWith("@", StringComparison.Ordinal)) {
-                return "@" + name;
+            if (!name.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+                return ParameterPrefix + name;
             }
             else {
                 return name;

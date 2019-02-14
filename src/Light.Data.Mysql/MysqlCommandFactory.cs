@@ -355,14 +355,6 @@ namespace Light.Data.Mysql
             return "now()";
         }
 
-        public override string CreateParamName(string name)
-        {
-            if (!name.StartsWith("?", StringComparison.Ordinal)) {
-                return "?" + name;
-            }
-            else {
-                return name;
-            }
-        }
+        public override string ParameterPrefix => "?";
     }
 }

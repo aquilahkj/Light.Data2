@@ -158,12 +158,17 @@ namespace Light.Data
             get {
                 if (_dataParameter == null)
                     return null;
-                return _dataParameter.Value;
+                if (_direction == DataParameterMode.InputOutput || _direction == DataParameterMode.Output)
+                    return _dataParameter.Value;
+                else
+                    return null;
             }
         }
 
         Type _dataType;
-
+        /// <summary>
+        /// Gets the data type
+        /// </summary>
         public Type DataType {
             get {
                 return _dataType;

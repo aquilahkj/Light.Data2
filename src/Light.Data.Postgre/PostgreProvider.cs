@@ -54,11 +54,18 @@ namespace Light.Data.Postgre
             return new NpgsqlDataAdapter((NpgsqlCommand)command);
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType)
+        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType)
         {
             string parameterName = name;
-            if (!parameterName.StartsWith(":", StringComparison.Ordinal)) {
-                parameterName = ":" + parameterName;
+            if (commandType == CommandType.StoredProcedure) {
+                if (parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+                    parameterName = parameterName.TrimStart(ParameterPrefix[0]);
+                }
+            }
+            else {
+                if (!parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+                    parameterName = ParameterPrefix + parameterName;
+                }
             }
             NpgsqlParameter sp = new NpgsqlParameter() {
                 ParameterName = parameterName,
@@ -136,12 +143,12 @@ namespace Light.Data.Postgre
             return sp;
         }
 
-        public override void FormatStoredProcedureParameter(IDataParameter dataParmeter)
-        {
-            if (dataParmeter.ParameterName.StartsWith(":", StringComparison.Ordinal)) {
-                dataParmeter.ParameterName = dataParmeter.ParameterName.TrimStart(':');
-            }
-        }
+        //public override void FormatStoredProcedureParameter(IDataParameter dataParmeter)
+        //{
+        //    if (dataParmeter.ParameterName.StartsWith(":", StringComparison.Ordinal)) {
+        //        dataParmeter.ParameterName = dataParmeter.ParameterName.TrimStart(':');
+        //    }
+        //}
 
         #endregion
 

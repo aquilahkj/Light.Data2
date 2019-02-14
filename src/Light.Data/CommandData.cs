@@ -93,7 +93,7 @@ namespace Light.Data
                 idataParameters = new IDataParameter[length];
                 for (int i = 0; i < length; i++) {
                     DataParameter dp = dps[i];
-                    IDataParameter idp = database.CreateParameter(dp.ParameterName, dp.Value, dp.DbType, (ParameterDirection)dp.Direction, dp.DataType);
+                    IDataParameter idp = database.CreateParameter(dp.ParameterName, dp.Value, dp.DbType, (ParameterDirection)dp.Direction, dp.DataType, CommandType.Text);
                     idataParameters[i] = idp;
                 }
             }

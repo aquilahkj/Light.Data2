@@ -9,7 +9,7 @@ using System.Text;
 namespace Light.Data
 {
     /// <summary>
-    /// 自定义参数名的文本模板,参数名格式"{参数名}",如{param1},参数名只允许大小写英文和数字和'_'号,参数名对应对象的属性,如要在文本中打印'{'或'}'号,需要连续输入两个作为转义,如"{{,如要指定参数值非空，需在参数名前加'+'号"
+    /// Custom text template parameter name, parameter name '{name}' format, such as '{param1}', parameter name only allow case of English and Numbers and '_' number, parameter names corresponding object properties, such as to be in the text printed '{}' or ' 'no, two successive input as an escape, as "{{", if you want to specify the parameter value is not empty, need to put a '+' before the parameter name
     /// </summary>
     public class TextFormatter
     {
@@ -19,10 +19,9 @@ namespace Light.Data
             public SectionType Type;
             public string Value;
             public bool Nullable;
+            public bool ExtendFormat;
         }
-
-        delegate object GetValueHandler(object source);
-
+        
         class GetPropertyHandler
         {
             private GetValueHandler mGetValue;
@@ -50,46 +49,10 @@ namespace Light.Data
             public GetPropertyHandler(PropertyInfo property)
             {
                 if (property.CanRead) {
-                    this.mGetValue = PropertyGetHandler(property);
+                    this.mGetValue = ReflectionHandlerFactory.PropertyGetHandler(property);
                 }
                 this.mProperty = property;
                 this.mName = property.Name;
-            }
-
-            private static readonly Dictionary<PropertyInfo, GetValueHandler> mPropertyGetHandlers = new Dictionary<PropertyInfo, GetValueHandler>();
-
-            public static GetValueHandler PropertyGetHandler(PropertyInfo property)
-            {
-                GetValueHandler handler;
-                if (mPropertyGetHandlers.ContainsKey(property)) {
-                    return mPropertyGetHandlers[property];
-                }
-                lock (mPropertyGetHandlers) {
-                    if (mPropertyGetHandlers.ContainsKey(property)) {
-                        return mPropertyGetHandlers[property];
-                    }
-                    handler = CreatePropertyGetHandler(property);
-                    mPropertyGetHandlers.Add(property, handler);
-                }
-                return handler;
-            }
-
-            private static GetValueHandler CreatePropertyGetHandler(PropertyInfo property)
-            {
-                DynamicMethod method = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
-                ILGenerator iLGenerator = method.GetILGenerator();
-                iLGenerator.Emit(OpCodes.Ldarg_0);
-                iLGenerator.EmitCall(OpCodes.Callvirt, property.GetMethod, null);
-                EmitBoxIfNeeded(iLGenerator, property.PropertyType);
-                iLGenerator.Emit(OpCodes.Ret);
-                return (GetValueHandler)method.CreateDelegate(typeof(GetValueHandler));
-            }
-
-            private static void EmitBoxIfNeeded(ILGenerator il, Type type)
-            {
-                if (type.GetTypeInfo().IsValueType) {
-                    il.Emit(OpCodes.Box, type);
-                }
             }
         }
 
@@ -103,21 +66,38 @@ namespace Light.Data
 
         static Dictionary<string, Section[]> SectionDict = new Dictionary<string, Section[]>();
 
-        static TextFormatProvider textFormat = new TextFormatProvider();
+        static readonly TextFormatProvider textFormatProvider = new TextFormatProvider();
 
-        public static string Format(string pattern, Object obj)
+        /// <summary>
+        /// Format
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string Format(string pattern, object obj)
         {
             return Format(pattern, obj, TextTemplateOptions.None);
         }
 
-        public static string Format(string pattern, Object obj, TextTemplateOptions options)
+        /// <summary>
+        /// Format
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="obj"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string Format(string pattern, object obj, TextTemplateOptions options)
         {
             TextFormatter template = new TextFormatter(pattern, options);
             return template.Format(obj);
         }
 
-        Section[] sectionList;
+        readonly Section[] sectionList;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
         public TextFormatter(string pattern)
             : this(pattern, TextTemplateOptions.None)
         {
@@ -130,33 +110,38 @@ namespace Light.Data
 
         readonly bool notAllowNullValue;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="options"></param>
         public TextFormatter(string pattern, TextTemplateOptions options)
         {
             if (string.IsNullOrEmpty(pattern)) {
                 throw new ArgumentNullException(nameof(pattern));
             }
             this.options = options;
+            bool extend = (this.options & TextTemplateOptions.NotAllowNullValue) != TextTemplateOptions.Compiled;
             if ((this.options & TextTemplateOptions.Compiled) == TextTemplateOptions.Compiled) {
                 if (!SectionDict.TryGetValue(pattern, out Section[] array)) {
                     lock (SectionDict) {
-                        array = LoadSections(pattern);
+                        array = LoadSections(pattern, extend);
                         SectionDict[pattern] = array;
                     }
                 }
                 this.sectionList = array;
             }
             else {
-                this.sectionList = LoadSections(pattern);
+                this.sectionList = LoadSections(pattern, extend);
             }
-            //if ((this.options & TextTemplateOptions.IgnoreCase) == TextTemplateOptions.IgnoreCase) {
-            //    comparison = StringComparison.OrdinalIgnoreCase;
-            //}
-            //else {
-            //    comparison = StringComparison.Ordinal;
-            //}
             this.notAllowNullValue = ((this.options & TextTemplateOptions.NotAllowNullValue) == TextTemplateOptions.NotAllowNullValue);
         }
 
+        /// <summary>
+        /// Format
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public string Format(object obj)
         {
             if (object.Equals(obj, null)) {
@@ -171,7 +156,7 @@ namespace Light.Data
                     object data = LoadObject(obj, s.Name);
                     if (!Object.Equals(data, null)) {
                         if (data is string) {
-                            sb.AppendFormat(textFormat, s.Value, data);
+                            sb.AppendFormat(textFormatProvider, s.Value, data);
                         }
                         else {
                             sb.AppendFormat(s.Value, data);
@@ -190,13 +175,100 @@ namespace Light.Data
             return sb.ToString();
         }
 
+        public string Format(Dictionary<string, object> dict)
+        {
+            if (Equals(dict, null)) {
+                throw new ArgumentNullException(nameof(dict));
+            }
+            StringBuilder sb = new StringBuilder();
+            foreach (Section s in sectionList) {
+                if (s.Type == SectionType.NormalText) {
+                    sb.Append(s.Value);
+                }
+                else if (s.Type == SectionType.FormatText) {
+                    dict.TryGetValue(s.Name, out object data);
+                    if (!Equals(data, null)) {
+                        if (data is string) {
+                            sb.AppendFormat(textFormatProvider, s.Value, data);
+                        }
+                        else {
+                            sb.AppendFormat(s.Value, data);
+                        }
+                    }
+                    else {
+                        if (this.notAllowNullValue || !s.Nullable) {
+                            throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
+                        }
+                        else {
+                            sb.AppendFormat(s.Value, string.Empty);
+                        }
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Formar sql string
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="prefix"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string FormatSql(object obj, string prefix, out DataParameter[] parameters)
+        {
+            //if (object.Equals(obj, null)) {
+            //    throw new ArgumentNullException(nameof(obj));
+            //}
+            StringBuilder sb = new StringBuilder();
+            Dictionary<string, DataParameter> dict = new Dictionary<string, DataParameter>();
+            foreach (Section s in sectionList) {
+                if (s.Type == SectionType.NormalText) {
+                    sb.Append(s.Value);
+                }
+                else if (s.Type == SectionType.FormatText) {
+                    if (s.ExtendFormat) {
+                        throw new FormatException(string.Format("Not support extend format in \'{0}\'.", s.Name));
+                    }
+                    if (!dict.TryGetValue(s.Name, out DataParameter parameter)) {
+                        object data = LoadObject(obj, s.Name);
+                        string name = string.Concat(prefix, "P", dict.Count + 1);
+                        if (!Object.Equals(data, null)) {
+                            parameter = new DataParameter(name, data);
+                            dict.Add(s.Name, parameter);
+                        }
+                        else {
+                            if (this.notAllowNullValue || !s.Nullable) {
+                                throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
+                            }
+                            else {
+                                parameter = new DataParameter(name, data);
+                                dict.Add(s.Name, parameter);
+                            }
+                        }
+                    }
+                    sb.Append(parameter.ParameterName);
+                }
+            }
+            parameters = new DataParameter[dict.Count];
+            int i = 0;
+            foreach(var item in dict.Values) {
+                parameters[i] = item;
+                i++;
+            }
+            return sb.ToString();
+        }
+
         static object LoadObject(object obj, string name)
         {
+            if(object.Equals(obj, null)) {
+                return null;
+            }
             Type type = obj.GetType();
-            TypeInfo typeInfo = type.GetTypeInfo();
             if (!TypeDict.TryGetValue(type, out Dictionary<string, GetPropertyHandler> dict)) {
                 lock (TypeDict) {
                     if (!TypeDict.TryGetValue(type, out dict)) {
+                        TypeInfo typeInfo = type.GetTypeInfo();
                         PropertyInfo[] properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                         dict = new Dictionary<string, GetPropertyHandler>();
                         foreach (PropertyInfo propertie in properties) {
@@ -207,8 +279,7 @@ namespace Light.Data
             }
             int index = name.IndexOf(".", StringComparison.Ordinal);
             if (index == -1) {
-                dict.TryGetValue(name, out GetPropertyHandler handler);
-                if (handler != null) {
+                if (dict.TryGetValue(name, out GetPropertyHandler handler)) {
                     return handler.Get(obj);
                 }
                 else {
@@ -217,8 +288,7 @@ namespace Light.Data
             }
             else {
                 string typeName = name.Substring(0, index);
-                dict.TryGetValue(typeName, out GetPropertyHandler handler);
-                if (handler != null) {
+                if (dict.TryGetValue(typeName, out GetPropertyHandler handler)) {
                     object subObj = handler.Get(obj);
                     if (subObj == null) {
                         return null;
@@ -233,7 +303,7 @@ namespace Light.Data
             }
         }
 
-        static Section[] LoadSections(string pattern)
+        static Section[] LoadSections(string pattern, bool supportExtend)
         {
             int prev = 0;
 
@@ -306,13 +376,18 @@ namespace Light.Data
                             }
                             else if (split == -1) {
                                 if (e == ':' || e == ',') {
-                                    if (j == start) {
-                                        throw new FormatException(string.Format("Input string was not in a correct format, index is {0}, char is '{1}'", j, e));
+                                    if (supportExtend) {
+                                        if (j == start) {
+                                            throw new FormatException(string.Format("Input string was not a correct format, index is {0}, char is '{1}'", j, e));
+                                        }
+                                        else if (chars[j - 1] == '.') {
+                                            throw new FormatException(string.Format("Input param name was not a valid word, index is {0}, char is '{1}'", j - 1, '.'));
+                                        }
+                                        split = j;
                                     }
-                                    else if (chars[j - 1] == '.') {
-                                        throw new FormatException(string.Format("Input param name was not a valid word, index is {0}, char is '{1}'", j - 1, '.'));
+                                    else {
+                                        throw new FormatException(string.Format("Input string was not support extend format, index is {0}, char is '{1}'", j, e));
                                     }
-                                    split = j;
                                 }
                                 else if ((e >= 48 && e <= 57) || (e >= 65 && e <= 90) || (e >= 97 && e <= 122) || e == '_') {
                                     continue;
@@ -336,20 +411,24 @@ namespace Light.Data
                         endflag |= end == safeLen;
                         string name;
                         string value;
+                        bool extendFormat;
                         if (split > -1) {
                             name = new string(chars, start, split - start);
                             string format = new string(chars, split, end - split);
                             value = string.Concat("{0", format, "}");
+                            extendFormat = true;
                         }
                         else {
                             name = new string(chars, start, end - start);
                             value = "{0}";
+                            extendFormat = false;
                         }
                         Section forrmatSection = new Section {
                             Type = SectionType.FormatText,
                             Name = name,
                             Value = value,
-                            Nullable = nullable
+                            Nullable = nullable,
+                            ExtendFormat = extendFormat
                         };
                         list.Add(forrmatSection);
                         prev = end + 1;
@@ -382,13 +461,28 @@ namespace Light.Data
         }
     }
 
+    /// <summary>
+    /// Text template options
+    /// </summary>
     [Flags]
     public enum TextTemplateOptions
     {
+        /// <summary>
+        /// None
+        /// </summary>
 		None = 0,
+        /// <summary>
+        /// Compile template
+        /// </summary>
 		Compiled = 1,
-        //IgnoreCase = 2,
-        NotAllowNullValue = 2
+        /// <summary>
+        /// Not allow null value
+        /// </summary>
+        NotAllowNullValue = 2,
+        /// <summary>
+        /// Not allow extend format
+        /// </summary>
+        NotAllowExtend = 3
     }
 
     class TextFormatProvider : ICustomFormatter, IFormatProvider
@@ -435,7 +529,6 @@ namespace Light.Data
                             result.Append(ch);
                             tokenLen = 1;
                             break;
-
                     }
                     i += tokenLen;
                 }

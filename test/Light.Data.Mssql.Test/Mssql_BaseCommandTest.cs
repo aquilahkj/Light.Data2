@@ -2623,6 +2623,464 @@ namespace Light.Data.Mssql.Test
             ac = context.SelectById<TeBaseField>(ex.Id);
             Assert.Null(ac);
         }
+
+        [Fact]
+        public void TestCase_SqlString_QueryList_WithObject()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            List<TeBaseField> listEx;
+            List<TeBaseField> listAc;
+            string sql;
+
+            sql = "select * from Te_BaseField";
+            listAc = context.QuerySqlList<TeBaseField>(sql);
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField";
+            listAc = context.QuerySqlList<TeBaseField>(sql, 5, 3);
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField where Id>5 and Id<=8";
+            listAc = context.QuerySqlList<TeBaseField>(sql);
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField where Id>{from_id} and Id<={to_id}";
+            listAc = context.QuerySqlList<TeBaseField>(sql, new { from_id = 5, to_id = 8 });
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField where Id>{range.from_id} and Id<={range.to_id}";
+            listAc = context.QuerySqlList<TeBaseField>(sql, new { range = new { from_id = 5, to_id = 8 } });
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+
+            sql = "select * from Te_BaseField";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                listAc = context.QuerySqlList<TeBaseField>(sql);
+                context.CommitTrans();
+            }
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select top 1 * from Te_BaseField";
+            var itemAc = context.QuerySqlFirst<TeBaseField>(sql);
+            var itemEx = list.First();
+            AssertExtend.StrictEqual(itemEx, itemAc);
+        }
+
+        [Fact]
+        public async Task TestCase_SqlString_QueryList_WithObject_Async()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            List<TeBaseField> listEx;
+            List<TeBaseField> listAc;
+            string sql;
+
+            sql = "select * from Te_BaseField";
+            listAc = await context.QuerySqlListAsync<TeBaseField>(sql);
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField";
+            listAc = await context.QuerySqlListAsync<TeBaseField>(sql, 5, 3);
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField where Id>5 and Id<=8";
+            listAc = await context.QuerySqlListAsync<TeBaseField>(sql);
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField where Id>{from_id} and Id<={to_id}";
+            listAc = await context.QuerySqlListAsync<TeBaseField>(sql, new { from_id = 5, to_id = 8 });
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField where Id>{range.from_id} and Id<={range.to_id}";
+            listAc = await context.QuerySqlListAsync<TeBaseField>(sql, new { range = new { from_id = 5, to_id = 8 } });
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select * from Te_BaseField";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                listAc = await context.QuerySqlListAsync<TeBaseField>(sql);
+                context.CommitTrans();
+            }
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "select top 1 * from Te_BaseField";
+            var itemAc = await context.QuerySqlFirstAsync<TeBaseField>(sql);
+            var itemEx = list.First();
+            AssertExtend.StrictEqual(itemEx, itemAc);
+        }
+
+        [Fact]
+        public void TestCase_SqlString_Execute_WithObject()
+        {
+            var list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            int ret;
+            TeBaseField itemEx;
+            TeBaseField itemAc;
+
+            itemEx = list[0];
+            sql = "update Te_BaseField set VarcharField='abc' where Id=" + itemEx.Id;
+            ret = context.ExecuteNonQuerySqlString(sql);
+            Assert.Equal(1, ret);
+            itemAc = context.SelectById<TeBaseField>(itemEx.Id);
+            itemEx.VarcharField = "abc";
+            AssertExtend.StrictEqual(itemEx, itemAc);
+
+            itemEx = list[1];
+            sql = "update Te_BaseField set VarcharField={varchar} where Id={id}";
+            ret = context.ExecuteNonQuerySqlString(sql, new { varchar = "bcd", id = itemEx.Id });
+            Assert.Equal(1, ret);
+            itemAc = context.SelectById<TeBaseField>(itemEx.Id);
+            itemEx.VarcharField = "bcd";
+            AssertExtend.StrictEqual(itemEx, itemAc);
+
+            itemEx = list[2];
+            sql = "update Te_BaseField set VarcharField={varchar} where Id={id}";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                ret = context.ExecuteNonQuerySqlString(sql, new { varchar = "cdf", id = itemEx.Id });
+                Assert.Equal(1, ret);
+                context.CommitTrans();
+            }
+            itemAc = context.SelectById<TeBaseField>(itemEx.Id);
+            itemEx.VarcharField = "cdf";
+            AssertExtend.StrictEqual(itemEx, itemAc);
+        }
+
+        [Fact]
+        public async Task TestCase_SqlString_Execute_WithObject_Async()
+        {
+            var list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            int ret;
+            TeBaseField itemEx;
+            TeBaseField itemAc;
+
+            itemEx = list[0];
+            sql = "update Te_BaseField set VarcharField='abc' where Id=" + itemEx.Id;
+            ret = await context.ExecuteNonQuerySqlStringAsync(sql);
+            Assert.Equal(1, ret);
+            itemAc = context.SelectById<TeBaseField>(itemEx.Id);
+            itemEx.VarcharField = "abc";
+            AssertExtend.StrictEqual(itemEx, itemAc);
+
+            itemEx = list[1];
+            sql = "update Te_BaseField set VarcharField={varchar} where Id={id}";
+            ret = await context.ExecuteNonQuerySqlStringAsync(sql, new { varchar = "bcd", id = itemEx.Id });
+            Assert.Equal(1, ret);
+            itemAc = context.SelectById<TeBaseField>(itemEx.Id);
+            itemEx.VarcharField = "bcd";
+            AssertExtend.StrictEqual(itemEx, itemAc);
+
+            itemEx = list[2];
+            sql = "update Te_BaseField set VarcharField={varchar} where Id={id}";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                ret = await context.ExecuteNonQuerySqlStringAsync(sql, new { varchar = "cdf", id = itemEx.Id });
+                Assert.Equal(1, ret);
+                context.CommitTrans();
+            }
+            itemAc = context.SelectById<TeBaseField>(itemEx.Id);
+            itemEx.VarcharField = "cdf";
+            AssertExtend.StrictEqual(itemEx, itemAc);
+        }
+
+        [Fact]
+        public void TestCase_SqlString_ExecuteScalar_WithObject()
+        {
+            var list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            int ac;
+
+            sql = "select count(1) from Te_BaseField";
+            ac = Convert.ToInt32(context.ExecuteScalarSqlString(sql));
+            Assert.Equal(list.Count, ac);
+
+            sql = "select count(1) from Te_BaseField where Id<={id}";
+            ac = Convert.ToInt32(context.ExecuteScalarSqlString(sql, new { id = 5 }));
+            Assert.Equal(5, ac);
+
+            sql = "select count(1) from Te_BaseField";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                ac = Convert.ToInt32(context.ExecuteScalarSqlString(sql));
+                context.CommitTrans();
+            }
+            Assert.Equal(list.Count, ac);
+        }
+
+        [Fact]
+        public async Task TestCase_SqlString_ExecuteScalar_WithObject_Async()
+        {
+            var list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            int ac;
+
+            sql = "select count(1) from Te_BaseField";
+            ac = Convert.ToInt32(await context.ExecuteScalarSqlStringAsync(sql));
+            Assert.Equal(list.Count, ac);
+
+            sql = "select count(1) from Te_BaseField where Id<={id}";
+            ac = Convert.ToInt32(await context.ExecuteScalarSqlStringAsync(sql, new { id = 5 }));
+            Assert.Equal(5, ac);
+
+            sql = "select count(1) from Te_BaseField";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                ac = Convert.ToInt32(await context.ExecuteScalarSqlStringAsync(sql));
+                context.CommitTrans();
+            }
+            Assert.Equal(list.Count, ac);
+        }
+
+
+        class TestDataParam
+        {
+            [DataParameter("P1")]
+            public int InputData { get; set; }
+            [DataParameter("P2", Direction = DataParameterMode.Output)]
+            public int OutputData { get; set; }
+        }
+
+        [Fact]
+        public void TestCase_StoreProcedure_Execute_OutParameter_WithObject()
+        {
+            var list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            TestDataParam obj;
+            sql = "sptest7";
+            obj = new TestDataParam() { InputData = 5 };
+            context.ExecuteNonQueryStoreProcedure(sql, obj);
+
+            Assert.Equal(5, obj.OutputData);
+
+            sql = "sptest7";
+            obj = new TestDataParam() { InputData = 5 };
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                context.ExecuteNonQueryStoreProcedure(sql, obj);
+                context.CommitTrans();
+            }
+            Assert.Equal(5, obj.OutputData);
+        }
+
+        [Fact]
+        public async Task TestCase_StoreProcedure_Execute_OutParameter_WithObject_Async()
+        {
+            var list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            TestDataParam obj;
+            sql = "sptest7";
+            obj = new TestDataParam() { InputData = 5 };
+            await context.ExecuteNonQueryStoreProcedureAsync(sql, obj);
+
+            Assert.Equal(5, obj.OutputData);
+
+            sql = "sptest7";
+            obj = new TestDataParam() { InputData = 5 };
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                await context.ExecuteNonQueryStoreProcedureAsync(sql, obj);
+                context.CommitTrans();
+            }
+            Assert.Equal(5, obj.OutputData);
+        }
+
+        [Fact]
+        public void TestCase_StoreProcedure_QueryList_WithObject()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            List<TeBaseField> listEx;
+            List<TeBaseField> listAc;
+            string sql;
+
+            sql = "sptest1";
+            listAc = context.QueryStoreProcedureList<TeBaseField>(sql);
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest1";
+            listAc = context.QueryStoreProcedureList<TeBaseField>(sql, 5, 3);
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest2";
+            listAc = context.QueryStoreProcedureList<TeBaseField>(sql, new { P1 = 5, P2 = 8 });
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest1";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                listAc = context.QueryStoreProcedureList<TeBaseField>(sql);
+                context.CommitTrans();
+            }
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest1";
+            var itemAc = context.QueryStoreProcedureFirst<TeBaseField>(sql);
+            var itemEx = list.First();
+            AssertExtend.StrictEqual(itemEx, itemAc);
+        }
+
+        [Fact]
+        public async Task TestCase_StoreProcedure_QueryList_WithObject_Async()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            List<TeBaseField> listEx;
+            List<TeBaseField> listAc;
+            string sql;
+
+            sql = "sptest1";
+            listAc = await context.QueryStoreProcedureListAsync<TeBaseField>(sql);
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest1";
+            listAc = await context.QueryStoreProcedureListAsync<TeBaseField>(sql, 5, 3);
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest2";
+            listAc = await context.QueryStoreProcedureListAsync<TeBaseField>(sql, new { P1 = 5, P2 = 8 });
+            listEx = list.Where(x => x.Id > 5 && x.Id <= 8).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest1";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                listAc = await context.QueryStoreProcedureListAsync<TeBaseField>(sql);
+                context.CommitTrans();
+            }
+            listEx = list;
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            sql = "sptest1";
+            var itemAc = await context.QueryStoreProcedureFirstAsync<TeBaseField>(sql);
+            var itemEx = list.First();
+            AssertExtend.StrictEqual(itemEx, itemAc);
+        }
+
+        [Fact]
+        public void TestCase_StoreProcedure_Execute_WithObject()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            TeBaseField user;
+
+            sql = "sptest3";
+            context.ExecuteNonQueryStoreProcedure(sql);
+            user = context.SelectById<TeBaseField>(1);
+            Assert.NotNull(user);
+            Assert.Equal("abc", user.VarcharField);
+
+            sql = "sptest4";
+            context.ExecuteNonQueryStoreProcedure(sql, new { P1 = 2, P2 = "bcd" });
+            user = context.SelectById<TeBaseField>(2);
+            Assert.NotNull(user);
+            Assert.Equal("bcd", user.VarcharField);
+
+            sql = "sptest4";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                context.ExecuteNonQueryStoreProcedure(sql, new { P1 = 3, P2 = "abc" });
+                context.CommitTrans();
+            }
+            user = context.SelectById<TeBaseField>(3);
+            Assert.NotNull(user);
+            Assert.Equal("abc", user.VarcharField);
+        }
+
+        [Fact]
+        public async Task TestCase_StoreProcedure_Execute_WithObject_Async()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            TeBaseField user;
+
+            sql = "sptest3";
+            await context.ExecuteNonQueryStoreProcedureAsync(sql);
+            user = context.SelectById<TeBaseField>(1);
+            Assert.NotNull(user);
+            Assert.Equal("abc", user.VarcharField);
+
+            sql = "sptest4";
+            await context.ExecuteNonQueryStoreProcedureAsync(sql, new { P1 = 2, P2 = "bcd" });
+            user = context.SelectById<TeBaseField>(2);
+            Assert.NotNull(user);
+            Assert.Equal("bcd", user.VarcharField);
+
+            sql = "sptest4";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                await context.ExecuteNonQueryStoreProcedureAsync(sql, new { P1 = 3, P2 = "abc" });
+                context.CommitTrans();
+            }
+            user = context.SelectById<TeBaseField>(3);
+            Assert.NotNull(user);
+            Assert.Equal("abc", user.VarcharField);
+        }
+
+        [Fact]
+        public void TestCase_StoreProcedure_ExecuteScalar_WithObject()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            int ac;
+
+            sql = "sptest5";
+            ac = Convert.ToInt32(context.ExecuteScalarStoreProcedure(sql));
+            Assert.Equal(10, ac);
+
+            sql = "sptest6";
+            ac = Convert.ToInt32(context.ExecuteScalarStoreProcedure(sql, new { P1 = 5 }));
+            Assert.Equal(5, ac);
+
+            sql = "sptest5";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                ac = Convert.ToInt32(context.ExecuteScalarStoreProcedure(sql));
+                context.CommitTrans();
+            }
+            Assert.Equal(10, ac);
+        }
+
+        [Fact]
+        public async Task TestCase_StoreProcedure_ExecuteScalar_WithObject_Async()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(10);
+            string sql;
+            int ac;
+
+            sql = "sptest5";
+            ac = Convert.ToInt32(await context.ExecuteScalarStoreProcedureAsync(sql));
+            Assert.Equal(10, ac);
+
+            sql = "sptest6";
+            ac = Convert.ToInt32(context.ExecuteScalarStoreProcedure(sql, new { P1 = 5 }));
+            Assert.Equal(5, ac);
+
+            sql = "sptest5";
+            using (var trans = context.BeginTrans()) {
+                //trans.BeginTrans();
+                ac = Convert.ToInt32(await context.ExecuteScalarStoreProcedureAsync(sql));
+                context.CommitTrans();
+            }
+            Assert.Equal(10, ac);
+        }
     }
 
 

@@ -4,7 +4,7 @@
  Source Server         : PostgreTest
  Source Server Type    : PostgreSQL
  Source Server Version : 90405
- Source Host           : 127.0.0.1
+ Source Host           : postgre_test
  Source Database       : LightData_Test
  Source Schema         : public
 
@@ -19,236 +19,127 @@
 --  Sequence structure for Te_BaseFieldAggregateField_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseFieldAggregateField_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseFieldAggregateField_Id_seq" INCREMENT 1 START 45 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseFieldAggregateField_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseFieldAggregateField_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseFieldAggregateField_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseFieldExpression_Extend_ExtendId_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseFieldExpression_Extend_ExtendId_seq";
-CREATE SEQUENCE "public"."Te_BaseFieldExpression_Extend_ExtendId_seq" INCREMENT 1 START 10 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseFieldExpression_Extend_ExtendId_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseFieldExpression_Extend_ExtendId_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseFieldExpression_Extend_ExtendId_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseFieldExpression_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseFieldExpression_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseFieldExpression_Id_seq" INCREMENT 1 START 45 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseFieldExpression_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseFieldExpression_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseFieldExpression_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseFieldSelectField_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseFieldSelectField_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseFieldSelectField_Id_seq" INCREMENT 1 START 45 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseFieldSelectField_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseFieldSelectField_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseFieldSelectField_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_Alias_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_Alias_Id_seq";
 CREATE SEQUENCE "public"."Te_BaseField_Alias_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_Alias_Id_seq" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Alias_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_Config_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_Config_Id_seq";
 CREATE SEQUENCE "public"."Te_BaseField_Config_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_Config_Id_seq" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Config_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_Config_Replace_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_Config_Replace_Id_seq";
 CREATE SEQUENCE "public"."Te_BaseField_Config_Replace_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_Config_Replace_Id_seq" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Config_Replace_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_DefaultValue_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_DefaultValue_Id_seq";
 CREATE SEQUENCE "public"."Te_BaseField_DefaultValue_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_DefaultValue_Id_seq" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_DefaultValue_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_Entity_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_Entity_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseField_Entity_Id_seq" INCREMENT 1 START 33 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_Entity_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseField_Entity_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseField_Entity_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseField_Id_seq" INCREMENT 1 START 45 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseField_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseField_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_NullMiniValue_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_NullMiniValue_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseField_NullMiniValue_Id_seq" INCREMENT 1 START 10 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_NullMiniValue_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseField_NullMiniValue_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseField_NullMiniValue_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_BaseField_SelectInsert_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_BaseField_SelectInsert_Id_seq";
-CREATE SEQUENCE "public"."Te_BaseField_SelectInsert_Id_seq" INCREMENT 1 START 28 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_BaseField_SelectInsert_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_BaseField_SelectInsert_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_BaseField_SelectInsert_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_MainTable_MainId_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_MainTable_MainId_seq";
-CREATE SEQUENCE "public"."Te_MainTable_MainId_seq" INCREMENT 1 START 10 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_MainTable_MainId_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_MainTable_MainId_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_MainTable_MainId_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_ObjectField_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_ObjectField_Id_seq";
-CREATE SEQUENCE "public"."Te_ObjectField_Id_seq" INCREMENT 1 START 45 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_ObjectField_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_ObjectField_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_ObjectField_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_RelateCollection_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_RelateCollection_Id_seq";
-CREATE SEQUENCE "public"."Te_RelateCollection_Id_seq" INCREMENT 1 START 120 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_RelateCollection_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_RelateCollection_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_RelateCollection_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_RelateMain_Config_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_RelateMain_Config_Id_seq";
-CREATE SEQUENCE "public"."Te_RelateMain_Config_Id_seq" INCREMENT 1 START 10 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_RelateMain_Config_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_RelateMain_Config_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_RelateMain_Config_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_RelateSub_Config_Id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_RelateSub_Config_Id_seq";
-CREATE SEQUENCE "public"."Te_RelateSub_Config_Id_seq" INCREMENT 1 START 5 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_RelateSub_Config_Id_seq" OWNER TO "root";
+CREATE SEQUENCE "public"."Te_RelateSub_Config_Id_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_RelateSub_Config_Id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Sequence structure for Te_SubTable_SubId_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."Te_SubTable_SubId_seq";
-CREATE SEQUENCE "public"."Te_SubTable_SubId_seq" INCREMENT 1 START 10 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "public"."Te_SubTable_SubId_seq" OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest1()
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest1"();
-CREATE FUNCTION "public"."sptest1"() RETURNS SETOF "public"."Te_BaseField" 
-	AS $BODY$
-select * from "Te_BaseField";
-$BODY$
-	LANGUAGE sql
-	COST 100
-	ROWS 1000
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest1"() OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest2(int4, int4)
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest2"(int4, int4);
-CREATE FUNCTION "public"."sptest2"(IN p1 int4, IN p2 int4) RETURNS SETOF "public"."Te_BaseField" 
-	AS $BODY$
-select * from "Te_BaseField" where "Id">P1 and "Id"<=P2
-$BODY$
-	LANGUAGE sql
-	COST 100
-	ROWS 1000
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest2"(IN p1 int4, IN p2 int4) OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest3()
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest3"();
-CREATE FUNCTION "public"."sptest3"() RETURNS "void" 
-	AS $BODY$
-update "Te_BaseField" set "VarcharField"='abc' where "Id"=1
-$BODY$
-	LANGUAGE sql
-	COST 100
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest3"() OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest4(int4, varchar)
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest4"(int4, varchar);
-CREATE FUNCTION "public"."sptest4"(IN p1 int4, IN p2 varchar) RETURNS "void" 
-	AS $BODY$
-update "Te_BaseField" set "VarcharField"=P2 where "Id"=P1
-$BODY$
-	LANGUAGE sql
-	COST 100
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest4"(IN p1 int4, IN p2 varchar) OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest5()
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest5"();
-CREATE FUNCTION "public"."sptest5"() RETURNS "int4" 
-	AS $BODY$
-SELECT count(1)::INTEGER from "Te_BaseField" 
-$BODY$
-	LANGUAGE sql
-	COST 100
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest5"() OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest6(int4)
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest6"(int4);
-CREATE FUNCTION "public"."sptest6"(IN p1 int4) RETURNS "int4" 
-	AS $BODY$
-SELECT count(1)::INTEGER from "Te_BaseField" where "Id"<=P1
-$BODY$
-	LANGUAGE sql
-	COST 100
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest6"(IN p1 int4) OWNER TO "root";
-
--- ----------------------------
---  Function structure for public.sptest7(int4)
--- ----------------------------
-DROP FUNCTION IF EXISTS "public"."sptest7"(int4);
-CREATE FUNCTION "public"."sptest7"(IN p1 int4, OUT p2 int4) RETURNS "int4" 
-	AS $BODY$
-begin
-SELECT count(1) into P2 from "Te_BaseField" where "Id"<=P1;
-end
-$BODY$
-	LANGUAGE plpgsql
-	COST 100
-	CALLED ON NULL INPUT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "public"."sptest7"(IN p1 int4, OUT p2 int4) OWNER TO "root";
+CREATE SEQUENCE "public"."Te_SubTable_SubId_seq" INCREMENT 1 START 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
+ALTER TABLE "public"."Te_SubTable_SubId_seq" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_SelectInsert
@@ -294,7 +185,7 @@ CREATE TABLE "public"."Te_BaseField_SelectInsert" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_SelectInsert" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_SelectInsert" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldExtend
@@ -307,7 +198,7 @@ CREATE TABLE "public"."Te_BaseFieldExtend" (
 	"Remark" varchar(2000) COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldExtend" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldExtend" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_JoinTable_SelectInsert
@@ -322,7 +213,7 @@ CREATE TABLE "public"."Te_JoinTable_SelectInsert" (
 	"SubInt32FieldNull" int4
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_JoinTable_SelectInsert" OWNER TO "root";
+ALTER TABLE "public"."Te_JoinTable_SelectInsert" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateF
@@ -338,7 +229,7 @@ CREATE TABLE "public"."Te_RelateF" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateF" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateF" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldNoIdentity
@@ -353,7 +244,7 @@ CREATE TABLE "public"."Te_BaseFieldNoIdentity" (
 	"EnumInt32Field" int4 NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldNoIdentity" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldNoIdentity" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateC
@@ -369,7 +260,7 @@ CREATE TABLE "public"."Te_RelateC" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateC" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateC" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateD
@@ -385,7 +276,7 @@ CREATE TABLE "public"."Te_RelateD" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateD" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateD" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateB
@@ -403,7 +294,7 @@ CREATE TABLE "public"."Te_RelateB" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateB" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateB" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateCollection
@@ -415,7 +306,7 @@ CREATE TABLE "public"."Te_RelateCollection" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateCollection" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateCollection" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldExpression
@@ -457,7 +348,7 @@ CREATE TABLE "public"."Te_BaseFieldExpression" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldExpression" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldExpression" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateMain_Config
@@ -470,7 +361,7 @@ CREATE TABLE "public"."Te_RelateMain_Config" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateMain_Config" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateMain_Config" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_DefaultValue
@@ -502,7 +393,7 @@ CREATE TABLE "public"."Te_BaseField_DefaultValue" (
 	"TodayField" timestamp(6) NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_DefaultValue" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_DefaultValue" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_ObjectField
@@ -515,7 +406,7 @@ CREATE TABLE "public"."Te_ObjectField" (
 	"ObjectFieldNull" varchar(1000) COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_ObjectField" OWNER TO "root";
+ALTER TABLE "public"."Te_ObjectField" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldExpression_Extend
@@ -533,7 +424,7 @@ CREATE TABLE "public"."Te_BaseFieldExpression_Extend" (
 	"VarcharFieldNull" varchar(2000) COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldExpression_Extend" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldExpression_Extend" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldSelectField
@@ -579,7 +470,7 @@ CREATE TABLE "public"."Te_BaseFieldSelectField" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldSelectField" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldSelectField" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldAggregateField_GroupBy
@@ -597,7 +488,7 @@ CREATE TABLE "public"."Te_BaseFieldAggregateField_GroupBy" (
 	"MinData" timestamp(6) NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldAggregateField_GroupBy" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldAggregateField_GroupBy" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldAggregateField
@@ -643,7 +534,7 @@ CREATE TABLE "public"."Te_BaseFieldAggregateField" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldAggregateField" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldAggregateField" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField
@@ -689,7 +580,7 @@ CREATE TABLE "public"."Te_BaseField" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField" OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."Te_BaseField" IS '基础测试表';
 
@@ -719,7 +610,7 @@ CREATE TABLE "public"."Te_BaseField_NullMiniValue" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_NullMiniValue" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_NullMiniValue" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateE
@@ -735,7 +626,7 @@ CREATE TABLE "public"."Te_RelateE" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateE" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateE" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateA
@@ -753,7 +644,7 @@ CREATE TABLE "public"."Te_RelateA" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateA" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateA" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_SelectInsert_NoIdentity
@@ -799,7 +690,7 @@ CREATE TABLE "public"."Te_BaseField_SelectInsert_NoIdentity" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_SelectInsert_NoIdentity" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_SelectInsert_NoIdentity" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_Config
@@ -823,7 +714,7 @@ CREATE TABLE "public"."Te_BaseField_Config" (
 	"EnumInt32_FieldNull" int4
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_Config" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Config" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_RelateSub_Config
@@ -837,7 +728,7 @@ CREATE TABLE "public"."Te_RelateSub_Config" (
 	"VarcharField" varchar(255) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_RelateSub_Config" OWNER TO "root";
+ALTER TABLE "public"."Te_RelateSub_Config" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_Config_Replace
@@ -861,7 +752,7 @@ CREATE TABLE "public"."Te_BaseField_Config_Replace" (
 	"EnumInt32_FieldNull" int4
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_Config_Replace" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Config_Replace" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_Entity
@@ -907,7 +798,7 @@ CREATE TABLE "public"."Te_BaseField_Entity" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_Entity" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Entity" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseFieldNoIdentity_Entity
@@ -922,7 +813,7 @@ CREATE TABLE "public"."Te_BaseFieldNoIdentity_Entity" (
 	"EnumInt32Field" int4 NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseFieldNoIdentity_Entity" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseFieldNoIdentity_Entity" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_BaseField_Alias
@@ -968,7 +859,7 @@ CREATE TABLE "public"."Te_BaseField_Alias" (
 	"EnumInt64FieldNull" int8
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_BaseField_Alias" OWNER TO "root";
+ALTER TABLE "public"."Te_BaseField_Alias" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_MainTable
@@ -987,7 +878,7 @@ CREATE TABLE "public"."Te_MainTable" (
 	"SubId" int4 NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_MainTable" OWNER TO "root";
+ALTER TABLE "public"."Te_MainTable" OWNER TO "postgres";
 
 -- ----------------------------
 --  Table structure for Te_SubTable
@@ -1005,7 +896,7 @@ CREATE TABLE "public"."Te_SubTable" (
 	"VarcharFieldNull" varchar(2000) COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "public"."Te_SubTable" OWNER TO "root";
+ALTER TABLE "public"."Te_SubTable" OWNER TO "postgres";
 
 
 -- ----------------------------
@@ -1179,3 +1070,112 @@ ALTER TABLE "public"."Te_MainTable" ADD PRIMARY KEY ("MainId") NOT DEFERRABLE IN
 -- ----------------------------
 ALTER TABLE "public"."Te_SubTable" ADD PRIMARY KEY ("SubId") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
+
+-- ----------------------------
+--  Function structure for public.sptest1()
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest1"();
+CREATE FUNCTION "public"."sptest1"() RETURNS SETOF "public"."Te_BaseField" 
+	AS $BODY$
+select * from "Te_BaseField";
+$BODY$
+	LANGUAGE sql
+	COST 100
+	ROWS 1000
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest1"() OWNER TO "postgres";
+
+-- ----------------------------
+--  Function structure for public.sptest2(int4, int4)
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest2"(int4, int4);
+CREATE FUNCTION "public"."sptest2"(IN p1 int4, IN p2 int4) RETURNS SETOF "public"."Te_BaseField" 
+	AS $BODY$
+select * from "Te_BaseField" where "Id">P1 and "Id"<=P2
+$BODY$
+	LANGUAGE sql
+	COST 100
+	ROWS 1000
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest2"(IN p1 int4, IN p2 int4) OWNER TO "postgres";
+
+-- ----------------------------
+--  Function structure for public.sptest3()
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest3"();
+CREATE FUNCTION "public"."sptest3"() RETURNS "void" 
+	AS $BODY$
+update "Te_BaseField" set "VarcharField"='abc' where "Id"=1
+$BODY$
+	LANGUAGE sql
+	COST 100
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest3"() OWNER TO "postgres";
+
+-- ----------------------------
+--  Function structure for public.sptest4(int4, varchar)
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest4"(int4, varchar);
+CREATE FUNCTION "public"."sptest4"(IN p1 int4, IN p2 varchar) RETURNS "void" 
+	AS $BODY$
+update "Te_BaseField" set "VarcharField"=P2 where "Id"=P1
+$BODY$
+	LANGUAGE sql
+	COST 100
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest4"(IN p1 int4, IN p2 varchar) OWNER TO "postgres";
+
+-- ----------------------------
+--  Function structure for public.sptest5()
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest5"();
+CREATE FUNCTION "public"."sptest5"() RETURNS "int4" 
+	AS $BODY$
+SELECT count(1)::INTEGER from "Te_BaseField" 
+$BODY$
+	LANGUAGE sql
+	COST 100
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest5"() OWNER TO "postgres";
+
+-- ----------------------------
+--  Function structure for public.sptest6(int4)
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest6"(int4);
+CREATE FUNCTION "public"."sptest6"(IN p1 int4) RETURNS "int4" 
+	AS $BODY$
+SELECT count(1)::INTEGER from "Te_BaseField" where "Id"<=P1
+$BODY$
+	LANGUAGE sql
+	COST 100
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest6"(IN p1 int4) OWNER TO "postgres";
+
+-- ----------------------------
+--  Function structure for public.sptest7(int4)
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."sptest7"(int4);
+CREATE FUNCTION "public"."sptest7"(IN p1 int4, OUT p2 int4) RETURNS "int4" 
+	AS $BODY$
+begin
+SELECT count(1) into P2 from "Te_BaseField" where "Id"<=P1;
+end
+$BODY$
+	LANGUAGE plpgsql
+	COST 100
+	CALLED ON NULL INPUT
+	SECURITY INVOKER
+	VOLATILE;
+ALTER FUNCTION "public"."sptest7"(IN p1 int4, OUT p2 int4) OWNER TO "postgres";

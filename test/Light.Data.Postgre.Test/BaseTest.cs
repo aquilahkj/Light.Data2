@@ -41,7 +41,7 @@ namespace Light.Data.Postgre.Test
         public DataContext CreateBuilderContextByConnection()
         {
             var builder = new DataContextOptionsBuilder<DataContext>();
-            builder.UsePostgre("Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;");
+            builder.UsePostgre("Server=postgre_test;Port=5432;UserId=postgres;Password=1qazxsw23edC;Database=LightData_Test;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
             DataContext context = new DataContext(options);
@@ -62,7 +62,7 @@ namespace Light.Data.Postgre.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder => {
-                builder.UsePostgre("Server=192.168.210.1;Port=5432;UserId=root;Password=qwerty;Database=LightData_Test;");
+                builder.UsePostgre("Server=postgre_test;Port=5432;UserId=postgres;Password=1qazxsw23edC;Database=LightData_Test;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
             }, ServiceLifetime.Transient);
