@@ -116,6 +116,46 @@ namespace Light.Data.Postgre.Test
         }
 
         [Fact]
+        public void TestCase_Specified_ContextFactory()
+        {
+            List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);
+
+            List<TeBaseField> listEx = list;
+            DataContext context1 = CreateBuilderContextFactoryByConnection();
+            List<TeBaseField> listAc1 = context1.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc1);
+
+            DataContext context2 = CreateBuilderContextFactoryByConfig();
+            List<TeBaseField> listAc2 = context2.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc2);
+
+            DataContext context3 = CreateBuilderContextFactoryByDi();
+            List<TeBaseField> listAc3 = context3.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc3);
+
+            DataContext context4 = CreateBuilderContextFactoryByDiConfigSpecified();
+            List<TeBaseField> listAc4 = context4.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc4);
+
+            DataContext context5 = CreateBuilderContextFactoryByDiConfigSpecifiedDefault();
+            List<TeBaseField> listAc5 = context5.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc5);
+
+            DataContext context6 = CreateBuilderContextFactoryByDiConfigGlobal();
+            List<TeBaseField> listAc6 = context6.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc6);
+
+            DataContext context7 = CreateBuilderContextFactoryByDiConfigGlobalDefault();
+            List<TeBaseField> listAc7 = context7.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc7);
+
+            DataContext context8 = CreateBuilderContextFactoryByConfigFile();
+            List<TeBaseField> listAc8 = context8.Query<TeBaseField>().ToList();
+            AssertExtend.StrictEqual(listEx, listAc8);
+        }
+
+
+        [Fact]
         public async Task TestCase_TruncateTable_Async()
         {
             List<TeBaseField> list = CreateAndInsertBaseFieldTableList(45);

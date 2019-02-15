@@ -1692,6 +1692,46 @@
             <param name="value">Paratemers object</param>
             <returns></returns>
         </member>
+        <member name="T:Light.Data.DataContextFactory`1">
+            <summary>
+            Abstract DataContext Factory
+            </summary>
+            <typeparam name="TContxt"></typeparam>
+        </member>
+        <member name="F:Light.Data.DataContextFactory`1.options">
+            <summary>
+            Options
+            </summary>
+        </member>
+        <member name="M:Light.Data.DataContextFactory`1.#ctor(Light.Data.DataContextOptions{`0})">
+            <summary>
+            
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:Light.Data.DataContextFactory`1.CreateDataContext">
+            <summary>
+            Create Specified DataContext
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Light.Data.LightDataContextFactory">
+            <summary>
+            Basic DataContext Factory 
+            </summary>
+        </member>
+        <member name="M:Light.Data.LightDataContextFactory.#ctor(Light.Data.DataContextOptions{Light.Data.DataContext})">
+            <summary>
+            
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:Light.Data.LightDataContextFactory.CreateDataContext">
+            <summary>
+            Create Basic DataContext
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Light.Data.DataEntity">
             <summary>
             Data entity.
@@ -10068,6 +10108,179 @@
             Releases unmanaged resources and performs other cleanup operations before the
             <see cref="T:Light.Data.TransactionConnection"/> is reclaimed by garbage collection.
             </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions">
+            <summary>
+            Service Extension
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Light.Data.DataContextOptionsBuilder{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Light.Data.DataContextOptionsBuilder{``0}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="config"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{``0}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="config"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext(Microsoft.Extensions.DependencyInjection.IServiceCollection,Light.Data.DataContextConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="configuration"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Light.Data.DataContextConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{``0}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="configuration"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Light.Data.DataContextOptionsConfigurator{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="configFilePath"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContext``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Light.Data.DataContextOptionsConfigurator{``0}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Service
+            </summary>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="configFilePath"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Light.Data.DataContextOptionsBuilder{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Light.Data.DataContextOptionsBuilder{``1}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <typeparam name="TContextFactory"></typeparam>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="config"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{``1}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <typeparam name="TContextFactory"></typeparam>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="config"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection,Light.Data.DataContextConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="configuration"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,Light.Data.DataContextConfiguration,System.Action{Light.Data.DataContextOptionsConfigurator{``1}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <typeparam name="TContextFactory"></typeparam>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="configuration"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Light.Data.DataContextOptionsConfigurator{Light.Data.DataContext}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <param name="serviceCollection"></param>
+            <param name="configFilePath"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.LightDataServiceCollectionExtensions.AddDataContextFactory``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Light.Data.DataContextOptionsConfigurator{``1}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Add DataContext Factory Service
+            </summary>
+            <typeparam name="TContextFactory"></typeparam>
+            <typeparam name="TContext"></typeparam>
+            <param name="serviceCollection"></param>
+            <param name="configFilePath"></param>
+            <param name="optionsAction"></param>
+            <param name="contextLifetime"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
