@@ -608,6 +608,40 @@ DataContextOptionsBuilder<TContext>主要方法
 | SetCommandOutput(ICommandOutput output) | 设置SQL语句输出 |
 
 DataContextOptionsBuilder<TContext>也可通过使用ConfigName方法结合配置文件读取配置节的配置, 再做自定义设置. 
+	
+##### 使用工厂方法自定义配置获取连接字符串进行配置
+由于DataContext使用事务时是非线程安全，如果在需要并发事务场景，可以使用工厂类生成对应DataContext
+
+```csharp
+public class MyDataContextFactory : DataContextFactory<MyDataContext>
+{
+    public MyDataContextFactory(DataContextOptions<MyDataContext> options) : base(options)
+    {
+
+    }
+    
+    public override MyDataContext CreateDataContext()
+    {
+        return new MyDataContext(options);
+    }
+}
+```
+
+在程序初始化时对`IServiceCollection`使用静态扩展函数`AddDataContextFactory`对`IConfiguration`的指定节点数据进行配置, 配置节点结构与`Light.Data配置数据结构`一致, 并可以通过`DataContextOptionsConfigurator<TContext>`选定配置中的连接配置. 
+
+```csharp
+IServiceCollection service = new ServiceCollection();
+var builder = new ConfigurationBuilder()
+               .SetBasePath(env.ContentRootPath)
+               .AddJsonFile("appsettings.json");
+var configuration = builder.Build();
+  
+ ...
+ 
+service.AddDataContextFactory<MyDataContextFactory, MyDataContext>(configuration.GetSection("lightData"), config => {
+       config.ConfigName = "mssql";
+}, ServiceLifetime.Singleton);
+```
 
 <h2 id="datacontext_class"> DataContext类(DataContext Class)</h2>
 
