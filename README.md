@@ -1674,6 +1674,7 @@ var result = context.Query<TeUser> ()
 <h2 id="sql_command">执行SQL语句(Execute Sql Command)</h2>
 
 当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建, 语句或存储过程参数可以通过DataParameter结构或自定义对象结构赋予, 语句的自定义对象结构赋予需要用{}符号在语句中标记参数名称.
+`DataContext`中的`ExecuteNonQueryXXXX`, `ExecuteScalarXXXX`, `QueryXXXX`均为对`SqlExecutor`的快速写法
 
 | 方法 | 说明 |
 |:------|:------|
@@ -1827,3 +1828,4 @@ var executor = context.CreateStoreProcedureExecutor(sp, ps);
 var ret = executor.ExecuteNonQuery();
 Console.WriteLine(ps.OutputData);
 ```
+
