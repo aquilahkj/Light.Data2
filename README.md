@@ -416,6 +416,7 @@ public class TeRelateB_A_B : TeRelateB
 ### 实体类与配置生成模板
 
 [模版地址](https://github.com/aquilahkj/Light.Data2/tree/master/template)
+[相关类库](https://github.com/aquilahkj/Light.Data2/tree/master/lib)
 
 <h2 id="database_config"> 数据库配置(Database Config)</h2>
 
@@ -610,7 +611,7 @@ DataContextOptionsBuilder<TContext>主要方法
 DataContextOptionsBuilder<TContext>也可通过使用ConfigName方法结合配置文件读取配置节的配置, 再做自定义设置. 
 	
 ##### 使用工厂方法自定义配置获取连接字符串进行配置
-由于DataContext使用事务时是非线程安全，如果在需要并发事务场景，可以使用工厂类生成对应DataContext
+由于`DataContex`t使用事务时(`事务状态`)是非线程安全，如果在需要并发事务场景，可以使用工厂类生成对应`DataContext`
 
 ```csharp
 public class MyDataContextFactory : DataContextFactory<MyDataContext>
@@ -641,6 +642,26 @@ var configuration = builder.Build();
 service.AddDataContextFactory<MyDataContextFactory, MyDataContext>(configuration.GetSection("lightData"), config => {
        config.ConfigName = "mssql";
 }, ServiceLifetime.Singleton);
+```
+
+使用Factory
+
+```csharp
+public class MyController : Controller
+{
+    MyDataContextFactory _contextFactory;
+    public MyController(MyDataContextFactory contextFactory)
+    {
+        _contextFactory = contextFactory;
+    }
+    
+    public void DoSomeThing()
+    {
+    	MyDataContext context = _contextFactory.CreateDataContext();
+	Do Some Thing with context.......
+    }
+   
+}
 ```
 
 <h2 id="datacontext_class"> DataContext类(DataContext Class)</h2>
@@ -873,16 +894,17 @@ item.Erase();
 
 <h2 id="transaction">事务处理(Transaction)</h2>
 
-对增删改多个操作需要在同一事务中做操作,通过`DataContext`的`CreateTransactionScope`方法生成事务`TransactionScope`, 并使用其事务方法进行事务操作
+对增删改多个操作需要在同一事务中做操作,通过`DataContext`的`BeginTrans`方法生成事务域类`TransactionScope`, 并使用其事务方法进行事务操作
+当使用`BeginTrans`后，`DataContext`由非事务状态转为事务状态, 事务状态非线程安全. 在`BeginTrans`重载方法autoRelease参数为ture时(默认为true), 事务Commit或Rollback后, 自动释放事务，事务状态转为非事务状态; autoRelease参数为false时, 需要显式使用 `ReleaseTrans`方法释放事务,事务状态转为非事务状态.
 
-* BeginTrans 开始事务,每次事务开始前需执行
-* CommitTrans 提交事务,提交后该事务才完成
-* RollbackTrans 回滚事务,在using作用域逻辑上需要回滚才执行, 抛异常时会自动回滚
+* BeginTrans 开始事务,每次事务开始前需执行, 建议使用在using结构中,
+* CommitTrans 提交事务,提交后该事务才完成,事务提交后不能再使用
+* RollbackTrans 回滚事务,在using作用域逻辑上需要回滚才执行, 另外在执行过程中抛异常时会自动回滚,,事务提交后不能再使用
+* ReleaseTrans BeginTrans中autoRelease参数为false时使用, 执行完事务后显式释放事务, 转为非事务状态
 
 ```csharp
-//单次提交
-using (TransactionScope trans = context.TransactionScope ()) {
-           trans.BeginTrans ();
+//提交
+using (TransactionScope trans = context.BeginTrans ()) {
            TeUser user1 = context.SelectById<TeUser> (3);
            user1.Account = "testmodify";
            context.Update(user1);
@@ -890,21 +912,8 @@ using (TransactionScope trans = context.TransactionScope ()) {
            context.Delete(user2);
            trans.CommitTrans ();
 }
-//多次提交
-using (TransactionScope trans = context.TransactionScope ()) {
-           trans.BeginTrans ();
-           TeUser user1 = context.SelectById<TeUser> (1);
-           user1.Account = "testmodify";
-           context.Update(user1);
-           trans.CommitTrans ();
-           trans.BeginTrans ();
-           TeUser user2 = context.SelectById<TeUser> (2);
-           context.Delete(user2);
-           trans.CommitTrans ();
-}
 //回滚
-using (TransactionScope trans = context.TransactionScope ()) {
-           trans.BeginTrans ();
+using (TransactionScope trans = context.BeginTrans ()) {
            TeUser user1 = new <TeUser> ();
            user1.Account = "testmodify";
            context.Insert (user1);
@@ -915,6 +924,13 @@ using (TransactionScope trans = context.TransactionScope ()) {
                trans.CommitTrans ();
            }
 }
+//手动释放
+var autoRelease = false;
+context.BeginTrans (autoRelease);
+user1.Account = "testmodify";
+context.Insert (user1);
+trans.CommitTrans ();
+trans.ReleaseTrans ();
 ```
 
 <h2 id="field_extend">字段扩展(Field Extension)</h2>
@@ -1180,7 +1196,7 @@ var list = context.Query<TeUser> ()
                       RegTime = x.RegTime
                    })
                   .ToList ();
-/匿名类
+//匿名类
 var list = context.Query<TeUser> ()
                   .Select (x => new {
                       x.Id,
@@ -1263,7 +1279,7 @@ var result = context.Query<TeDataLog> ()
 
 <h2 id="aggregate_data">汇总统计数据(Aggregate Data)</h2>
 
-使用`IQuery<T>.GroupBy<K>(lambda)`进行汇总统计数据, lambda表达式中的new方式定义数据的统计字段与汇总函数, 输出类型K可以为匿名类. GroupBy函数返回`IAggregate<K>`接口, 用于后续处理.
+使用`IQuery<T>.GroupBy<K>(lambda)`进行汇总统计数据, lambda表达式中的new方式定义数据的统计字段与汇总函数, 输出类型K可以为匿名类. Aggregate函数返回`IAggregate<K>`接口, 用于后续处理.
 
 `IAggregate<K>`接口方法
 
@@ -1318,7 +1334,7 @@ var result = context.Query<TeDataLog> ()
 //普通汇总
 var list = context.Query<TeUser> ()
                   .Where (x => x.Id >= 5)
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
@@ -1326,7 +1342,7 @@ var list = context.Query<TeUser> ()
 //使用匿名类汇总
 var list = context.Query<TeUser> ()
                   .Where (x => x.Id >= 5)
-                  .GroupBy (x => new {
+                  .Aggregate (x => new {
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
@@ -1347,7 +1363,7 @@ var list = context.Query<TeUser> ()
 ```csharp
 //统计指定字段
 var list = context.Query<TeUser> ()
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Count (x.Area)
                    })
@@ -1355,7 +1371,7 @@ var list = context.Query<TeUser> ()
 //条件判断统计指定字段
 var list = context.Query<TeUser> ()
                   .Where (x => x.Id >= 5)
-                  .GroupBy (x => new {
+                  .Aggregate (x => new {
                       LevelId = x.LevelId,
                       Valid = Function.Count (x.Status = 1 ? x.Area : null),
                       Invalid = Function.Count (x.Status != 1 ? x.Area : null)
@@ -1369,7 +1385,7 @@ var list = context.Query<TeUser> ()
 
 ```csharp
 var list = context.Query<TeUser> ()
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Sum (x.LoginTimes)
                    })
@@ -1384,7 +1400,7 @@ var list = context.Query<TeUser> ()
 ```csharp
 //汇总字段排序
 var list = context.Query<TeUser> ()
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
@@ -1392,7 +1408,7 @@ var list = context.Query<TeUser> ()
                   .ToList ();
 //汇总结果排序
 var list = context.Query<TeUser> ()
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
@@ -1627,7 +1643,11 @@ var list = context.Query<TeUser> ()
 ```
 
 对应的`ExtendEntity`字段则会生成一个`TeUserExtend`的默认对象. 
-如果业务需要在输出无数据时`ExtendEntity`需要为null, 则可以在`ISelectJoin<K>`输出数据前调用`NoDataSetEntityNull(int index)`方法做设置, index为连接数据表顺序的下标, 以0开始. 设置后当该连接表无数据输出, 对应字段会设置为null, 但如果同时对该连接表的某个字段单独输出, 需要避免空引用的错误. 
+
+`JoinSetting`枚举参数
+* QueryDistinct 指定连接查询语句使用distinct
+* NoDataSetEntityNull 指定输出对象如果所有字段无数据时为null, 但如果同时对该连接表的某个字段单独输出, 需要避免空引用的错误. 
+
 
 ### 查询批量插入
 
@@ -1653,7 +1673,7 @@ var result = context.Query<TeUser> ()
 
 <h2 id="sql_command">执行SQL语句(Execute Sql Command)</h2>
 
-当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建
+当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建, 语句或存储过程参数可以通过DataParameter结构或自定义对象结构赋予, 语句的自定义对象结构赋予需要用{}符号在语句中标记参数名称.
 
 | 方法 | 说明 |
 |:------|:------|
@@ -1679,6 +1699,7 @@ var ret = executor.ExecuteNonQuery();
 ```
 
 使用有参ExecuteNonQuery
+参数格式
 
 ```csharp
 var sql = "update Te_User set NickName=@P2 where Id=@P1";
@@ -1686,6 +1707,14 @@ var ps = new DataParameter[2];
 ps[0] = new DataParameter("P1", 5);
 ps[1] = new DataParameter("P2", "abc");
 var executor = context.CreateSqlStringExecutor(sql, ps);
+var ret = executor.ExecuteNonQuery();
+```
+
+自定义对象
+
+```csharp
+var sql = "update Te_User set NickName={nickname} where Id={id}";
+var executor = context.CreateSqlStringExecutor(sql, new { nickname = "abc", id = 5 });
 var ret = executor.ExecuteNonQuery();
 ```
 
@@ -1698,12 +1727,21 @@ var ret = executor. ExecuteScalar();
 ```
 
 使用有参ExecuteScalar
+参数格式
 
 ```csharp
 var sql = "select count(1) from Te_User where Id<=@P1";
 var ps = new DataParameter[1];
 ps[0] = new DataParameter("P1", 5);
 var executor = context.CreateSqlStringExecutor(sql, ps);
+var ret = executor.ExecuteScalar();
+```
+
+自定义对象
+
+```csharp
+var sql = "select count(1) from Te_User where Id<={id}";
+var executor = context.CreateSqlStringExecutor(sql, new { id = 5 });
 var ret = executor.ExecuteScalar();
 ```
 
@@ -1716,6 +1754,7 @@ var list = executor.QueryList<TeUser>();
 ```
 
 使用有参QueryList
+参数格式
 
 ```csharp
 var sql = "select * from Te_User where Id>@P1 and Id<=@P2";
@@ -1726,7 +1765,17 @@ var executor = context.CreateSqlStringExecutor(sql, ps);
 var list = executor.QueryList<TeUser>();
 ```
 
+自定义对象
+
+```csharp
+var sql = "select * from Te_User where Id>{from_id} and Id<={to_id}";
+var executor = context.CreateSqlStringExecutor(sql, new { from_id = 5, to_id = 8 });
+var list = executor.QueryList<TeUser>();
+```
+
 存储过程
+存储过程的自定义对象参数可以使用`DataParameterAttribute`定义存储过程使用参数和参数方向, 含output方向数据会在存储过程执行后回写到对象指定字段中
+参数格式
 
 ```csharp
 var sp = "mysp";
@@ -1737,7 +1786,17 @@ var executor = context.CreateStoreProcedureExecutor(sp, ps);
 var list = executor.QueryList<TeUser>();
 ```
 
+自定义对象
+
+```csharp
+var sp = "mysp";
+var executor = context.CreateStoreProcedureExecutor(sp, new { P1 = 5, P2 = 8 });
+var list = executor.QueryList<TeUser>();
+```
+
+
 Out参数的存储过程
+参数格式
 
 ```csharp
 var sp = "mysp_out";
@@ -1747,4 +1806,24 @@ ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
 var executor = context.CreateStoreProcedureExecutor(sp, ps);
 var ret = executor.ExecuteNonQuery();
 var outvalue = ps[1].OutputValue;
+```
+
+自定义对象
+
+```csharp
+class TestDataParam
+{
+    [DataParameter("P1")]
+    public int InputData { get; set; }
+    [DataParameter("P2", Direction = DataParameterMode.Output)]
+    public int OutputData { get; set; }
+}
+```
+
+```csharp
+var sp = "mysp_out";
+var ps = new TestDataParam { InputData = 5 };
+var executor = context.CreateStoreProcedureExecutor(sp, ps);
+var ret = executor.ExecuteNonQuery();
+Console.WriteLine(ps.OutputData);
 ```
