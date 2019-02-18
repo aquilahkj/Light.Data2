@@ -669,7 +669,7 @@ public class MyController : Controller
 `DataContext`是`Light.Data`的核心类, 所有对数据库的操作均通过`DataContext`的方法完成
 
 * 建议通过继承`DataContext`创建指定数据库的专用类. 
-* `DataContext`非线程安全.
+* `DataContext`事务状态非线程安全.
 * `DataContext`中方法名含有`Async`的方法均为其对应方法的异步实现.
 
 <h2 id="sql_output"> SQL语句输出(SQL Output)</h2>
@@ -897,7 +897,7 @@ item.Erase();
 对增删改多个操作需要在同一事务中做操作,通过`DataContext`的`BeginTrans`方法生成事务域类`TransactionScope`, 并使用其事务方法进行事务操作
 当使用`BeginTrans`后，`DataContext`由非事务状态转为事务状态, 事务状态非线程安全. 在`BeginTrans`重载方法autoRelease参数为ture时(默认为true), 事务Commit或Rollback后, 自动释放事务，事务状态转为非事务状态; autoRelease参数为false时, 需要显式使用 `ReleaseTrans`方法释放事务,事务状态转为非事务状态.
 
-* BeginTrans 开始事务,每次事务开始前需执行, 建议使用在using结构中,
+* BeginTrans 开始事务,每次事务开始前需执行, 建议使用在using结构中
 * CommitTrans 提交事务,提交后该事务才完成,事务提交后不能再使用
 * RollbackTrans 回滚事务,在using作用域逻辑上需要回滚才执行, 另外在执行过程中抛异常时会自动回滚,,事务提交后不能再使用
 * ReleaseTrans BeginTrans中autoRelease参数为false时使用, 执行完事务后显式释放事务, 转为非事务状态
@@ -1474,7 +1474,7 @@ IJoinTable主要查询方法
 
 | 方法 | 说明 |
 |:------|:------|
-| Where(Expression\<Func\<T, T1, bool>> expression) | 把IJoinTable中查询条件置为当前查询条件,如Where((x,y)=>x.Id>1 && y.Status==1) |
+| Where(Expression\<Func\<T, T1, bool>> expression) | 把IJoinTable中查询条件置为当前查询条件, 如Where((x,y)=>x.Id>1 && y.Status==1) |
 | WhereWithAnd(Expression\<Func\<T, T1, bool>> expression) | 把IJoinTable中查询条件以And方式连接当前查询条件 |
 | WhereWithOr(Expression\<Func\<T, T1, bool>> expression) | 把IJoinTable中查询条件以Or方式连接当前查询条件 |
 | WhereReset() | 把IJoinTable中查询条件重置 |
@@ -1646,7 +1646,7 @@ var list = context.Query<TeUser> ()
 
 `JoinSetting`枚举参数
 * QueryDistinct 指定连接查询语句使用distinct
-* NoDataSetEntityNull 指定输出对象如果所有字段无数据时为null, 但如果同时对该连接表的某个字段单独输出, 需要避免空引用的错误. 
+* NoDataSetEntityNull 指定输出映射对象如果所有字段无数据时为null, 但如果同时对该连接表的某个字段单独输出, 需要避免空引用的错误. 
 
 
 ### 查询批量插入
@@ -1673,8 +1673,9 @@ var result = context.Query<TeUser> ()
 
 <h2 id="sql_command">执行SQL语句(Execute Sql Command)</h2>
 
-当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建, 语句或存储过程参数可以通过DataParameter结构或自定义对象结构赋予, 语句的自定义对象结构赋予需要用{}符号在语句中标记参数名称.
-`DataContext`中的`ExecuteNonQueryXXXX`, `ExecuteScalarXXXX`, `QueryXXXX`均为对`SqlExecutor`的快速写法
+当有比较复杂的SQL语句或`Light.Data`不能生成的语句时, 可以通过`SqlExecutor`直接执行SQL语句或者存储过程实实现, `SqlExecutor`由`DataContext`创建, 语句或存储过程参数可以通过`DataParameter`结构或自定义对象结构赋予, 语句的自定义对象结构赋予需要用{}符号在语句中标记参数名称.
+
+`DataContext`中的`ExecuteNonQueryXXXX`, `ExecuteScalarXXXX`, `QueryXXXX`均为对`SqlExecutor`的快速写法.
 
 | 方法 | 说明 |
 |:------|:------|
@@ -1700,6 +1701,7 @@ var ret = executor.ExecuteNonQuery();
 ```
 
 使用有参ExecuteNonQuery
+
 参数格式
 
 ```csharp
@@ -1728,6 +1730,7 @@ var ret = executor. ExecuteScalar();
 ```
 
 使用有参ExecuteScalar
+
 参数格式
 
 ```csharp
@@ -1755,6 +1758,7 @@ var list = executor.QueryList<TeUser>();
 ```
 
 使用有参QueryList
+
 参数格式
 
 ```csharp
@@ -1775,7 +1779,9 @@ var list = executor.QueryList<TeUser>();
 ```
 
 存储过程
+
 存储过程的自定义对象参数可以使用`DataParameterAttribute`定义存储过程使用参数和参数方向, 含output方向数据会在存储过程执行后回写到对象指定字段中
+
 参数格式
 
 ```csharp
@@ -1797,6 +1803,7 @@ var list = executor.QueryList<TeUser>();
 
 
 Out参数的存储过程
+
 参数格式
 
 ```csharp
