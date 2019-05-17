@@ -3,6 +3,9 @@ using System.Data;
 
 namespace Light.Data
 {
+    /// <summary>
+    /// Command Output Info
+    /// </summary>
 	public class CommandOutputInfo
 	{
 		string action;

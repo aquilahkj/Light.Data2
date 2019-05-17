@@ -175,6 +175,11 @@ namespace Light.Data
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Format string
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <returns></returns>
         public string Format(Dictionary<string, object> dict)
         {
             if (Equals(dict, null)) {

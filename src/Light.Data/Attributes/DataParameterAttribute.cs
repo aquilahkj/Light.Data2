@@ -40,7 +40,9 @@ namespace Light.Data
                 name = value;
             }
         }
-
+        /// <summary>
+        /// Data Parameter Direction Mode
+        /// </summary>
         public DataParameterMode Direction {
             get {
                 return direction;

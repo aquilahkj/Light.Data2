@@ -50,11 +50,11 @@ namespace Light.Data
                     value = value.ToString();
                 }
                 DataParameter dataParameter;
-                if (mapping.Direction == DataParameterMode.Input) {
-                    dataParameter = new DataParameter(mapping.Name, value, mapping.Direction);
+                if ((mapping.Direction | DataParameterMode.Output) == DataParameterMode.Output) {
+                    dataParameter = new CallbackDataParameter(mapping.Name, value, mapping.Direction, data, mapping);
                 }
                 else {
-                    dataParameter = new CallbackDataParameter(mapping.Name, value, mapping.Direction, data, mapping);
+                    dataParameter = new DataParameter(mapping.Name, value, mapping.Direction);
                 }
                 dataParameters[i] = dataParameter;
             }

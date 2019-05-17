@@ -143,13 +143,6 @@ namespace Light.Data.Postgre
             return sp;
         }
 
-        //public override void FormatStoredProcedureParameter(IDataParameter dataParmeter)
-        //{
-        //    if (dataParmeter.ParameterName.StartsWith(":", StringComparison.Ordinal)) {
-        //        dataParmeter.ParameterName = dataParmeter.ParameterName.TrimStart(':');
-        //    }
-        //}
-
         #endregion
 
         bool ParseSqlDbType(string dbType, out NpgsqlDbType type)

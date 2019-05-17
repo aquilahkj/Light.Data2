@@ -161,12 +161,7 @@ namespace Light.Data.Mssql
 
             return sp;
         }
-
-        //public override void FormatStoredProcedureParameter(IDataParameter dataParameter)
-        //{
-
-        //}
-
+        
         #endregion
 
         bool ConvertDbType(Type type, out SqlDbType sqlType)

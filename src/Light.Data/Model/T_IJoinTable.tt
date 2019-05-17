@@ -43,41 +43,41 @@ namespace Light.Data
 		<#=InterFaceName#><<#=GetAll(i) #>> Where (Expression<Func<<#=GetAll(i) #>, bool>> expression);
 
 		/// <summary>
-		/// Catch the specified where expression with and.
+		/// Concat the specified where expression with and.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		<#=InterFaceName#><<#=GetAll(i) #>> WhereWithAnd (Expression<Func<<#=GetAll(i) #>, bool>> expression);
 
 		/// <summary>
-		/// Catch the specified where expression with or.
+		/// Concat the specified where expression with or.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		<#=InterFaceName#><<#=GetAll(i) #>> WhereWithOr (Expression<Func<<#=GetAll(i) #>, bool>> expression);
 
 		/// <summary>
-		/// Catch the specified asc order by expression.
+		/// Concat the specified asc order by expression.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		<#=InterFaceName#><<#=GetAll(i) #>> OrderByCatch<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderByConcat<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
 
 		/// <summary>
-		/// Catch the specified desc order by expression.
+		/// Concat the specified desc order by expression.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		<#=InterFaceName#><<#=GetAll(i) #>> OrderByDescendingCatch<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
+		<#=InterFaceName#><<#=GetAll(i) #>> OrderByDescendingConcat<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
 
 		/// <summary>
 		/// Set the specified asc order by expression.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
+		/// <typeparam name="TKey">Data type.</typeparam>
 		<#=InterFaceName#><<#=GetAll(i) #>> OrderBy<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
 
 		/// <summary>
 		/// Set the specified desc order by expression.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
+		/// <typeparam name="TKey">Data type.</typeparam>
 		<#=InterFaceName#><<#=GetAll(i) #>> OrderByDescending<TKey> (Expression<Func<<#=GetAll(i) #>, TKey>> expression);
 
 		/// <summary>
@@ -131,14 +131,14 @@ namespace Light.Data
 		/// Create Selector.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		/// <typeparam name="K">Data type.</typeparam>
 		ISelectJoin<K> Select<K> (Expression<Func<<#=GetAll(i) #>, K>> expression);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		/// <typeparam name="K">Data type.</typeparam>
 		int SelectInsert<K> (Expression<Func<<#=GetAll(i) #>, K>> expression);
 
 		/// <summary>
@@ -154,20 +154,21 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		/// <param name="cancellationToken">CancellationToken.</param>
+		/// <typeparam name="K">Data type.</typeparam>
 		Task<int> SelectInsertAsync<K> (Expression<Func<<#=GetAll(i) #>, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
 
 <#if(i<MaxCount){#>
@@ -278,14 +279,14 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="queryExpression">Query expression.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
 		/// Inner Join table with specified specified onExpression.
 		/// </summary>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -293,14 +294,14 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="queryExpression">Query expression.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
 		/// Left Join table with specified onExpression.
 		/// </summary>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -308,14 +309,14 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="queryExpression">Query expression.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetAdd(i) #>, bool>> queryExpression, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
 		/// Right Join table with specified onExpression.
 		/// </summary>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -323,7 +324,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="query">Query.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -331,7 +332,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="query">Query.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -339,7 +340,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="query">Query.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (IQuery<<#=GetAdd(i) #>> query, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -347,7 +348,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="aggregate">Aggregate.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -355,7 +356,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="aggregate">Aggregate.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -363,7 +364,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="aggregate">Aggregate.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (IAggregate<<#=GetAdd(i) #>> aggregate, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -371,7 +372,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -379,7 +380,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 		/// <summary>
@@ -387,7 +388,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
-		/// <param name="joinSetting">Set join setting</param>
+		/// <param name="joinSetting">The setting of join table.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression, JoinSetting joinSetting); 
 
 <# } #>

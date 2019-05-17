@@ -16,21 +16,27 @@ namespace Light.Data
             this.mapping = mapping;
         }
 
-        public void Callback()
+        internal override bool CallbackOutputValue()
         {
-            object value = OutputValue;
-            if (!Object.Equals(value, null)) {
-                Type type = value.GetType();
-                if (type != mapping.ParameterType) {
-                    if (mapping.ParameterType == typeof(string)) {
-                        value = value.ToString();
-                    }
-                    else {
-                        value = Convert.ChangeType(value, mapping.ParameterType);
+            if (base.CallbackOutputValue()) {
+                object value = Value;
+                if (!Object.Equals(value, null)) {
+                    Type type = value.GetType();
+                    if (type != mapping.ParameterType) {
+                        if (mapping.ParameterType == typeof(string)) {
+                            value = value.ToString();
+                        }
+                        else {
+                            value = Convert.ChangeType(value, mapping.ParameterType);
+                        }
                     }
                 }
+                mapping.Set(callbackData, value);
+                return true;
             }
-            mapping.Set(callbackData, value);
+            else {
+                return false;
+            }
         }
     }
 }

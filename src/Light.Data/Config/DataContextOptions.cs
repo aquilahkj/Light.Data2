@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Light.Data
 {
+    /// <summary>
+    /// DataContext Options
+    /// </summary>
     public class DataContextOptions
     {
         internal static DataContextOptions CreateOptions(IConnectionSetting setting)
@@ -53,7 +56,10 @@ namespace Light.Data
         }
     }
 
-
+    /// <summary>
+    /// DataContext Options
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
     public sealed class DataContextOptions<TContext> : DataContextOptions where TContext : DataContext
     {
 

@@ -12,7 +12,7 @@ namespace Light.Data
 		/// Exists expression.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		public static bool Exists<T> (Expression<Func<T, bool>> expression) 
 		{
 			return true;
@@ -24,7 +24,7 @@ namespace Light.Data
 		/// <returns>The in.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool In<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -38,7 +38,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool In<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -51,7 +51,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if all was gted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtAll<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -65,7 +65,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtAll<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -78,7 +78,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if all was lted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtAll<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -92,7 +92,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtAll<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -105,7 +105,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if any was gted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtAny<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -119,7 +119,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtAny<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -132,7 +132,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if any was lted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtAny<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -146,7 +146,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtAny<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -159,7 +159,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if eq all was gted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtEqAll<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -173,7 +173,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtEqAll<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -186,7 +186,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if eq all was lted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtEqAll<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -200,7 +200,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtEqAll<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -213,7 +213,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if eq any was gted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtEqAny<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -227,7 +227,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool GtEqAny<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{
@@ -240,7 +240,7 @@ namespace Light.Data
 		/// <returns><c>true</c>, if eq any was lted, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtEqAny<T, K> (K field, Expression<Func<T, K>> selectField) 
 		{
@@ -254,7 +254,7 @@ namespace Light.Data
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <typeparam name="T">Data type.</typeparam>
 		/// <typeparam name="K">The 2nd type parameter.</typeparam>
 		public static bool LtEqAny<T, K> (K field, Expression<Func<T, K>> selectField, Expression<Func<T, bool>> expression) 
 		{

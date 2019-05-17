@@ -92,7 +92,9 @@ namespace Light.Data
                 return _aliasTableDict.TryGetValue(mapping, out name);
             }
         }
-
+        /// <summary>
+        /// DataContext Options
+        /// </summary>
         protected internal DataContextOptions Options {
             get {
                 return _options;
@@ -207,10 +209,10 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Create a new object.
+        /// Create a new result.
         /// </summary>
-        /// <returns>The new object.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The new result.</returns>
+        /// <typeparam name="T">Data type.</typeparam>
         public T CreateNew<T>() where T : class, new()
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -237,8 +239,8 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data">Data</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <returns></returns>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <returns>result.</returns>
         public int InsertOrUpdate<T>(T data, bool refresh)
         {
             return InsertOrUpdate(data, SafeLevel.Default, refresh);
@@ -249,8 +251,8 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data">Data</param>
-        /// <param name="level">safe level</param>
-        /// <returns></returns>
+        /// <param name="level">Safe level</param>
+        /// <returns>result.</returns>
         public int InsertOrUpdate<T>(T data, SafeLevel level)
         {
             return InsertOrUpdate(data, level, false);
@@ -261,9 +263,9 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data">Data</param>
-        /// <param name="level">safe level</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <returns></returns>
+        /// <param name="level">Safe level</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <returns>result.</returns>
         public int InsertOrUpdate<T>(T data, SafeLevel level, bool refresh)
         {
             Type type = typeof(T);
@@ -356,7 +358,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="level">safe level</param>
+        /// <param name="level">Safe level</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -368,7 +370,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -380,8 +382,8 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="level">safe level</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="level">Safe level</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -474,7 +476,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="refresh">Whether to refresh data field</param>
         public int Insert<T>(T data, bool refresh)
         {
             Type type = typeof(T);
@@ -531,7 +533,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -588,7 +590,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="refresh">Whether to refresh data field</param>
         public int Update<T>(T data, bool refresh)
         {
             Type type = typeof(T);
@@ -631,7 +633,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="refresh">Whether to refresh data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> UpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -721,7 +723,7 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas)
@@ -732,9 +734,9 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
-        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
         /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity)
@@ -745,7 +747,7 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
         /// <param name="size">Size.</param>
@@ -758,11 +760,11 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
         /// <param name="size">Size.</param>
-        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
         /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas, int index, int size, bool refresh, bool updateIdentity)
@@ -922,7 +924,7 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
@@ -934,9 +936,9 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
-        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
         /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
@@ -948,7 +950,7 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
         /// <param name="size">Size.</param>
@@ -962,11 +964,11 @@ namespace Light.Data
         /// <summary>
         /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows count.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
         /// <param name="size">Size.</param>
-        /// <param name="refresh">Whether to refresh null data field.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
         /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
@@ -1127,9 +1129,9 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas)
         {
             return BatchUpdate(datas, 0, int.MaxValue, false);
@@ -1138,10 +1140,10 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, bool refresh)
         {
             return BatchUpdate(datas, 0, int.MaxValue, refresh);
@@ -1150,11 +1152,11 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, int index, int count)
         {
             return BatchUpdate(datas, index, count, false);
@@ -1163,12 +1165,12 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, int index, int count, bool refresh)
         {
             Type type = typeof(T);
@@ -1319,10 +1321,10 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, 0, int.MaxValue, false, cancellationToken);
@@ -1331,11 +1333,11 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, 0, int.MaxValue, refresh, cancellationToken);
@@ -1344,12 +1346,12 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, index, count, false, cancellationToken);
@@ -1358,13 +1360,13 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
@@ -1517,7 +1519,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchDelete<T>(IEnumerable<T> datas)
         {
             return BatchDelete(datas, 0, int.MaxValue);
@@ -1530,7 +1532,7 @@ namespace Light.Data
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchDelete<T>(IEnumerable<T> datas, int index, int count)
         {
             Type type = typeof(T);
@@ -1680,7 +1682,7 @@ namespace Light.Data
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchDeleteAsync(datas, 0, int.MaxValue, cancellationToken);
@@ -1694,7 +1696,7 @@ namespace Light.Data
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
@@ -1841,9 +1843,9 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public T SelectByKey<T>(params object[] primaryKeys)
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1856,10 +1858,10 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1872,10 +1874,10 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey }, cancellationToken);
@@ -1884,11 +1886,11 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
@@ -1897,12 +1899,12 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
@@ -1913,7 +1915,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>exists or not.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public bool Exists<T>(params object[] primaryKeys)
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1931,7 +1933,7 @@ namespace Light.Data
         /// <returns>exists or not.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey }, cancellationToken);
@@ -1944,7 +1946,7 @@ namespace Light.Data
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
@@ -1958,7 +1960,7 @@ namespace Light.Data
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
@@ -1970,7 +1972,7 @@ namespace Light.Data
         /// <returns>exists or not.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1987,7 +1989,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary key.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int DeleteByKey<T>(params object[] primaryKeys)
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -2004,7 +2006,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await DeleteByKeyAsync<T>(new object[] { primaryKey }, cancellationToken);
@@ -2017,7 +2019,7 @@ namespace Light.Data
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await DeleteByKeyAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
@@ -2031,7 +2033,7 @@ namespace Light.Data
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await DeleteByKeyAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
@@ -2043,7 +2045,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -2057,9 +2059,9 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by id.
         /// </summary>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         /// <param name="id">id</param>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         public T SelectById<T>(object id)
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2070,10 +2072,10 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by id.
         /// </summary>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         /// <param name="id">id</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         public async Task<T> SelectByIdAsync<T>(object id, CancellationToken cancellationToken = default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2085,7 +2087,7 @@ namespace Light.Data
         /// Create query expression.
         /// </summary>
         /// <returns>The queryable.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public IQuery<T> Query<T>()
         {
             return new LightQuery<T>(this);
@@ -2095,7 +2097,7 @@ namespace Light.Data
         /// Truncates the table.
         /// </summary>
         /// <returns>The table.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int TruncateTable<T>()
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2107,7 +2109,7 @@ namespace Light.Data
         /// Truncates the table.
         /// </summary>
         /// <returns>The table.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> TruncateTableAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2118,21 +2120,6 @@ namespace Light.Data
 
         #region 核心数据库方法
 
-
-        /// <summary>
-        /// Outputs the command.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="command">Command.</param>
-        /// <param name="level">Level.</param>
-        /// <param name="isTransaction">IsTransaction.</param>
-        /// <param name="start">Start.</param>
-        /// <param name="size">Size.</param>
-        /// <param name="startTime">StartTime.</param>
-        /// <param name="endTime">EndTime.</param>
-        /// <param name="success">Success.</param>
-        /// <param name="result">Result.</param>
-        /// <param name="exceptionMessage">Exception Message.</param>
         private void OutputCommand(string action, DbCommand command, SafeLevel level, bool isTransaction, int start, int size, DateTime startTime, DateTime endTime, bool success, object result, string exceptionMessage)
         {
             if (this._output != null) {
@@ -2886,9 +2873,6 @@ namespace Light.Data
             return dataSet;
         }
 
-
-
-
         #endregion
 
         #region 基础方法
@@ -3438,7 +3422,6 @@ namespace Light.Data
             return sqlExecutor.QueryList<T>(start, size);
         }
 
-
         /// <summary>
         /// Query data list with direct sql string
         /// </summary>
@@ -3491,7 +3474,6 @@ namespace Light.Data
             return await sqlExecutor.QueryListAsync<T>(start, size);
         }
 
-
         /// <summary>
         /// Query data first item with direct sql string
         /// </summary>
@@ -3521,6 +3503,7 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlString">Sql string.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<T> QuerySqlFirstAsync<T>(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3533,6 +3516,7 @@ namespace Light.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="sqlString">Sql string.</param>
         /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<T> QuerySqlFirstAsync<T>(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3566,6 +3550,7 @@ namespace Light.Data
         /// Execute NonQuery with direct sql string
         /// </summary>
         /// <param name="sqlString">Sql string.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> ExecuteNonQuerySqlStringAsync(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3577,6 +3562,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="sqlString">Sql string.</param>
         /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> ExecuteNonQuerySqlStringAsync(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3610,6 +3596,7 @@ namespace Light.Data
         /// Execute Scalar with direct sql string
         /// </summary>
         /// <param name="sqlString">Sql string.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<object> ExecuteScalarSqlStringAsync(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3621,6 +3608,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="sqlString">Sql string.</param>
         /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<object> ExecuteScalarSqlStringAsync(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3763,6 +3751,7 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<T> QueryStoreProcedureFirstAsync<T>(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3775,6 +3764,7 @@ namespace Light.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="storeProcedure">Store Procedure name.</param>
         /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<T> QueryStoreProcedureFirstAsync<T>(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3808,6 +3798,7 @@ namespace Light.Data
         /// Execute NonQuery with store procedure
         /// </summary>
         /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> ExecuteNonQueryStoreProcedureAsync(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3819,6 +3810,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="storeProcedure">Store Procedure name.</param>
         /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> ExecuteNonQueryStoreProcedureAsync(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3852,6 +3844,7 @@ namespace Light.Data
         /// Execute Scalar with store procedure
         /// </summary>
         /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<object> ExecuteScalarStoreProcedureAsync(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3863,6 +3856,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="storeProcedure">Store Procedure name.</param>
         /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<object> ExecuteScalarStoreProcedureAsync(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -3871,23 +3865,3 @@ namespace Light.Data
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

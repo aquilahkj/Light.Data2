@@ -1896,7 +1896,7 @@ namespace Light.Data.Mysql.Test
             ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             executor.ExecuteNonQuery();
-            Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
+            Assert.Equal(5, Convert.ToInt32(ps[1].Value));
 
             sql = "sptest7";
             ps = new DataParameter[2];
@@ -1908,7 +1908,7 @@ namespace Light.Data.Mysql.Test
                 executor.ExecuteNonQuery();
                 context.CommitTrans();
             }
-            Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
+            Assert.Equal(5, Convert.ToInt32(ps[1].Value));
         }
 
         [Fact]
@@ -1925,7 +1925,7 @@ namespace Light.Data.Mysql.Test
             ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             await executor.ExecuteNonQueryAsync(CancellationToken.None);
-            Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
+            Assert.Equal(5, Convert.ToInt32(ps[1].Value));
 
             sql = "sptest7";
             ps = new DataParameter[2];
@@ -1937,7 +1937,7 @@ namespace Light.Data.Mysql.Test
                 await executor.ExecuteNonQueryAsync(CancellationToken.None);
                 context.CommitTrans();
             }
-            Assert.Equal(5, Convert.ToInt32(ps[1].OutputValue));
+            Assert.Equal(5, Convert.ToInt32(ps[1].Value));
         }
 
         [Fact]

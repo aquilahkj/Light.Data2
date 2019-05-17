@@ -108,10 +108,10 @@ namespace Light.Data
             return this;
         }
 
-        public override IAggregate<K> OrderByCatch<TKey>(Expression<Func<K, TKey>> expression)
+        public override IAggregate<K> OrderByConcat<TKey>(Expression<Func<K, TKey>> expression)
         {
             var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression(expression, OrderType.ASC, Model);
-            _order = OrderExpression.Catch(_order, orderExpression);
+            _order = OrderExpression.Concat(_order, orderExpression);
             return this;
         }
 
@@ -122,10 +122,10 @@ namespace Light.Data
             return this;
         }
 
-        public override IAggregate<K> OrderByDescendingCatch<TKey>(Expression<Func<K, TKey>> expression)
+        public override IAggregate<K> OrderByDescendingConcat<TKey>(Expression<Func<K, TKey>> expression)
         {
             var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression(expression, OrderType.DESC, Model);
-            _order = OrderExpression.Catch(_order, orderExpression);
+            _order = OrderExpression.Concat(_order, orderExpression);
             return this;
         }
 

@@ -132,14 +132,7 @@ namespace Light.Data.Mysql
             }
             return sp;
         }
-
-        //public override void FormatStoredProcedureParameter(IDataParameter dataParameter)
-        //{
-        //    if (dataParameter.ParameterName.StartsWith("?", StringComparison.Ordinal)) {
-        //        dataParameter.ParameterName = dataParameter.ParameterName.TrimStart('?');
-        //    }
-        //}
-
+        
         #endregion
 
         bool ConvertDbType(Type type, out MySqlDbType sqlType)
