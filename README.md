@@ -1,8 +1,10 @@
-# LightData
+# Light.Data
 
 [![dotnet](https://img.shields.io/badge/dotnet%20standard-2.0-green.svg)](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE)
-[![nuget](https://img.shields.io/badge/nuget-2.1.2-brightgreen.svg)](https://www.nuget.org/packages/Light.Data/)
+[![nuget](https://img.shields.io/nuget/v/Light.Data.svg)](https://www.nuget.org/packages/Light.Data/)
+[![download](https://img.shields.io/nuget/dt/Light.Data.svg)](https://www.nuget.org/packages/Light.Data/)
+[![gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/light-data/community)
 
 English | [简体中文](./README.zh-CN.md) |
 
@@ -16,7 +18,7 @@ Supported Database
 | Mysql | Need to install `nuget` install `Light.Data.Mysql` library |
 | Postgre | Need to install `nuget` install `Light.Data.Postgre` library |
 
-[Guide Document](https://aquilahkj.github.io/Light.Data.Site/)
+* Guide Document: [https://aquilahkj.github.io/Light.Data.Site/](https://aquilahkj.github.io/Light.Data.Site/)
 
 #### Basic Operation
 

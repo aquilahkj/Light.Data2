@@ -1467,11 +1467,11 @@ namespace Light.Data.Mysql.Test
                 {
                     context1.Delete(list[0]);
                 });
-                System.Threading.Thread.Sleep(500);
+                System.Threading.Thread.Sleep(4000);
                 ac = context.SelectById<TeBaseField>(list[0].Id);
                 context.CommitTrans();
             }
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(2000);
             Assert.Null(ac);
             list.Remove(list[0]);
 
