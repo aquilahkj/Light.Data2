@@ -6,27 +6,27 @@ using Newtonsoft.Json.Linq;
 
 namespace Light.Data
 {
+    /// <summary>
+    /// Data Mapper Configuration
+    /// </summary>
     public static class DataMapperConfiguration
     {
         static object locker = new object();
-
-        static bool useEntryAssemblyDirectory = true;
-
         static HashSet<string> configFilePaths = new HashSet<string>();
 
         static bool initialed;
 
         static Dictionary<Type, DataTableMapperSetting> settingDict = new Dictionary<Type, DataTableMapperSetting>();
 
-        public static bool UseEntryAssemblyDirectory {
-            get {
-                return useEntryAssemblyDirectory;
-            }
-            set {
-                useEntryAssemblyDirectory = value;
-            }
-        }
+        /// <summary>
+        /// Sets whether to use entry assembly directory
+        /// </summary>
+        public static bool UseEntryAssemblyDirectory { get; set; } = true;
 
+        /// <summary>
+        /// Add config file path
+        /// </summary>
+        /// <param name="filePath"></param>
         public static void AddConfigFilePath(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -51,7 +51,7 @@ namespace Light.Data
         static void LoadData(string configFilePath)
         {
             FileInfo fileInfo;
-            if (useEntryAssemblyDirectory) {
+            if (UseEntryAssemblyDirectory) {
                 fileInfo = FileHelper.GetFileInfo(configFilePath, out bool absolute);
                 if (!fileInfo.Exists && !absolute) {
                     fileInfo = new FileInfo(configFilePath);
@@ -172,11 +172,11 @@ namespace Light.Data
                 if (index > 0) {
                     string type = fieldConfig.FunctionControl.Substring(0, index);
                     if (type != "FunctionControl") {
-                        throw new Exception("Not FunctionControl type");
+                        throw new Exception(SR.NotFunctionControlType);
                     }
                     index++;
                     if (index >= fieldConfig.FunctionControl.Length) {
-                        throw new Exception("FunctionControl error");
+                        throw new Exception(SR.FunctionControlError);
                     }
                     name = fieldConfig.FunctionControl.Substring(index);
                 }

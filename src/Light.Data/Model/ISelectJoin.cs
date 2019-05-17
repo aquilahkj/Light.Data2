@@ -52,12 +52,13 @@ namespace Light.Data
         /// Get first instance.
         /// </summary>
         Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
-        
+
         /// <summary>
         /// Elements at index.
         /// </summary>
         /// <returns>The <see cref="!:K"/>.</returns>
         /// <param name="index">Index.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
         
         #endregion

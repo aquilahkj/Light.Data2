@@ -17,7 +17,7 @@
 	//设置命名空间
     var namespaceName="Light.Data.Mysql.Test";
 	//设置数据库连接
-    var connection="server=192.168.210.1;Port=3306;User Id=root;password=qwerty;Allow Zero Datetime=True;charset=utf8;";
+    var connection="server=mysql_test;Port=3306;User Id=root;password=1qazxsw23edC;Allow Zero Datetime=True;charset=utf8;";
 	//设置需要生成的数据库
     var dataBase="LightData_Test";
 

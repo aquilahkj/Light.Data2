@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Light.Data.Postgre\Light.Data.Postgre.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Model\DBSchema_Postgre.cs">
       <DependentUpon>DBSchema_Postgre.tt</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -75,4 +71,7 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Light.Data.Postgre\Light.Data.Postgre.csproj" />
+  </ItemGroup>
 </Project>

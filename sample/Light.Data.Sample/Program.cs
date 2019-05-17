@@ -55,7 +55,7 @@ namespace Light.Data.Sample
             output.OutputFullCommand = true;
 
             DataContextOptionsBuilder<DataContext> builder = new DataContextOptionsBuilder<DataContext>();
-            builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
+            builder.UseMssql("Data Source=127.0.0.130;User ID=sa;Password=1qazxsw23edC;Initial Catalog=CM_TEST;");
             builder.SetCommandOutput(output);
             var options = builder.Build();
 
@@ -78,7 +78,7 @@ namespace Light.Data.Sample
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder =>
             {
-                builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=CM_TEST;");
+                builder.UseMssql("Data Source=127.0.0.130;User ID=sa;Password=1qazxsw23edC;Initial Catalog=CM_TEST;");
                 builder.SetCommandOutput(output);
                 builder.SetTimeout(2000);
                 builder.SetVersion("11.0");

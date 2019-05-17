@@ -41,7 +41,7 @@ namespace Light.Data.Mssql.Test
         public DataContext CreateBuilderContextByConnection()
         {
             var builder = new DataContextOptionsBuilder<DataContext>();
-            builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
+            builder.UseMssql("Data Source=mssql_test;User ID=sa;Password=1qazxsw23edC;Initial Catalog=LightData_Test;");
             builder.SetCommandOutput(commandOutput);
             var options = builder.Build();
             DataContext context = new DataContext(options);
@@ -62,7 +62,7 @@ namespace Light.Data.Mssql.Test
         {
             IServiceCollection service = new ServiceCollection();
             service.AddDataContext<TestContext>(builder => {
-                builder.UseMssql("Data Source=192.168.210.130;User ID=sa;Password=qwerty;Initial Catalog=LightData_Test;");
+                builder.UseMssql("Data Source=mssql_test;User ID=sa;Password=1qazxsw23edC;Initial Catalog=LightData_Test;");
                 builder.SetCommandOutput(commandOutput);
                 builder.SetTimeout(2000);
                 builder.SetBatchInsertCount(10);
@@ -155,6 +155,124 @@ namespace Light.Data.Mssql.Test
             return context;
         }
 
+
+        public DataContext CreateBuilderContextFactoryByConnection()
+        {
+            var builder = new DataContextOptionsBuilder<DataContext>();
+            builder.UseMssql("Data Source=mssql_test;User ID=sa;Password=1qazxsw23edC;Initial Catalog=LightData_Test;");
+            builder.SetCommandOutput(commandOutput);
+            var options = builder.Build();
+            LightDataContextFactory factory = new LightDataContextFactory(options);
+            DataContext context = factory.CreateDataContext();
+            return context;
+        }
+
+        public DataContext CreateBuilderContextFactoryByConfig()
+        {
+            var builder = new DataContextOptionsConfigurator<DataContext>();
+            builder.ConfigName = "mssql";
+            builder.SetCommandOutput(commandOutput);
+            var options = builder.Create(DataContextConfiguration.Global);
+            LightDataContextFactory factory = new LightDataContextFactory(options);
+            DataContext context = factory.CreateDataContext();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextFactoryByDi()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContextFactory<TestContextFactory, TestContext>(builder =>
+            {
+                builder.UseMssql("Data Source=mssql_test;User ID=sa;Password=1qazxsw23edC;Initial Catalog=LightData_Test;");
+                builder.SetCommandOutput(commandOutput);
+                builder.SetTimeout(2000);
+                builder.SetBatchInsertCount(10);
+                builder.SetBatchUpdateCount(10);
+                builder.SetBatchDeleteCount(10);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContextFactory factory = provider.GetRequiredService<TestContextFactory>();
+            TestContext context = factory.CreateDataContext();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextFactoryByDiConfigSpecified()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContextFactory<TestContextFactory, TestContext>(configuration.GetSection("lightData"), config =>
+            {
+                config.ConfigName = "app";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContextFactory factory = provider.GetRequiredService<TestContextFactory>();
+            TestContext context = factory.CreateDataContext();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextFactoryByDiConfigSpecifiedDefault()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContextFactory<TestContextFactory, TestContext>(configuration.GetSection("lightData"), config =>
+            {
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContextFactory factory = provider.GetRequiredService<TestContextFactory>();
+            TestContext context = factory.CreateDataContext();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextFactoryByDiConfigGlobal()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContextFactory<TestContextFactory, TestContext>(DataContextConfiguration.Global, config =>
+            {
+                config.ConfigName = "mssql";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContextFactory contextFactory = provider.GetRequiredService<TestContextFactory>();
+            TestContext context = contextFactory.CreateDataContext();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextFactoryByDiConfigGlobalDefault()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContextFactory<TestContextFactory, TestContext>(DataContextConfiguration.Global, config =>
+            {
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContextFactory contextFactory = provider.GetRequiredService<TestContextFactory>();
+            TestContext context = contextFactory.CreateDataContext();
+            return context;
+        }
+
+        public TestContext CreateBuilderContextFactoryByConfigFile()
+        {
+            IServiceCollection service = new ServiceCollection();
+            service.AddDataContextFactory<TestContextFactory, TestContext>("lightdata2.json", config =>
+            {
+                config.ConfigName = "mssql2";
+                config.SetCommandOutput(commandOutput);
+            }, ServiceLifetime.Transient);
+            var provider = service.BuildServiceProvider();
+            TestContextFactory contextFactory = provider.GetRequiredService<TestContextFactory>();
+            TestContext context = contextFactory.CreateDataContext();
+            return context;
+        }
+
+
         private void CommandOutput_OnCommandOutput(object sender, CommandOutputEventArgs args)
         {
             this.output.WriteLine(args.RunnableCommand);
@@ -173,6 +291,19 @@ namespace Light.Data.Mssql.Test
         public TestContext(DataContextOptions<TestContext> options) : base(options)
         {
 
+        }
+    }
+
+    public class TestContextFactory : DataContextFactory<TestContext>
+    {
+        public TestContextFactory(DataContextOptions<TestContext> options) : base(options)
+        {
+
+        }
+
+        public override TestContext CreateDataContext()
+        {
+            return new TestContext(options);
         }
     }
 }

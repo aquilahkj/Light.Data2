@@ -14,19 +14,16 @@ namespace Light.Data
     public class DataContext : IDisposable
     {
         /// <summary>
-        /// Gets the name of the mapping table.
+        /// Get the name of the mapping table.
         /// </summary>
         /// <returns>The table name.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Specified object type.</typeparam>
         public static string GetTableName<T>()
         {
             DataEntityMapping mapping = DataEntityMapping.GetEntityMapping(typeof(T));
             return mapping.TableName;
         }
 
-        ///// <summary>
-        ///// The connection string.
-        ///// </summary>
         private string _connectionString;
 
         private DatabaseProvider _database;
@@ -35,6 +32,20 @@ namespace Light.Data
 
         private Dictionary<DataEntityMapping, string> _aliasTableDict;
 
+        /// <summary>
+        /// Sql Parameter Prefix
+        /// </summary>
+        public string ParameterPrefix {
+            get {
+                return _database.ParameterPrefix;
+            }
+        }
+
+        /// <summary>
+        /// Set the mapping table alias name for the specified object type
+        /// </summary>
+        /// <typeparam name="T">Specified object type.</typeparam>
+        /// <param name="name">Alias name.</param>
         public void SetAliasTableName<T>(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -47,6 +58,11 @@ namespace Light.Data
             _aliasTableDict[mapping] = name;
         }
 
+        /// <summary>
+        /// Clear the mapping table alias name for the specified object type
+        /// </summary>
+        /// <typeparam name="T">Specified object type.</typeparam>
+        /// <returns>Clear success or not</returns>
         public bool ResetAliasTableName<T>()
         {
             if (_aliasTableDict == null) {
@@ -56,6 +72,9 @@ namespace Light.Data
             return _aliasTableDict.Remove(mapping);
         }
 
+        /// <summary>
+        /// Clear all the mapping table alias name
+        /// </summary>
         public void ClearAliasTableName()
         {
             if (_aliasTableDict != null) {
@@ -73,7 +92,9 @@ namespace Light.Data
                 return _aliasTableDict.TryGetValue(mapping, out name);
             }
         }
-
+        /// <summary>
+        /// DataContext Options
+        /// </summary>
         protected internal DataContextOptions Options {
             get {
                 return _options;
@@ -127,7 +148,7 @@ namespace Light.Data
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Light.Data.DataContext"/> class.
         /// </summary>
-        /// <param name="setting">Setting.</param>
+        /// <param name="setting">Connection setting.</param>
         public DataContext(IConnectionSetting setting)
         {
             if (setting == null)
@@ -136,6 +157,10 @@ namespace Light.Data
             Internal_DataContext(options);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Light.Data.DataContext"/> class.
+        /// </summary>
+        /// <param name="options">Context options.</param>
         public DataContext(DataContextOptions options)
         {
             if (options == null) {
@@ -183,13 +208,11 @@ namespace Light.Data
             tableEntity.ClearUpdateFields();
         }
 
-
-
         /// <summary>
-        /// Creates the new object.
+        /// Create a new result.
         /// </summary>
-        /// <returns>The new.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The new result.</returns>
+        /// <typeparam name="T">Data type.</typeparam>
         public T CreateNew<T>() where T : class, new()
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -216,8 +239,8 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data">Data</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <returns></returns>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <returns>result.</returns>
         public int InsertOrUpdate<T>(T data, bool refresh)
         {
             return InsertOrUpdate(data, SafeLevel.Default, refresh);
@@ -228,8 +251,8 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data">Data</param>
-        /// <param name="level">safe level</param>
-        /// <returns></returns>
+        /// <param name="level">Safe level</param>
+        /// <returns>result.</returns>
         public int InsertOrUpdate<T>(T data, SafeLevel level)
         {
             return InsertOrUpdate(data, level, false);
@@ -240,9 +263,9 @@ namespace Light.Data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data">Data</param>
-        /// <param name="level">safe level</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <returns></returns>
+        /// <param name="level">Safe level</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <returns>result.</returns>
         public int InsertOrUpdate<T>(T data, SafeLevel level, bool refresh)
         {
             Type type = typeof(T);
@@ -335,7 +358,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="level">safe level</param>
+        /// <param name="level">Safe level</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -347,7 +370,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -359,8 +382,8 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="level">safe level</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="level">Safe level</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertOrUpdateAsync<T>(T data, SafeLevel level, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -453,7 +476,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="refresh">Whether to refresh data field</param>
         public int Insert<T>(T data, bool refresh)
         {
             Type type = typeof(T);
@@ -510,7 +533,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> InsertAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -567,7 +590,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="refresh">Whether to refresh data field</param>
         public int Update<T>(T data, bool refresh)
         {
             Type type = typeof(T);
@@ -610,7 +633,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="data">Data.</param>
-        /// <param name="refresh">Is refresh data field</param>
+        /// <param name="refresh">Whether to refresh data field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> UpdateAsync<T>(T data, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -698,58 +721,60 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batch insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas)
         {
             return BatchInsert(datas, 0, int.MaxValue, false, true);
         }
 
-        /// Batch insert data.
+        /// <summary>
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <param name="updateIdentity">is update data identity field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity)
         {
             return BatchInsert(datas, 0, int.MaxValue, refresh, updateIdentity);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public int BatchInsert<T>(IEnumerable<T> datas, int index, int count)
+        /// <param name="size">Size.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public int BatchInsert<T>(IEnumerable<T> datas, int index, int size)
         {
-            return BatchInsert(datas, index, count, false, true);
+            return BatchInsert(datas, index, size, false, true);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public int BatchInsert<T>(IEnumerable<T> datas, int index, int count, bool refresh, bool updateIdentity)
+        /// <param name="size">Size.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public int BatchInsert<T>(IEnumerable<T> datas, int index, int size, bool refresh, bool updateIdentity)
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
-            return BatchInsert(mapping, datas, index, count, refresh, updateIdentity);
+            return BatchInsert(mapping, datas, index, size, refresh, updateIdentity);
         }
 
-        internal int BatchInsert(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity)
+        internal int BatchInsert(DataTableEntityMapping mapping, IEnumerable datas, int index, int size, bool refresh, bool updateIdentity)
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -757,10 +782,10 @@ namespace Light.Data
             if (index < 0) {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            if (count < 0) {
-                throw new ArgumentOutOfRangeException(nameof(count));
+            if (size < 0) {
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
-            if (count == 0) {
+            if (size == 0) {
                 return 0;
             }
             IEnumerator enumerator = datas.GetEnumerator();
@@ -808,7 +833,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -843,7 +868,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -897,64 +922,64 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Batch insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, 0, int.MaxValue, false, true, cancellationToken);
         }
 
         /// <summary>
-        /// Batch insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <param name="updateIdentity">is update data identity field</param>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchInsertAsync(datas, 0, int.MaxValue, refresh, updateIdentity, cancellationToken);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
+        /// <param name="size">Size.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int size, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await BatchInsertAsync(datas, index, count, false, true, cancellationToken);
+            return await BatchInsertAsync(datas, index, size, false, true, cancellationToken);
         }
 
         /// <summary>
-        /// Mass insert data.
+        /// Batch insert datas.
         /// </summary>
-        /// <returns>The insert rows.</returns>
-        /// <param name="datas">Datas.</param>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
         /// <param name="index">Index.</param>
-        /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <param name="updateIdentity">is update data identity field</param>
+        /// <param name="size">Size.</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields..</param>
+        /// <param name="updateIdentity">Whether to update the identity field.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
+        /// <typeparam name="T">Insert object type.</typeparam>
+        public async Task<int> BatchInsertAsync<T>(IEnumerable<T> datas, int index, int size, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
             DataTableEntityMapping mapping = type.IsInterface || type.IsAbstract ? null : DataEntityMapping.GetTableMapping(type);
-            return await BatchInsertAsync(mapping, datas, index, count, refresh, updateIdentity, cancellationToken);
+            return await BatchInsertAsync(mapping, datas, index, size, refresh, updateIdentity, cancellationToken);
         }
 
-        internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int count, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
+        internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int size, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (datas == null) {
                 throw new ArgumentNullException(nameof(datas));
@@ -962,10 +987,10 @@ namespace Light.Data
             if (index < 0) {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            if (count < 0) {
-                throw new ArgumentOutOfRangeException(nameof(count));
+            if (size < 0) {
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
-            if (count == 0) {
+            if (size == 0) {
                 return 0;
             }
             IEnumerator enumerator = datas.GetEnumerator();
@@ -1013,7 +1038,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -1048,7 +1073,7 @@ namespace Light.Data
                     while (true) {
                         object data;
                         if (ft) {
-                            if (curCount == count) {
+                            if (curCount == size) {
                                 break;
                             }
                             if (enumerator.MoveNext()) {
@@ -1104,9 +1129,9 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas)
         {
             return BatchUpdate(datas, 0, int.MaxValue, false);
@@ -1115,10 +1140,10 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, bool refresh)
         {
             return BatchUpdate(datas, 0, int.MaxValue, refresh);
@@ -1127,11 +1152,11 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, int index, int count)
         {
             return BatchUpdate(datas, index, count, false);
@@ -1140,12 +1165,12 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchUpdate<T>(IEnumerable<T> datas, int index, int count, bool refresh)
         {
             Type type = typeof(T);
@@ -1296,10 +1321,10 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, 0, int.MaxValue, false, cancellationToken);
@@ -1308,11 +1333,11 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, 0, int.MaxValue, refresh, cancellationToken);
@@ -1321,12 +1346,12 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchUpdateAsync(datas, index, count, false, cancellationToken);
@@ -1335,13 +1360,13 @@ namespace Light.Data
         /// <summary>
         /// Batch update datas.
         /// </summary>
-        /// <returns>The update rows.</returns>
+        /// <returns>result.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <param name="refresh">is refresh null data field</param>
+        /// <param name="refresh">Whether to refresh null data with default value fields.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchUpdateAsync<T>(IEnumerable<T> datas, int index, int count, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
@@ -1494,7 +1519,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchDelete<T>(IEnumerable<T> datas)
         {
             return BatchDelete(datas, 0, int.MaxValue);
@@ -1507,7 +1532,7 @@ namespace Light.Data
         /// <param name="datas">Datas.</param>
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchDelete<T>(IEnumerable<T> datas, int index, int count)
         {
             Type type = typeof(T);
@@ -1657,7 +1682,7 @@ namespace Light.Data
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await BatchDeleteAsync(datas, 0, int.MaxValue, cancellationToken);
@@ -1671,7 +1696,7 @@ namespace Light.Data
         /// <param name="index">Index.</param>
         /// <param name="count">Count.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> BatchDeleteAsync<T>(IEnumerable<T> datas, int index, int count, CancellationToken cancellationToken = default(CancellationToken))
         {
             Type type = typeof(T);
@@ -1818,9 +1843,9 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public T SelectByKey<T>(params object[] primaryKeys)
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1833,10 +1858,10 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1849,10 +1874,10 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey }, cancellationToken);
@@ -1861,11 +1886,11 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
@@ -1874,12 +1899,12 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by keys.
         /// </summary>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<T> SelectByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await SelectByKeyAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
@@ -1890,7 +1915,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>exists or not.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public bool Exists<T>(params object[] primaryKeys)
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1908,7 +1933,7 @@ namespace Light.Data
         /// <returns>exists or not.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey }, cancellationToken);
@@ -1921,7 +1946,7 @@ namespace Light.Data
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
@@ -1935,7 +1960,7 @@ namespace Light.Data
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await ExistsAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
@@ -1947,7 +1972,7 @@ namespace Light.Data
         /// <returns>exists or not.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<bool> ExistsAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1964,7 +1989,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary key.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int DeleteByKey<T>(params object[] primaryKeys)
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -1981,7 +2006,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="primaryKey">Primary key.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object primaryKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await DeleteByKeyAsync<T>(new object[] { primaryKey }, cancellationToken);
@@ -1994,7 +2019,7 @@ namespace Light.Data
         /// <param name="primaryKey1">Primary key 1.</param>
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object primaryKey1, object primaryKey2, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await DeleteByKeyAsync<T>(new object[] { primaryKey1, primaryKey2 }, cancellationToken);
@@ -2008,7 +2033,7 @@ namespace Light.Data
         /// <param name="primaryKey2">Primary key 2.</param>
         /// <param name="primaryKey3">Primary key 3.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object primaryKey1, object primaryKey2, object primaryKey3, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await DeleteByKeyAsync<T>(new object[] { primaryKey1, primaryKey2, primaryKey3 }, cancellationToken);
@@ -2020,7 +2045,7 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="primaryKeys">Primary keys.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> DeleteByKeyAsync<T>(object[] primaryKeys, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (primaryKeys == null || primaryKeys.Length == 0)
@@ -2034,9 +2059,9 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by id.
         /// </summary>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         /// <param name="id">id</param>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         public T SelectById<T>(object id)
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2047,10 +2072,10 @@ namespace Light.Data
         /// <summary>
         /// Select the single object by id.
         /// </summary>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         /// <param name="id">id</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        /// <returns>object.</returns>
+        /// <returns>result.</returns>
         public async Task<T> SelectByIdAsync<T>(object id, CancellationToken cancellationToken = default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2061,8 +2086,8 @@ namespace Light.Data
         /// <summary>
         /// Create query expression.
         /// </summary>
-        /// <returns>The ueryable.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The queryable.</returns>
+        /// <typeparam name="T">Data type.</typeparam>
         public IQuery<T> Query<T>()
         {
             return new LightQuery<T>(this);
@@ -2072,7 +2097,7 @@ namespace Light.Data
         /// Truncates the table.
         /// </summary>
         /// <returns>The table.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public int TruncateTable<T>()
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2084,7 +2109,7 @@ namespace Light.Data
         /// Truncates the table.
         /// </summary>
         /// <returns>The table.</returns>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <typeparam name="T">Data type.</typeparam>
         public async Task<int> TruncateTableAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
         {
             DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
@@ -2095,15 +2120,6 @@ namespace Light.Data
 
         #region 核心数据库方法
 
-
-        /// <summary>
-        /// Outputs the command.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="command">Command.</param>
-        /// <param name="level">Level.</param>
-        /// <param name="start">Start.</param>
-        /// <param name="size">Size.</param>
         private void OutputCommand(string action, DbCommand command, SafeLevel level, bool isTransaction, int start, int size, DateTime startTime, DateTime endTime, bool success, object result, string exceptionMessage)
         {
             if (this._output != null) {
@@ -2164,44 +2180,6 @@ namespace Light.Data
             }
         }
 
-        internal int ExecuteNonQuery(DbCommand dbcommand, SafeLevel level, TransactionConnection transaction = null)
-        {
-            CheckStatus();
-            int rInt;
-            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
-
-            DateTime startTime = DateTime.Now;
-            bool success = false;
-            string exceptionMessage = null;
-            object result = null;
-            try {
-                if (!transaction.IsOpen) {
-                    transaction.Open();
-                }
-                transaction.SetupCommand(dbcommand);
-                rInt = dbcommand.ExecuteNonQuery();
-                result = rInt;
-                success = true;
-                if (commit) {
-                    transaction.Commit();
-                }
-            }
-            catch (Exception ex) {
-                exceptionMessage = ex.Message;
-                ProcessExceptionTransaction(transaction, trans);
-                throw ex;
-            }
-            finally {
-                if (commit && !transaction.IsDisposed) {
-                    transaction.Dispose();
-                }
-                DateTime endTime = DateTime.Now;
-                OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
-            }
-
-            return rInt;
-        }
-
         private void ProcessExceptionTransaction(TransactionConnection transaction, bool trans)
         {
             if (trans) {
@@ -2227,6 +2205,49 @@ namespace Light.Data
             }
         }
 
+        internal int ExecuteNonQuery(DbCommand dbcommand, SafeLevel level, TransactionConnection transaction = null)
+        {
+            CheckStatus();
+            int rInt;
+            transaction = BuildTransaction(level, transaction, out bool commit, out bool trans);
+
+            DateTime startTime = DateTime.Now;
+            bool success = false;
+            string exceptionMessage = null;
+            object result = null;
+            try {
+                if (!transaction.IsOpen) {
+                    transaction.Open();
+                }
+                transaction.SetupCommand(dbcommand);
+                rInt = dbcommand.ExecuteNonQuery();
+                result = rInt;
+                success = true;
+                if (commit) {
+                    transaction.Commit();
+                }
+            }
+            catch (LightDataException ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
+            }
+            finally {
+                if (commit && !transaction.IsDisposed) {
+                    transaction.Dispose();
+                }
+                DateTime endTime = DateTime.Now;
+                OutputCommand(nameof(ExecuteNonQuery), dbcommand, level, trans, 0, 0, startTime, endTime, success, result, exceptionMessage);
+            }
+
+            return rInt;
+        }
+
         internal async Task<int> ExecuteNonQueryAsync(DbCommand dbcommand, SafeLevel level, CancellationToken cancellationToken, TransactionConnection transaction = null)
         {
             CheckStatus();
@@ -2249,10 +2270,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2287,10 +2313,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2325,10 +2356,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2371,11 +2407,17 @@ namespace Light.Data
                     transaction.SetupCommand(dbcommand);
                     reader = dbcommand.ExecuteReader();
                 }
+                catch (LightDataException ex) {
+                    DateTime endTime = DateTime.Now;
+                    exceptionMessage = ex.Message;
+                    ProcessExceptionTransaction(transaction, trans);
+                    throw ex;
+                }
                 catch (Exception ex) {
                     DateTime endTime = DateTime.Now;
                     exceptionMessage = ex.Message;
                     OutputCommand<T>(nameof(QueryDataDefineReader), dbcommand, level, trans, start, size, startTime, endTime, success, 0, exceptionMessage);
-                    throw ex;
+                    throw new LightDataDbException(ex.Message, ex);
                 }
 
                 success = true;
@@ -2413,11 +2455,17 @@ namespace Light.Data
                             continue;
                         }
                     }
-                    catch (Exception ex) {
+                    catch (LightDataException ex) {
                         error = true;
                         exceptionMessage = ex.Message;
                         ProcessExceptionTransaction(transaction, trans);
                         throw ex;
+                    }
+                    catch (Exception ex) {
+                        error = true;
+                        exceptionMessage = ex.Message;
+                        ProcessExceptionTransaction(transaction, trans);
+                        throw new LightDataDbException(ex.Message, ex);
                     }
                     yield return data;
                 }
@@ -2467,7 +2515,6 @@ namespace Light.Data
                 reader = dbcommand.ExecuteReader();
                 success = true;
 
-
                 bool flat = false;
 
                 while (reader.Read()) {
@@ -2500,10 +2547,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2582,10 +2634,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2657,10 +2714,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2739,10 +2801,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (reader != null) {
@@ -2785,10 +2852,15 @@ namespace Light.Data
                     transaction.Commit();
                 }
             }
-            catch (Exception ex) {
+            catch (LightDataException ex) {
                 exceptionMessage = ex.Message;
                 ProcessExceptionTransaction(transaction, trans);
                 throw ex;
+            }
+            catch (Exception ex) {
+                exceptionMessage = ex.Message;
+                ProcessExceptionTransaction(transaction, trans);
+                throw new LightDataDbException(ex.Message, ex);
             }
             finally {
                 if (commit && !transaction.IsDisposed) {
@@ -2800,9 +2872,6 @@ namespace Light.Data
 
             return dataSet;
         }
-
-
-
 
         #endregion
 
@@ -2853,6 +2922,32 @@ namespace Light.Data
         /// </summary>
         /// <returns>The sql string executor.</returns>
         /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="level">Level.</param>
+        public SqlExecutor CreateSqlStringExecutor(string sqlString, object value, SafeLevel level)
+        {
+            TextFormatter textFormatter = new TextFormatter(sqlString, TextTemplateOptions.Compiled | TextTemplateOptions.NotAllowExtend);
+            string sql = textFormatter.FormatSql(value, this.ParameterPrefix, out DataParameter[] parameters);
+            return CreateSqlStringExecutor(sql, parameters, level);
+        }
+
+        /// <summary>
+        /// Creates the sql string executor.
+        /// </summary>
+        /// <returns>The sql string executor.</returns>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Value.</param>
+        public SqlExecutor CreateSqlStringExecutor(string sqlString, object value)
+        {
+            return CreateSqlStringExecutor(sqlString, value, SafeLevel.Default);
+        }
+
+
+        /// <summary>
+        /// Creates the sql string executor.
+        /// </summary>
+        /// <returns>The sql string executor.</returns>
+        /// <param name="sqlString">Sql string.</param>
         /// <param name="level">Level.</param>
         public SqlExecutor CreateSqlStringExecutor(string sqlString, SafeLevel level)
         {
@@ -2891,6 +2986,30 @@ namespace Light.Data
         public SqlExecutor CreateStoreProcedureExecutor(string storeProcedure, DataParameter[] param)
         {
             return CreateStoreProcedureExecutor(storeProcedure, param, SafeLevel.Default);
+        }
+
+        /// <summary>
+        /// Creates the store procedure executor.
+        /// </summary>
+        /// <returns>The store procedure executor.</returns>
+        /// <param name="storeProcedure">Store procedure.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="level">Level.</param>
+        public SqlExecutor CreateStoreProcedureExecutor(string storeProcedure, object value, SafeLevel level)
+        {
+            DataParameter[] parameters = ParameterConvert.ConvertParameter(value);
+            return CreateStoreProcedureExecutor(storeProcedure, parameters, level);
+        }
+
+        /// <summary>
+        /// Creates the store procedure executor.
+        /// </summary>
+        /// <returns>The store procedure executor.</returns>
+        /// <param name="storeProcedure">Store procedure.</param>
+        /// <param name="value">Value.</param>
+        public SqlExecutor CreateStoreProcedureExecutor(string storeProcedure, object value)
+        {
+            return CreateStoreProcedureExecutor(storeProcedure, value, SafeLevel.Default);
         }
 
         /// <summary>
@@ -2952,25 +3071,32 @@ namespace Light.Data
             return _database.CreateCommand(sql);
         }
 
-        internal IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction)
+        internal IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, CommandType commandType)
         {
-            return _database.CreateParameter(name, value, dbType, direction, null);
+            return _database.CreateParameter(name, value, dbType, direction, null, commandType);
         }
 
-        internal void FormatStoredProcedureParameter(IDataParameter dataParameter)
-        {
-            _database.FormatStoredProcedureParameter(dataParameter);
-        }
+        //internal void FormatStoredProcedureParameter(IDataParameter dataParameter)
+        //{
+        //    _database.FormatStoredProcedureParameter(dataParameter);
+        //}
 
         #region IDisposable Support
         private bool _isDisposed; // To detect redundant calls
 
+        /// <summary>
+        /// Check the context is disposed
+        /// </summary>
         public bool IsDisposed {
             get {
                 return _isDisposed;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_isDisposed) {
@@ -2993,14 +3119,18 @@ namespace Light.Data
             }
         }
 
-        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        /// <summary>
+        /// 
+        /// </summary>
         ~DataContext()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Dispose the context
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -3010,7 +3140,9 @@ namespace Light.Data
         }
         #endregion
 
-
+        /// <summary>
+        /// Check the context is in the transaction mode.
+        /// </summary>
         public bool IsTransactionMode {
             get {
                 return _transaction != null;
@@ -3026,7 +3158,6 @@ namespace Light.Data
         /// <summary>
         /// Begin the transaction and set default level and not auto close.
         /// </summary>
-        /// <param name="level">Level.</param>
         public TransactionScope BeginTrans()
         {
             return BeginTrans(SafeLevel.Default, false);
@@ -3141,7 +3272,9 @@ namespace Light.Data
             }
         }
 
-
+        /// <summary>
+        /// Release the transaction
+        /// </summary>
         public void ReleaseTrans()
         {
             if (_transaction != null) {
@@ -3236,5 +3369,499 @@ namespace Light.Data
             }
         }
 
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString)
+        {
+            return QuerySqlList<T>(sqlString, null);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.QueryList<T>();
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString, int start, int size)
+        {
+            return QuerySqlList<T>(sqlString, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QuerySqlList<T>(string sqlString, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.QueryList<T>(start, size);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString)
+        {
+            return await QuerySqlListAsync<T>(sqlString, null);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.QueryListAsync<T>();
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString, int start, int size)
+        {
+            return await QuerySqlListAsync<T>(sqlString, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QuerySqlListAsync<T>(string sqlString, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.QueryListAsync<T>(start, size);
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public T QuerySqlFirst<T>(string sqlString)
+        {
+            return QuerySqlFirst<T>(sqlString, null);
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public T QuerySqlFirst<T>(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.QueryFirst<T>();
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<T> QuerySqlFirstAsync<T>(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await QuerySqlFirstAsync<T>(sqlString, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Query data first item with direct sql string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<T> QuerySqlFirstAsync<T>(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.QueryFirstAsync<T>();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public int ExecuteNonQuerySqlString(string sqlString)
+        {
+            return ExecuteNonQuerySqlString(sqlString, null);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public int ExecuteNonQuerySqlString(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQuerySqlStringAsync(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteNonQuerySqlStringAsync(sqlString, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQuerySqlStringAsync(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <returns></returns>
+        public object ExecuteScalarSqlString(string sqlString)
+        {
+            return ExecuteScalarSqlString(sqlString, null);
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public object ExecuteScalarSqlString(string sqlString, object value)
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return sqlExecutor.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarSqlStringAsync(string sqlString, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteScalarSqlStringAsync(sqlString, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute Scalar with direct sql string
+        /// </summary>
+        /// <param name="sqlString">Sql string.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarSqlStringAsync(string sqlString, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateSqlStringExecutor(sqlString, value);
+            return await sqlExecutor.ExecuteScalarAsync();
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure)
+        {
+            return QueryStoreProcedureList<T>(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.QueryList<T>();
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure, int start, int size)
+        {
+            return QueryStoreProcedureList<T>(storeProcedure, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public List<T> QueryStoreProcedureList<T>(string storeProcedure, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.QueryList<T>(start, size);
+        }
+
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure)
+        {
+            return await QueryStoreProcedureListAsync<T>(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.QueryListAsync<T>();
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure, int start, int size)
+        {
+            return await QueryStoreProcedureListAsync<T>(storeProcedure, null, start, size);
+        }
+
+        /// <summary>
+        /// Query data list with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Parameters object</param>
+        /// <param name="start">Page start</param>
+        /// <param name="size">Page size</param>
+        /// <returns></returns>
+        public async Task<List<T>> QueryStoreProcedureListAsync<T>(string storeProcedure, object value, int start, int size)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.QueryListAsync<T>(start, size);
+        }
+
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public T QueryStoreProcedureFirst<T>(string storeProcedure)
+        {
+            return QueryStoreProcedureFirst<T>(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public T QueryStoreProcedureFirst<T>(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.QueryFirst<T>();
+        }
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<T> QueryStoreProcedureFirstAsync<T>(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await QueryStoreProcedureFirstAsync<T>(storeProcedure, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Query data first item with store procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<T> QueryStoreProcedureFirstAsync<T>(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.QueryFirstAsync<T>();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public int ExecuteNonQueryStoreProcedure(string storeProcedure)
+        {
+            return ExecuteNonQueryStoreProcedure(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public int ExecuteNonQueryStoreProcedure(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQueryStoreProcedureAsync(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteNonQueryStoreProcedureAsync(storeProcedure, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute NonQuery with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<int> ExecuteNonQueryStoreProcedureAsync(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <returns></returns>
+        public object ExecuteScalarStoreProcedure(string storeProcedure)
+        {
+            return ExecuteScalarStoreProcedure(storeProcedure, null);
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <returns></returns>
+        public object ExecuteScalarStoreProcedure(string storeProcedure, object value)
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return sqlExecutor.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarStoreProcedureAsync(string storeProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await ExecuteScalarStoreProcedureAsync(storeProcedure, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Execute Scalar with store procedure
+        /// </summary>
+        /// <param name="storeProcedure">Store Procedure name.</param>
+        /// <param name="value">Paratemers object</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
+        /// <returns></returns>
+        public async Task<object> ExecuteScalarStoreProcedureAsync(string storeProcedure, object value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SqlExecutor sqlExecutor = CreateStoreProcedureExecutor(storeProcedure, value);
+            return await sqlExecutor.ExecuteScalarAsync();
+        }
     }
 }

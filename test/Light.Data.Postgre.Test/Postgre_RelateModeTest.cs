@@ -203,7 +203,8 @@ namespace Light.Data.Postgre.Test
             var listEx = (from x in listA
                           join y in listB on x.Id equals y.RelateAId into ps
                           from p in ps.DefaultIfEmpty()
-                          select new TeRelateA_B {
+                          select new TeRelateA_B
+                          {
                               Id = x.Id,
                               RelateBId = x.RelateBId,
                               RelateCId = x.RelateCId,
@@ -214,8 +215,8 @@ namespace Light.Data.Postgre.Test
                               VarcharField = x.VarcharField,
                               DateTimeField = x.DateTimeField,
                               RelateB = p
-                          }).ToList();
-            var listAc = context.Query<TeRelateA_B>().ToList();
+                          }).OrderBy(x => x.Id).ToList();
+            var listAc = context.Query<TeRelateA_B>().OrderBy(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
             for (int i = 0; i < 10; i++) {
                 Assert.NotNull(listAc[i].RelateB);

@@ -9,7 +9,7 @@
 
 		QueryExpression _expression2;
 
-		CatchOperatorsType _operatorType = CatchOperatorsType.AND;
+		ConcatOperatorType _operatorType = ConcatOperatorType.AND;
 
 		internal QueryExpression (DataEntityMapping tableMapping)
 		{
@@ -27,16 +27,16 @@
 		{
 			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
 			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
-			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
+			return factory.CreateConcatExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
 		/// <summary>
-		/// Catch the specified expression1, operatorType and expression2.
+		/// Concat the specified expression1, operatorType and expression2.
 		/// </summary>
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="operatorType">Operator type.</param>
 		/// <param name="expression2">Expression2.</param>
-		internal static QueryExpression Catch (QueryExpression expression1, CatchOperatorsType operatorType, QueryExpression expression2)
+		internal static QueryExpression Concat (QueryExpression expression1, ConcatOperatorType operatorType, QueryExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
 				return null;
@@ -69,7 +69,7 @@
 		/// <param name="expression2">Expression2.</param>
 		internal static QueryExpression And (QueryExpression expression1, QueryExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.AND, expression2);
+			return Concat (expression1, ConcatOperatorType.AND, expression2);
 		}
 
 		/// <summary>
@@ -79,19 +79,19 @@
 		/// <param name="expression2">Expression2.</param>
 		internal static QueryExpression Or (QueryExpression expression1, QueryExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.OR, expression2);
+			return Concat (expression1, ConcatOperatorType.OR, expression2);
 		}
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="expression2">Expression2.</param>
 		public static QueryExpression operator & (QueryExpression expression1, QueryExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.AND, expression2);
+			return Concat (expression1, ConcatOperatorType.AND, expression2);
 		}
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="expression2">Expression2.</param>
 		public static QueryExpression operator | (QueryExpression expression1, QueryExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.OR, expression2);
+			return Concat (expression1, ConcatOperatorType.OR, expression2);
 		}
 
 		///// <summary>

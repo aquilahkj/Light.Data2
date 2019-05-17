@@ -1966,7 +1966,7 @@ namespace Light.Data.Mysql.Test
 
             listAc = context.Query<TeMainTable>().Join<TeSubTable>((x, y) => x.SubId == y.SubId)
                 .OrderBy((x, y) => x.Int32Field)
-                .OrderByDescendingCatch((x, y) => x.DecimalField)
+                .OrderByDescendingConcat((x, y) => x.DecimalField)
                 .Select(
                (x, y) => new ComposeTable {
                    MainId = x.MainId,

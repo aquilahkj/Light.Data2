@@ -226,17 +226,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1> OrderByCatch<TKey> (Expression<Func<T, T1, TKey>> expression)
+		public IJoinTable<T, T1> OrderByConcat<TKey> (Expression<Func<T, T1, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, TKey>> expression)
+		public IJoinTable<T, T1> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -362,7 +362,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -373,7 +373,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -382,9 +382,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -786,17 +787,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2> OrderByCatch<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
+		public IJoinTable<T, T1, T2> OrderByConcat<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
+		public IJoinTable<T, T1, T2> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -922,7 +923,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -933,7 +934,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -942,9 +943,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -1346,17 +1348,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -1482,7 +1484,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -1493,7 +1495,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -1502,9 +1504,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -1906,17 +1909,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -2042,7 +2045,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -2053,7 +2056,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -2062,9 +2065,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -2466,17 +2470,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -2602,7 +2606,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -2613,7 +2617,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -2622,9 +2626,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -3026,17 +3031,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -3162,7 +3167,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -3173,7 +3178,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -3182,9 +3187,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -3586,17 +3592,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -3722,7 +3728,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -3733,7 +3739,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -3742,9 +3748,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -4146,17 +4153,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -4282,7 +4289,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -4293,7 +4300,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -4302,9 +4309,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
@@ -4706,17 +4714,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
+		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -4842,7 +4850,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -4853,7 +4861,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -4862,9 +4870,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);

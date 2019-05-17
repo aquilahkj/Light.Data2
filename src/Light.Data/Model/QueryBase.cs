@@ -75,11 +75,11 @@ namespace Light.Data
 
         public abstract IQuery<T> OrderBy<TKey>(Expression<Func<T, TKey>> expression);
 
-        public abstract IQuery<T> OrderByCatch<TKey>(Expression<Func<T, TKey>> expression);
+        public abstract IQuery<T> OrderByConcat<TKey>(Expression<Func<T, TKey>> expression);
 
         public abstract IQuery<T> OrderByDescending<TKey>(Expression<Func<T, TKey>> expression);
 
-        public abstract IQuery<T> OrderByDescendingCatch<TKey>(Expression<Func<T, TKey>> expression);
+        public abstract IQuery<T> OrderByDescendingConcat<TKey>(Expression<Func<T, TKey>> expression);
 
         public abstract IQuery<T> OrderByRandom();
 

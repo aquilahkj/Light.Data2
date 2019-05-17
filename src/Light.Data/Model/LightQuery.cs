@@ -102,17 +102,17 @@ namespace Light.Data
             return this;
         }
 
-        public override IQuery<T> OrderByCatch<TKey>(Expression<Func<T, TKey>> expression)
+        public override IQuery<T> OrderByConcat<TKey>(Expression<Func<T, TKey>> expression)
         {
             var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression(expression, OrderType.ASC);
-            _order = OrderExpression.Catch(_order, orderExpression);
+            _order = OrderExpression.Concat(_order, orderExpression);
             return this;
         }
 
-        public override IQuery<T> OrderByDescendingCatch<TKey>(Expression<Func<T, TKey>> expression)
+        public override IQuery<T> OrderByDescendingConcat<TKey>(Expression<Func<T, TKey>> expression)
         {
             var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression(expression, OrderType.DESC);
-            _order = OrderExpression.Catch(_order, orderExpression);
+            _order = OrderExpression.Concat(_order, orderExpression);
             return this;
         }
 

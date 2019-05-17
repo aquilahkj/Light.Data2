@@ -1962,7 +1962,7 @@ namespace Light.Data.Mssql.Test
                    Avg = Function.Avg(x.Int64Field),
                    Max = Function.Max(x.DateTimeField),
                    Min = Function.Min(x.DateTimeField),
-               }).OrderByDescending(x => x.Sum).OrderByCatch(x => x.KeyData).ToList();
+               }).OrderByDescending(x => x.Sum).OrderByConcat(x => x.KeyData).ToList();
             AssertExtend.StrictEqual(ex, ac);
 
             ex = list
@@ -2518,7 +2518,7 @@ namespace Light.Data.Mssql.Test
                       MaxData = g.Max(x => x.DateTimeField),
                       MinData = g.Min(x => x.DateTimeField),
                   }).ToList().OrderBy(x => x.KeyData).ThenBy(x => x.MonthData).ToList();
-
+            
             var ret = context.Query<TeBaseFieldAggregateField>()
                  .Where(x => x.Id > 10)
                  .Aggregate(x => new {
@@ -2531,7 +2531,7 @@ namespace Light.Data.Mssql.Test
                      AvgData = Function.Avg(x.Int64Field),
                      MaxData = Function.Max(x.DateTimeField),
                      MinData = Function.Min(x.DateTimeField),
-                 }).OrderBy(x => x.KeyData).OrderByCatch(x => x.MonthData)
+                 }).OrderBy(x => x.KeyData).OrderByConcat(x => x.MonthData)
                  .SelectInsert(x => new TeBaseFieldAggregateFieldGroupBy() {
                      KeyData = x.KeyData,
                      MonthData = x.MonthData,
@@ -2583,7 +2583,7 @@ namespace Light.Data.Mssql.Test
                      AvgData = Function.Avg(x.Int64Field),
                      MaxData = Function.Max(x.DateTimeField),
                      MinData = Function.Min(x.DateTimeField),
-                 }).OrderBy(x => x.KeyData).OrderByCatch(x => x.MonthData)
+                 }).OrderBy(x => x.KeyData).OrderByConcat(x => x.MonthData)
                  .SelectInsertAsync(x => new TeBaseFieldAggregateFieldGroupBy() {
                      KeyData = x.KeyData,
                      MonthData = x.MonthData,

@@ -2151,19 +2151,19 @@ namespace Light.Data.Postgre.Test
             List<TeBaseFieldExpression> listAc;
 
             listEx = list.OrderBy(x => x.Int32Field).ThenBy(x => x.DoubleField).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().OrderBy(x => x.Int32Field).OrderByCatch(x => x.DoubleField).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().OrderBy(x => x.Int32Field).OrderByConcat(x => x.DoubleField).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderBy(x => x.Int32Field).ThenByDescending(x => x.DoubleField).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().OrderBy(x => x.Int32Field).OrderByDescendingCatch(x => x.DoubleField).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().OrderBy(x => x.Int32Field).OrderByDescendingConcat(x => x.DoubleField).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Int32Field).ThenBy(x => x.DoubleField).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().OrderByDescending(x => x.Int32Field).OrderByCatch(x => x.DoubleField).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().OrderByDescending(x => x.Int32Field).OrderByConcat(x => x.DoubleField).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Int32Field).ThenByDescending(x => x.DoubleField).ToList();
-            listAc = context.Query<TeBaseFieldExpression>().OrderByDescending(x => x.Int32Field).OrderByDescendingCatch(x => x.DoubleField).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().OrderByDescending(x => x.Int32Field).OrderByDescendingConcat(x => x.DoubleField).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
         }
 

@@ -287,17 +287,17 @@ namespace Light.Data
 			return this;
 		}
 
-		public <#=InterFaceName#><<#= GetAll(i) #>> OrderByCatch<TKey> (Expression<Func<<#= GetAll(i) #>, TKey>> expression)
+		public <#=InterFaceName#><<#= GetAll(i) #>> OrderByConcat<TKey> (Expression<Func<<#= GetAll(i) #>, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
-		public <#=InterFaceName#><<#= GetAll(i) #>> OrderByDescendingCatch<TKey> (Expression<Func<<#= GetAll(i) #>, TKey>> expression)
+		public <#=InterFaceName#><<#= GetAll(i) #>> OrderByDescendingConcat<TKey> (Expression<Func<<#= GetAll(i) #>, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Catch (_order, orderExpression);
+			_order = OrderExpression.Concat (_order, orderExpression);
 			return this;
 		}
 
@@ -423,7 +423,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -434,7 +434,7 @@ namespace Light.Data
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
-		/// <value>The long count.</value>
+		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
@@ -443,9 +443,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert the select data
+		/// Insert the select data to the special table K.
 		/// </summary>
-		/// <value>insert count.</value>
+		/// <param name="expression">Expression.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<<#= GetAll(i) #>, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);

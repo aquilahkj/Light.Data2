@@ -58,6 +58,7 @@ namespace Light.Data
         /// </summary>
         /// <returns>The <see cref="!:K"/>.</returns>
         /// <param name="index">Index.</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
         #endregion
     }

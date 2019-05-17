@@ -44,8 +44,6 @@ namespace Light.Data.Mssql
 
         #region IDatabase 成员
 
-
-
         public override DbConnection CreateConnection()
         {
             return new SqlConnection();
@@ -78,11 +76,11 @@ namespace Light.Data.Mssql
             return new SqlDataAdapter((SqlCommand)command);
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType)
+        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType)
         {
             string parameterName = name;
-            if (!parameterName.StartsWith("@", StringComparison.Ordinal)) {
-                parameterName = "@" + parameterName;
+            if (!parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+                parameterName = ParameterPrefix + parameterName;
             }
             SqlParameter sp = new SqlParameter() {
                 ParameterName = parameterName,
@@ -163,12 +161,7 @@ namespace Light.Data.Mssql
 
             return sp;
         }
-
-        public override void FormatStoredProcedureParameter(IDataParameter dataParameter)
-        {
-
-        }
-
+        
         #endregion
 
         bool ConvertDbType(Type type, out SqlDbType sqlType)

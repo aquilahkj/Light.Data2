@@ -16,11 +16,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Catch the specified expression1 and expression2.
+		/// Concat the specified expression1 and expression2.
 		/// </summary>
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="expression2">Expression2.</param>
-		internal static OrderExpression Catch (OrderExpression expression1, OrderExpression expression2)
+		internal static OrderExpression Concat (OrderExpression expression1, OrderExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
 				return null;
@@ -61,7 +61,7 @@ namespace Light.Data
 		/// <param name="expression2">Expression2.</param>
 		public static OrderExpression operator & (OrderExpression expression1, OrderExpression expression2)
 		{
-			return Catch (expression1, expression2);
+			return Concat (expression1, expression2);
 		}
 
 		internal virtual OrderExpression CreateAliasTableNameOrder (string aliasTableName)
@@ -90,7 +90,7 @@ namespace Light.Data
 			for (int i = 0; i < len; i++) {
 				array [i] = _orderExpressions [i].CreateSqlString (factory, isFullName, state);
 			}
-			return factory.CreateCatchExpressionSql (array);
+			return factory.CreateConcatExpressionSql (array);
 		}
 
 		bool mutliOrder;

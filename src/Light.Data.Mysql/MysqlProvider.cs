@@ -53,11 +53,18 @@ namespace Light.Data.Mysql
             return new MySqlDataAdapter((MySqlCommand)command);
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType)
+        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType)
         {
             string parameterName = name;
-            if (!parameterName.StartsWith("?", StringComparison.Ordinal)) {
-                parameterName = "?" + parameterName;
+            if (commandType == CommandType.StoredProcedure) {
+                if (parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+                    parameterName = parameterName.TrimStart(ParameterPrefix[0]);
+                }
+            }
+            else {
+                if (!parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+                    parameterName = ParameterPrefix + parameterName;
+                }
             }
             MySqlParameter sp = new MySqlParameter() {
                 ParameterName = parameterName,
@@ -125,14 +132,7 @@ namespace Light.Data.Mysql
             }
             return sp;
         }
-
-        public override void FormatStoredProcedureParameter(IDataParameter dataParameter)
-        {
-            if (dataParameter.ParameterName.StartsWith("?", StringComparison.Ordinal)) {
-                dataParameter.ParameterName = dataParameter.ParameterName.TrimStart('?');
-            }
-        }
-
+        
         #endregion
 
         bool ConvertDbType(Type type, out MySqlDbType sqlType)

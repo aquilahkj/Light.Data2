@@ -240,19 +240,6 @@ namespace Light.Data.Mssql
             return "getdate()";
         }
 
-        public override string CreateParamName(string name)
-        {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
-            if (!name.StartsWith("@", StringComparison.Ordinal)) {
-                return "@" + name;
-            }
-            else {
-                return name;
-            }
-        }
-
-
         public override CommandData CreateSelectInsertCommand(InsertSelector insertSelector, DataEntityMapping mapping, AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order, CreateSqlState state)
         {
             CommandData selectCommandData = CreateAggregateTableCommand(mapping, selector, groupBy, query, having, null, null, state);
@@ -422,6 +409,8 @@ namespace Light.Data.Mssql
             }
             return base.CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, region, state);
         }
+
+        public override string ParameterPrefix => "@";
 
         public override string CreateRandomOrderBySql(DataEntityMapping mapping, string aliasName, bool fullFieldName)
         {
