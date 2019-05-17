@@ -2,7 +2,7 @@
 
 [![dotnet](https://img.shields.io/badge/dotnet%20standard-2.0-green.svg)](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE)
-[![nuget](https://img.shields.io/badge/nuget-2.1.2-brightgreen.svg)](https://www.nuget.org/packages/Light.Data/)
+[![nuget](https://img.shields.io/badge/nuget-2.1.2-brightgreen.svg)](https://www.nuget.org/packages/Light.Data/) [![Join the chat at https://gitter.im/light-data/community](https://badges.gitter.im/light-data/community.svg)](https://gitter.im/light-data/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 English | [简体中文](./README.zh-CN.md) |
 
