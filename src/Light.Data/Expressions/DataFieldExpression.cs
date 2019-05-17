@@ -9,7 +9,7 @@
 
 		DataFieldExpression _expression2;
 
-		CatchOperatorsType _operatorType = CatchOperatorsType.AND;
+		ConcatOperatorType _operatorType = ConcatOperatorType.AND;
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
@@ -17,10 +17,10 @@
 
 			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
 
-			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
+			return factory.CreateConcatExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
-		internal static DataFieldExpression Catch (DataFieldExpression expression1, CatchOperatorsType operatorType, DataFieldExpression expression2)
+		internal static DataFieldExpression Concat (DataFieldExpression expression1, ConcatOperatorType operatorType, DataFieldExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
 				return null;
@@ -45,7 +45,7 @@
 		/// <param name="expression2">Expression2.</param>
 		internal static DataFieldExpression And (DataFieldExpression expression1, DataFieldExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.AND, expression2);
+			return Concat (expression1, ConcatOperatorType.AND, expression2);
 		}
 
 		/// <summary>
@@ -55,19 +55,19 @@
 		/// <param name="expression2">Expression2.</param>
 		internal static DataFieldExpression Or (DataFieldExpression expression1, DataFieldExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.OR, expression2);
+			return Concat (expression1, ConcatOperatorType.OR, expression2);
 		}
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="expression2">Expression2.</param>
 		public static DataFieldExpression operator & (DataFieldExpression expression1, DataFieldExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.AND, expression2);
+			return Concat (expression1, ConcatOperatorType.AND, expression2);
 		}
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="expression2">Expression2.</param>
 		public static DataFieldExpression operator | (DataFieldExpression expression1, DataFieldExpression expression2)
 		{
-			return Catch (expression1, CatchOperatorsType.OR, expression2);
+			return Concat (expression1, ConcatOperatorType.OR, expression2);
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@
 		{
 			QueryExpression query1 = _expression1.ConvertQueryExpression ();
 			QueryExpression query2 = _expression2.ConvertQueryExpression ();
-			return QueryExpression.Catch (query1, _operatorType, query2);
+			return QueryExpression.Concat (query1, _operatorType, query2);
 		}
 
 		/// <param name="expression">Expression.</param>

@@ -82,11 +82,11 @@ namespace Light.Data
 
         public abstract IAggregate<K> OrderBy<TKey>(Expression<Func<K, TKey>> expression);
 
-        public abstract IAggregate<K> OrderByCatch<TKey>(Expression<Func<K, TKey>> expression);
+        public abstract IAggregate<K> OrderByConcat<TKey>(Expression<Func<K, TKey>> expression);
 
         public abstract IAggregate<K> OrderByDescending<TKey>(Expression<Func<K, TKey>> expression);
 
-        public abstract IAggregate<K> OrderByDescendingCatch<TKey>(Expression<Func<K, TKey>> expression);
+        public abstract IAggregate<K> OrderByDescendingConcat<TKey>(Expression<Func<K, TKey>> expression);
 
         public abstract IAggregate<K> OrderByRandom();
 

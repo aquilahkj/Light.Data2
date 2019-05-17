@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Light.Data
 {
+    /// <summary>
+    /// The setting of join table.
+    /// </summary>
     [Flags]
     public enum JoinSetting
     {

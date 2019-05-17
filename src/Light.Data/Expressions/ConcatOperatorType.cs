@@ -2,9 +2,9 @@
 namespace Light.Data
 {
 	/// <summary>
-	/// Catch operators type.
+	/// Concat operators type.
 	/// </summary>
-	public enum CatchOperatorsType
+	public enum ConcatOperatorType
 	{
 		/// <summary>
 		/// AND.

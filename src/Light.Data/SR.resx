@@ -237,4 +237,10 @@
   <data name="OutputParameterNotSupportObjectType" xml:space="preserve">
     <value>The output parameter not support object type</value>
   </data>
+  <data name="FunctionControlError" xml:space="preserve">
+    <value>FunctionControl error</value>
+  </data>
+  <data name="NotFunctionControlType" xml:space="preserve">
+    <value>Not "FunctionControl" type</value>
+  </data>
 </root>

@@ -214,6 +214,15 @@ namespace Light.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FunctionControl error.
+        /// </summary>
+        internal static string FunctionControlError {
+            get {
+                return ResourceManager.GetString("FunctionControlError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; is not data table mapping.
         /// </summary>
         internal static string IsNotDataTableMapping {
@@ -291,6 +300,15 @@ namespace Light.Data {
         internal static string NotContainPrimaryKeyFields {
             get {
                 return ResourceManager.GetString("NotContainPrimaryKeyFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not &quot;FunctionControl&quot; type.
+        /// </summary>
+        internal static string NotFunctionControlType {
+            get {
+                return ResourceManager.GetString("NotFunctionControlType", resourceCulture);
             }
         }
         

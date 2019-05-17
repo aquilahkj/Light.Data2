@@ -9,16 +9,10 @@ namespace Light.Data
     {
         DataContext _context;
 
-        ///// <summary>
-        ///// Gets the context.
-        ///// </summary>
-        ///// <value>The context.</value>
-        //protected DataContext Context {
-        //	get {
-        //		return _context;
-        //	}
-        //}
-
+        /// <summary>
+        /// Gets the context.
+        /// </summary>
+        /// <returns></returns>
         protected DataContext GetContext()
         {
             if (_context == null)

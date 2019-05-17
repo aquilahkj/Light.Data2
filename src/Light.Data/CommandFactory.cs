@@ -86,7 +86,7 @@ namespace Light.Data
             if (mapping is DataTableEntityMapping tableMapping && tableMapping.HasPrimaryKey) {
                 foreach (DataFieldMapping fieldMapping in tableMapping.PrimaryKeyFields) {
                     DataFieldOrderExpression keyOrder = new DataFieldOrderExpression(new DataFieldInfo(fieldMapping), OrderType.ASC);
-                    order = OrderExpression.Catch(order, keyOrder);
+                    order = OrderExpression.Concat(order, keyOrder);
                 }
             }
             return order;
@@ -106,7 +106,7 @@ namespace Light.Data
             OrderExpression order = null;
             foreach (IJoinModel model in modelList) {
                 if (model.Order != null) {
-                    order = OrderExpression.Catch(order, model.Order.CreateAliasTableNameOrder(model.AliasTableName));
+                    order = OrderExpression.Concat(order, model.Order.CreateAliasTableNameOrder(model.AliasTableName));
                 }
             }
             return order;
@@ -621,7 +621,7 @@ namespace Light.Data
             }
             OrderExpression subOrder = CreateJoinModelListOrderExpression(modelList);
             if (subOrder != null) {
-                order = OrderExpression.Catch(subOrder, order);
+                order = OrderExpression.Concat(subOrder, order);
             }
             CommandData commandData = CreateSelectJoinTableBaseCommand(selectString, modelList, query, order, region, state);
             return commandData;
@@ -1246,12 +1246,12 @@ namespace Light.Data
 
         #region 基本语句块
 
-        public virtual string CreateCatchExpressionSql(string expressionString1, string expressionString2, CatchOperatorsType operatorType)
+        public virtual string CreateConcatExpressionSql(string expressionString1, string expressionString2, ConcatOperatorType operatorType)
         {
             return string.Format("({0} {2} {1})", expressionString1, expressionString2, operatorType.ToString().ToLower());
         }
 
-        public virtual string CreateCatchExpressionSql(string[] expressionStrings)
+        public virtual string CreateConcatExpressionSql(string[] expressionStrings)
         {
             return string.Join(",", expressionStrings);
         }

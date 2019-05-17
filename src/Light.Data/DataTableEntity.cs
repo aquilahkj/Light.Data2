@@ -102,6 +102,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="checkDb">Whether to check the data exists in the database</param>
         /// <param name="refresh">Whether to set the default value to null field</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> SaveAsync(bool checkDb, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -118,6 +119,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="safeLevel">Translation level</param>
         /// <param name="refresh">Whether to set the default value to null field</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> SaveAsync(SafeLevel safeLevel, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -129,6 +131,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="safeLevel">Translation level</param>
         /// <returns></returns>
+        /// <param name="cancellationToken">CancellationToken.</param>
         public async Task<int> SaveAsync(SafeLevel safeLevel, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await CheckDbSaveAsync(true, safeLevel, cancellationToken);
@@ -138,6 +141,7 @@ namespace Light.Data
         /// Check the data exists in the database and save data
         /// </summary>
         /// <param name="refresh">Whether to set the default value to null field</param>
+        /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
         public async Task<int> SaveAsync(bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -259,6 +263,10 @@ namespace Light.Data
             return allowUpdatePrimaryKey;
         }
 
+        /// <summary>
+        /// Allow update primary key when change the primary key.
+        /// </summary>
+        /// <param name="allow"></param>
         public void AllowUpdatePrimaryKey(bool allow = true)
         {
             if (allow) {

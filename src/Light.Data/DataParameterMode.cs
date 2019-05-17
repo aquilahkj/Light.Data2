@@ -5,8 +5,9 @@ using System.Text;
 namespace Light.Data
 {
     /// <summary>
-    /// 
+    /// Data Parameter Direction Mode
     /// </summary>
+    [Flags]
     public enum DataParameterMode
     {
         /// <summary>
@@ -20,6 +21,6 @@ namespace Light.Data
         /// <summary>
         /// Input or output
         /// </summary>
-        InputOutput = 3,
+        InputOutput = Input | Output,
     }
 }

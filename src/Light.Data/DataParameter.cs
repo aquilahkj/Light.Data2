@@ -84,9 +84,18 @@ namespace Light.Data
         /// Sets the data parameter.
         /// </summary>
         /// <param name="dataParameter">Data parameter.</param>
-        internal void SetDataParameter(IDataParameter dataParameter)
+        internal virtual void SetDataParameter(IDataParameter dataParameter)
         {
             _dataParameter = dataParameter;
+        }
+
+        internal virtual bool CallbackOutputValue()
+        {
+            if ((_direction & DataParameterMode.Output) == DataParameterMode.Output) {
+                this._value = _dataParameter.Value;
+                return true;
+            }
+            return false;
         }
 
         string _parameterName;
@@ -99,9 +108,9 @@ namespace Light.Data
 
                 return _parameterName;
             }
-            internal set {
-                _parameterName = value;
-            }
+            //internal set {
+            //    _parameterName = value;
+            //}
         }
 
         object _value;
@@ -114,9 +123,9 @@ namespace Light.Data
             get {
                 return _value;
             }
-            internal set {
-                _value = value;
-            }
+            //internal set {
+            //    _value = value;
+            //}
         }
 
         string _dbType;
@@ -127,12 +136,11 @@ namespace Light.Data
         /// <value>The type of the db.</value>
         public string DbType {
             get {
-
                 return _dbType;
             }
-            internal set {
-                _dbType = value;
-            }
+            //internal set {
+            //    _dbType = value;
+            //}
         }
 
         DataParameterMode _direction;
@@ -145,25 +153,25 @@ namespace Light.Data
             get {
                 return _direction;
             }
-            internal set {
-                _direction = value;
-            }
+            //internal set {
+            //    _direction = value;
+            //}
         }
 
-        /// <summary>
-        /// Gets the output value.
-        /// </summary>
-        /// <value>The output value.</value>
-        public object OutputValue {
-            get {
-                if (_dataParameter == null)
-                    return null;
-                if (_direction == DataParameterMode.InputOutput || _direction == DataParameterMode.Output)
-                    return _dataParameter.Value;
-                else
-                    return null;
-            }
-        }
+        ///// <summary>
+        ///// Gets the output value.
+        ///// </summary>
+        ///// <value>The output value.</value>
+        //public object OutputValue {
+        //    get {
+        //        if (_dataParameter == null)
+        //            return null;
+        //        if (_direction == DataParameterMode.InputOutput || _direction == DataParameterMode.Output)
+        //            return _dataParameter.Value;
+        //        else
+        //            return null;
+        //    }
+        //}
 
         Type _dataType;
         /// <summary>
@@ -173,9 +181,9 @@ namespace Light.Data
             get {
                 return _dataType;
             }
-            internal set {
-                _dataType = value;
-            }
+            //internal set {
+            //    _dataType = value;
+            //}
         }
     }
 }

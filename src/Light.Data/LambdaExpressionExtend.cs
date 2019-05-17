@@ -1409,18 +1409,18 @@ namespace Light.Data
             }
         }
 
-        private static bool CheckCatchOperatorsType(ExpressionType expressionType, out CatchOperatorsType catchType)
+        private static bool CheckConcatOperatorsType(ExpressionType expressionType, out ConcatOperatorType concatType)
         {
             if (expressionType == ExpressionType.And || expressionType == ExpressionType.AndAlso) {
-                catchType = CatchOperatorsType.AND;
+                concatType = ConcatOperatorType.AND;
                 return true;
             }
             else if (expressionType == ExpressionType.Or || expressionType == ExpressionType.OrElse) {
-                catchType = CatchOperatorsType.OR;
+                concatType = ConcatOperatorType.OR;
                 return true;
             }
             else {
-                catchType = CatchOperatorsType.AND;
+                concatType = ConcatOperatorType.AND;
                 return false;
             }
         }
@@ -1815,10 +1815,10 @@ namespace Light.Data
         private static QueryExpression ResolveQueryExpression(Expression expression, LambdaState state)
         {
             if (expression is BinaryExpression binaryObj) {
-                if (CheckCatchOperatorsType(binaryObj.NodeType, out CatchOperatorsType catchType)) {
+                if (CheckConcatOperatorsType(binaryObj.NodeType, out ConcatOperatorType catchType)) {
                     var left = ResolveQueryExpression(binaryObj.Left, state);
                     var right = ResolveQueryExpression(binaryObj.Right, state);
-                    return QueryExpression.Catch(left, catchType, right);
+                    return QueryExpression.Concat(left, catchType, right);
                 }
                 else {
                     if (CheckQueryPredicate(binaryObj.NodeType, out QueryPredicate queryPredicate)) {
@@ -1916,10 +1916,10 @@ namespace Light.Data
         private static DataFieldExpression ResolveOnExpression(Expression expression, LambdaState state)
         {
             if (expression is BinaryExpression binary) {
-                if (CheckCatchOperatorsType(binary.NodeType, out CatchOperatorsType catchType)) {
+                if (CheckConcatOperatorsType(binary.NodeType, out ConcatOperatorType catchType)) {
                     var left = ResolveOnExpression(binary.Left, state);
                     var right = ResolveOnExpression(binary.Right, state);
-                    return DataFieldExpression.Catch(left, catchType, right);
+                    return DataFieldExpression.Concat(left, catchType, right);
                 }
                 if (CheckQueryPredicate(binary.NodeType, out QueryPredicate queryPredicate)) {
                     bool left;
