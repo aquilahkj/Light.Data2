@@ -94,7 +94,7 @@ namespace Light.Data
         /// <param name="direction">Direction.</param>
         /// <param name="dataType">Data type.</param>
         /// <param name="commandType">Command type.</param>
-        public abstract IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType);
+        public abstract IDataParameter CreateParameter(string name, object value, string dbType, System.Data.ParameterDirection direction, Type dataType, CommandType commandType);
 
         /// <summary>
         /// Gets the factory.

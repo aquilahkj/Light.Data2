@@ -157,7 +157,7 @@ namespace Light.Data.Postgre
                     //object obj = field.Handler.Get(entity);
                     //object value = field.ToColumn(obj);
                     object value = field.GetInsertData(entity, refresh);
-                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, DataParameterMode.Input, field.ObjectType);
+                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 string values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);

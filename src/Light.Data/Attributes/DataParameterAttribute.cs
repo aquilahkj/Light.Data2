@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace Light.Data
@@ -12,7 +13,7 @@ namespace Light.Data
     {
         private string name;
 
-        private DataParameterMode direction = DataParameterMode.Input;
+        private ParameterDirection direction = ParameterDirection.Input;
         /// <summary>
         /// 
         /// </summary>
@@ -43,7 +44,7 @@ namespace Light.Data
         /// <summary>
         /// Data Parameter Direction Mode
         /// </summary>
-        public DataParameterMode Direction {
+        public ParameterDirection Direction {
             get {
                 return direction;
             }

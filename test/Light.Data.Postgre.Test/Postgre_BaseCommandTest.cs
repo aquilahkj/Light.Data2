@@ -1891,7 +1891,7 @@ namespace Light.Data.Postgre.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("p1", 5);
-            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("p2", 0, ParameterDirection.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             executor.ExecuteNonQuery();
             Assert.Equal(5, Convert.ToInt32(ps[1].Value));
@@ -1899,7 +1899,7 @@ namespace Light.Data.Postgre.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("p1", 5);
-            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("p2", 0, ParameterDirection.Output);
             using (var trans = context.BeginTrans()) {
                 //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -1920,7 +1920,7 @@ namespace Light.Data.Postgre.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("p1", 5);
-            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("p2", 0, ParameterDirection.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             await executor.ExecuteNonQueryAsync(CancellationToken.None);
             Assert.Equal(5, Convert.ToInt32(ps[1].Value));
@@ -1928,7 +1928,7 @@ namespace Light.Data.Postgre.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("p1", 5);
-            ps[1] = new DataParameter("p2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("p2", 0, ParameterDirection.Output);
             using (var trans = context.BeginTrans()) {
                 //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -2853,7 +2853,7 @@ namespace Light.Data.Postgre.Test
         {
             [DataParameter("p1")]
             public int InputData { get; set; }
-            [DataParameter("p2", Direction = DataParameterMode.Output)]
+            [DataParameter("p2", Direction = ParameterDirection.Output)]
             public int OutputData { get; set; }
         }
 

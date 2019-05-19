@@ -1893,7 +1893,7 @@ namespace Light.Data.Mssql.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("P2", 0, ParameterDirection.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             executor.ExecuteNonQuery();
             Assert.Equal(5, Convert.ToInt32(ps[1].Value));
@@ -1901,7 +1901,7 @@ namespace Light.Data.Mssql.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("P2", 0, ParameterDirection.Output);
             using (var trans = context.BeginTrans()) {
                 //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -1922,7 +1922,7 @@ namespace Light.Data.Mssql.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("P2", 0, ParameterDirection.Output);
             executor = context.CreateStoreProcedureExecutor(sql, ps);
             await executor.ExecuteNonQueryAsync(CancellationToken.None);
             Assert.Equal(5, Convert.ToInt32(ps[1].Value));
@@ -1930,7 +1930,7 @@ namespace Light.Data.Mssql.Test
             sql = "sptest7";
             ps = new DataParameter[2];
             ps[0] = new DataParameter("P1", 5);
-            ps[1] = new DataParameter("P2", 0, DataParameterMode.Output);
+            ps[1] = new DataParameter("P2", 0, ParameterDirection.Output);
             using (var trans = context.BeginTrans()) {
                 //trans.BeginTrans();
                 executor = context.CreateStoreProcedureExecutor(sql, ps);
@@ -2890,7 +2890,7 @@ namespace Light.Data.Mssql.Test
         {
             [DataParameter("P1")]
             public int InputData { get; set; }
-            [DataParameter("P2", Direction = DataParameterMode.Output)]
+            [DataParameter("P2", Direction = ParameterDirection.Output)]
             public int OutputData { get; set; }
         }
 

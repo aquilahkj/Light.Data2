@@ -16,7 +16,7 @@ namespace Light.Data
 		/// <param name="dbType">Db type.</param>
 		/// <param name="direction">Direction.</param>
         /// <param name="dataType">Data type.</param>
-		internal DataParameter(string paramName, object paramValue, string dbType, DataParameterMode direction, Type dataType)
+		internal DataParameter(string paramName, object paramValue, string dbType, ParameterDirection direction, Type dataType)
         {
             if (string.IsNullOrEmpty(paramName)) {
                 throw new ArgumentNullException(nameof(paramName));
@@ -37,7 +37,7 @@ namespace Light.Data
         /// <param name="paramValue">Parameter value.</param>
         /// <param name="dbType">Db type.</param>
         /// <param name="direction">Direction.</param>
-        public DataParameter(string paramName, object paramValue, string dbType, DataParameterMode direction)
+        public DataParameter(string paramName, object paramValue, string dbType, ParameterDirection direction)
             : this(paramName, paramValue, dbType, direction, null)
         {
 
@@ -49,7 +49,7 @@ namespace Light.Data
         /// <param name="paramName">Parameter name.</param>
         /// <param name="paramValue">Parameter value.</param>
         public DataParameter(string paramName, object paramValue)
-            : this(paramName, paramValue, null, DataParameterMode.Input, null)
+            : this(paramName, paramValue, null, ParameterDirection.Input, null)
         {
 
         }
@@ -60,7 +60,7 @@ namespace Light.Data
         /// <param name="paramName">Parameter name.</param>
         /// <param name="paramValue">Parameter value.</param>
         /// <param name="direction">Direction.</param>
-        public DataParameter(string paramName, object paramValue, DataParameterMode direction)
+        public DataParameter(string paramName, object paramValue, ParameterDirection direction)
             : this(paramName, paramValue, null, direction, null)
         {
 
@@ -73,25 +73,26 @@ namespace Light.Data
         /// <param name="paramValue">Parameter value.</param>
         /// <param name="dbType">Db type.</param>
         public DataParameter(string paramName, object paramValue, string dbType)
-            : this(paramName, paramValue, dbType, DataParameterMode.Input, null)
+            : this(paramName, paramValue, dbType, ParameterDirection.Input, null)
         {
 
         }
 
         IDataParameter _dataParameter;
 
-        /// <summary>
-        /// Sets the data parameter.
-        /// </summary>
-        /// <param name="dataParameter">Data parameter.</param>
-        internal virtual void SetDataParameter(IDataParameter dataParameter)
+        internal IDataParameter ConvertDbParameter(DatabaseProvider database, CommandType commandType)
         {
+            IDataParameter dataParameter = database.CreateParameter(_parameterName, _value, _dbType, _direction, _dataType, commandType);
             _dataParameter = dataParameter;
+            return dataParameter;
         }
 
-        internal virtual bool CallbackOutputValue()
+        internal virtual bool Callback()
         {
-            if ((_direction & DataParameterMode.Output) == DataParameterMode.Output) {
+            if (_dataParameter == null) {
+                return false;
+            }
+            if (_dataParameter.Direction != ParameterDirection.Input) {
                 this._value = _dataParameter.Value;
                 return true;
             }
@@ -143,13 +144,13 @@ namespace Light.Data
             //}
         }
 
-        DataParameterMode _direction;
+        ParameterDirection _direction;
 
         /// <summary>
         /// Gets or sets the direction.
         /// </summary>
         /// <value>The direction.</value>
-        public DataParameterMode Direction {
+        public ParameterDirection Direction {
             get {
                 return _direction;
             }
@@ -157,21 +158,6 @@ namespace Light.Data
             //    _direction = value;
             //}
         }
-
-        ///// <summary>
-        ///// Gets the output value.
-        ///// </summary>
-        ///// <value>The output value.</value>
-        //public object OutputValue {
-        //    get {
-        //        if (_dataParameter == null)
-        //            return null;
-        //        if (_direction == DataParameterMode.InputOutput || _direction == DataParameterMode.Output)
-        //            return _dataParameter.Value;
-        //        else
-        //            return null;
-        //    }
-        //}
 
         Type _dataType;
         /// <summary>

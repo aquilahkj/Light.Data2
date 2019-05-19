@@ -8,8 +8,6 @@ namespace Light.Data
     {
         string commandText;
 
-        bool returnRowCount = true;
-
         bool innerPage;
 
         public string CommandText {
@@ -40,17 +38,6 @@ namespace Light.Data
             }
         }
 
-        bool transParamName;
-
-        public bool TransParamName {
-            get {
-                return transParamName;
-            }
-            set {
-                transParamName = value;
-            }
-        }
-
         public bool InnerPage {
             get {
                 return innerPage;
@@ -58,16 +45,6 @@ namespace Light.Data
 
             set {
                 innerPage = value;
-            }
-        }
-
-        public bool ReturnRowCount {
-            get {
-                return returnRowCount;
-            }
-
-            set {
-                returnRowCount = value;
             }
         }
 
@@ -93,8 +70,8 @@ namespace Light.Data
                 idataParameters = new IDataParameter[length];
                 for (int i = 0; i < length; i++) {
                     DataParameter dp = dps[i];
-                    IDataParameter idp = database.CreateParameter(dp.ParameterName, dp.Value, dp.DbType, (ParameterDirection)dp.Direction, dp.DataType, CommandType.Text);
-                    idataParameters[i] = idp;
+                    IDataParameter idataParameter = dp.ConvertDbParameter(database, CommandType.Text);
+                    idataParameters[i] = idataParameter;
                 }
             }
             DbCommand command = database.CreateCommand(sql);
