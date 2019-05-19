@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace Light.Data
@@ -9,16 +10,16 @@ namespace Light.Data
         private readonly object callbackData;
         private readonly DataParameterMapping mapping;
 
-        public CallbackDataParameter(string paramName, object paramValue, DataParameterMode direction, object callbackData, DataParameterMapping mapping)
+        public CallbackDataParameter(string paramName, object paramValue, ParameterDirection direction, object callbackData, DataParameterMapping mapping)
             : base(paramName, paramValue, direction)
         {
             this.callbackData = callbackData;
             this.mapping = mapping;
         }
 
-        internal override bool CallbackOutputValue()
+        internal override bool Callback()
         {
-            if (base.CallbackOutputValue()) {
+            if (base.Callback()) {
                 object value = Value;
                 if (!Object.Equals(value, null)) {
                     Type type = value.GetType();

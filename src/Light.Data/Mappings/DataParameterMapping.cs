@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text;
 
@@ -12,10 +13,10 @@ namespace Light.Data
         private SetValueHandler mSetValue;
         private string mName;
         private Type mType;
-        private DataParameterMode mDirection;
+        private ParameterDirection mDirection;
         private bool mConvertString;
 
-        public DataParameterMode Direction {
+        public ParameterDirection Direction {
             get {
                 return mDirection;
             }
@@ -57,7 +58,7 @@ namespace Light.Data
             }
         }
 
-        public DataParameterMapping(PropertyInfo property, string name, DataParameterMode direction)
+        public DataParameterMapping(PropertyInfo property, string name, ParameterDirection direction)
         {
             if (property.CanRead) {
                 this.mGetValue = ReflectionHandlerFactory.PropertyGetHandler(property);
@@ -68,7 +69,7 @@ namespace Light.Data
             this.mType = property.PropertyType;
             TypeCode code = Type.GetTypeCode(this.mType);
             this.mConvertString = code == TypeCode.Object || code == TypeCode.DBNull || code == TypeCode.Empty;
-            if ((this.mDirection == DataParameterMode.InputOutput || this.mDirection == DataParameterMode.Output) && mConvertString) {
+            if ((this.mDirection == ParameterDirection.InputOutput || this.mDirection == ParameterDirection.Output) && mConvertString) {
                 throw new LightDataException(SR.OutputParameterNotSupportObjectType);
             }
             this.mProperty = property;

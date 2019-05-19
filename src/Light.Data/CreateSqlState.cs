@@ -139,7 +139,7 @@ namespace Light.Data
         /// <param name="dbType">Db type.</param>
         /// <param name="direction">Direction.</param>
         /// <param name="dataType">Data type.</param>
-        public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, DataParameterMode direction, Type dataType)
+        public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, ParameterDirection direction, Type dataType)
         {
             if (_useDirectNull) {
                 if (Object.Equals(paramValue, null)) {
@@ -159,8 +159,29 @@ namespace Light.Data
         /// <param name="factory">Factory.</param>
         /// <param name="paramValue">Parameter value.</param>
         /// <param name="dbType">Db type.</param>
+        /// <param name="dataType">Data type.</param>
+        public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, Type dataType)
+        {
+            if (_useDirectNull) {
+                if (Object.Equals(paramValue, null)) {
+                    return factory.Null;
+                }
+            }
+            string paramName = GetNextParameterName(factory);
+            DataParameter dataParameter = new DataParameter(paramName, paramValue, dbType, ParameterDirection.Input, dataType);
+            parameters.Add(dataParameter);
+            return paramName;
+        }
+
+        /// <summary>
+        /// Add the data parameter.
+        /// </summary>
+        /// <returns>The data parameter.</returns>
+        /// <param name="factory">Factory.</param>
+        /// <param name="paramValue">Parameter value.</param>
+        /// <param name="dbType">Db type.</param>
         /// <param name="direction">Direction.</param>
-        public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, DataParameterMode direction)
+        public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, ParameterDirection direction)
         {
             return AddDataParameter(factory, paramValue, dbType, direction, null);
         }
@@ -173,7 +194,7 @@ namespace Light.Data
         /// <param name="paramValue">Parameter value.</param>
         public string AddDataParameter(CommandFactory factory, object paramValue)
         {
-            return AddDataParameter(factory, paramValue, null, DataParameterMode.Input);
+            return AddDataParameter(factory, paramValue, null, ParameterDirection.Input, null);
         }
 
         /// <summary>
@@ -183,7 +204,7 @@ namespace Light.Data
         /// <param name="factory">Factory.</param>
         /// <param name="paramValue">Parameter value.</param>
         /// <param name="direction">Direction.</param>
-        public string AddDataParameter(CommandFactory factory, object paramValue, DataParameterMode direction)
+        public string AddDataParameter(CommandFactory factory, object paramValue, ParameterDirection direction)
         {
             return AddDataParameter(factory, paramValue, null, direction);
         }
@@ -197,7 +218,7 @@ namespace Light.Data
         /// <param name="dbType">Db type.</param>
         public string AddDataParameter(CommandFactory factory, object paramValue, string dbType)
         {
-            return AddDataParameter(factory, paramValue, dbType, DataParameterMode.Input);
+            return AddDataParameter(factory, paramValue, dbType, ParameterDirection.Input);
         }
 
         public DataParameter[] GetDataParameters()

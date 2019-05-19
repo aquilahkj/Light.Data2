@@ -54,7 +54,7 @@ namespace Light.Data.Postgre
             return new NpgsqlDataAdapter((NpgsqlCommand)command);
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType)
+        public override IDataParameter CreateParameter(string name, object value, string dbType, System.Data.ParameterDirection direction, Type dataType, CommandType commandType)
         {
             string parameterName = name;
             if (commandType == CommandType.StoredProcedure) {

@@ -46,20 +46,19 @@ namespace Light.Data
         {
             _level = level;
             _context = context;
-            _command = context.CreateCommand(sql);
+            var database = context.Database;
+            _command = database.CreateCommand(sql);
             _command.CommandType = commandType;
             if (parameters != null) {
                 _parameters = new DataParameter[parameters.Length];
                 int i = 0;
                 foreach (DataParameter param in parameters) {
-                    string parameterName = param.ParameterName;
-                    IDataParameter dataParameter = context.CreateParameter(parameterName, param.Value, param.DbType, (ParameterDirection)param.Direction, commandType);
-                    param.SetDataParameter(dataParameter);
+                    IDataParameter dataParameter = param.ConvertDbParameter(database, commandType);
                     _command.Parameters.Add(dataParameter);
                     _parameters[i] = param;
                     i++;
                 }
-               
+
             }
         }
 
@@ -280,7 +279,7 @@ namespace Light.Data
         {
             if (_parameters != null) {
                 foreach (var item in _parameters) {
-                    item.CallbackOutputValue();
+                    item.Callback();
                 }
             }
         }

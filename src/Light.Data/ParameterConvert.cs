@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text;
 
@@ -24,7 +25,7 @@ namespace Light.Data
                         foreach (PropertyInfo propertie in properties) {
                             var handler = new PropertyHandler(propertie);
                             string name = null;
-                            DataParameterMode direction = DataParameterMode.Input;
+                            ParameterDirection direction = ParameterDirection.Input;
                             var attributes = AttributeCore.GetPropertyAttributes<DataParameterAttribute>(propertie, true);
                             if (attributes.Length > 0) {
                                 var attribute = attributes[0];
@@ -50,7 +51,7 @@ namespace Light.Data
                     value = value.ToString();
                 }
                 DataParameter dataParameter;
-                if ((mapping.Direction | DataParameterMode.Output) == DataParameterMode.Output) {
+                if ((mapping.Direction | ParameterDirection.Output) == ParameterDirection.Output) {
                     dataParameter = new CallbackDataParameter(mapping.Name, value, mapping.Direction, data, mapping);
                 }
                 else {
