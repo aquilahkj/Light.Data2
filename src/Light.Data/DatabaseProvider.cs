@@ -122,14 +122,14 @@ namespace Light.Data
             }
         }
 
-        int _batchInsertCount;
+        int _batchInsertCount = 100;
 
         public int BatchInsertCount {
             get {
                 return _batchInsertCount;
             }
             set {
-                if (value > 0) {
+                if (value >= 0) {
                     _batchInsertCount = value;
                 }
                 else {
@@ -138,14 +138,14 @@ namespace Light.Data
             }
         }
 
-        int _batchUpdateCount;
+        int _batchUpdateCount = 100;
 
         public int BatchUpdateCount {
             get {
                 return _batchUpdateCount;
             }
             set {
-                if (value > 0) {
+                if (value >= 0) {
                     _batchUpdateCount = value;
                 }
                 else {
@@ -154,14 +154,14 @@ namespace Light.Data
             }
         }
 
-        int _batchDeleteCount;
+        int _batchDeleteCount = 100;
 
         public int BatchDeleteCount {
             get {
                 return _batchDeleteCount;
             }
             set {
-                if (value > 0) {
+                if (value >= 0) {
                     _batchDeleteCount = value;
                 }
                 else {
@@ -169,15 +169,6 @@ namespace Light.Data
                 }
             }
         }
-
-        ///// <summary>
-        ///// Formats the stored procedure parameter.
-        ///// </summary>
-        ///// <param name="dataParameter">Data parmeter.</param>
-        //public abstract void FormatStoredProcedureParameter(IDataParameter dataParameter);
-
-
-
 
         public virtual QueryCommand QueryEntityData(DataContext context, DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region)
         {
@@ -404,13 +395,14 @@ namespace Light.Data
             return queryCommand;
         }
 
-        public virtual QueryCommand Insert(DataContext context, DataTableEntityMapping mapping, object data, bool refresh)
+        public virtual QueryCommand Insert(DataContext context, DataTableEntityMapping mapping, object data, bool refresh, bool updateIdentity)
         {
             CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBaseInsertCommand(mapping, data, refresh, state);
+            CommandData commandData = _factory.CreateBaseInsertCommand(mapping, data, refresh, updateIdentity, state);
             DbCommand command = commandData.CreateCommand(this, state);
             QueryCommand queryCommand = new QueryCommand() {
-                Command = command
+                Command = command,
+                IdentitySql = commandData.IdentitySql
             };
             return queryCommand;
         }
@@ -460,6 +452,17 @@ namespace Light.Data
         {
             CreateSqlState state = new CreateSqlState(context, false);
             CommandData commandData = _factory.CreateBaseDeleteCommand(mapping, data, state);
+            DbCommand command = commandData.CreateCommand(this, state);
+            QueryCommand queryCommand = new QueryCommand() {
+                Command = command
+            };
+            return queryCommand;
+        }
+
+        public virtual QueryCommand BatchInsertWithIdentity(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
+        {
+            CreateSqlState state = new CreateSqlState(context, false);
+            CommandData commandData = _factory.CreateBatchInsertWithIdentityCommand(mapping, datas, refresh, state);
             DbCommand command = commandData.CreateCommand(this, state);
             QueryCommand queryCommand = new QueryCommand() {
                 Command = command

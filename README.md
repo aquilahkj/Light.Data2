@@ -15,8 +15,8 @@ Supported Database
 | Database | Introduce |
 |:------|:------|
 | SqlServer | Need to install `nuget` install `Light.Data.Mssql` library, SqlServer 2008 support or above |
-| Mysql | Need to install `nuget` install `Light.Data.Mysql` library |
-| Postgre | Need to install `nuget` install `Light.Data.Postgre` library |
+| Mysql | Need to install `nuget` install `Light.Data.Mysql` library, Mysql5.5 support or above |
+| Postgre | Need to install `nuget` install `Light.Data.Postgre` library, PostgreSQL9.3 support or above |
 
 * Guide Document: [https://aquilahkj.github.io/Light.Data.Site/](https://aquilahkj.github.io/Light.Data.Site/)
 

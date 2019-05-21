@@ -8,6 +8,7 @@ namespace Light.Data.Mysql
 {
     class MysqlCommandFactory : CommandFactory
     {
+        public override bool SupportBatchInsertIdentity => true;
 
         DateTimeFormater dateTimeFormater = new DateTimeFormater();
 
@@ -91,6 +92,59 @@ namespace Light.Data.Mysql
             return command;
         }
 
+        public override CommandData CreateBatchInsertWithIdentityCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        {
+            if (entitys == null || entitys.Count == 0) {
+                throw new ArgumentNullException(nameof(entitys));
+            }
+            int totalCount = entitys.Count;
+            IList<DataFieldMapping> fields = mapping.CreateFieldList;
+            int insertLen = fields.Count;
+            if (insertLen == 0) {
+                throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
+            }
+            if (!mapping.HasIdentity) {
+                throw new LightDataException(string.Format(SR.NoIdentityField, mapping.ObjectType));
+            }
+            string insertSql = null;
+            string cachekey = null;
+            if (state.Seed == 0) {
+                cachekey = CommandCache.CreateKey(mapping, state);
+                if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+                    insertSql = cache;
+                }
+            }
+            if (insertSql == null) {
+                string[] insertList = new string[insertLen];
+                for (int i = 0; i < insertLen; i++) {
+                    DataFieldMapping field = fields[i];
+                    insertList[i] = CreateDataFieldSql(field.Name);
+                }
+                string insert = string.Join(",", insertList);
+                insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
+                if (cachekey != null) {
+                    _batchInsertCache.SetCommand(cachekey, insertSql);
+                }
+            }
+            StringBuilder totalSql = new StringBuilder();
+
+            totalSql.Append("drop temporary table if exists `temptb`;create temporary table `temptb`(`id` int(11));");
+
+            foreach (object entity in entitys) {
+                string[] valuesList = new string[insertLen];
+                for (int i = 0; i < insertLen; i++) {
+                    DataFieldMapping field = fields[i];
+                    object value = field.GetInsertData(entity, refresh);
+                    valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
+                }
+                string values = string.Join(",", valuesList);
+                totalSql.AppendFormat("{0}values({1});insert into `temptb`(`id`) select last_insert_id();", insertSql, values);
+            }
+            totalSql.Append("select `id` from `temptb`;");
+            CommandData command = new CommandData(totalSql.ToString());
+            return command;
+        }
+
         public override CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
@@ -131,8 +185,6 @@ namespace Light.Data.Mysql
                 string[] valuesList = new string[insertLen];
                 for (int i = 0; i < insertLen; i++) {
                     DataFieldMapping field = fields[i];
-                    //object obj = field.Handler.Get(entity);
-                    //object value = field.ToColumn(obj);
                     object value = field.GetInsertData(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }

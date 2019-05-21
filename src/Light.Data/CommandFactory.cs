@@ -65,6 +65,12 @@ namespace Light.Data
 
         public abstract string ParameterPrefix { get; }
 
+        public virtual int MaxParameterCount {
+            get {
+                return int.MaxValue;
+            }
+        }
+
         public virtual string GetJoinPredicate(JoinType joinType)
         {
             return _joinCollectionPredicateDict[joinType];
@@ -127,6 +133,12 @@ namespace Light.Data
         internal virtual string Null {
             get {
                 return "null";
+            }
+        }
+
+        public virtual bool SupportBatchInsertIdentity {
+            get {
+                return false;
             }
         }
 
@@ -288,7 +300,7 @@ namespace Light.Data
             return command;
         }
 
-        public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, bool updateIdentity, CreateSqlState state)
         {
             string cachekey = null;
             if (state.Seed == 0 && !state.UseDirectNull) {
@@ -298,6 +310,13 @@ namespace Light.Data
                     foreach (DataFieldMapping field in mapping.CreateFieldList) {
                         object value = field.GetInsertData(entity, refresh);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
+                    }
+                    if (updateIdentity && mapping.IdentityField != null) {
+                        string idensql = CreateIdentitySql(mapping, state);
+                        if (!string.IsNullOrEmpty(idensql)) {
+                            command1.CommandText = command1.CommandText + ";" + idensql;
+                            command1.IdentitySql = true;
+                        }
                     }
                     return command1;
                 }
@@ -320,9 +339,18 @@ namespace Light.Data
             string insert = string.Join(",", insertList);
             string values = string.Join(",", valuesList);
             string sql = string.Format("insert into {0}({1})values({2})", CreateDataTableMappingSql(mapping, state), insert, values);
+
             CommandData command = new CommandData(sql);
             if (cachekey != null) {
                 _baseInsertCache.SetCommand(cachekey, command.CommandText);
+            }
+
+            if (updateIdentity && mapping.IdentityField != null) {
+                string idensql = CreateIdentitySql(mapping, state);
+                if (!string.IsNullOrEmpty(idensql)) {
+                    command.CommandText = command.CommandText + ";" + idensql;
+                    command.IdentitySql = true;
+                }
             }
             return command;
         }
@@ -444,6 +472,7 @@ namespace Light.Data
             }
             return command;
         }
+
 
         public virtual CommandData CreateBaseDeleteCommand(DataTableEntityMapping mapping, object entity, CreateSqlState state)
         {
@@ -843,6 +872,12 @@ namespace Light.Data
             return selectCommandData;
         }
 
+        public virtual CommandData CreateBatchInsertWithIdentityCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        {
+            throw new NotSupportedException();
+        }
+
+
         public virtual CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
@@ -993,7 +1028,7 @@ namespace Light.Data
             CommandData command = new CommandData(totalSql.ToString());
             return command;
         }
-        
+
         public virtual CommandData CreateBatchDeleteCommand(DataTableEntityMapping mapping, IList entitys, CreateSqlState state)
         {
             if (entitys == null || entitys.Count == 0) {
@@ -1004,24 +1039,38 @@ namespace Light.Data
             }
 
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
+
             int keyLen = keyFields.Count;
+
             StringBuilder totalSql = new StringBuilder();
-            foreach (object entity in entitys) {
-                string[] whereList = new string[keyLen];
-                for (int i = 0; i < keyLen; i++) {
-                    DataFieldMapping field = keyFields[i];
+            if (keyFields.Count == 1) {
+                DataFieldMapping field = keyFields[0];
+                string[] keys = new string[entitys.Count];
+                for (int i = 0; i < entitys.Count; i++) {
+                    object entity = entitys[i];
                     object obj = field.Handler.Get(entity);
                     object value = field.ToParameter(obj);
-                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                    keys[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
-                string where = string.Join(" and ", whereList);
-                totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state), where);
-
+                totalSql.AppendFormat("delete from {0} where {1} in ({2});", CreateDataTableMappingSql(mapping, state), CreateDataFieldSql(field.Name), string.Join(",", keys));
+            }
+            else {
+                foreach (object entity in entitys) {
+                    string[] whereList = new string[keyLen];
+                    for (int i = 0; i < keyLen; i++) {
+                        DataFieldMapping field = keyFields[i];
+                        object obj = field.Handler.Get(entity);
+                        object value = field.ToParameter(obj);
+                        whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                    }
+                    string where = string.Join(" and ", whereList);
+                    totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state), where);
+                }
             }
             CommandData command = new CommandData(totalSql.ToString());
             return command;
         }
-        
+
         public virtual CommandData CreateIdentityCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {
             string sql = CreateIdentitySql(mapping, state);

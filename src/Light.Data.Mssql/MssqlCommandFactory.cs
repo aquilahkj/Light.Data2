@@ -49,6 +49,8 @@ namespace Light.Data.Mssql
             _orderbyAlias = true;
         }
 
+        public override int MaxParameterCount => 2000;
+
         public override string CreateDataFieldSql(string fieldName)
         {
             if (_strictMode) {

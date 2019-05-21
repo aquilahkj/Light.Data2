@@ -31,7 +31,7 @@ namespace Light.Data
                 name = type.FullName;
             }
             else {
-                name = string.Concat(type.FullName, "_" + aliasName);
+                name = string.Concat(type.FullName, "_" , aliasName);
             }
             return name;
         }

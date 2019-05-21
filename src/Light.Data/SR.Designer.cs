@@ -61,6 +61,15 @@ namespace Light.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Batch insert data identity error.
+        /// </summary>
+        internal static string BatchInsertIdentityError {
+            get {
+                return ResourceManager.GetString("BatchInsertIdentityError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can not find alias name via specified path &apos;{0}&apos;.
         /// </summary>
         internal static string CanNotFindAliasNameViaSpecifiedPath {

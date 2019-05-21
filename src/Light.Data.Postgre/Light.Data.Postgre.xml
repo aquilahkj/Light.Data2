@@ -4,5 +4,19 @@
         <name>Light.Data.Postgre</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.Extensions.DependencyInjection.PostgreOptionsExtensions">
+            <summary>
+            Postgre options extensions
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.PostgreOptionsExtensions.UsePostgre``1(Light.Data.DataContextOptionsBuilder{``0},System.String)">
+            <summary>
+            Uses the postgre database.
+            </summary>
+            <returns>The builder.</returns>
+            <param name="builder">Builder.</param>
+            <param name="connection">Connection.</param>
+            <typeparam name="TContext">Data context.</typeparam>
+        </member>
     </members>
 </doc>

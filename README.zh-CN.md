@@ -19,8 +19,8 @@ PM> Install-Package Light.Data
 | 数据库 | 说明 |
 |:------|:------|
 | SqlServer | 安装`Light.Data.Mssql`类库, 支持SqlServer 2008或以上 |
-| Mysql | 安装`Light.Data.Mysql`类库 |
-| Postgre | 安装`Light.Data.Postgre`类库 |
+| Mysql | 安装`Light.Data.Mysql`类库, 支持Mysql5.5或以上 |
+| Postgre | 安装`Light.Data.Postgre`类库, 支持PostgreSQL9.3或以上 |
 
 * 使用文档: [https://aquilahkj.github.io/Light.Data.Site/#/zh-cn/](https://aquilahkj.github.io/Light.Data.Site/#/zh-cn/)
 

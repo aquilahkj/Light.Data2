@@ -742,7 +742,7 @@
             Provider Name
             </summary>
         </member>
-        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,System.String,Light.Data.DataParameterMode,System.Type)">
+        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,System.String,System.Data.ParameterDirection,System.Type)">
             <summary>
             Add the data parameter.
             </summary>
@@ -753,7 +753,17 @@
             <param name="direction">Direction.</param>
             <param name="dataType">Data type.</param>
         </member>
-        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,System.String,Light.Data.DataParameterMode)">
+        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,System.String,System.Type)">
+            <summary>
+            Add the data parameter.
+            </summary>
+            <returns>The data parameter.</returns>
+            <param name="factory">Factory.</param>
+            <param name="paramValue">Parameter value.</param>
+            <param name="dbType">Db type.</param>
+            <param name="dataType">Data type.</param>
+        </member>
+        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,System.String,System.Data.ParameterDirection)">
             <summary>
             Add the data parameter.
             </summary>
@@ -771,7 +781,7 @@
             <param name="factory">Factory.</param>
             <param name="paramValue">Parameter value.</param>
         </member>
-        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,Light.Data.DataParameterMode)">
+        <member name="M:Light.Data.CreateSqlState.AddDataParameter(Light.Data.CommandFactory,System.Object,System.Data.ParameterDirection)">
             <summary>
             Add the data parameter.
             </summary>
@@ -890,6 +900,39 @@
             Sets the command output.
             </summary>
             <param name="output">Output.</param>
+        </member>
+        <member name="M:Light.Data.DataContext.SetBatchInsertCount(System.Int32)">
+            <summary>
+            Set batch insert count
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Light.Data.DataContext.ResetBatchInsertCount">
+             <summary>
+            Reset batch insert count
+             </summary>
+        </member>
+        <member name="M:Light.Data.DataContext.SetBatchUpdateCount(System.Int32)">
+            <summary>
+            Set batch update count
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Light.Data.DataContext.ResetBatchUpdateCount">
+             <summary>
+            Reset batch update count
+             </summary>
+        </member>
+        <member name="M:Light.Data.DataContext.SetBatchDeleteCount(System.Int32)">
+            <summary>
+            Set batch delete count
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Light.Data.DataContext.ResetBatchDeleteCount">
+             <summary>
+            Reset batch delete count
+             </summary>
         </member>
         <member name="M:Light.Data.DataContext.#ctor">
             <summary>
@@ -1071,6 +1114,14 @@
             <param name="data">Data.</param>
             <param name="cancellationToken">CancellationToken.</param>
         </member>
+        <member name="M:Light.Data.DataContext.InsertDatas``1(``0[])">
+            <summary>
+            Batch insert datas.
+            </summary>
+            <returns>result.</returns>
+            <param name="datas">Data collection.</param>
+            <typeparam name="T">Insert object type.</typeparam>
+        </member>
         <member name="M:Light.Data.DataContext.BatchInsert``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Batch insert datas.
@@ -1155,6 +1206,14 @@
             <param name="cancellationToken">CancellationToken.</param>
             <typeparam name="T">Insert object type.</typeparam>
         </member>
+        <member name="M:Light.Data.DataContext.UpdateDatas``1(``0[])">
+            <summary>
+            Batch update datas.
+            </summary>
+            <returns>result.</returns>
+            <param name="datas">Datas.</param>
+            <typeparam name="T">Data type.</typeparam>
+        </member>
         <member name="M:Light.Data.DataContext.BatchUpdate``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Batch update datas.
@@ -1233,6 +1292,14 @@
             <param name="count">Count.</param>
             <param name="refresh">Whether to refresh null data with default value fields.</param>
             <param name="cancellationToken">CancellationToken.</param>
+            <typeparam name="T">Data type.</typeparam>
+        </member>
+        <member name="M:Light.Data.DataContext.DeleteDatas``1(``0[])">
+            <summary>
+            Batch delete data.
+            </summary>
+            <returns>The delete rows.</returns>
+            <param name="datas">Datas.</param>
             <typeparam name="T">Data type.</typeparam>
         </member>
         <member name="M:Light.Data.DataContext.BatchDelete``1(System.Collections.Generic.IEnumerable{``0})">
@@ -2524,7 +2591,7 @@
             Data parameter.
             </summary>
         </member>
-        <member name="M:Light.Data.DataParameter.#ctor(System.String,System.Object,System.String,Light.Data.DataParameterMode,System.Type)">
+        <member name="M:Light.Data.DataParameter.#ctor(System.String,System.Object,System.String,System.Data.ParameterDirection,System.Type)">
             <summary>
             Initializes a new instance of the <see cref="T:Light.Data.DataParameter"/> class.
             </summary>
@@ -2534,7 +2601,7 @@
             <param name="direction">Direction.</param>
             <param name="dataType">Data type.</param>
         </member>
-        <member name="M:Light.Data.DataParameter.#ctor(System.String,System.Object,System.String,Light.Data.DataParameterMode)">
+        <member name="M:Light.Data.DataParameter.#ctor(System.String,System.Object,System.String,System.Data.ParameterDirection)">
             <summary>
             Initializes a new instance of the <see cref="T:Light.Data.DataParameter"/> class.
             </summary>
@@ -2550,7 +2617,7 @@
             <param name="paramName">Parameter name.</param>
             <param name="paramValue">Parameter value.</param>
         </member>
-        <member name="M:Light.Data.DataParameter.#ctor(System.String,System.Object,Light.Data.DataParameterMode)">
+        <member name="M:Light.Data.DataParameter.#ctor(System.String,System.Object,System.Data.ParameterDirection)">
             <summary>
             Initializes a new instance of the <see cref="T:Light.Data.DataParameter"/> class.
             </summary>
@@ -2565,12 +2632,6 @@
             <param name="paramName">Parameter name.</param>
             <param name="paramValue">Parameter value.</param>
             <param name="dbType">Db type.</param>
-        </member>
-        <member name="M:Light.Data.DataParameter.SetDataParameter(System.Data.IDataParameter)">
-            <summary>
-            Sets the data parameter.
-            </summary>
-            <param name="dataParameter">Data parameter.</param>
         </member>
         <member name="P:Light.Data.DataParameter.ParameterName">
             <summary>
@@ -2598,26 +2659,6 @@
         <member name="P:Light.Data.DataParameter.DataType">
             <summary>
             Gets the data type
-            </summary>
-        </member>
-        <member name="T:Light.Data.DataParameterMode">
-            <summary>
-            Data Parameter Direction Mode
-            </summary>
-        </member>
-        <member name="F:Light.Data.DataParameterMode.Input">
-            <summary>
-            Input
-            </summary>
-        </member>
-        <member name="F:Light.Data.DataParameterMode.Output">
-            <summary>
-            Output
-            </summary>
-        </member>
-        <member name="F:Light.Data.DataParameterMode.InputOutput">
-            <summary>
-            Input or output
             </summary>
         </member>
         <member name="T:Light.Data.DataTableEntity">
@@ -2779,17 +2820,17 @@
             <returns>The data.</returns>
             <param name="format">Format.</param>
         </member>
-        <member name="T:Light.Data.CatchOperatorsType">
+        <member name="T:Light.Data.ConcatOperatorType">
             <summary>
-            Catch operators type.
+            Concat operators type.
             </summary>
         </member>
-        <member name="F:Light.Data.CatchOperatorsType.AND">
+        <member name="F:Light.Data.ConcatOperatorType.AND">
             <summary>
             AND.
             </summary>
         </member>
-        <member name="F:Light.Data.CatchOperatorsType.OR">
+        <member name="F:Light.Data.ConcatOperatorType.OR">
             <summary>
             OR.
             </summary>
@@ -2879,9 +2920,9 @@
             Order expression.
             </summary>
         </member>
-        <member name="M:Light.Data.OrderExpression.Catch(Light.Data.OrderExpression,Light.Data.OrderExpression)">
+        <member name="M:Light.Data.OrderExpression.Concat(Light.Data.OrderExpression,Light.Data.OrderExpression)">
             <summary>
-            Catch the specified expression1 and expression2.
+            Concat the specified expression1 and expression2.
             </summary>
             <param name="expression1">Expression1.</param>
             <param name="expression2">Expression2.</param>
@@ -2928,9 +2969,9 @@
             <param name="isFullName">If set to <c>true</c> is full name.</param>
             <param name="state">State.</param>
         </member>
-        <member name="M:Light.Data.QueryExpression.Catch(Light.Data.QueryExpression,Light.Data.CatchOperatorsType,Light.Data.QueryExpression)">
+        <member name="M:Light.Data.QueryExpression.Concat(Light.Data.QueryExpression,Light.Data.ConcatOperatorType,Light.Data.QueryExpression)">
             <summary>
-            Catch the specified expression1, operatorType and expression2.
+            Concat the specified expression1, operatorType and expression2.
             </summary>
             <param name="expression1">Expression1.</param>
             <param name="operatorType">Operator type.</param>
@@ -5378,13 +5419,13 @@
         </member>
         <member name="M:Light.Data.IAggregate`1.HavingWithAnd(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
-            Catch the specified having expression with and.
+            Concat the specified having expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IAggregate`1.HavingWithOr(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
-            Catch the specified having expression with or.
+            Concat the specified having expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -5393,15 +5434,15 @@
             Reset the specified having expression.
             </summary>
         </member>
-        <member name="M:Light.Data.IAggregate`1.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+        <member name="M:Light.Data.IAggregate`1.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IAggregate`1.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+        <member name="M:Light.Data.IAggregate`1.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -5808,25 +5849,25 @@
         </member>
         <member name="M:Light.Data.IQuery`1.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IQuery`1.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IQuery`1.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+        <member name="M:Light.Data.IQuery`1.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IQuery`1.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+        <member name="M:Light.Data.IQuery`1.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -6929,25 +6970,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`2.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`2.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`2.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,``0}})">
+        <member name="M:Light.Data.IJoinTable`2.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`2.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,``0}})">
+        <member name="M:Light.Data.IJoinTable`2.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -7293,25 +7334,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`3.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`3.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`3.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,``0}})">
+        <member name="M:Light.Data.IJoinTable`3.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`3.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,``0}})">
+        <member name="M:Light.Data.IJoinTable`3.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -7657,25 +7698,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`4.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`4.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`4.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,``0}})">
+        <member name="M:Light.Data.IJoinTable`4.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`4.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,``0}})">
+        <member name="M:Light.Data.IJoinTable`4.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -8021,25 +8062,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`5.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`5.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`5.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,``0}})">
+        <member name="M:Light.Data.IJoinTable`5.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`5.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,``0}})">
+        <member name="M:Light.Data.IJoinTable`5.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -8385,25 +8426,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`6.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`6.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`6.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,``0}})">
+        <member name="M:Light.Data.IJoinTable`6.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`6.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,``0}})">
+        <member name="M:Light.Data.IJoinTable`6.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -8749,25 +8790,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`7.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`7.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`7.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,``0}})">
+        <member name="M:Light.Data.IJoinTable`7.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`7.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,``0}})">
+        <member name="M:Light.Data.IJoinTable`7.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -9113,25 +9154,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`8.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`8.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`8.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,``0}})">
+        <member name="M:Light.Data.IJoinTable`8.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`8.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,``0}})">
+        <member name="M:Light.Data.IJoinTable`8.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -9477,25 +9518,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`9.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`9.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`9.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,``0}})">
+        <member name="M:Light.Data.IJoinTable`9.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`9.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,``0}})">
+        <member name="M:Light.Data.IJoinTable`9.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -9841,25 +9882,25 @@
         </member>
         <member name="M:Light.Data.IJoinTable`10.WhereWithAnd(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,`9,System.Boolean}})">
             <summary>
-            Catch the specified where expression with and.
+            Concat the specified where expression with and.
             </summary>
             <param name="expression">Expression.</param>
         </member>
         <member name="M:Light.Data.IJoinTable`10.WhereWithOr(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,`9,System.Boolean}})">
             <summary>
-            Catch the specified where expression with or.
+            Concat the specified where expression with or.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`10.OrderByCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,`9,``0}})">
+        <member name="M:Light.Data.IJoinTable`10.OrderByConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,`9,``0}})">
             <summary>
-            Catch the specified asc order by expression.
+            Concat the specified asc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
-        <member name="M:Light.Data.IJoinTable`10.OrderByDescendingCatch``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,`9,``0}})">
+        <member name="M:Light.Data.IJoinTable`10.OrderByDescendingConcat``1(System.Linq.Expressions.Expression{System.Func{`0,`1,`2,`3,`4,`5,`6,`7,`8,`9,``0}})">
             <summary>
-            Catch the specified desc order by expression.
+            Concat the specified desc order by expression.
             </summary>
             <param name="expression">Expression.</param>
         </member>
@@ -10475,6 +10516,11 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Light.Data.SR.BatchInsertIdentityError">
+            <summary>
+              Looks up a localized string similar to Batch insert data identity error.
             </summary>
         </member>
         <member name="P:Light.Data.SR.CanNotFindAliasNameViaSpecifiedPath">

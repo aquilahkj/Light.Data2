@@ -2,76 +2,14 @@
   "lightData": {
     "connections": [
       {
-        "name": "test",
-        "connectionString": "Data Source=127.0.0.130;User ID=sa;Password=1qazxsw23edC;Initial Catalog=CM_TEST",
+        "name": "mssql_2012",
+        "connectionString": "Data Source=mssql_test;User ID=sa;Password=1qazxsw23edC;Initial Catalog=Data_Test;",
         "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
         "configParams": {
-          "test1": "test1_value",
-          "test2": "test2_value"
+          "version": "11.0",
+          "batchInsertCount": 1000,
+          "batchDeleteCount": 1000
         }
-      },
-      {
-        "name": "test_extend",
-        "connectionString": "Data Source=127.0.0.130;User ID=sa;Password=1qazxsw23edC;Initial Catalog=LightData_Test",
-        "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
-        "configParams": {
-          "test1": "test1_value",
-          "test2": "test2_value"
-        }
-      }
-    ]
-  },
-  "lightDataMapper": {
-    "dataTypes": [
-      {
-        "type": "Light.Data.Sample.TeUserLevel1,Light.Data.Sample",
-        "tableName": "Te_UserLevel",
-        "isEntityTable": true,
-        "configParams": {
-          "test1": "test1_value",
-          "test2": "test2_value"
-        },
-        "dataFields": [
-          {
-            "fieldName": "Id",
-            "name": "Id",
-            "isNullable": false,
-            "isPrimaryKey": true,
-            "isIdentity": true,
-            "dbType": "int",
-            "dataOrder": 1,
-            "defaultValue": null
-          },
-          {
-            "fieldName": "LevelName",
-            "name": "LevelName",
-            "isNullable": false,
-            "defaultValue": null
-          },
-          {
-            "fieldName": "Status",
-            "name": "Status",
-            "isNullable": false,
-            "defaultValue": null
-          },
-          {
-            "fieldName": "Remark",
-            "name": "Remark",
-            "isNullable": true,
-            "defaultValue": null
-          }
-        ],
-        "relationFields": [
-          {
-            "fieldName": "Users",
-            "relationPairs": [
-              {
-                "masterKey": "Id",
-                "relateKey": "LevelId"
-              }
-            ]
-          }
-        ]
       }
     ]
   }

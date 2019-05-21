@@ -262,7 +262,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal("testtest", ac.VarcharFieldNull);
             Assert.Equal("testtest", ac.TextFieldNull);
             Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeField);
-            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 5);
             Assert.Equal(DateTime.Now.Date, ac.TodayField);
             Assert.Equal(EnumInt32Type.Positive1, ac.EnumInt32FieldNull);
             Assert.Equal(EnumInt64Type.Positive1, ac.EnumInt64FieldNull);
@@ -450,7 +450,7 @@ namespace Light.Data.Mysql.Test
             context.Insert(value);
             var ac = context.SelectById<MyBase4>(value.Id);
 
-            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 5);
             Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
 
             ac.NowField = DateTime.Now.AddDays(-1).Date;

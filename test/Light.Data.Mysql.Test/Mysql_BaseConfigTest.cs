@@ -114,7 +114,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeFieldNull);
             Assert.Equal("", ac.VarcharField);
             Assert.Equal("testtest", ac.VarcharFieldNull);
-            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 5);
             Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
             Assert.Equal(DateTime.Now.Date, ac.TodayField);
             Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);
@@ -141,7 +141,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(new DateTime(2017, 1, 3, 12, 0, 0), ac.DateTimeFieldNull);
             Assert.Equal("", ac.VarcharField);
             Assert.Equal("testtest2", ac.VarcharFieldNull);
-            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 5);
             Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
             Assert.Equal(DateTime.Now.Date, ac.TodayField);
             Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);
@@ -217,7 +217,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeFieldNull);
             Assert.Equal("", ac.VarcharField);
             Assert.Equal("testtest", ac.VarcharFieldNull);
-            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 5);
             Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
             Assert.Equal(DateTime.Now.Date, ac.TodayField);
             Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);
@@ -238,7 +238,7 @@ namespace Light.Data.Mysql.Test
             Assert.Equal(new DateTime(2017, 1, 2, 12, 0, 0), ac.DateTimeFieldNull);
             Assert.Equal("", ac.VarcharField);
             Assert.Equal("testtest", ac.VarcharFieldNull);
-            Assert.True((DateTime.Now - ac.NowField).Seconds <= 1);
+            Assert.True((DateTime.Now - ac.NowField).Seconds <= 5);
             Assert.True((DateTime.Now - ac.NowFieldNull.Value).Seconds <= 1);
             Assert.Equal(DateTime.Now.Date, ac.TodayField);
             Assert.Equal(DateTime.Now.Date, ac.TodayFieldNull);

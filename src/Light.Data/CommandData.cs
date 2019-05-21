@@ -10,6 +10,8 @@ namespace Light.Data
 
         bool innerPage;
 
+        bool identitySql;
+
         public string CommandText {
             get {
                 return commandText;
@@ -45,6 +47,15 @@ namespace Light.Data
 
             set {
                 innerPage = value;
+            }
+        }
+
+        public bool IdentitySql {
+            get {
+                return identitySql;
+            }
+            set {
+                identitySql = value;
             }
         }
 

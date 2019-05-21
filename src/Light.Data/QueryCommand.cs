@@ -21,5 +21,10 @@ namespace Light.Data
             get;
             set;
         }
+
+        public bool IdentitySql {
+            get;
+            set;
+        }
     }
 }

@@ -126,6 +126,73 @@ namespace Light.Data
             }
         }
 
+
+        int _batchInsertCount = -1;
+
+        /// <summary>
+        /// Set batch insert count
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetBatchInsertCount(int value)
+        {
+            if (value < 0) {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            _batchInsertCount = value;
+        }
+
+        /// <summary>
+        ///Reset batch insert count
+        /// </summary>
+        public void ResetBatchInsertCount()
+        {
+            _batchInsertCount = -1;
+        }
+
+        int _batchUpdateCount = -1;
+
+        /// <summary>
+        /// Set batch update count
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetBatchUpdateCount(int value)
+        {
+            if (value < 0) {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            _batchUpdateCount = value;
+        }
+
+        /// <summary>
+        ///Reset batch update count
+        /// </summary>
+        public void ResetBatchUpdateCount()
+        {
+            _batchUpdateCount = -1;
+        }
+
+        int _batchDeleteCount = -1;
+
+        /// <summary>
+        /// Set batch delete count
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetBatchDeleteCount(int value)
+        {
+            if (value < 0) {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            _batchDeleteCount = value;
+        }
+
+        /// <summary>
+        ///Reset batch delete count
+        /// </summary>
+        public void ResetBatchDeleteCount()
+        {
+            _batchDeleteCount = -1;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Light.Data.DataContext"/> class.
         /// </summary>
@@ -317,12 +384,19 @@ namespace Light.Data
                         throw new LightDataException(SR.PrimaryKeyDataNotExists);
                     }
                     else {
-                        QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh);
-                        rInt = ExecuteNonQuery(insertCommand.Command, SafeLevel.Default, transaction);
-                        if (mapping.HasIdentity && rInt > 0) {
-                            QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-                            object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
+                        QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh, true);
+                        if (insertCommand.IdentitySql) {
+                            object id = ExecuteScalar(insertCommand.Command, SafeLevel.Default, transaction);
                             _database.UpdateDataIdentity(mapping, data, id);
+                            rInt = 1;
+                        }
+                        else {
+                            rInt = ExecuteNonQuery(insertCommand.Command, SafeLevel.Default, transaction);
+                            if (mapping.HasIdentity && rInt > 0) {
+                                QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                                object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
+                                _database.UpdateDataIdentity(mapping, data, id);
+                            }
                         }
                     }
                 }
@@ -436,12 +510,19 @@ namespace Light.Data
                         throw new LightDataException(SR.PrimaryKeyDataNotExists);
                     }
                     else {
-                        QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh);
-                        rInt = await ExecuteNonQueryAsync(insertCommand.Command, SafeLevel.Default, cancellationToken, transaction);
-                        if (mapping.HasIdentity && rInt > 0) {
-                            QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-                            object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                        QueryCommand insertCommand = _database.Insert(this, mapping, data, refresh, true);
+                        if (insertCommand.IdentitySql) {
+                            object id = await ExecuteScalarAsync(insertCommand.Command, SafeLevel.Default, cancellationToken, transaction);
                             _database.UpdateDataIdentity(mapping, data, id);
+                            rInt = 1;
+                        }
+                        else {
+                            rInt = await ExecuteNonQueryAsync(insertCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                            if (mapping.HasIdentity && rInt > 0) {
+                                QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                                object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                                _database.UpdateDataIdentity(mapping, data, id);
+                            }
                         }
                     }
                 }
@@ -492,25 +573,33 @@ namespace Light.Data
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(data.GetType());
             }
-            QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh);
+            QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh, true);
             int rInt;
-            if (!mapping.HasIdentity) {
-                rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default);
+            if (queryCommand.IdentitySql) {
+                object id = ExecuteScalar(queryCommand.Command, SafeLevel.Default);
+                _database.UpdateDataIdentity(mapping, data, id);
+                rInt = 1;
             }
             else {
-                TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
-                try {
-                    rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
-                    if (rInt > 0) {
-                        QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-                        object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
-                        _database.UpdateDataIdentity(mapping, data, id);
+                if (!mapping.HasIdentity) {
+                    rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default);
+                }
+                else {
+                    TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
+                    try {
+                        rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
+                        if (rInt > 0) {
+                            QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                            object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
+                            _database.UpdateDataIdentity(mapping, data, id);
+                        }
+                    }
+                    finally {
+                        CommitInnerTransaction(transaction);
                     }
                 }
-                finally {
-                    CommitInnerTransaction(transaction);
-                }
             }
+
             if (mapping.IsDataTableEntity) {
                 UpdateDateTableEntity(mapping, data);
             }
@@ -550,25 +639,33 @@ namespace Light.Data
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(data.GetType());
             }
-            QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh);
+            QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh, true);
             int rInt;
-            if (!mapping.HasIdentity) {
-                rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken);
+            if (queryCommand.IdentitySql) {
+                object id = await ExecuteScalarAsync(queryCommand.Command, SafeLevel.Default, cancellationToken);
+                _database.UpdateDataIdentity(mapping, data, id);
+                rInt = 1;
             }
             else {
-                TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
-                try {
-                    rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
-                    if (rInt > 0) {
-                        QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
-                        object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
-                        _database.UpdateDataIdentity(mapping, data, id);
+                if (!mapping.HasIdentity) {
+                    rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken);
+                }
+                else {
+                    TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
+                    try {
+                        rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                        if (rInt > 0) {
+                            QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                            object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                            _database.UpdateDataIdentity(mapping, data, id);
+                        }
+                    }
+                    finally {
+                        CommitInnerTransaction(transaction);
                     }
                 }
-                finally {
-                    CommitInnerTransaction(transaction);
-                }
             }
+
             if (mapping.IsDataTableEntity) {
                 UpdateDateTableEntity(mapping, data);
             }
@@ -726,6 +823,17 @@ namespace Light.Data
         /// <returns>result.</returns>
         /// <param name="datas">Data collection.</param>
         /// <typeparam name="T">Insert object type.</typeparam>
+        public int InsertDatas<T>(params T[] datas)
+        {
+            return BatchInsert(datas, 0, int.MaxValue, false, true);
+        }
+
+        /// <summary>
+        /// Batch insert datas.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="datas">Data collection.</param>
+        /// <typeparam name="T">Insert object type.</typeparam>
         public int BatchInsert<T>(IEnumerable<T> datas)
         {
             return BatchInsert(datas, 0, int.MaxValue, false, true);
@@ -793,7 +901,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchInsertCount;
+            int batchCount = _batchInsertCount >= 0 ? _batchInsertCount : _database.BatchInsertCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -818,18 +926,19 @@ namespace Light.Data
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
             }
-            QueryCommand identityCommand;
-            if (mapping.HasIdentity && updateIdentity) {
-                identityCommand = _database.InsertIdentiy(this, mapping);
+            if (batchCount > 0) {
+                int maxBatchCount = _database.Factory.MaxParameterCount / mapping.FieldCount;
+                if (maxBatchCount < batchCount) {
+                    batchCount = maxBatchCount;
+                }
             }
-            else {
-                identityCommand = null;
-            }
-            bool isBatch = identityCommand == null && batchCount > 1;
+
+            bool useIdentity = mapping.HasIdentity && updateIdentity;
+            bool isBatch = batchCount > 1;
             TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
             bool ft = false;
             try {
-                if (!isBatch) {
+                if (!isBatch || (useIdentity && !_database.Factory.SupportBatchInsertIdentity)) {
                     while (true) {
                         object data;
                         if (ft) {
@@ -851,13 +960,21 @@ namespace Light.Data
                             data = enumerator.Current;
                             ft = true;
                         }
-                        QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh);
-                        int rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
-                        if (rInt > 0 && identityCommand != null) {
-                            object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
+                        QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh, updateIdentity);
+                        if (queryCommand.IdentitySql) {
+                            object id = ExecuteScalar(queryCommand.Command, SafeLevel.Default, transaction);
                             _database.UpdateDataIdentity(mapping, data, id);
                         }
-                        result += rInt;
+                        else {
+                            int rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
+                            if (rInt > 0 && useIdentity) {
+                                QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                                object id = ExecuteScalar(identityCommand.Command, SafeLevel.Default, transaction);
+                                _database.UpdateDataIdentity(mapping, data, id);
+                            }
+                        }
+
+                        result++;
                         if (mapping.IsDataTableEntity) {
                             UpdateDateTableEntity(mapping, data);
                         }
@@ -891,26 +1008,14 @@ namespace Light.Data
                             continue;
                         }
                         else {
-                            QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
-                            int rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
+                            int rInt = BatchInsertData(mapping, list, refresh, useIdentity, transaction);
                             result += rInt;
-                            if (mapping.IsDataTableEntity) {
-                                foreach (var idata in list) {
-                                    UpdateDateTableEntity(mapping, idata);
-                                }
-                            }
                             list.Clear();
                         }
                     }
                     if (list.Count > 0) {
-                        QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
-                        int rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
+                        int rInt = BatchInsertData(mapping, list, refresh, useIdentity, transaction);
                         result += rInt;
-                        if (mapping.IsDataTableEntity) {
-                            foreach (var idata in list) {
-                                UpdateDateTableEntity(mapping, idata);
-                            }
-                        }
                         list.Clear();
                     }
                 }
@@ -919,6 +1024,37 @@ namespace Light.Data
                 CommitInnerTransaction(transaction);
             }
             return result;
+        }
+
+        private int BatchInsertData(DataTableEntityMapping mapping, IList list, bool refresh, bool useIdentity, TransactionConnection transaction)
+        {
+            if (useIdentity && mapping.HasIdentity) {
+                QueryCommand queryCommand = _database.BatchInsertWithIdentity(this, mapping, list, refresh);
+                IdentityDefine define = new IdentityDefine();
+                List<object> identity = QueryDataDefineList<object>(define, SafeLevel.Default, queryCommand.Command, null, queryCommand.State, null, transaction);
+                if (identity.Count != list.Count) {
+                    throw new LightDataException(SR.BatchInsertIdentityError);
+                }
+                for (int i = 0; i < identity.Count; i++) {
+                    object id = identity[i];
+                    object idata = list[i];
+                    _database.UpdateDataIdentity(mapping, idata, id);
+                    if (mapping.IsDataTableEntity) {
+                        UpdateDateTableEntity(mapping, idata);
+                    }
+                }
+                return identity.Count;
+            }
+            else {
+                QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
+                int rInt = ExecuteNonQuery(queryCommand.Command, SafeLevel.Default, transaction);
+                if (mapping.IsDataTableEntity) {
+                    foreach (var idata in list) {
+                        UpdateDateTableEntity(mapping, idata);
+                    }
+                }
+                return rInt;
+            }
         }
 
         /// <summary>
@@ -979,6 +1115,169 @@ namespace Light.Data
             return await BatchInsertAsync(mapping, datas, index, size, refresh, updateIdentity, cancellationToken);
         }
 
+        //internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int size, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    if (datas == null) {
+        //        throw new ArgumentNullException(nameof(datas));
+        //    }
+        //    if (index < 0) {
+        //        throw new ArgumentOutOfRangeException(nameof(index));
+        //    }
+        //    if (size < 0) {
+        //        throw new ArgumentOutOfRangeException(nameof(size));
+        //    }
+        //    if (size == 0) {
+        //        return 0;
+        //    }
+        //    IEnumerator enumerator = datas.GetEnumerator();
+
+        //    int result = 0;
+        //    int curIndex = 0;
+        //    int curCount = 0;
+        //    int batchCount = _batchInsertCount >= 0 ? _batchInsertCount : _database.BatchInsertCount;
+        //    while (true) {
+        //        if (enumerator.MoveNext()) {
+        //            if (curIndex < index) {
+        //                curIndex++;
+        //                continue;
+        //            }
+        //            else {
+        //                curCount++;
+        //                if (enumerator.Current == null) {
+        //                    curIndex++;
+        //                    continue;
+        //                }
+        //                else {
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //        else {
+        //            return 0;
+        //        }
+        //    }
+        //    if (mapping == null) {
+        //        mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
+        //    }
+        //    if (batchCount > 0) {
+        //        int maxBatchCount = _database.Factory.MaxParameterCount / mapping.FieldCount;
+        //        if (maxBatchCount < batchCount) {
+        //            batchCount = maxBatchCount;
+        //        }
+        //    }
+        //    //QueryCommand identityCommand;
+        //    //if (mapping.HasIdentity && updateIdentity) {
+        //    //    identityCommand = _database.InsertIdentiy(this, mapping);
+        //    //}
+        //    //else {
+        //    //    identityCommand = null;
+        //    //}
+        //    bool useIdentity = mapping.HasIdentity && updateIdentity;
+        //    bool isBatch = !useIdentity && batchCount > 1;
+        //    TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
+        //    bool ft = false;
+        //    try {
+        //        if (!isBatch) {
+        //            while (true) {
+        //                object data;
+        //                if (ft) {
+        //                    if (curCount == size) {
+        //                        break;
+        //                    }
+        //                    if (enumerator.MoveNext()) {
+        //                        curCount++;
+        //                        data = enumerator.Current;
+        //                        if (data == null) {
+        //                            continue;
+        //                        }
+        //                    }
+        //                    else {
+        //                        break;
+        //                    }
+        //                }
+        //                else {
+        //                    data = enumerator.Current;
+        //                    ft = true;
+        //                }
+        //                QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh, updateIdentity);
+        //                if (queryCommand.IdentitySql) {
+        //                    object id = await ExecuteScalarAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+        //                    _database.UpdateDataIdentity(mapping, data, id);
+        //                }
+        //                else {
+        //                    int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+        //                }
+        //                //QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh);
+        //                //int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+        //                //if (rInt > 0 && identityCommand != null) {
+        //                //    object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+        //                //    _database.UpdateDataIdentity(mapping, data, id);
+        //                //}
+        //                //result += rInt;
+        //                result++;
+        //                if (mapping.IsDataTableEntity) {
+        //                    UpdateDateTableEntity(mapping, data);
+        //                }
+        //            }
+        //        }
+        //        else {
+        //            IList list = new ArrayList(batchCount);
+        //            while (true) {
+        //                object data;
+        //                if (ft) {
+        //                    if (curCount == size) {
+        //                        break;
+        //                    }
+        //                    if (enumerator.MoveNext()) {
+        //                        curCount++;
+        //                        data = enumerator.Current;
+        //                        if (data == null) {
+        //                            continue;
+        //                        }
+        //                    }
+        //                    else {
+        //                        break;
+        //                    }
+        //                }
+        //                else {
+        //                    data = enumerator.Current;
+        //                    ft = true;
+        //                }
+        //                list.Add(data);
+        //                if (list.Count < batchCount) {
+        //                    continue;
+        //                }
+        //                else {
+        //                    QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
+        //                    int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+        //                    result += rInt;
+        //                    if (mapping.IsDataTableEntity) {
+        //                        foreach (var idata in list) {
+        //                            UpdateDateTableEntity(mapping, idata);
+        //                        }
+        //                    }
+        //                    list.Clear();
+        //                }
+        //            }
+        //            if (list.Count > 0) {
+        //                QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
+        //                int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+        //                result += rInt;
+        //                if (mapping.IsDataTableEntity) {
+        //                    foreach (var idata in list) {
+        //                        UpdateDateTableEntity(mapping, idata);
+        //                    }
+        //                }
+        //                list.Clear();
+        //            }
+        //        }
+        //    }
+        //    finally {
+        //        CommitInnerTransaction(transaction);
+        //    }
+        //    return result;
+        //}
+
         internal async Task<int> BatchInsertAsync(DataTableEntityMapping mapping, IEnumerable datas, int index, int size, bool refresh, bool updateIdentity, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (datas == null) {
@@ -998,7 +1297,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchInsertCount;
+            int batchCount = _batchInsertCount >= 0 ? _batchInsertCount : _database.BatchInsertCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -1023,18 +1322,19 @@ namespace Light.Data
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
             }
-            QueryCommand identityCommand;
-            if (mapping.HasIdentity && updateIdentity) {
-                identityCommand = _database.InsertIdentiy(this, mapping);
+            if (batchCount > 0) {
+                int maxBatchCount = _database.Factory.MaxParameterCount / mapping.FieldCount;
+                if (maxBatchCount < batchCount) {
+                    batchCount = maxBatchCount;
+                }
             }
-            else {
-                identityCommand = null;
-            }
-            bool isBatch = identityCommand == null && batchCount > 1;
+
+            bool useIdentity = mapping.HasIdentity && updateIdentity;
+            bool isBatch = batchCount > 1;
             TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
             bool ft = false;
             try {
-                if (!isBatch) {
+                if (!isBatch || (useIdentity && !_database.Factory.SupportBatchInsertIdentity)) {
                     while (true) {
                         object data;
                         if (ft) {
@@ -1056,13 +1356,21 @@ namespace Light.Data
                             data = enumerator.Current;
                             ft = true;
                         }
-                        QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh);
-                        int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
-                        if (rInt > 0 && identityCommand != null) {
-                            object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                        QueryCommand queryCommand = _database.Insert(this, mapping, data, refresh, updateIdentity);
+                        if (queryCommand.IdentitySql) {
+                            object id = await ExecuteScalarAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
                             _database.UpdateDataIdentity(mapping, data, id);
                         }
-                        result += rInt;
+                        else {
+                            int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                            if (rInt > 0 && useIdentity) {
+                                QueryCommand identityCommand = _database.InsertIdentiy(this, mapping);
+                                object id = await ExecuteScalarAsync(identityCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                                _database.UpdateDataIdentity(mapping, data, id);
+                            }
+                        }
+
+                        result++;
                         if (mapping.IsDataTableEntity) {
                             UpdateDateTableEntity(mapping, data);
                         }
@@ -1096,26 +1404,14 @@ namespace Light.Data
                             continue;
                         }
                         else {
-                            QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
-                            int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                            int rInt = await BatchInsertDataAsync(mapping, list, refresh, useIdentity, transaction, cancellationToken);
                             result += rInt;
-                            if (mapping.IsDataTableEntity) {
-                                foreach (var idata in list) {
-                                    UpdateDateTableEntity(mapping, idata);
-                                }
-                            }
                             list.Clear();
                         }
                     }
                     if (list.Count > 0) {
-                        QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
-                        int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                        int rInt = await BatchInsertDataAsync(mapping, list, refresh, useIdentity, transaction, cancellationToken);
                         result += rInt;
-                        if (mapping.IsDataTableEntity) {
-                            foreach (var idata in list) {
-                                UpdateDateTableEntity(mapping, idata);
-                            }
-                        }
                         list.Clear();
                     }
                 }
@@ -1124,6 +1420,48 @@ namespace Light.Data
                 CommitInnerTransaction(transaction);
             }
             return result;
+        }
+
+        private async Task<int> BatchInsertDataAsync(DataTableEntityMapping mapping, IList list, bool refresh, bool useIdentity, TransactionConnection transaction, CancellationToken cancellationToken)
+        {
+            if (useIdentity && mapping.HasIdentity) {
+                QueryCommand queryCommand = _database.BatchInsertWithIdentity(this, mapping, list, refresh);
+                IdentityDefine define = new IdentityDefine();
+                List<object> identity = await QueryDataDefineListAsync<object>(define, SafeLevel.Default, queryCommand.Command, null, queryCommand.State, null, cancellationToken, transaction);
+                if (identity.Count != list.Count) {
+                    throw new LightDataException(SR.BatchInsertIdentityError);
+                }
+                for (int i = 0; i < identity.Count; i++) {
+                    object id = identity[i];
+                    object idata = list[i];
+                    _database.UpdateDataIdentity(mapping, idata, id);
+                    if (mapping.IsDataTableEntity) {
+                        UpdateDateTableEntity(mapping, idata);
+                    }
+                }
+                return identity.Count;
+            }
+            else {
+                QueryCommand queryCommand = _database.BatchInsert(this, mapping, list, refresh);
+                int rInt = await ExecuteNonQueryAsync(queryCommand.Command, SafeLevel.Default, cancellationToken, transaction);
+                if (mapping.IsDataTableEntity) {
+                    foreach (var idata in list) {
+                        UpdateDateTableEntity(mapping, idata);
+                    }
+                }
+                return rInt;
+            }
+        }
+
+        /// <summary>
+        /// Batch update datas.
+        /// </summary>
+        /// <returns>result.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <typeparam name="T">Data type.</typeparam>
+        public int UpdateDatas<T>(params T[] datas)
+        {
+            return BatchUpdate(datas, 0, int.MaxValue, false);
         }
 
         /// <summary>
@@ -1197,7 +1535,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchUpdateCount;
+            int batchCount = _batchUpdateCount >= 0 ? _batchUpdateCount : _database.BatchUpdateCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -1221,6 +1559,12 @@ namespace Light.Data
             }
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
+            }
+            if (batchCount > 0) {
+                int maxBatchCount = _database.Factory.MaxParameterCount / mapping.FieldCount;
+                if (maxBatchCount < batchCount) {
+                    batchCount = maxBatchCount;
+                }
             }
             bool isBatch = batchCount > 1;
             TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
@@ -1393,7 +1737,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchUpdateCount;
+            int batchCount = _batchUpdateCount >= 0 ? _batchUpdateCount : _database.BatchUpdateCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -1417,6 +1761,12 @@ namespace Light.Data
             }
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
+            }
+            if (batchCount > 0) {
+                int maxBatchCount = _database.Factory.MaxParameterCount / mapping.FieldCount;
+                if (maxBatchCount < batchCount) {
+                    batchCount = maxBatchCount;
+                }
             }
             bool isBatch = batchCount > 1;
             TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
@@ -1520,6 +1870,17 @@ namespace Light.Data
         /// <returns>The delete rows.</returns>
         /// <param name="datas">Datas.</param>
         /// <typeparam name="T">Data type.</typeparam>
+        public int DeleteDatas<T>(params T[] datas)
+        {
+            return BatchDelete(datas, 0, int.MaxValue);
+        }
+
+        /// <summary>
+        /// Batch delete data.
+        /// </summary>
+        /// <returns>The delete rows.</returns>
+        /// <param name="datas">Datas.</param>
+        /// <typeparam name="T">Data type.</typeparam>
         public int BatchDelete<T>(IEnumerable<T> datas)
         {
             return BatchDelete(datas, 0, int.MaxValue);
@@ -1559,7 +1920,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchDeleteCount;
+            int batchCount = _batchDeleteCount >= 0 ? _batchDeleteCount : _database.BatchDeleteCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -1583,6 +1944,12 @@ namespace Light.Data
             }
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
+            }
+            if (batchCount > 0) {
+                int maxBatchCount = _database.Factory.MaxParameterCount / mapping.PrimaryKeyCount;
+                if (maxBatchCount < batchCount) {
+                    batchCount = maxBatchCount;
+                }
             }
             bool isBatch = batchCount > 1;
             TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
@@ -1723,7 +2090,7 @@ namespace Light.Data
             int result = 0;
             int curIndex = 0;
             int curCount = 0;
-            int batchCount = _database.BatchDeleteCount;
+            int batchCount = _batchDeleteCount >= 0 ? _batchDeleteCount : _database.BatchDeleteCount;
             while (true) {
                 if (enumerator.MoveNext()) {
                     if (curIndex < index) {
@@ -1747,6 +2114,12 @@ namespace Light.Data
             }
             if (mapping == null) {
                 mapping = DataEntityMapping.GetTableMapping(enumerator.Current.GetType());
+            }
+            if (batchCount > 0) {
+                int maxBatchCount = _database.Factory.MaxParameterCount / mapping.PrimaryKeyCount;
+                if (maxBatchCount < batchCount) {
+                    batchCount = maxBatchCount;
+                }
             }
             bool isBatch = batchCount > 1;
             TransactionConnection transaction = CreateInnerTransaction(SafeLevel.Default);
@@ -2571,6 +2944,7 @@ namespace Light.Data
 
             return obj;
         }
+
 
         internal List<T> QueryDataDefineList<T>(IDataDefine source, SafeLevel level, DbCommand dbcommand, Region region, object state, Delegate dele, TransactionConnection transaction = null)
         {

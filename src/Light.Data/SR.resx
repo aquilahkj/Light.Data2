@@ -243,4 +243,7 @@
   <data name="NotFunctionControlType" xml:space="preserve">
     <value>Not "FunctionControl" type</value>
   </data>
+  <data name="BatchInsertIdentityError" xml:space="preserve">
+    <value>Batch insert data identity error</value>
+  </data>
 </root>
