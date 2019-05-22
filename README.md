@@ -60,7 +60,7 @@ context.Delete(user);
 // basic
 var list = context.Query<TeUser> ()
                   .Where (x => x.Id >= 5)
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
@@ -68,7 +68,7 @@ var list = context.Query<TeUser> ()
 
 // date format
 var list = context.Query<TeUser> ()
-                  .GroupBy (x => new RegDateFormatAgg () {
+                  .Aggregate (x => new RegDateFormatAgg () {
                       RegDateFormat = x.RegTime.ToString("yyyy-MM-dd"),
                       Data = Function.Count ()
                    })
@@ -89,7 +89,7 @@ var join = context.Query<TeUser> ()
 
 // aggregate data join entity table          
 var join = context.Query<TeMainTable>()
-                  .GroupBy(x => new {
+                  .Aggregate(x => new {
                       MId = x.MId,
                       Count = Function.Count(),
                    })

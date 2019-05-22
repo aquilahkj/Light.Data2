@@ -64,7 +64,7 @@ context.Delete(user);
 // 普通汇总
 var list = context.Query<TeUser> ()
                   .Where (x => x.Id >= 5)
-                  .GroupBy (x => new LevelIdAgg () {
+                  .Aggregate (x => new LevelIdAgg () {
                       LevelId = x.LevelId,
                       Data = Function.Count ()
                    })
@@ -72,7 +72,7 @@ var list = context.Query<TeUser> ()
 
 // 日期格式化统计
 var list = context.Query<TeUser> ()
-                  .GroupBy (x => new RegDateFormatAgg () {
+                  .Aggregate (x => new RegDateFormatAgg () {
                       RegDateFormat = x.RegTime.ToString("yyyy-MM-dd"),
                       Data = Function.Count ()
                    })
@@ -93,7 +93,7 @@ var join = context.Query<TeUser> ()
 
 // 统计结果连接实体表             
 var join = context.Query<TeMainTable>()
-                  .GroupBy(x => new {
+                  .Aggregate(x => new {
                       MId = x.MId,
                       Count = Function.Count(),
                    })
