@@ -1,6 +1,6 @@
 ﻿namespace Light.Data
 {
-	abstract class LightDataFieldInfo : DataFieldInfo
+	internal abstract class LightDataFieldInfo : DataFieldInfo
 	{
 		protected LightDataFieldInfo (DataEntityMapping mapping)
 			: base (mapping)
@@ -12,11 +12,7 @@
 		{
 		}
 
-		internal override string DBType {
-			get {
-				return string.Empty;
-			}
-		}
+		internal override string DBType => string.Empty;
 
 		internal override object ToParameter (object value)
 		{

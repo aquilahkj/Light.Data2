@@ -2,7 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
 
 namespace Light.Data
 {
@@ -11,13 +10,11 @@ namespace Light.Data
     /// </summary>
     public class DataContextConfiguration
     {
-        static DataContextConfiguration instance = null;
+        private static DataContextConfiguration instance = null;
 
-        static bool useEntryAssemblyDirectory = true;
+        private static object locker = new object();
 
-        static object locker = new object();
-
-        static string gobalConfigFilePath;
+        private static string gobalConfigFilePath;
 
         /// <summary>
         /// Sets the config file path.
@@ -52,8 +49,8 @@ namespace Light.Data
                                 gobalConfigFilePath = "lightdata.json";
                             }
                             FileInfo fileInfo;
-                            if (useEntryAssemblyDirectory) {
-                                fileInfo = FileHelper.GetFileInfo(gobalConfigFilePath, out bool absolute);
+                            if (UseEntryAssemblyDirectory) {
+                                fileInfo = FileHelper.GetFileInfo(gobalConfigFilePath, out var absolute);
                                 if (!fileInfo.Exists && !absolute) {
                                     fileInfo = new FileInfo(gobalConfigFilePath);
                                 }
@@ -62,9 +59,9 @@ namespace Light.Data
                                 fileInfo = new FileInfo(gobalConfigFilePath);
                             }
                             if (fileInfo.Exists) {
-                                using (StreamReader reader = fileInfo.OpenText()) {
-                                    string content = reader.ReadToEnd();
-                                    JObject dom = JObject.Parse(content);
+                                using (var reader = fileInfo.OpenText()) {
+                                    var content = reader.ReadToEnd();
+                                    var dom = JObject.Parse(content);
                                     var section = dom.GetValue("lightData");
                                     if (section != null) {
                                         options = section.ToObject<LightDataOptions>();
@@ -87,8 +84,8 @@ namespace Light.Data
         internal DataContextConfiguration(string configFilePath)
         {
             FileInfo fileInfo;
-            if (useEntryAssemblyDirectory) {
-                fileInfo = FileHelper.GetFileInfo(configFilePath, out bool absolute);
+            if (UseEntryAssemblyDirectory) {
+                fileInfo = FileHelper.GetFileInfo(configFilePath, out var absolute);
                 if (!fileInfo.Exists && !absolute) {
                     fileInfo = new FileInfo(configFilePath);
                 }
@@ -97,12 +94,12 @@ namespace Light.Data
                 fileInfo = new FileInfo(configFilePath);
             }
             if (fileInfo.Exists) {
-                using (StreamReader reader = fileInfo.OpenText()) {
-                    string content = reader.ReadToEnd();
-                    JObject dom = JObject.Parse(content);
+                using (var reader = fileInfo.OpenText()) {
+                    var content = reader.ReadToEnd();
+                    var dom = JObject.Parse(content);
                     var section = dom.GetValue("lightData");
                     if (section != null) {
-                        LightDataOptions options = section.ToObject<LightDataOptions>();
+                        var options = section.ToObject<LightDataOptions>();
                         Internal_DataContextConfiguration(options);
                     }
                 }
@@ -148,9 +145,9 @@ namespace Light.Data
             }
         }
 
-        DataContextOptions defaultOptions;
+        private DataContextOptions defaultOptions;
 
-        Dictionary<string, DataContextOptions> optionsDict = new Dictionary<string, DataContextOptions>();
+        private Dictionary<string, DataContextOptions> optionsDict = new Dictionary<string, DataContextOptions>();
 
         /// <summary>
         /// Gets the default options.
@@ -170,14 +167,7 @@ namespace Light.Data
         /// assembly directory.
         /// </summary>
         /// <value><c>true</c> if use entry assembly directory; otherwise, <c>false</c>.</value>
-        public static bool UseEntryAssemblyDirectory {
-            get {
-                return useEntryAssemblyDirectory;
-            }
-            set {
-                useEntryAssemblyDirectory = value;
-            }
-        }
+        public static bool UseEntryAssemblyDirectory { get; set; } = true;
 
         /// <summary>
         /// Gets the options by name.
@@ -186,7 +176,7 @@ namespace Light.Data
         /// <param name="name">Name.</param>
         public DataContextOptions GetOptions(string name)
         {
-            if (optionsDict.TryGetValue(name, out DataContextOptions options)) {
+            if (optionsDict.TryGetValue(name, out var options)) {
                 return options;
             }
             else {

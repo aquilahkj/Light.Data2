@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Light.Data
 {
-	interface IMap
+	internal interface IMap
 	{
 		Type Type {
 			get;

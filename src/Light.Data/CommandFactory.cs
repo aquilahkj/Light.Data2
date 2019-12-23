@@ -2,12 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Text;
 
 namespace Light.Data
 {
-    abstract class CommandFactory
+    internal abstract class CommandFactory
     {
         protected string _wildcards = "%";
 
@@ -17,7 +16,8 @@ namespace Light.Data
 
         protected Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string>();
 
-        protected Dictionary<QueryCollectionPredicate, string> _queryCollectionPredicateDict = new Dictionary<QueryCollectionPredicate, string>();
+        protected Dictionary<QueryCollectionPredicate, string> _queryCollectionPredicateDict =
+            new Dictionary<QueryCollectionPredicate, string>();
 
         protected Dictionary<JoinType, string> _joinCollectionPredicateDict = new Dictionary<JoinType, string>();
 
@@ -65,11 +65,7 @@ namespace Light.Data
 
         public abstract string ParameterPrefix { get; }
 
-        public virtual int MaxParameterCount {
-            get {
-                return int.MaxValue;
-            }
-        }
+        public virtual int MaxParameterCount => int.MaxValue;
 
         public virtual string GetJoinPredicate(JoinType joinType)
         {
@@ -89,32 +85,40 @@ namespace Light.Data
         protected OrderExpression CreatePrimaryKeyOrderExpression(DataEntityMapping mapping)
         {
             OrderExpression order = null;
-            if (mapping is DataTableEntityMapping tableMapping && tableMapping.HasPrimaryKey) {
-                foreach (DataFieldMapping fieldMapping in tableMapping.PrimaryKeyFields) {
-                    DataFieldOrderExpression keyOrder = new DataFieldOrderExpression(new DataFieldInfo(fieldMapping), OrderType.ASC);
+            if (mapping is DataTableEntityMapping tableMapping && tableMapping.HasPrimaryKey)
+            {
+                foreach (var fieldMapping in tableMapping.PrimaryKeyFields)
+                {
+                    var keyOrder = new DataFieldOrderExpression(new DataFieldInfo(fieldMapping), OrderType.ASC);
                     order = OrderExpression.Concat(order, keyOrder);
                 }
             }
+
             return order;
         }
 
         protected OrderExpression CreateGroupByOrderExpression(AggregateGroupBy groupBy)
         {
             OrderExpression order = null;
-            if (groupBy != null && groupBy.FieldCount > 0) {
+            if (groupBy != null && groupBy.FieldCount > 0)
+            {
                 order = new DataFieldOrderExpression(groupBy[0], OrderType.ASC);
             }
+
             return order;
         }
 
         protected OrderExpression CreateJoinModelListOrderExpression(List<IJoinModel> modelList)
         {
             OrderExpression order = null;
-            foreach (IJoinModel model in modelList) {
-                if (model.Order != null) {
+            foreach (var model in modelList)
+            {
+                if (model.Order != null)
+                {
                     order = OrderExpression.Concat(order, model.Order.CreateAliasTableNameOrder(model.AliasTableName));
                 }
             }
+
             return order;
         }
 
@@ -130,390 +134,520 @@ namespace Light.Data
             _strictMode = strictMode;
         }
 
-        internal virtual string Null {
-            get {
-                return "null";
-            }
-        }
+        internal virtual string Null => "null";
 
-        public virtual bool SupportBatchInsertIdentity {
-            get {
-                return false;
-            }
-        }
+        public virtual bool SupportBatchInsertIdentity => false;
 
         #region 增删改操作命令
 
-        public virtual CommandData CreateSelectByIdCommand(DataTableEntityMapping mapping, object id, CreateSqlState state)
+        public virtual CommandData CreateSelectByIdCommand(DataTableEntityMapping mapping, object id,
+            CreateSqlState state)
         {
-            if (!mapping.HasIdentity) {
+            if (!mapping.HasIdentity)
+            {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
-            if (id == null) {
+
+            if (id == null)
+            {
                 throw new LightDataException(SR.KeyNotAllowNull);
             }
+
             string cachekey = null;
-            if (state.Seed == 0 && !state.UseDirectNull) {
+            if (state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_selectByIdCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    DataFieldMapping field = mapping.IdentityField;
+                if (_selectByIdCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    var field = mapping.IdentityField;
                     state.AddDataParameter(this, id, field.DBType, field.ObjectType);
                     return command1;
                 }
             }
-            DataFieldInfo idfield = mapping.IdentityField.DefaultFieldInfo;
+
+            var idfield = mapping.IdentityField.DefaultFieldInfo;
             QueryExpression queryExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, idfield, id);
-            RelationMap relationMap = mapping.GetRelationMap();
-            ISelector selector = relationMap.GetDefaultSelector();
-            Region region = new Region(0, 1);
-            CommandData command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region, state);
-            if (cachekey != null) {
+            var relationMap = mapping.GetRelationMap();
+            var selector = relationMap.GetDefaultSelector();
+            var region = new Region(0, 1);
+            var command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region,
+                state);
+            if (cachekey != null)
+            {
                 _selectByIdCache.SetCommand(cachekey, command.CommandText);
             }
+
             return command;
         }
 
-        public virtual CommandData CreateSelectByKeyCommand(DataTableEntityMapping mapping, object[] keys, CreateSqlState state)
+        public virtual CommandData CreateSelectByKeyCommand(DataTableEntityMapping mapping, object[] keys,
+            CreateSqlState state)
         {
-            if (keys.Length != mapping.PrimaryKeyCount) {
+            if (keys.Length != mapping.PrimaryKeyCount)
+            {
                 throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
             }
-            foreach (object key in keys) {
-                if (key == null) {
+
+            foreach (var key in keys)
+            {
+                if (key == null)
+                {
                     throw new LightDataException(SR.KeyNotAllowNull);
                 }
             }
+
             string cachekey = null;
-            if (state.Seed == 0 && !state.UseDirectNull) {
+            if (state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_selectByKeyCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    int i = 0;
-                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                if (_selectByKeyCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    var i = 0;
+                    foreach (var field in mapping.PrimaryKeyFields)
+                    {
                         state.AddDataParameter(this, keys[i], field.DBType, field.ObjectType);
                         i++;
                     }
+
                     return command1;
                 }
             }
-            if (!mapping.HasPrimaryKey) {
+
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
+
             QueryExpression queryExpression = null;
-            int j = 0;
-            foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
-                DataFieldInfo info = fieldMapping.DefaultFieldInfo;
-                QueryExpression keyExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
+            var j = 0;
+            foreach (var fieldMapping in mapping.PrimaryKeyFields)
+            {
+                var info = fieldMapping.DefaultFieldInfo;
+                QueryExpression keyExpression =
+                    new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
                 queryExpression = QueryExpression.And(queryExpression, keyExpression);
                 j++;
             }
-            RelationMap relationMap = mapping.GetRelationMap();
-            ISelector selector = relationMap.GetDefaultSelector();
-            Region region = new Region(0, 1);
-            CommandData command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region, state);
-            if (cachekey != null) {
+
+            var relationMap = mapping.GetRelationMap();
+            var selector = relationMap.GetDefaultSelector();
+            var region = new Region(0, 1);
+            var command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region,
+                state);
+            if (cachekey != null)
+            {
                 _selectByKeyCache.SetCommand(cachekey, command.CommandText);
             }
+
             return command;
         }
 
-        public virtual CommandData CreateExistsByKeyCommand(DataTableEntityMapping mapping, object[] keys, CreateSqlState state)
+        public virtual CommandData CreateExistsByKeyCommand(DataTableEntityMapping mapping, object[] keys,
+            CreateSqlState state)
         {
-            if (keys.Length != mapping.PrimaryKeyCount) {
+            if (keys.Length != mapping.PrimaryKeyCount)
+            {
                 throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
             }
-            foreach (object key in keys) {
-                if (key == null) {
+
+            foreach (var key in keys)
+            {
+                if (key == null)
+                {
                     throw new LightDataException(SR.KeyNotAllowNull);
                 }
             }
+
             string cachekey = null;
-            if (state.Seed == 0 && !state.UseDirectNull) {
+            if (state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_existsByKeyCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    int i = 0;
-                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                if (_existsByKeyCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    var i = 0;
+                    foreach (var field in mapping.PrimaryKeyFields)
+                    {
                         state.AddDataParameter(this, keys[i], field.DBType, field.ObjectType);
                         i++;
                     }
+
                     return command1;
                 }
             }
-            if (!mapping.HasPrimaryKey) {
+
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
+
             QueryExpression queryExpression = null;
-            int j = 0;
-            foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
-                DataFieldInfo info = fieldMapping.DefaultFieldInfo;
-                QueryExpression keyExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
+            var j = 0;
+            foreach (var fieldMapping in mapping.PrimaryKeyFields)
+            {
+                var info = fieldMapping.DefaultFieldInfo;
+                QueryExpression keyExpression =
+                    new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
                 queryExpression = QueryExpression.And(queryExpression, keyExpression);
                 j++;
             }
-            CommandData command = CreateExistsCommand(mapping, queryExpression, state);
-            if (cachekey != null) {
+
+            var command = CreateExistsCommand(mapping, queryExpression, state);
+            if (cachekey != null)
+            {
                 _existsByKeyCache.SetCommand(cachekey, command.CommandText);
             }
+
             return command;
         }
 
-        public virtual CommandData CreateDeleteKeyCommand(DataTableEntityMapping mapping, object[] keys, CreateSqlState state)
+        public virtual CommandData CreateDeleteKeyCommand(DataTableEntityMapping mapping, object[] keys,
+            CreateSqlState state)
         {
-            if (keys.Length != mapping.PrimaryKeyCount) {
+            if (keys.Length != mapping.PrimaryKeyCount)
+            {
                 throw new LightDataException(string.Format(SR.NotMatchPrimaryKeyField, mapping.ObjectType));
             }
-            foreach (object key in keys) {
-                if (key == null) {
+
+            foreach (var key in keys)
+            {
+                if (key == null)
+                {
                     throw new LightDataException(SR.KeyNotAllowNull);
                 }
             }
+
             string cachekey = null;
-            if (state.Seed == 0 && !state.UseDirectNull) {
+            if (state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_deleteByKeyCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    int i = 0;
-                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
+                if (_deleteByKeyCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    var i = 0;
+                    foreach (var field in mapping.PrimaryKeyFields)
+                    {
                         state.AddDataParameter(this, keys[i], field.DBType, field.ObjectType);
                         i++;
                     }
+
                     return command1;
                 }
             }
-            if (!mapping.HasPrimaryKey) {
+
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
+
             QueryExpression queryExpression = null;
-            int j = 0;
-            foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
-                DataFieldInfo info = fieldMapping.DefaultFieldInfo;
-                QueryExpression keyExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
+            var j = 0;
+            foreach (var fieldMapping in mapping.PrimaryKeyFields)
+            {
+                var info = fieldMapping.DefaultFieldInfo;
+                QueryExpression keyExpression =
+                    new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, info, keys[j]);
                 queryExpression = QueryExpression.And(queryExpression, keyExpression);
                 j++;
             }
-            CommandData command = CreateMassDeleteCommand(mapping, queryExpression, state);
-            if (cachekey != null) {
+
+            var command = CreateMassDeleteCommand(mapping, queryExpression, state);
+            if (cachekey != null)
+            {
                 _deleteByKeyCache.SetCommand(cachekey, command.CommandText);
             }
+
             return command;
         }
 
-        public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, bool updateIdentity, CreateSqlState state)
+        public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh,
+            bool updateIdentity, CreateSqlState state)
         {
             string cachekey = null;
-            if (state.Seed == 0 && !state.UseDirectNull) {
+            if (state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_baseInsertCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    foreach (DataFieldMapping field in mapping.CreateFieldList) {
-                        object value = field.GetInsertData(entity, refresh);
+                if (_baseInsertCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    foreach (var field in mapping.CreateFieldList)
+                    {
+                        var value = field.GetInsertData(entity, refresh);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
-                    if (updateIdentity && mapping.IdentityField != null) {
-                        string idensql = CreateIdentitySql(mapping, state);
-                        if (!string.IsNullOrEmpty(idensql)) {
+
+                    if (updateIdentity && mapping.IdentityField != null)
+                    {
+                        var idensql = CreateIdentitySql(mapping, state);
+                        if (!string.IsNullOrEmpty(idensql))
+                        {
                             command1.CommandText = command1.CommandText + ";" + idensql;
                             command1.IdentitySql = true;
                         }
                     }
+
                     return command1;
                 }
             }
 
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
-            int insertLen = fields.Count;
-            if (insertLen == 0) {
+            var insertLen = fields.Count;
+            if (insertLen == 0)
+            {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
 
-            string[] insertList = new string[insertLen];
-            string[] valuesList = new string[insertLen];
-            for (int i = 0; i < insertLen; i++) {
-                DataFieldMapping field = fields[i];
-                object value = field.GetInsertData(entity, refresh);
+            var insertList = new string[insertLen];
+            var valuesList = new string[insertLen];
+            for (var i = 0; i < insertLen; i++)
+            {
+                var field = fields[i];
+                var value = field.GetInsertData(entity, refresh);
                 insertList[i] = CreateDataFieldSql(field.Name);
                 valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
             }
-            string insert = string.Join(",", insertList);
-            string values = string.Join(",", valuesList);
-            string sql = string.Format("insert into {0}({1})values({2})", CreateDataTableMappingSql(mapping, state), insert, values);
 
-            CommandData command = new CommandData(sql);
-            if (cachekey != null) {
+            var insert = string.Join(",", insertList);
+            var values = string.Join(",", valuesList);
+            var sql = string.Format("insert into {0}({1})values({2})", CreateDataTableMappingSql(mapping, state),
+                insert, values);
+
+            var command = new CommandData(sql);
+            if (cachekey != null)
+            {
                 _baseInsertCache.SetCommand(cachekey, command.CommandText);
             }
 
-            if (updateIdentity && mapping.IdentityField != null) {
-                string idensql = CreateIdentitySql(mapping, state);
-                if (!string.IsNullOrEmpty(idensql)) {
+            if (updateIdentity && mapping.IdentityField != null)
+            {
+                var idensql = CreateIdentitySql(mapping, state);
+                if (!string.IsNullOrEmpty(idensql))
+                {
                     command.CommandText = command.CommandText + ";" + idensql;
                     command.IdentitySql = true;
                 }
             }
+
             return command;
         }
 
-        public virtual CommandData CreateBaseUpdateCommand(DataTableEntityMapping mapping, object entity, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBaseUpdateCommand(DataTableEntityMapping mapping, object entity, bool refresh,
+            CreateSqlState state)
         {
-            if (!mapping.HasPrimaryKey) {
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
 
             IList<DataFieldMapping> columnFields;
             object[] keys = null;
             DataTableEntity tableEntity = null;
-            bool defaultUpdate = false;
-            if (mapping.IsDataTableEntity) {
+            var defaultUpdate = false;
+            if (mapping.IsDataTableEntity)
+            {
                 tableEntity = entity as DataTableEntity;
                 keys = tableEntity.GetRawPrimaryKeys();
-                string[] updatefieldNames = tableEntity.GetUpdateFields();
-                if (updatefieldNames != null && updatefieldNames.Length > 0) {
-                    List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
-                    foreach (string name in updatefieldNames) {
-                        DataFieldMapping fm = mapping.FindDataEntityField(name);
-                        if (fm == null) {
-                            throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField, mapping.ObjectType, name));
+                var updatefieldNames = tableEntity.GetUpdateFields();
+                if (updatefieldNames != null && updatefieldNames.Length > 0)
+                {
+                    var updateFields = new List<DataFieldMapping>();
+                    foreach (var name in updatefieldNames)
+                    {
+                        var fm = mapping.FindDataEntityField(name);
+                        if (fm == null)
+                        {
+                            throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField,
+                                mapping.ObjectType, name));
                         }
-                        if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
-                            throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
+
+                        if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null)
+                        {
+                            throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField,
+                                mapping.ObjectType, name));
                         }
-                        if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+
+                        if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
+                        {
                             updateFields.Add(fm);
                         }
                     }
-                    foreach (DataFieldMapping tm in mapping.TimeStampFieldList) {
-                        if (!updateFields.Contains(tm) && (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+
+                    foreach (var tm in mapping.TimeStampFieldList)
+                    {
+                        if (!updateFields.Contains(tm) &&
+                            (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
+                        {
                             updateFields.Add(tm);
                         }
                     }
+
                     columnFields = updateFields;
                 }
-                else {
-                    if (keys == null) {
+                else
+                {
+                    if (keys == null)
+                    {
                         columnFields = mapping.UpdateFieldList;
                         defaultUpdate = true;
                     }
-                    else {
-                        List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
+                    else
+                    {
+                        var updateFields = new List<DataFieldMapping>();
                         updateFields.AddRange(mapping.PrimaryKeyFields);
                         updateFields.AddRange(mapping.UpdateFieldList);
                         columnFields = updateFields;
                     }
                 }
             }
-            else {
+            else
+            {
                 tableEntity = null;
                 columnFields = mapping.UpdateFieldList;
                 defaultUpdate = true;
             }
 
             string cachekey = null;
-            if (defaultUpdate && state.Seed == 0 && !state.UseDirectNull) {
+            if (defaultUpdate && state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_baseUpdateCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    foreach (DataFieldMapping field in columnFields) {
+                if (_baseUpdateCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    foreach (var field in columnFields)
+                    {
                         object value;
-                        if (field.IsTimeStamp) {
+                        if (field.IsTimeStamp)
+                        {
                             value = field.GetTimeStamp(entity, refresh);
                         }
-                        else {
-                            object obj = field.Handler.Get(entity);
+                        else
+                        {
+                            var obj = field.Handler.Get(entity);
                             value = field.ToParameter(obj);
                         }
+
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
-                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
-                        object obj = field.Handler.Get(entity);
-                        object value = field.ToParameter(obj);
+
+                    foreach (var field in mapping.PrimaryKeyFields)
+                    {
+                        var obj = field.Handler.Get(entity);
+                        var value = field.ToParameter(obj);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
+
                     return command1;
                 }
             }
 
-            if (columnFields.Count == 0) {
+            if (columnFields.Count == 0)
+            {
                 return null;
             }
-            IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
-            int keyLen = keyFields.Count;
-            int updateLen = columnFields.Count;
 
-            string[] updateList = new string[updateLen];
-            string[] whereList = new string[keyLen];
-            for (int i = 0; i < updateLen; i++) {
-                DataFieldMapping field = columnFields[i];
+            IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
+            var keyLen = keyFields.Count;
+            var updateLen = columnFields.Count;
+
+            var updateList = new string[updateLen];
+            var whereList = new string[keyLen];
+            for (var i = 0; i < updateLen; i++)
+            {
+                var field = columnFields[i];
                 object value;
-                if (field.IsTimeStamp) {
+                if (field.IsTimeStamp)
+                {
                     value = field.GetTimeStamp(entity, refresh);
                 }
-                else {
-                    object obj = field.Handler.Get(entity);
+                else
+                {
+                    var obj = field.Handler.Get(entity);
                     value = field.ToParameter(obj);
                 }
-                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
-            }
-            for (int i = 0; i < keyLen; i++) {
-                DataFieldMapping field = keyFields[i];
-                object obj = keys == null ? field.Handler.Get(entity) : keys[i];
-                //object obj = field.Handler.Get(entity);
-                object value = field.ToParameter(obj);
-                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+
+                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
+                    state.AddDataParameter(this, value, field.DBType, field.ObjectType));
             }
 
-            string update = string.Join(",", updateList);
-            string where = string.Join(" and ", whereList);
-            string sql = string.Format("update {0} set {1} where {2}", CreateDataTableMappingSql(mapping, state), update, where);
-            CommandData command = new CommandData(sql);
-            if (cachekey != null) {
+            for (var i = 0; i < keyLen; i++)
+            {
+                var field = keyFields[i];
+                var obj = keys == null ? field.Handler.Get(entity) : keys[i];
+                //object obj = field.Handler.Get(entity);
+                var value = field.ToParameter(obj);
+                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
+                    state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+            }
+
+            var update = string.Join(",", updateList);
+            var where = string.Join(" and ", whereList);
+            var sql = string.Format("update {0} set {1} where {2}", CreateDataTableMappingSql(mapping, state), update,
+                where);
+            var command = new CommandData(sql);
+            if (cachekey != null)
+            {
                 _baseUpdateCache.SetCommand(cachekey, command.CommandText);
             }
+
             return command;
         }
 
 
-        public virtual CommandData CreateBaseDeleteCommand(DataTableEntityMapping mapping, object entity, CreateSqlState state)
+        public virtual CommandData CreateBaseDeleteCommand(DataTableEntityMapping mapping, object entity,
+            CreateSqlState state)
         {
             string cachekey = null;
-            if (state.Seed == 0 && !state.UseDirectNull) {
+            if (state.Seed == 0 && !state.UseDirectNull)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_baseDeleteCache.TryGetCommand(cachekey, out string cache)) {
-                    CommandData command1 = new CommandData(cache);
-                    foreach (DataFieldMapping field in mapping.PrimaryKeyFields) {
-                        object obj = field.Handler.Get(entity);
-                        object value = field.ToParameter(obj);
+                if (_baseDeleteCache.TryGetCommand(cachekey, out var cache))
+                {
+                    var command1 = new CommandData(cache);
+                    foreach (var field in mapping.PrimaryKeyFields)
+                    {
+                        var obj = field.Handler.Get(entity);
+                        var value = field.ToParameter(obj);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
+
                     return command1;
                 }
             }
-            if (!mapping.HasPrimaryKey) {
+
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
+
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
-            int keyLen = keyFields.Count;
-            string[] whereList = new string[keyLen];
-            for (int i = 0; i < keyLen; i++) {
-                DataFieldMapping field = keyFields[i];
-                object obj = field.Handler.Get(entity);
-                object value = field.ToParameter(obj);
-                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+            var keyLen = keyFields.Count;
+            var whereList = new string[keyLen];
+            for (var i = 0; i < keyLen; i++)
+            {
+                var field = keyFields[i];
+                var obj = field.Handler.Get(entity);
+                var value = field.ToParameter(obj);
+                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
+                    state.AddDataParameter(this, value, field.DBType, field.ObjectType));
             }
-            string where = string.Join(" and ", whereList);
-            string sql = string.Format("delete from {0} where {1}", CreateDataTableMappingSql(mapping, state), where);
-            CommandData command = new CommandData(sql);
-            if (cachekey != null) {
+
+            var where = string.Join(" and ", whereList);
+            var sql = string.Format("delete from {0} where {1}", CreateDataTableMappingSql(mapping, state), where);
+            var command = new CommandData(sql);
+            if (cachekey != null)
+            {
                 _baseDeleteCache.SetCommand(cachekey, command.CommandText);
             }
+
             return command;
         }
 
         public virtual CommandData CreateTruncateTableCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            string sql = string.Format("truncate table {0};", CreateDataTableMappingSql(mapping, state));
-            CommandData command = new CommandData(sql);
+            var sql = string.Format("truncate table {0};", CreateDataTableMappingSql(mapping, state));
+            var command = new CommandData(sql);
             return command;
         }
 
@@ -524,197 +658,257 @@ namespace Light.Data
         public virtual string GetGroupByString(AggregateGroupBy groupby, bool isFullField, CreateSqlState state)
         {
             string queryString = null;
-            if (groupby.FieldCount > 0) {
+            if (groupby.FieldCount > 0)
+            {
                 queryString = string.Format(" group by {0}", groupby.CreateGroupByString(this, isFullField, state));
             }
+
             return queryString;
         }
 
         public virtual string GetHavingString(QueryExpression query, bool isFullField, CreateSqlState state)
         {
             string queryString = null;
-            if (_havingAlias) {
+            if (_havingAlias)
+            {
                 state.UseFieldAlias = true;
                 queryString = string.Format(" having {0}", query.CreateSqlString(this, isFullField, state));
                 state.UseFieldAlias = false;
             }
-            else {
+            else
+            {
                 queryString = string.Format(" having {0}", query.CreateSqlString(this, isFullField, state));
             }
+
             return queryString;
         }
 
         public virtual string GetQueryString(QueryExpression query, bool isFullField, CreateSqlState state)
         {
-            string queryString = string.Format(" where {0}", query.CreateSqlString(this, isFullField, state));
+            var queryString = string.Format(" where {0}", query.CreateSqlString(this, isFullField, state));
             return queryString;
         }
 
         public virtual string GetOrderString(OrderExpression order, bool isFullField, CreateSqlState state)
         {
-            string orderString = string.Format(" order by {0}", order.CreateSqlString(this, isFullField, state));
+            var orderString = string.Format(" order by {0}", order.CreateSqlString(this, isFullField, state));
             return orderString;
         }
 
         public virtual string GetAggregateOrderString(OrderExpression order, bool isFullField, CreateSqlState state)
         {
             state.UseFieldAlias = true;
-            string orderString = string.Format(" order by {0}", order.CreateSqlString(this, isFullField, state));
+            var orderString = string.Format(" order by {0}", order.CreateSqlString(this, isFullField, state));
             state.UseFieldAlias = false;
             return orderString;
         }
 
         public virtual string GetOnString(DataFieldExpression on, CreateSqlState state)
         {
-            string onString = string.Format(" on {0}", on.CreateSqlString(this, true, state));
+            var onString = string.Format(" on {0}", on.CreateSqlString(this, true, state));
             return onString;
         }
 
-        public virtual CommandData CreateSelectCommand(DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
+        public virtual CommandData CreateSelectCommand(DataEntityMapping mapping, ISelector selector,
+            QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
         {
             string select;
-            if (selector == null) {
+            if (selector == null)
+            {
                 select = "*";
             }
-            else {
+            else
+            {
                 select = selector.CreateSelectString(this, false, state);
             }
-            if (distinct) {
-                select = "distinct " + select;
+
+            if (distinct)
+            {
+                select = CreateDistinctSql() + select;
             }
-            CommandData commandData = this.CreateSelectBaseCommand(mapping, select, query, order, region, state);
+
+            var commandData = CreateSelectBaseCommand(mapping, select, query, order, region, state);
             return commandData;
         }
 
-        public virtual CommandData CreateSelectDataCommand(DataEntityMapping mapping, RelationMap relationMap, ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
+        public virtual CommandData CreateSelectDataCommand(DataEntityMapping mapping, RelationMap relationMap,
+            ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region,
+            CreateSqlState state)
         {
             CommandData commandData;
-            if (mapping.HasJoinRelateModel) {
+            if (mapping.HasJoinRelateModel)
+            {
                 QueryExpression subQuery = null;
                 QueryExpression mainQuery = null;
                 OrderExpression subOrder = null;
                 OrderExpression mainOrder = null;
-                if (query != null) {
-                    if (query.MutliQuery) {
+                if (query != null)
+                {
+                    if (query.MultiQuery)
+                    {
                         mainQuery = query;
                     }
-                    else {
+                    else
+                    {
                         subQuery = query;
                     }
                 }
-                if (order != null) {
-                    if (order.MutliOrder) {
+
+                if (order != null)
+                {
+                    if (order.MultiOrder)
+                    {
                         mainOrder = order;
                     }
-                    else {
+                    else
+                    {
                         subOrder = order;
                     }
                 }
-                List<IJoinModel> models = relationMap.CreateJoinModels(subQuery, subOrder);
-                commandData = CreateSelectJoinTableCommand(selector, models, mainQuery, mainOrder, distinct, region, state);
+
+                var models = relationMap.CreateJoinModels(subQuery, subOrder);
+                commandData =
+                    CreateSelectJoinTableCommand(selector, models, mainQuery, mainOrder, distinct, region, state);
             }
-            else {
+            else
+            {
                 commandData = CreateSelectCommand(mapping, selector, query, order, distinct, region, state);
             }
+
             return commandData;
         }
 
-        public virtual CommandData CreateSelectSingleFieldCommand(DataFieldInfo fieldinfo, QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
+        public virtual CommandData CreateSelectSingleFieldCommand(DataFieldInfo fieldinfo, QueryExpression query,
+            OrderExpression order, bool distinct, Region region, CreateSqlState state)
         {
-            string select = fieldinfo.CreateSqlString(this, false, state);
-            if (distinct) {
-                select = "distinct " + select;
+            var select = fieldinfo.CreateSqlString(this, false, state);
+            if (distinct)
+            {
+                select = CreateDistinctSql() + select;
             }
+
             return CreateSelectBaseCommand(fieldinfo.TableMapping, select, query, order, region, state);
         }
 
-        public virtual CommandData CreateSelectBaseCommand(DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+        public virtual CommandData CreateSelectBaseCommand(DataEntityMapping mapping, string customSelect,
+            QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
         {
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
             sql.AppendFormat("select {0} from {1}", customSelect, CreateDataTableMappingSql(mapping, state));
-            if (query != null) {
+            if (query != null)
+            {
                 sql.Append(GetQueryString(query, false, state));
             }
-            if (order != null) {
+
+            if (order != null)
+            {
                 sql.Append(GetOrderString(order, false, state));
             }
-            CommandData commandData = new CommandData(sql.ToString());
+
+            var commandData = new CommandData(sql.ToString());
             return commandData;
         }
 
-        public virtual CommandData CreateSelectJoinTableCommand(ISelector selector, List<IJoinModel> modelList, QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
+        public virtual CommandData CreateSelectJoinTableCommand(ISelector selector, List<IJoinModel> modelList,
+            QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
         {
-            string selectString = selector.CreateSelectString(this, true, state);
-            if (distinct) {
-                selectString = "distinct " + selectString;
+            var selectString = selector.CreateSelectString(this, true, state);
+            if (distinct)
+            {
+                selectString = CreateDistinctSql() + selectString;
             }
-            OrderExpression subOrder = CreateJoinModelListOrderExpression(modelList);
-            if (subOrder != null) {
+
+            var subOrder = CreateJoinModelListOrderExpression(modelList);
+            if (subOrder != null)
+            {
                 order = OrderExpression.Concat(subOrder, order);
             }
-            CommandData commandData = CreateSelectJoinTableBaseCommand(selectString, modelList, query, order, region, state);
+
+            var commandData = CreateSelectJoinTableBaseCommand(selectString, modelList, query, order, region, state);
             return commandData;
         }
 
-        public virtual CommandData CreateSelectJoinTableBaseCommand(string customSelect, List<IJoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+        public virtual CommandData CreateSelectJoinTableBaseCommand(string customSelect, List<IJoinModel> modelList,
+            QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
         {
-            StringBuilder tables = new StringBuilder();
-            foreach (IJoinModel model in modelList) {
-                if (model.Connect != null) {
+            var tables = new StringBuilder();
+            foreach (var model in modelList)
+            {
+                if (model.Connect != null)
+                {
                     tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
                 }
-                string modelsql = model.CreateSqlString(this, state);
+
+                var modelsql = model.CreateSqlString(this, state);
                 tables.Append(modelsql);
-                if (model.Connect != null && model.Connect.On != null) {
+                if (model.Connect != null && model.Connect.On != null)
+                {
                     tables.Append(GetOnString(model.Connect.On, state));
                 }
             }
 
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
             sql.AppendFormat("select {0} from {1}", customSelect, tables);
-            if (query != null) {
+            if (query != null)
+            {
                 sql.Append(GetQueryString(query, true, state));
             }
-            if (order != null) {
+
+            if (order != null)
+            {
                 sql.Append(GetOrderString(order, true, state));
             }
-            CommandData command = new CommandData(sql.ToString());
+
+            var command = new CommandData(sql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateAggregateTableCommand(DataEntityMapping mapping, AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order, Region region, CreateSqlState state)
+        public virtual CommandData CreateAggregateTableCommand(DataEntityMapping mapping, AggregateSelector selector,
+            AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order,
+            Region region, CreateSqlState state)
         {
-            StringBuilder sql = new StringBuilder();
-            string selectString = selector.CreateSelectString(this, false, state);
+            var sql = new StringBuilder();
+            var selectString = selector.CreateSelectString(this, false, state);
             sql.AppendFormat("select {0} from {1}", selectString, CreateDataTableMappingSql(mapping, state));
-            if (query != null) {
+            if (query != null)
+            {
                 sql.Append(GetQueryString(query, false, state));
             }
-            if (groupBy != null) {
+
+            if (groupBy != null)
+            {
                 sql.Append(GetGroupByString(groupBy, false, state));
             }
-            if (having != null) {
+
+            if (having != null)
+            {
                 sql.Append(GetHavingString(having, false, state));
             }
-            if (order != null) {
+
+            if (order != null)
+            {
                 sql.Append(GetAggregateOrderString(order, false, state));
             }
-            CommandData command = new CommandData(sql.ToString());
+
+            var command = new CommandData(sql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateExistsCommand(DataEntityMapping mapping, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateExistsCommand(DataEntityMapping mapping, QueryExpression query,
+            CreateSqlState state)
         {
-            Region region = new Region(0, 1);
-            return this.CreateSelectBaseCommand(mapping, "1", query, null, region, state);
+            var region = new Region(0, 1);
+            return CreateSelectBaseCommand(mapping, "1", query, null, region, state);
         }
 
-        public virtual CommandData CreateAggregateFunctionCommand(DataFieldInfo field, AggregateType aggregateType, QueryExpression query, bool distinct, CreateSqlState state)
+        public virtual CommandData CreateAggregateFunctionCommand(DataFieldInfo field, AggregateType aggregateType,
+            QueryExpression query, bool distinct, CreateSqlState state)
         {
-            DataEntityMapping mapping = field.TableMapping;
-            string fieldSql = field.CreateSqlString(this, false, state);
+            var mapping = field.TableMapping;
+            var fieldSql = field.CreateSqlString(this, false, state);
             string function = null;
-            switch (aggregateType) {
+            switch (aggregateType)
+            {
                 case AggregateType.COUNT:
                     function = CreateCountSql(fieldSql, distinct);
                     break;
@@ -731,207 +925,277 @@ namespace Light.Data
                     function = CreateMinSql(fieldSql);
                     break;
             }
+
             return CreateSelectBaseCommand(mapping, function, query, null, null, state);
         }
 
-        public virtual CommandData CreateAggregateCountCommand(DataEntityMapping mapping, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateAggregateCountCommand(DataEntityMapping mapping, QueryExpression query,
+            CreateSqlState state)
         {
-            string select = CreateCountAllSql();
+            var select = CreateCountAllSql();
             return CreateSelectBaseCommand(mapping, select, query, null, null, state);
         }
 
-        public virtual CommandData CreateAggregateJoinCountCommand(List<IJoinModel> modelList, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateAggregateJoinCountCommand(List<IJoinModel> modelList, QueryExpression query,
+            CreateSqlState state)
         {
-            string select = CreateCountAllSql();
+            var select = CreateCountAllSql();
             return CreateSelectJoinTableBaseCommand(select, modelList, query, null, null, state);
         }
 
-        public virtual CommandData CreateMassDeleteCommand(DataTableEntityMapping mapping, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateMassDeleteCommand(DataTableEntityMapping mapping, QueryExpression query,
+            CreateSqlState state)
         {
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
             sql.AppendFormat("delete from {0}", CreateDataTableMappingSql(mapping, state));
-            if (query != null) {
+            if (query != null)
+            {
                 sql.Append(GetQueryString(query, false, state));
             }
-            CommandData command = new CommandData(sql.ToString());
+
+            var command = new CommandData(sql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateMassUpdateCommand(DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, CreateSqlState state)
+        public virtual CommandData CreateMassUpdateCommand(DataTableEntityMapping mapping, MassUpdator updator,
+            QueryExpression query, CreateSqlState state)
         {
-            StringBuilder sql = new StringBuilder();
-            string setString = updator.CreateSqlString(this, false, state);
+            var sql = new StringBuilder();
+            var setString = updator.CreateSqlString(this, false, state);
             sql.AppendFormat("update {0} set {1}", CreateDataTableMappingSql(mapping, state), setString);
-            if (query != null) {
+            if (query != null)
+            {
                 sql.Append(GetQueryString(query, false, state));
             }
-            CommandData command = new CommandData(sql.ToString());
+
+            var command = new CommandData(sql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateSelectInsertCommand(DataTableEntityMapping insertTableMapping, DataEntityMapping selectMapping, QueryExpression query, OrderExpression order, CreateSqlState state)
+        public virtual CommandData CreateSelectInsertCommand(DataTableEntityMapping insertTableMapping,
+            DataEntityMapping selectMapping, QueryExpression query, OrderExpression order, CreateSqlState state)
         {
-            StringBuilder sql = new StringBuilder();
+            var sql = new StringBuilder();
             string insertString;
             string selectString;
             ReadOnlyCollection<DataFieldMapping> insertFields;
             ReadOnlyCollection<DataFieldMapping> selectFields;
-            if (insertTableMapping.HasIdentity) {
-                if (selectMapping is DataTableEntityMapping selectTableEntityMapping && selectTableEntityMapping.HasIdentity) {
-                    if (insertTableMapping.FieldCount == selectTableEntityMapping.FieldCount && insertTableMapping.IdentityField.PositionOrder == selectTableEntityMapping.IdentityField.PositionOrder) {
+            if (insertTableMapping.HasIdentity)
+            {
+                if (selectMapping is DataTableEntityMapping selectTableEntityMapping &&
+                    selectTableEntityMapping.HasIdentity)
+                {
+                    if (insertTableMapping.FieldCount == selectTableEntityMapping.FieldCount &&
+                        insertTableMapping.IdentityField.PositionOrder ==
+                        selectTableEntityMapping.IdentityField.PositionOrder)
+                    {
                         insertFields = insertTableMapping.NoIdentityFields;
                         selectFields = selectTableEntityMapping.NoIdentityFields;
                     }
-                    else {
+                    else
+                    {
                         throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
                     }
                 }
-                else {
-                    if (insertTableMapping.FieldCount == selectMapping.FieldCount + 1) {
+                else
+                {
+                    if (insertTableMapping.FieldCount == selectMapping.FieldCount + 1)
+                    {
                         insertFields = insertTableMapping.NoIdentityFields;
                         selectFields = selectMapping.DataEntityFields;
                     }
-                    else {
+                    else
+                    {
                         throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
                     }
                 }
             }
-            else {
-                if (insertTableMapping.FieldCount == selectMapping.FieldCount) {
+            else
+            {
+                if (insertTableMapping.FieldCount == selectMapping.FieldCount)
+                {
                     insertFields = insertTableMapping.DataEntityFields;
                     selectFields = selectMapping.DataEntityFields;
                 }
-                else {
+                else
+                {
                     throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
                 }
             }
 
-            string[] insertFieldNames = new string[insertFields.Count];
-            for (int i = 0; i < insertFields.Count; i++) {
+            var insertFieldNames = new string[insertFields.Count];
+            for (var i = 0; i < insertFields.Count; i++)
+            {
                 insertFieldNames[i] = CreateDataFieldSql(insertFields[i].Name);
             }
+
             insertString = string.Join(",", insertFieldNames);
 
-            string[] selectFieldNames = new string[selectFields.Count];
-            for (int i = 0; i < insertFields.Count; i++) {
+            var selectFieldNames = new string[selectFields.Count];
+            for (var i = 0; i < insertFields.Count; i++)
+            {
                 selectFieldNames[i] = CreateDataFieldSql(selectFields[i].Name);
             }
+
             selectString = string.Join(",", selectFieldNames);
-            sql.AppendFormat("insert into {0}({1})", CreateDataTableMappingSql(insertTableMapping, state), insertString);
+            sql.AppendFormat("insert into {0}({1})", CreateDataTableMappingSql(insertTableMapping, state),
+                insertString);
             sql.AppendFormat("select {0} from {1}", selectString, CreateDataTableMappingSql(selectMapping, state));
-            if (query != null) {
+            if (query != null)
+            {
                 sql.Append(GetQueryString(query, false, state));
             }
-            if (order != null) {
+
+            if (order != null)
+            {
                 sql.Append(GetOrderString(order, false, state));
             }
-            CommandData command = new CommandData(sql.ToString());
+
+            var command = new CommandData(sql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateSelectInsertCommand(InsertSelector insertSelector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, bool distinct, CreateSqlState state)
+        public virtual CommandData CreateSelectInsertCommand(InsertSelector insertSelector, DataEntityMapping mapping,
+            QueryExpression query, OrderExpression order, bool distinct, CreateSqlState state)
         {
-            CommandData selectCommandData = CreateSelectCommand(mapping, insertSelector, query, order, distinct, null, state);
-            DataFieldInfo[] insertFields = insertSelector.GetInsertFields();
-            string[] insertFieldNames = new string[insertFields.Length];
-            for (int i = 0; i < insertFields.Length; i++) {
+            var selectCommandData = CreateSelectCommand(mapping, insertSelector, query, order, distinct, null, state);
+            var insertFields = insertSelector.GetInsertFields();
+            var insertFieldNames = new string[insertFields.Length];
+            for (var i = 0; i < insertFields.Length; i++)
+            {
                 insertFieldNames[i] = CreateDataFieldSql(insertFields[i].FieldName);
             }
-            string insertString = string.Join(",", insertFieldNames);
-            string sql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString);
+
+            var insertString = string.Join(",", insertFieldNames);
+            var sql = string.Format("insert into {0}({1})",
+                CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString);
             selectCommandData.CommandText = sql + selectCommandData.CommandText;
             return selectCommandData;
         }
 
-        public virtual CommandData CreateSelectInsertCommand(InsertSelector insertSelector, List<IJoinModel> modelList, QueryExpression query, OrderExpression order, bool distinct, CreateSqlState state)
+        public virtual CommandData CreateSelectInsertCommand(InsertSelector insertSelector, List<IJoinModel> modelList,
+            QueryExpression query, OrderExpression order, bool distinct, CreateSqlState state)
         {
-            CommandData selectCommandData = CreateSelectJoinTableCommand(insertSelector, modelList, query, order, distinct, null, state);
-            DataFieldInfo[] insertFields = insertSelector.GetInsertFields();
-            string[] insertFieldNames = new string[insertFields.Length];
-            for (int i = 0; i < insertFields.Length; i++) {
+            var selectCommandData =
+                CreateSelectJoinTableCommand(insertSelector, modelList, query, order, distinct, null, state);
+            var insertFields = insertSelector.GetInsertFields();
+            var insertFieldNames = new string[insertFields.Length];
+            for (var i = 0; i < insertFields.Length; i++)
+            {
                 insertFieldNames[i] = CreateDataFieldSql(insertFields[i].FieldName);
             }
-            string insertString = string.Join(",", insertFieldNames);
-            string sql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString);
+
+            var insertString = string.Join(",", insertFieldNames);
+            var sql = string.Format("insert into {0}({1})",
+                CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString);
             selectCommandData.CommandText = sql + selectCommandData.CommandText;
             return selectCommandData;
         }
 
-        public virtual CommandData CreateSelectInsertCommand(InsertSelector insertSelector, DataEntityMapping mapping, AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order, CreateSqlState state)
+        public virtual CommandData CreateSelectInsertCommand(InsertSelector insertSelector, DataEntityMapping mapping,
+            AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having,
+            OrderExpression order, CreateSqlState state)
         {
-            CommandData selectCommandData = CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, null, state);
-            DataFieldInfo[] insertFields = insertSelector.GetInsertFields();
-            string[] insertFieldNames = new string[insertFields.Length];
-            for (int i = 0; i < insertFields.Length; i++) {
+            var selectCommandData =
+                CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, null, state);
+            var insertFields = insertSelector.GetInsertFields();
+            var insertFieldNames = new string[insertFields.Length];
+            for (var i = 0; i < insertFields.Length; i++)
+            {
                 insertFieldNames[i] = CreateDataFieldSql(insertFields[i].FieldName);
             }
-            string insertString = string.Join(",", insertFieldNames);
-            string selectString = insertSelector.CreateSelectString(this, false, state);
-            string sql = string.Format("insert into {0}({1})select {2} from ({3}) as A", CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString, selectString, selectCommandData.CommandText);
+
+            var insertString = string.Join(",", insertFieldNames);
+            var selectString = insertSelector.CreateSelectString(this, false, state);
+            var sql = string.Format("insert into {0}({1})select {2} from ({3}) as A",
+                CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString, selectString,
+                selectCommandData.CommandText);
             selectCommandData.CommandText = sql;
             return selectCommandData;
         }
 
-        public virtual CommandData CreateBatchInsertWithIdentityCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBatchInsertWithIdentityCommand(DataTableEntityMapping mapping, IList entitys,
+            bool refresh, CreateSqlState state)
         {
             throw new NotSupportedException();
         }
 
 
-        public virtual CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh,
+            CreateSqlState state)
         {
-            if (entitys == null || entitys.Count == 0) {
+            if (entitys == null || entitys.Count == 0)
+            {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            int totalCount = entitys.Count;
+
+            var totalCount = entitys.Count;
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
-            int insertLen = fields.Count;
-            if (insertLen == 0) {
+            var insertLen = fields.Count;
+            if (insertLen == 0)
+            {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
+
             string insertSql = null;
             string cachekey = null;
-            if (state.Seed == 0) {
+            if (state.Seed == 0)
+            {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+                if (_batchInsertCache.TryGetCommand(cachekey, out var cache))
+                {
                     insertSql = cache;
                 }
             }
-            if (insertSql == null) {
-                string[] insertList = new string[insertLen];
-                for (int i = 0; i < insertLen; i++) {
-                    DataFieldMapping field = fields[i];
+
+            if (insertSql == null)
+            {
+                var insertList = new string[insertLen];
+                for (var i = 0; i < insertLen; i++)
+                {
+                    var field = fields[i];
                     insertList[i] = CreateDataFieldSql(field.Name);
                 }
-                string insert = string.Join(",", insertList);
+
+                var insert = string.Join(",", insertList);
                 insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
-                if (cachekey != null) {
+                if (cachekey != null)
+                {
                     _batchInsertCache.SetCommand(cachekey, insertSql);
                 }
             }
-            StringBuilder totalSql = new StringBuilder();
-            foreach (var entity in entitys) {
-                string[] valuesList = new string[insertLen];
-                for (int i = 0; i < insertLen; i++) {
-                    DataFieldMapping field = fields[i];
+
+            var totalSql = new StringBuilder();
+            foreach (var entity in entitys)
+            {
+                var valuesList = new string[insertLen];
+                for (var i = 0; i < insertLen; i++)
+                {
+                    var field = fields[i];
                     //object obj = field.Handler.Get(entity);
                     //object value = field.ToColumn(obj);
-                    object value = field.GetInsertData(entity, refresh);
+                    var value = field.GetInsertData(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
-                string values = string.Join(",", valuesList);
+
+                var values = string.Join(",", valuesList);
                 totalSql.AppendFormat("{0}values({1});", insertSql, values);
             }
-            CommandData command = new CommandData(totalSql.ToString());
+
+            var command = new CommandData(totalSql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        public virtual CommandData CreateBatchUpdateCommand(DataTableEntityMapping mapping, IList entitys, bool refresh,
+            CreateSqlState state)
         {
-            if (entitys == null || entitys.Count == 0) {
+            if (entitys == null || entitys.Count == 0)
+            {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            if (!mapping.HasPrimaryKey) {
+
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
             //if (mapping.UpdateFieldList.Count == 0 && !mapping.IsDataTableEntity) {
@@ -939,158 +1203,211 @@ namespace Light.Data
             //}
 
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
-            int keyLen = keyFields.Count;
+            var keyLen = keyFields.Count;
 
-            int totalCount = entitys.Count;
-            int createCount = 0;
+            var totalCount = entitys.Count;
+            var createCount = 0;
 
-            StringBuilder totalSql = new StringBuilder();
+            var totalSql = new StringBuilder();
 
-            foreach (var entity in entitys) {
+            foreach (var entity in entitys)
+            {
                 IList<DataFieldMapping> columnFields;
                 object[] keys = null;
                 DataTableEntity tableEntity = null;
-                if (mapping.IsDataTableEntity) {
+                if (mapping.IsDataTableEntity)
+                {
                     tableEntity = entity as DataTableEntity;
                     keys = tableEntity.GetRawPrimaryKeys();
-                    string[] updatefieldNames = tableEntity.GetUpdateFields();
-                    if (updatefieldNames != null && updatefieldNames.Length > 0) {
-                        List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
-                        foreach (string name in updatefieldNames) {
-                            DataFieldMapping fm = mapping.FindDataEntityField(name);
-                            if (fm == null) {
-                                throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField, mapping.ObjectType, name));
+                    var updatefieldNames = tableEntity.GetUpdateFields();
+                    if (updatefieldNames != null && updatefieldNames.Length > 0)
+                    {
+                        var updateFields = new List<DataFieldMapping>();
+                        foreach (var name in updatefieldNames)
+                        {
+                            var fm = mapping.FindDataEntityField(name);
+                            if (fm == null)
+                            {
+                                throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedField,
+                                    mapping.ObjectType, name));
                             }
-                            if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null) {
-                                throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField, mapping.ObjectType, name));
+
+                            if (fm is PrimitiveFieldMapping pfm && pfm.IsPrimaryKey && keys == null)
+                            {
+                                throw new LightDataException(string.Format(SR.UpdateFieldIsPrimaryKeyField,
+                                    mapping.ObjectType, name));
                             }
-                            if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+
+                            if ((fm.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
+                            {
                                 updateFields.Add(fm);
                             }
                         }
-                        foreach (DataFieldMapping tm in mapping.TimeStampFieldList) {
-                            if (!updateFields.Contains(tm) && (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update) {
+
+                        foreach (var tm in mapping.TimeStampFieldList)
+                        {
+                            if (!updateFields.Contains(tm) &&
+                                (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
+                            {
                                 updateFields.Add(tm);
                             }
                         }
+
                         columnFields = updateFields;
                     }
-                    else {
-                        if (keys == null) {
+                    else
+                    {
+                        if (keys == null)
+                        {
                             columnFields = mapping.UpdateFieldList;
                         }
-                        else {
-                            List<DataFieldMapping> updateFields = new List<DataFieldMapping>();
+                        else
+                        {
+                            var updateFields = new List<DataFieldMapping>();
                             updateFields.AddRange(mapping.PrimaryKeyFields);
                             updateFields.AddRange(mapping.UpdateFieldList);
                             columnFields = updateFields;
                         }
                     }
                 }
-                else {
+                else
+                {
                     tableEntity = null;
                     columnFields = mapping.UpdateFieldList;
                 }
-                if (columnFields.Count == 0) {
+
+                if (columnFields.Count == 0)
+                {
                     continue;
                 }
-                int updateLen = columnFields.Count;
-                string[] updateList = new string[updateLen];
-                string[] whereList = new string[keyLen];
-                for (int i = 0; i < updateLen; i++) {
-                    DataFieldMapping field = columnFields[i];
+
+                var updateLen = columnFields.Count;
+                var updateList = new string[updateLen];
+                var whereList = new string[keyLen];
+                for (var i = 0; i < updateLen; i++)
+                {
+                    var field = columnFields[i];
                     object value;
-                    if (field.IsTimeStamp) {
+                    if (field.IsTimeStamp)
+                    {
                         value = field.GetTimeStamp(entity, refresh);
                     }
-                    else {
-                        object obj = field.Handler.Get(entity);
+                    else
+                    {
+                        var obj = field.Handler.Get(entity);
                         value = field.ToParameter(obj);
                     }
-                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
-                }
-                for (int i = 0; i < keyLen; i++) {
-                    DataFieldMapping field = keyFields[i];
-                    object obj = keys == null ? field.Handler.Get(entity) : keys[i];
-                    //object obj = field.Handler.Get(entity);
-                    object value = field.ToParameter(obj);
-                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+
+                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
+                        state.AddDataParameter(this, value, field.DBType, field.ObjectType));
                 }
 
-                string update = string.Join(",", updateList);
-                string where = string.Join(" and ", whereList);
-                totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state), update, where);
+                for (var i = 0; i < keyLen; i++)
+                {
+                    var field = keyFields[i];
+                    var obj = keys == null ? field.Handler.Get(entity) : keys[i];
+                    //object obj = field.Handler.Get(entity);
+                    var value = field.ToParameter(obj);
+                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
+                        state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                }
+
+                var update = string.Join(",", updateList);
+                var where = string.Join(" and ", whereList);
+                totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state),
+                    update, where);
                 createCount++;
             }
-            if (createCount == 0) {
+
+            if (createCount == 0)
+            {
                 return null;
             }
-            CommandData command = new CommandData(totalSql.ToString());
+
+            var command = new CommandData(totalSql.ToString());
             return command;
         }
 
-        public virtual CommandData CreateBatchDeleteCommand(DataTableEntityMapping mapping, IList entitys, CreateSqlState state)
+        public virtual CommandData CreateBatchDeleteCommand(DataTableEntityMapping mapping, IList entitys,
+            CreateSqlState state)
         {
-            if (entitys == null || entitys.Count == 0) {
+            if (entitys == null || entitys.Count == 0)
+            {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            if (!mapping.HasPrimaryKey) {
+
+            if (!mapping.HasPrimaryKey)
+            {
                 throw new LightDataException(string.Format(SR.NotContainPrimaryKeyFields, mapping.ObjectType));
             }
 
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
 
-            int keyLen = keyFields.Count;
+            var keyLen = keyFields.Count;
 
-            StringBuilder totalSql = new StringBuilder();
-            if (keyFields.Count == 1) {
-                DataFieldMapping field = keyFields[0];
-                string[] keys = new string[entitys.Count];
-                for (int i = 0; i < entitys.Count; i++) {
-                    object entity = entitys[i];
-                    object obj = field.Handler.Get(entity);
-                    object value = field.ToParameter(obj);
+            var totalSql = new StringBuilder();
+            if (keyFields.Count == 1)
+            {
+                var field = keyFields[0];
+                var keys = new string[entitys.Count];
+                for (var i = 0; i < entitys.Count; i++)
+                {
+                    var entity = entitys[i];
+                    var obj = field.Handler.Get(entity);
+                    var value = field.ToParameter(obj);
                     keys[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
-                totalSql.AppendFormat("delete from {0} where {1} in ({2});", CreateDataTableMappingSql(mapping, state), CreateDataFieldSql(field.Name), string.Join(",", keys));
+
+                totalSql.AppendFormat("delete from {0} where {1} in ({2});", CreateDataTableMappingSql(mapping, state),
+                    CreateDataFieldSql(field.Name), string.Join(",", keys));
             }
-            else {
-                foreach (object entity in entitys) {
-                    string[] whereList = new string[keyLen];
-                    for (int i = 0; i < keyLen; i++) {
-                        DataFieldMapping field = keyFields[i];
-                        object obj = field.Handler.Get(entity);
-                        object value = field.ToParameter(obj);
-                        whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name), state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+            else
+            {
+                foreach (var entity in entitys)
+                {
+                    var whereList = new string[keyLen];
+                    for (var i = 0; i < keyLen; i++)
+                    {
+                        var field = keyFields[i];
+                        var obj = field.Handler.Get(entity);
+                        var value = field.ToParameter(obj);
+                        whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
+                            state.AddDataParameter(this, value, field.DBType, field.ObjectType));
                     }
-                    string where = string.Join(" and ", whereList);
-                    totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state), where);
+
+                    var where = string.Join(" and ", whereList);
+                    totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state),
+                        where);
                 }
             }
-            CommandData command = new CommandData(totalSql.ToString());
+
+            var command = new CommandData(totalSql.ToString());
             return command;
         }
 
         public virtual CommandData CreateIdentityCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            string sql = CreateIdentitySql(mapping, state);
-            if (!string.IsNullOrEmpty(sql)) {
-                CommandData command = new CommandData(sql);
+            var sql = CreateIdentitySql(mapping, state);
+            if (!string.IsNullOrEmpty(sql))
+            {
+                var command = new CommandData(sql);
                 return command;
             }
-            else {
+            else
+            {
                 return null;
             }
         }
-
 
         #endregion
 
         #region 基本语句块
 
-        public virtual string CreateConcatExpressionSql(string expressionString1, string expressionString2, ConcatOperatorType operatorType)
+        public virtual string CreateConcatExpressionSql(string expressionString1, string expressionString2,
+            ConcatOperatorType operatorType)
         {
-            return string.Format("({0} {2} {1})", expressionString1, expressionString2, operatorType.ToString().ToLower());
+            return string.Format("({0} {2} {1})", expressionString1, expressionString2,
+                operatorType.ToString().ToLower());
         }
 
         public virtual string CreateConcatExpressionSql(string[] expressionStrings)
@@ -1098,52 +1415,64 @@ namespace Light.Data
             return string.Join(",", expressionStrings);
         }
 
-        public virtual string CreateSingleParamSql(object fieldName, QueryPredicate predicate, bool isReverse, string name)
+        public virtual string CreateSingleParamSql(object fieldName, QueryPredicate predicate, bool isReverse,
+            string name)
         {
-            StringBuilder sb = new StringBuilder();
-            string op = GetQueryPredicate(predicate);
-            if (!isReverse) {
+            var sb = new StringBuilder();
+            var op = GetQueryPredicate(predicate);
+            if (!isReverse)
+            {
                 sb.AppendFormat("{0}{2}{1}", fieldName, name, op);
             }
-            else {
+            else
+            {
                 sb.AppendFormat("{1}{2}{0}", fieldName, name, op);
             }
+
             return sb.ToString();
         }
 
-        public virtual string CreateRelationTableSql(object fieldName, QueryPredicate predicate, bool isReverse, string relationFieldName)
+        public virtual string CreateRelationTableSql(object fieldName, QueryPredicate predicate, bool isReverse,
+            string relationFieldName)
         {
-            StringBuilder sb = new StringBuilder();
-            string op = GetQueryPredicate(predicate);
-            if (!isReverse) {
+            var sb = new StringBuilder();
+            var op = GetQueryPredicate(predicate);
+            if (!isReverse)
+            {
                 sb.AppendFormat("{0}{2}{1}", fieldName, relationFieldName, op);
             }
-            else {
+            else
+            {
                 sb.AppendFormat("{1}{2}{0}", fieldName, relationFieldName, op);
             }
+
             return sb.ToString();
         }
 
-        public virtual string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate, IEnumerable<object> list)
+        public virtual string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate,
+            IEnumerable<object> list)
         {
-            string op = GetQueryCollectionPredicate(predicate);
+            var op = GetQueryCollectionPredicate(predicate);
 
-            int i = 0;
-            StringBuilder sb = new StringBuilder();
+            var i = 0;
+            var sb = new StringBuilder();
             sb.AppendFormat("{0} {1} (", fieldName, op);
-            foreach (object item in list) {
+            foreach (var item in list)
+            {
                 if (i > 0)
                     sb.Append(",");
                 sb.Append(item);
                 i++;
             }
+
             sb.Append(")");
             return sb.ToString();
         }
 
         public virtual string CreateExistsQuerySql(string queryTableName, string whereString, bool isNot)
         {
-            return string.Format("{2}exists (select 1 from {0} where {1})", queryTableName, whereString, isNot ? "not " : string.Empty);
+            return string.Format("{2}exists (select 1 from {0} where {1})", queryTableName, whereString,
+                isNot ? "not " : string.Empty);
         }
 
         public virtual string CreateNotQuerySql(string whereString)
@@ -1151,89 +1480,114 @@ namespace Light.Data
             return string.Format("not({0})", whereString);
         }
 
-        public virtual string CreateSubQuerySql(object fieldName, QueryCollectionPredicate predicate, string queryfieldName, string queryTableName, string whereString)
+        public virtual string CreateSubQuerySql(object fieldName, QueryCollectionPredicate predicate,
+            string queryfieldName, string queryTableName, string whereString)
         {
-            StringBuilder sb = new StringBuilder();
-            string op = GetQueryCollectionPredicate(predicate);
+            var sb = new StringBuilder();
+            var op = GetQueryCollectionPredicate(predicate);
             sb.AppendFormat("{0} {3} (select {1} from {2}", fieldName, queryfieldName, queryTableName, op);
-            if (!string.IsNullOrEmpty(whereString)) {
+            if (!string.IsNullOrEmpty(whereString))
+            {
                 sb.AppendFormat(" where {0}", whereString);
             }
+
             sb.Append(")");
             return sb.ToString();
         }
 
-        public virtual string CreateBetweenParamsQuerySql(object fieldName, bool isNot, string fromParam, string toParam)
+        public virtual string CreateBetweenParamsQuerySql(object fieldName, bool isNot, string fromParam,
+            string toParam)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("{0} {3}between {1} and {2}", fieldName, fromParam, toParam, isNot ? string.Empty : "not ");
             return sb.ToString();
         }
 
         public virtual string CreateSingleParamSql(object left, QueryPredicate predicate, object right)
         {
-            string op = GetQueryPredicate(predicate);
-            string sql = string.Format("{0}{2}{1}", left, right, op);
+            var op = GetQueryPredicate(predicate);
+            var sql = string.Format("{0}{2}{1}", left, right, op);
             return sql;
         }
 
         public virtual string CreateBooleanQuerySql(object field, bool isTrue, bool isEqual, bool isReverse)
         {
-            if (!isReverse) {
+            if (!isReverse)
+            {
                 return string.Format("{0}{2}{1}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
             }
-            else {
+            else
+            {
                 return string.Format("{1}{2}{0}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
             }
         }
 
         public virtual string CreateNotSql(object value)
         {
-            string sql = string.Format("not({0})", value);
+            var sql = string.Format("not({0})", value);
+            return sql;
+        }
+
+        public virtual string CreateOutputNotSql(object value)
+        {
+            var sql = string.Format("not({0})", value);
+            // var sql = string.Format("case when not({0})=1 then 1 else 0 end", value);
             return sql;
         }
 
         public virtual string CreateConcatSql(params object[] values)
         {
-            string value1 = string.Join("+", values);
-            string sql = string.Format("({0})", value1);
+            var value1 = string.Join("+", values);
+            var sql = string.Format("({0})", value1);
             return sql;
         }
 
         public virtual string CreateLikeMatchQuerySql(object left, object right, bool starts, bool ends, bool isNot)
         {
-            string value1 = CreateMatchSql(right.ToString(), starts, ends);
-            string sql = string.Format("{0} {2}like {1}", left, value1, isNot ? "not " : string.Empty);
+            var value1 = CreateMatchSql(right.ToString(), starts, ends);
+            var sql = string.Format("{0} {2}like {1}", left, value1, isNot ? "not " : string.Empty);
             return sql;
         }
 
-        public virtual string CreateCollectionMatchQuerySql(object fieldName, bool isReverse, bool starts, bool ends, bool isNot, IEnumerable<object> list)
+        public virtual string CreateCollectionMatchQuerySql(object fieldName, bool isReverse, bool starts, bool ends,
+            bool isNot, IEnumerable<object> list)
         {
-            int i = 0;
-            StringBuilder sb = new StringBuilder();
+            var i = 0;
+            var sb = new StringBuilder();
 
-            foreach (string item in list) {
-                if (i > 0) {
-                    if (isNot) {
+            foreach (string item in list)
+            {
+                if (i > 0)
+                {
+                    if (isNot)
+                    {
                         sb.Append(" and ");
                     }
-                    else {
+                    else
+                    {
                         sb.Append(" or ");
                     }
                 }
-                if (!isReverse) {
-                    string value1 = CreateMatchSql(item, starts, ends);
+
+                if (!isReverse)
+                {
+                    var value1 = CreateMatchSql(item, starts, ends);
                     sb.AppendFormat("{0} {2}like {1}", fieldName, value1, isNot ? "not " : string.Empty);
                 }
-                else {
+                else
+                {
                     sb.AppendFormat("{1} {2}like {0}", fieldName, item, isNot ? "not " : string.Empty);
                 }
+
                 i++;
             }
-            if (i > 1) {
+
+            if (i > 1)
+            {
                 sb.Insert(0, "(");
                 sb.Append(")");
             }
+
             return sb.ToString();
         }
 
@@ -1284,32 +1638,35 @@ namespace Light.Data
 
         public virtual string CreateConditionCountSql(string expressionSql, object fieldName, bool isDistinct)
         {
-            return string.Format("count({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
+            return string.Format("count({2}case when {0} then {1} else null end)", expressionSql, fieldName,
+                CreateDistinctSql(isDistinct));
         }
 
         public virtual string CreateCountSql(object fieldName, bool isDistinct)
         {
-            return string.Format("count({1}{0})", fieldName, isDistinct ? "distinct " : "");
+            return string.Format("count({1}{0})", fieldName, CreateDistinctSql(isDistinct));
         }
 
         public virtual string CreateSumSql(object fieldName, bool isDistinct)
         {
-            return string.Format("sum({1}{0})", fieldName, isDistinct ? "distinct " : "");
+            return string.Format("sum({1}{0})", fieldName, CreateDistinctSql(isDistinct));
         }
 
         public virtual string CreateConditionSumSql(string expressionSql, object fieldName, bool isDistinct)
         {
-            return string.Format("sum({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
+            return string.Format("sum({2}case when {0} then {1} else null end)", expressionSql, fieldName,
+                CreateDistinctSql(isDistinct));
         }
 
         public virtual string CreateAvgSql(object fieldName, bool isDistinct)
         {
-            return string.Format("avg({1}{0})", fieldName, isDistinct ? "distinct " : "");
+            return string.Format("avg({1}{0})", fieldName, CreateDistinctSql(isDistinct));
         }
 
         public virtual string CreateConditionAvgSql(string expressionSql, object fieldName, bool isDistinct)
         {
-            return string.Format("avg({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
+            return string.Format("avg({2}case when {0} then {1} else null end)",
+                expressionSql, fieldName, CreateDistinctSql(isDistinct));
         }
 
         public virtual string CreateMaxSql(object fieldName)
@@ -1359,10 +1716,12 @@ namespace Light.Data
 
         public string CreateDataTableMappingSql(DataEntityMapping mapping, CreateSqlState state)
         {
-            if (state.TryGetAliasTableName(mapping, out string name)) {
+            if (state.TryGetAliasTableName(mapping, out var name))
+            {
                 return CreateDataTableSql(name);
             }
-            else {
+            else
+            {
                 return CreateDataTableSql(mapping.TableName);
             }
         }
@@ -1489,70 +1848,84 @@ namespace Light.Data
 
         public virtual string CreateDualConcatSql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}+{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}+{1})", value, field);
             }
         }
 
         public virtual string CreatePlusSql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}+{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}+{1})", value, field);
             }
         }
 
         public virtual string CreateMinusSql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}-{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}-{1})", value, field);
             }
         }
 
         public virtual string CreateMultiplySql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}*{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}*{1})", value, field);
             }
         }
 
         public virtual string CreateDividedSql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}/{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}/{1})", value, field);
             }
         }
 
         public virtual string CreateModSql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}%{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}%{1})", value, field);
             }
         }
 
         public virtual string CreatePowerSql(object field, object value, bool forward)
         {
-            if (forward) {
+            if (forward)
+            {
                 return string.Format("({0}^{1})", field, value);
             }
-            else {
+            else
+            {
                 return string.Format("({0}^{1})", value, field);
             }
         }
@@ -1707,25 +2080,47 @@ namespace Light.Data
 
         public virtual string CreateJoinOnMatchSql(string leftField, QueryPredicate predicate, string rightField)
         {
-            StringBuilder sb = new StringBuilder();
-            string op = GetQueryPredicate(predicate);
+            var sb = new StringBuilder();
+            var op = GetQueryPredicate(predicate);
             sb.AppendFormat("{0}{2}{1}", leftField, rightField, op);
             return sb.ToString();
         }
 
         public virtual string CreateParamName(string name)
         {
-            if (!name.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+            if (!name.StartsWith(ParameterPrefix, StringComparison.Ordinal))
+            {
                 return ParameterPrefix + name;
             }
-            else {
+            else
+            {
                 return name;
             }
+        }
+
+        public virtual string CreateDistinctSql(bool isDistinct)
+        {
+            return isDistinct ? CreateDistinctSql() : "";
+        }
+
+        public virtual string CreateDistinctSql()
+        {
+            return "distinct ";
+        }
+
+        public virtual string CreateBooleanConstantSql(bool value)
+        {
+            return value ? "1=1" : "1=0";
         }
 
         public virtual string CreateStringWrap(object value)
         {
             return string.Format("'{0}'", value);
+        }
+
+        public virtual string CreateSelectFieldConcat(IEnumerable<string> values)
+        {
+            return string.Join(",", values);
         }
     }
 }

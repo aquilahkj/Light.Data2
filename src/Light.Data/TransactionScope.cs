@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -9,7 +7,7 @@ namespace Light.Data
     /// </summary>
     public class TransactionScope : IDisposable
     {
-        bool _isDisposed;
+        private bool _isDisposed;
 
         private readonly DataContext _context;
         private readonly Guid _transguid;

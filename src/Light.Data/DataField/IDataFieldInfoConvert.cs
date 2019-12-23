@@ -1,7 +1,6 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	interface IDataFieldInfoConvert
+	internal interface IDataFieldInfoConvert
 	{
 		QueryExpression ConvertToExpression ();
 	}

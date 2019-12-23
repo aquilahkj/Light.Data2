@@ -3,13 +3,13 @@
 	/// <summary>
 	/// Query expression.
 	/// </summary>
-	class QueryExpression : LightExpression
+	internal class QueryExpression : LightExpression
 	{
-		QueryExpression _expression1;
+		private QueryExpression _expression1;
 
-		QueryExpression _expression2;
+		private QueryExpression _expression2;
 
-		ConcatOperatorType _operatorType = ConcatOperatorType.AND;
+		private ConcatOperatorType _operatorType = ConcatOperatorType.AND;
 
 		internal QueryExpression (DataEntityMapping tableMapping)
 		{
@@ -25,8 +25,8 @@
 		/// <param name="state">State.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
-			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
+			var expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
+			var expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
 			return factory.CreateConcatExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
@@ -41,24 +41,29 @@
 			if (expression1 == null && expression2 == null) {
 				return null;
 			}
-			else if (expression1 == null && expression2 != null) {
+
+			if (expression1 == null) {
 				return expression2;
 			}
-			else if (expression1 != null && expression2 == null) {
+
+			if (expression2 == null) {
 				return expression1;
 			}
-			DataEntityMapping demapping = null;
+			DataEntityMapping deMapping = null;
 			if (expression1.TableMapping != null) {
-				demapping = expression1.TableMapping;
+				deMapping = expression1.TableMapping;
 			}
 			else if (expression2.TableMapping != null) {
-				demapping = expression2.TableMapping;
+				deMapping = expression2.TableMapping;
 			}
-			QueryExpression newExpression = new QueryExpression (demapping);
-			newExpression._expression1 = expression1;
-			newExpression._expression2 = expression2;
-			newExpression._operatorType = operatorType;
-			newExpression.mutliQuery = expression1.mutliQuery | expression2.mutliQuery;
+
+			var newExpression = new QueryExpression(deMapping)
+			{
+				_expression1 = expression1,
+				_expression2 = expression2,
+				_operatorType = operatorType,
+				MultiQuery = expression1.MultiQuery | expression2.MultiQuery
+			};
 			return newExpression;
 		}
 
@@ -94,44 +99,6 @@
 			return Concat (expression1, ConcatOperatorType.OR, expression2);
 		}
 
-		///// <summary>
-		///// Exists specified expression.
-		///// </summary>
-		///// <param name="expression">Expression.</param>
-		//public static QueryExpression Exists (QueryExpression expression)
-		//{
-		//	return new ExistsQueryExpression (expression, false);
-		//}
-
-		///// <summary>
-		///// Not exists specified expression.
-		///// </summary>
-		///// <returns>The exists.</returns>
-		///// <param name="expression">Expression.</param>
-		//public static QueryExpression NotExists (QueryExpression expression)
-		//{
-		//	return new ExistsQueryExpression (expression, true);
-		//}
-
-		///// <summary>
-		///// Not the specified expression.
-		///// </summary>
-		///// <param name="expression">Expression.</param>
-		//public static QueryExpression Not (QueryExpression expression)
-		//{
-		//	return new LambdaNotQueryExpression (expression);
-		//}
-
-		bool mutliQuery;
-
-		internal bool MutliQuery {
-			get {
-				return mutliQuery;
-			}
-
-			set {
-				mutliQuery = value;
-			}
-		}
+		internal bool MultiQuery { get; set; }
 	}
 }

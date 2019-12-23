@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static DataContextOptionsBuilder<TContext> UseMssql<TContext>(this DataContextOptionsBuilder<TContext> builder, string connection) where TContext : DataContext
         {
             builder.SetDataConfig(connection, (configName, configParams) => {
-                MssqlProvider database = new MssqlProvider(configName, configParams);
+                var database = new MssqlProvider(configName, configParams);
                 return database;
             });
             return builder;

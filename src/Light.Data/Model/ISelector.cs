@@ -1,7 +1,6 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	interface ISelector
+	internal interface ISelector
 	{
 		string [] GetSelectFieldNames ();
 

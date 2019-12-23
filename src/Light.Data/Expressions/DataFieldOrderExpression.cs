@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class DataFieldOrderExpression : OrderExpression
+	internal class DataFieldOrderExpression : OrderExpression
 	{
-		DataFieldInfo _fieldInfo;
+		private DataFieldInfo _fieldInfo;
 
-		OrderType _orderType = OrderType.ASC;
+		private OrderType _orderType = OrderType.ASC;
 
 		public DataFieldOrderExpression (DataFieldInfo fieldInfo, OrderType orderType)
 			: base (fieldInfo.TableMapping)
@@ -17,14 +15,14 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string fieldSql = _fieldInfo.CreateSqlString (factory, isFullName, state);
+			var fieldSql = _fieldInfo.CreateSqlString (factory, isFullName, state);
 			return factory.CreateOrderBySql (fieldSql, _orderType);
 		}
 
 		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
 		{
-			DataFieldInfo info = this._fieldInfo.CreateAliasTableInfo (aliasTableName);
-			return new DataFieldOrderExpression (info, this._orderType);
+			var info = _fieldInfo.CreateAliasTableInfo (aliasTableName);
+			return new DataFieldOrderExpression (info, _orderType);
 		}
 	}
 }

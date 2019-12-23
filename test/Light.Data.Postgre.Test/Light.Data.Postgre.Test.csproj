@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
@@ -55,7 +55,6 @@
     </None>
     <None Update="lightdata.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Generator></Generator>
     </None>
     <None Update="Model\DBSchema_Postgre.tt">
       <LastGenOutput>DBSchema_Postgre.cs</LastGenOutput>

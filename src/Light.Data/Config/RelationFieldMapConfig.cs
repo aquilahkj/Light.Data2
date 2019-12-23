@@ -6,9 +6,9 @@ namespace Light.Data
 	/// <summary>
 	/// Relation field config.
 	/// </summary>
-	class RelationFieldMapConfig
+	internal class RelationFieldMapConfig
 	{
-		readonly List<RelationKey> _relationKeys = new List<RelationKey>();
+		private readonly List<RelationKey> _relationKeys = new List<RelationKey>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RelationFieldMapConfig"/> class.
@@ -60,10 +60,6 @@ namespace Light.Data
         ///  Gets the relation keys count
         /// </summary>
         /// <value>The relation key count.</value>
-        public int RelationKeyCount {
-			get {
-				return _relationKeys.Count;
-			}
-		}
+        public int RelationKeyCount => _relationKeys.Count;
 	}
 }

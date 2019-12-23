@@ -2,36 +2,30 @@
 
 namespace Light.Data
 {
-    class EnumFieldMapping : DataFieldMapping
+    internal class EnumFieldMapping : DataFieldMapping
     {
-        readonly object _minValue;
+        private readonly object _minValue;
 
-        readonly object _defaultValue;
+        private readonly object _defaultValue;
 
-        readonly object _min;
+        private readonly object _min;
 
-        readonly object _default;
+        private readonly object _default;
 
-        Type _nullableType;
-
-        public Type NullableType {
-            get {
-                return _nullableType;
-            }
-        }
+        public Type NullableType { get; }
 
         public EnumFieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
             : base(type, fieldName, indexName, mapping, isNullable, dbType)
         {
-            Type itemstype = Type.GetType("System.Nullable`1");
-            _nullableType = itemstype.MakeGenericType(type);
-            Array values = Enum.GetValues(ObjectType);
-            object value = values.GetValue(0);
+            var itemstype = Type.GetType("System.Nullable`1");
+            NullableType = itemstype.MakeGenericType(type);
+            var values = Enum.GetValues(ObjectType);
+            var value = values.GetValue(0);
             _min = value;
             _minValue = Convert.ChangeType(value, _typeCode, null);
 
             if (defaultValue != null) {
-                Type defaultValueType = defaultValue.GetType();
+                var defaultValueType = defaultValue.GetType();
                 if (defaultValueType == type) {
                     _default = defaultValue;
                     _defaultValue = Convert.ChangeType(defaultValue, _typeCode, null);
@@ -44,16 +38,16 @@ namespace Light.Data
         public EnumFieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable)
             : base(type, fieldName, indexName, mapping, isNullable, null)
         {
-            Type itemstype = Type.GetType("System.Nullable`1");
-            _nullableType = itemstype.MakeGenericType(type);
-            Array values = Enum.GetValues(ObjectType);
-            object value = values.GetValue(0);
+            var itemstype = Type.GetType("System.Nullable`1");
+            NullableType = itemstype.MakeGenericType(type);
+            var values = Enum.GetValues(ObjectType);
+            var value = values.GetValue(0);
             _minValue = Convert.ChangeType(value, _typeCode, null);
         }
 
         public override object ToProperty(object value)
         {
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 return null;
             } else {
                 value = Enum.ToObject(_objectType, value);
@@ -63,7 +57,7 @@ namespace Light.Data
 
         public override object ToParameter(object value)
         {
-            if (Object.Equals(value, null)) {
+            if (Equals(value, null)) {
                 return null;
             } else {
                 return Convert.ChangeType(value, _typeCode, null);
@@ -93,8 +87,8 @@ namespace Light.Data
 
         public override object GetInsertData(object entity, bool refreshField)
         {
-            object value = Handler.Get(entity);
-            if (Object.Equals(value, null)) {
+            var value = Handler.Get(entity);
+            if (Equals(value, null)) {
                 if (_defaultValue != null) {
                     if(refreshField) {
                         Handler.Set(entity, _default);

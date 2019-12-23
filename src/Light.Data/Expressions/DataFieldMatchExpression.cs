@@ -1,17 +1,15 @@
-﻿using System;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
 	/// <summary>
 	/// Data field match expression.
 	/// </summary>
-	class DataFieldMatchExpression : DataFieldExpression
+	internal class DataFieldMatchExpression : DataFieldExpression
 	{
-		readonly DataFieldInfo leftField;
+		private readonly DataFieldInfo leftField;
 
-		readonly DataFieldInfo rightField;
+		private readonly DataFieldInfo rightField;
 
-		QueryPredicate predicate;
+		private QueryPredicate predicate;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DataFieldMatchExpression"/> class.
@@ -35,9 +33,9 @@ namespace Light.Data
 		/// <param name="state">State.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string leftFieldSql = leftField.CreateSqlString (factory, true, state);
-			string rightFieldSql = rightField.CreateSqlString (factory, true, state);
-			string sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
+			var leftFieldSql = leftField.CreateSqlString (factory, true, state);
+			var rightFieldSql = rightField.CreateSqlString (factory, true, state);
+			var sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 			return sql;
 		}
 

@@ -1,64 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
-    class AggregateModel
+    internal class AggregateModel
     {
         public AggregateModel(DataEntityMapping entityMapping, CustomMapping aggregateMapping)
         {
-            _entityMapping = entityMapping;
-            _outputMapping = aggregateMapping;
+            EntityMapping = entityMapping;
+            OutputMapping = aggregateMapping;
         }
 
-        DataEntityMapping _entityMapping;
+        private bool _hasGroupBy;
 
-        CustomMapping _outputMapping;
+        public bool OnlyAggregate { get; set; }
 
-        bool _onlyAggregate;
+        public CustomMapping OutputMapping { get; }
 
-        bool _hasGroupBy;
+        public DataEntityMapping EntityMapping { get; }
 
-        public bool OnlyAggregate {
-            get {
-                return _onlyAggregate;
-            }
-
-            set {
-                _onlyAggregate = value;
-            }
-        }
-
-        public CustomMapping OutputMapping {
-            get {
-                return _outputMapping;
-            }
-        }
-
-        public DataEntityMapping EntityMapping {
-            get {
-                return _entityMapping;
-            }
-        }
-
-        readonly Dictionary<string, AggregateDataFieldInfo> _aggregateDict = new Dictionary<string, AggregateDataFieldInfo>();
+        private readonly Dictionary<string, AggregateDataFieldInfo> _aggregateDict = new Dictionary<string, AggregateDataFieldInfo>();
 
         public void AddGroupByField(string name, DataFieldInfo fieldInfo)
         {
             _hasGroupBy = true;
-            AggregateDataFieldInfo agg = new AggregateDataFieldInfo(fieldInfo, name, false);
+            var agg = new AggregateDataFieldInfo(fieldInfo, name, false);
             _aggregateDict.Add(name, agg);
         }
 
         public void AddAggregateField(string name, DataFieldInfo fieldInfo)
         {
-            AggregateDataFieldInfo agg = new AggregateDataFieldInfo(fieldInfo, name, true);
+            var agg = new AggregateDataFieldInfo(fieldInfo, name, true);
             _aggregateDict.Add(name, agg);
         }
 
         public DataFieldInfo GetAggregateData(string name)
         {
-            if (_aggregateDict.TryGetValue(name, out AggregateDataFieldInfo info)) {
+            if (_aggregateDict.TryGetValue(name, out var info)) {
                 return info;
             }
             else {
@@ -73,8 +50,8 @@ namespace Light.Data
 
         public AggregateSelector GetSelector()
         {
-            AggregateSelector selecor = new AggregateSelector();
-            foreach (AggregateDataFieldInfo item in _aggregateDict.Values) {
+            var selecor = new AggregateSelector();
+            foreach (var item in _aggregateDict.Values) {
                 selecor.SetSelectField(item);
             }
             return selecor;
@@ -82,11 +59,11 @@ namespace Light.Data
 
         public AggregateGroupBy GetGroupBy()
         {
-            if (!_hasGroupBy || _onlyAggregate) {
+            if (!_hasGroupBy || OnlyAggregate) {
                 return null;
             }
-            AggregateGroupBy groupBy = new AggregateGroupBy();
-            foreach (AggregateDataFieldInfo item in _aggregateDict.Values) {
+            var groupBy = new AggregateGroupBy();
+            foreach (var item in _aggregateDict.Values) {
                 if (!item.Aggregate) {
                     groupBy.SetGroupField(item);
                 }
@@ -96,7 +73,7 @@ namespace Light.Data
 
         public AggregateDataFieldInfo[] GetAggregateDataFieldInfos()
         {
-            AggregateDataFieldInfo[] array = new AggregateDataFieldInfo[_aggregateDict.Count];
+            var array = new AggregateDataFieldInfo[_aggregateDict.Count];
             _aggregateDict.Values.CopyTo(array, 0);
             return array;
         }

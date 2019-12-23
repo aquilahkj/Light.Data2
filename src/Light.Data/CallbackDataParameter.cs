@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Light.Data
 {
-    class CallbackDataParameter : DataParameter
+    internal class CallbackDataParameter : DataParameter
     {
         private readonly object callbackData;
         private readonly DataParameterMapping mapping;
@@ -20,9 +18,9 @@ namespace Light.Data
         internal override bool Callback()
         {
             if (base.Callback()) {
-                object value = Value;
-                if (!Object.Equals(value, null)) {
-                    Type type = value.GetType();
+                var value = Value;
+                if (!Equals(value, null)) {
+                    var type = value.GetType();
                     if (type != mapping.ParameterType) {
                         if (mapping.ParameterType == typeof(string)) {
                             value = value.ToString();

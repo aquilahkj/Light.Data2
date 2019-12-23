@@ -6,15 +6,15 @@ using MySql.Data.MySqlClient;
 
 namespace Light.Data.Mysql
 {
-    class MysqlProvider : DatabaseProvider
+    internal class MysqlProvider : DatabaseProvider
     {
         public MysqlProvider(string configName, ConfigParamSet configParams)
             : base(configName, configParams)
         {
             _factory = new MysqlCommandFactory();
-            string strictMode = configParams.GetParamValue("strictMode");
+            var strictMode = configParams.GetParamValue("strictMode");
             if (strictMode != null) {
-                if (bool.TryParse(strictMode, out bool value))
+                if (bool.TryParse(strictMode, out var value))
                     _factory.SetStrictMode(value);
             }
         }
@@ -33,7 +33,7 @@ namespace Light.Data.Mysql
 
         public override DbCommand CreateCommand(string sql)
         {
-            MySqlCommand command = new MySqlCommand() {
+            var command = new MySqlCommand() {
                 CommandText = sql,
                 CommandTimeout = CommandTimeout
             };
@@ -42,7 +42,7 @@ namespace Light.Data.Mysql
 
         public override DbCommand CreateCommand()
         {
-            MySqlCommand command = new MySqlCommand() {
+            var command = new MySqlCommand() {
                 CommandTimeout = CommandTimeout
             };
             return command;
@@ -55,7 +55,7 @@ namespace Light.Data.Mysql
 
         public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType)
         {
-            string parameterName = name;
+            var parameterName = name;
             if (commandType == CommandType.StoredProcedure) {
                 if (parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
                     parameterName = parameterName.TrimStart(ParameterPrefix[0]);
@@ -66,14 +66,14 @@ namespace Light.Data.Mysql
                     parameterName = ParameterPrefix + parameterName;
                 }
             }
-            MySqlParameter sp = new MySqlParameter() {
+            var sp = new MySqlParameter() {
                 ParameterName = parameterName,
                 Direction = direction
             };
             if (value == null) {
                 sp.Value = DBNull.Value;
                 if (string.IsNullOrEmpty(dbType) && dataType != null) {
-                    if (ConvertDbType(dataType, out MySqlDbType sqlType)) {
+                    if (ConvertDbType(dataType, out var sqlType)) {
                         sp.MySqlDbType = sqlType;
                     }
                 }
@@ -82,18 +82,18 @@ namespace Light.Data.Mysql
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                if (!dbTypeDict.TryGetValue(dbType, out DbTypeInfo info)) {
+                if (!dbTypeDict.TryGetValue(dbType, out var info)) {
                     lock (dbTypeDict) {
                         if (!dbTypeDict.TryGetValue(dbType, out info)) {
                             info = new DbTypeInfo();
                             try {
-                                if (ParseSqlDbType(dbType, out MySqlDbType sqltype)) {
+                                if (ParseSqlDbType(dbType, out var sqltype)) {
                                     info.MySqlDbType = sqltype;
                                 }
-                                else if (Utility.ParseDbType(dbType, out DbType dType)) {
+                                else if (Utility.ParseDbType(dbType, out var dType)) {
                                     info.DbType = dType;
                                 }
-                                if (Utility.ParseSize(dbType, out int size, out byte? scale)) {
+                                if (Utility.ParseSize(dbType, out var size, out var scale)) {
                                     info.Size = size;
                                     info.Scale = scale;
                                 }
@@ -135,9 +135,9 @@ namespace Light.Data.Mysql
         
         #endregion
 
-        bool ConvertDbType(Type type, out MySqlDbType sqlType)
+        private bool ConvertDbType(Type type, out MySqlDbType sqlType)
         {
-            bool ret = true;
+            var ret = true;
             if (type == typeof(Byte[])) {
                 sqlType = MySqlDbType.VarBinary;
             }
@@ -190,11 +190,11 @@ namespace Light.Data.Mysql
             return ret;
         }
 
-        bool ParseSqlDbType(string dbType, out MySqlDbType type)
+        private bool ParseSqlDbType(string dbType, out MySqlDbType type)
         {
             type = MySqlDbType.VarChar;
-            int index = dbType.IndexOf('(');
-            string typeString = string.Empty;
+            var index = dbType.IndexOf('(');
+            var typeString = string.Empty;
             if (index < 0) {
                 typeString = dbType;
             }
@@ -207,9 +207,9 @@ namespace Light.Data.Mysql
             return Enum.TryParse(typeString, true, out type);
         }
 
-        Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
+        private readonly Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
 
-        class DbTypeInfo
+        private class DbTypeInfo
         {
             public MySqlDbType? MySqlDbType;
             public DbType? DbType;

@@ -1,107 +1,46 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Light.Data
 {
-	class SelectJoinModel : IJoinModel
+	internal class SelectJoinModel : IJoinModel
 	{
-		readonly SelectModel _model;
+		public SelectModel Model { get; }
 
-		public SelectModel Model {
-			get {
-				return _model;
-			}
-		}
+		public JoinConnect Connect { get; }
 
-		readonly JoinConnect _connect;
+		public IJoinTableMapping JoinMapping { get; }
 
-		public JoinConnect Connect {
-			get {
-				return _connect;
-			}
-		}
+		public QueryExpression Query { get; set; }
 
-		readonly IJoinTableMapping _joinMapping;
+		public OrderExpression Order { get; set; }
 
-		public IJoinTableMapping JoinMapping {
-			get {
-				return _joinMapping;
-			}
-		}
+		public bool Distinct { get; set; }
 
-		QueryExpression _query;
+		public string AliasTableName { get; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-			set {
-				_query = value;
-			}
-		}
-
-		OrderExpression _order;
-
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-			set {
-				_order = value;
-			}
-		}
-
-		bool _distinct;
-
-		public bool Distinct {
-			get {
-				return _distinct;
-			}
-			set {
-				_distinct = value;
-			}
-		}
-
-		readonly string _aliasTableName;
-
-		public string AliasTableName {
-			get {
-				return _aliasTableName;
-			}
-		}
-
-        bool _noDataSetEntityNull;
-
-        public bool NoDataSetEntityNull {
-            get {
-                return _noDataSetEntityNull;
-            }
-            set {
-                _noDataSetEntityNull = value;
-            }
-        }
+		public bool NoDataSetEntityNull { get; set; }
 
         public SelectJoinModel (SelectModel model, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order, JoinSetting setting)
 		{
-			this._model = model;
-			this._connect = connect;
-			this._query = query;
-			this._order = order;
-			this._aliasTableName = aliasTableName;
-			this._joinMapping = model.JoinTableMapping;
+			Model = model;
+			Connect = connect;
+			Query = query;
+			Order = order;
+			AliasTableName = aliasTableName;
+			JoinMapping = model.JoinTableMapping;
             if ((setting & JoinSetting.QueryDistinct) == JoinSetting.QueryDistinct) {
-                _distinct = true;
+                Distinct = true;
             }
             if ((setting & JoinSetting.NoDataSetEntityNull) == JoinSetting.NoDataSetEntityNull) {
-                _noDataSetEntityNull = true;
+                NoDataSetEntityNull = true;
             }
         }
 
 		public string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{
-			StringBuilder sb = new StringBuilder ();
-			CommandData command = factory.CreateSelectCommand (_model.EntityMapping, _model.CreateSelector (), _query, _order, _distinct, null, state);
-            string aliasName = _aliasTableName;// ?? factory.CreateDataTableMappingSql(_model.EntityMapping, state); 
+			var sb = new StringBuilder ();
+			var command = factory.CreateSelectCommand (Model.EntityMapping, Model.CreateSelector (), Query, Order, Distinct, null, state);
+            var aliasName = AliasTableName;// ?? factory.CreateDataTableMappingSql(_model.EntityMapping, state); 
 			sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
 			return sb.ToString ();
 		}

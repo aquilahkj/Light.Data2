@@ -1,8 +1,8 @@
 ﻿namespace Light.Data
 {
-	class LightConstantDataFieldInfo : LightDataFieldInfo
+	internal class LightConstantDataFieldInfo : LightDataFieldInfo
 	{
-		readonly object _value;
+		private readonly object _value;
 
 		public LightConstantDataFieldInfo (object value)
 			: base (DataEntityMapping.Default)
@@ -12,11 +12,11 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, false);
+			var sql = state.GetDataSql (this, false);
 			if (sql != null) {
 				return sql;
 			}
-			object value = LambdaExpressionExtend.ConvertLambdaObject (_value);
+			var value = LambdaExpressionExtend.ConvertLambdaObject (_value);
 			sql = state.AddDataParameter (factory, value);
 
 			state.SetDataSql (this, false, sql);

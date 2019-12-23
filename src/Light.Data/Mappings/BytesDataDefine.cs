@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Light.Data
 {
-    class BytesDataDefine : DataDefine
+    internal class BytesDataDefine : DataDefine
     {
         public BytesDataDefine(Type type, bool isNullable)
             : base(type, isNullable)
@@ -22,8 +20,8 @@ namespace Light.Data
         /// <param name="state">State.</param>
         public override object LoadData(DataContext context, IDataReader datareader, object state)
         {
-            object value = datareader[0];
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            var value = datareader[0];
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 if (IsNullable) {
                     return null;
                 } else {
@@ -36,8 +34,8 @@ namespace Light.Data
 
         public override object LoadData(DataContext context, IDataReader datareader, string name, object state)
         {
-            object value = datareader[name];
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            var value = datareader[name];
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 if (IsNullable) {
                     return null;
                 } else {

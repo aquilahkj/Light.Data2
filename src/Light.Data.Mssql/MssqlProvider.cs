@@ -6,15 +6,15 @@ using System.Data.SqlClient;
 
 namespace Light.Data.Mssql
 {
-    class MssqlProvider : DatabaseProvider
+    internal class MssqlProvider : DatabaseProvider
     {
         public MssqlProvider(string configName, ConfigParamSet configParams)
             : base(configName, configParams)
         {
-            string version = configParams.GetParamValue("version");
+            var version = configParams.GetParamValue("version");
             MssqlCommandFactory mssqlCommandFactory = null;
             if (!string.IsNullOrWhiteSpace(version)) {
-                string[] arr = version.Split('.');
+                var arr = version.Split('.');
                 string vc;
                 if (arr.Length > 1) {
                     vc = string.Concat(arr[0].Trim(), ".", arr[1].Trim());
@@ -22,7 +22,7 @@ namespace Light.Data.Mssql
                 else {
                     vc = arr[0].Trim();
                 }
-                if (decimal.TryParse(vc, out decimal v)) {
+                if (decimal.TryParse(vc, out var v)) {
                     if (v >= 11) {
                         mssqlCommandFactory = new MssqlCommandFactory_2012();
                     }
@@ -35,9 +35,9 @@ namespace Light.Data.Mssql
                 }
             }
             _factory = mssqlCommandFactory ?? new MssqlCommandFactory_2008();
-            string strictMode = configParams.GetParamValue("strictMode");
+            var strictMode = configParams.GetParamValue("strictMode");
             if (strictMode != null) {
-                if (bool.TryParse(strictMode, out bool value))
+                if (bool.TryParse(strictMode, out var value))
                     _factory.SetStrictMode(value);
             }
         }
@@ -56,7 +56,7 @@ namespace Light.Data.Mssql
 
         public override DbCommand CreateCommand(string sql)
         {
-            SqlCommand command = new SqlCommand() {
+            var command = new SqlCommand() {
                 CommandText = sql,
                 CommandTimeout = CommandTimeout
             };
@@ -65,7 +65,7 @@ namespace Light.Data.Mssql
 
         public override DbCommand CreateCommand()
         {
-            SqlCommand command = new SqlCommand() {
+            var command = new SqlCommand() {
                 CommandTimeout = CommandTimeout
             };
             return command;
@@ -78,18 +78,18 @@ namespace Light.Data.Mssql
 
         public override IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType)
         {
-            string parameterName = name;
+            var parameterName = name;
             if (!parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
                 parameterName = ParameterPrefix + parameterName;
             }
-            SqlParameter sp = new SqlParameter() {
+            var sp = new SqlParameter() {
                 ParameterName = parameterName,
                 Direction = direction
             };
             if (value == null) {
                 sp.Value = DBNull.Value;
                 if (string.IsNullOrEmpty(dbType) && dataType != null) {
-                    if (ConvertDbType(dataType, out SqlDbType sqlType)) {
+                    if (ConvertDbType(dataType, out var sqlType)) {
                         sp.SqlDbType = sqlType;
                     }
                 }
@@ -110,18 +110,18 @@ namespace Light.Data.Mssql
                 sp.Value = value;
             }
             if (!string.IsNullOrEmpty(dbType)) {
-                if (!dbTypeDict.TryGetValue(dbType, out DbTypeInfo info)) {
+                if (!dbTypeDict.TryGetValue(dbType, out var info)) {
                     lock (dbTypeDict) {
                         if (!dbTypeDict.TryGetValue(dbType, out info)) {
                             info = new DbTypeInfo();
                             try {
-                                if (ParseSqlDbType(dbType, out SqlDbType sqltype)) {
+                                if (ParseSqlDbType(dbType, out var sqltype)) {
                                     info.SqlDbType = sqltype;
                                 }
-                                else if (Utility.ParseDbType(dbType, out DbType dType)) {
+                                else if (Utility.ParseDbType(dbType, out var dType)) {
                                     info.DbType = dType;
                                 }
-                                if (Utility.ParseSize(dbType, out int size, out byte? scale)) {
+                                if (Utility.ParseSize(dbType, out var size, out var scale)) {
                                     info.Size = size;
                                     info.Scale = scale;
                                 }
@@ -164,9 +164,9 @@ namespace Light.Data.Mssql
         
         #endregion
 
-        bool ConvertDbType(Type type, out SqlDbType sqlType)
+        private bool ConvertDbType(Type type, out SqlDbType sqlType)
         {
-            bool ret = true;
+            var ret = true;
             if (type == typeof(Byte[])) {
                 sqlType = SqlDbType.VarBinary;
             }
@@ -222,7 +222,7 @@ namespace Light.Data.Mssql
         private static bool ParseSqlDbType(string dbType, out SqlDbType type)
         {
             type = SqlDbType.VarChar;
-            int index = dbType.IndexOf('(');
+            var index = dbType.IndexOf('(');
             string typeString;
             if (index < 0) {
                 typeString = dbType;
@@ -242,9 +242,9 @@ namespace Light.Data.Mssql
             }
         }
 
-        Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
+        private readonly Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
 
-        class DbTypeInfo
+        private class DbTypeInfo
         {
             public SqlDbType? SqlDbType;
             public DbType? DbType;

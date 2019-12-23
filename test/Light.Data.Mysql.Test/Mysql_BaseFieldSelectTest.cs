@@ -16,52 +16,55 @@ namespace Light.Data.Mysql.Test
         }
 
         #region base test
+
         List<TeBaseFieldSelectField> CreateBaseFieldTableList(int count)
         {
             List<TeBaseFieldSelectField> list = new List<TeBaseFieldSelectField>();
             DateTime now = DateTime.Now;
             DateTime d = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
-            for (int i = 1; i <= count; i++) {
+            for (int i = 1; i <= count; i++)
+            {
                 int x = i % 5 == 0 ? -1 : 1;
                 TeBaseFieldSelectField item = new TeBaseFieldSelectField();
                 item.BoolField = i % 3 == 0;
-                item.BoolFieldNull = i % 2 == 0 ? null : (bool?)(item.BoolField);
-                item.ByteField = (byte)(i % 256);
-                item.ByteFieldNull = i % 2 == 0 ? null : (byte?)(item.ByteField);
-                item.SbyteField = (sbyte)((i % 128) * x);
-                item.SbyteFieldNull = i % 2 == 0 ? null : (sbyte?)(item.SbyteField);
-                item.Int16Field = (short)((i % 20) * x);
-                item.Int16FieldNull = i % 2 == 0 ? null : (short?)(item.Int16Field);
-                item.Int32Field = (int)((i % 23) * x);
-                item.Int32FieldNull = i % 2 == 0 ? null : (int?)(item.Int32Field);
-                item.Int64Field = (long)((i % 25) * x);
-                item.Int64FieldNull = i % 2 == 0 ? null : (long?)(item.Int64Field);
-                item.UInt16Field = (ushort)(i % 27);
-                item.UInt16FieldNull = i % 2 == 0 ? null : (ushort?)(item.UInt16Field);
-                item.UInt32Field = (uint)(i % 28);
-                item.UInt32FieldNull = i % 2 == 0 ? null : (uint?)(item.UInt32Field);
-                item.UInt64Field = (ulong)(i % 31);
-                item.UInt64FieldNull = i % 2 == 0 ? null : (ulong?)(item.UInt64Field);
-                item.FloatField = (float)((i % 19) * 0.1 * x);
-                item.FloatFieldNull = i % 2 == 0 ? null : (float?)(item.FloatField);
-                item.DoubleField = (double)((i % 22) * 0.1 * x);
-                item.DoubleFieldNull = i % 2 == 0 ? null : (double?)(item.DoubleField);
-                item.DecimalField = (decimal)((i % 26) * 0.1 * x);
-                item.DecimalFieldNull = i % 2 == 0 ? null : (decimal?)(item.DecimalField);
+                item.BoolFieldNull = i % 2 == 0 ? null : (bool?) (item.BoolField);
+                item.ByteField = (byte) (i % 256);
+                item.ByteFieldNull = i % 2 == 0 ? null : (byte?) (item.ByteField);
+                item.SbyteField = (sbyte) ((i % 128) * x);
+                item.SbyteFieldNull = i % 2 == 0 ? null : (sbyte?) (item.SbyteField);
+                item.Int16Field = (short) ((i % 20) * x);
+                item.Int16FieldNull = i % 2 == 0 ? null : (short?) (item.Int16Field);
+                item.Int32Field = (int) ((i % 23) * x);
+                item.Int32FieldNull = i % 2 == 0 ? null : (int?) (item.Int32Field);
+                item.Int64Field = (long) ((i % 25) * x);
+                item.Int64FieldNull = i % 2 == 0 ? null : (long?) (item.Int64Field);
+                item.UInt16Field = (ushort) (i % 27);
+                item.UInt16FieldNull = i % 2 == 0 ? null : (ushort?) (item.UInt16Field);
+                item.UInt32Field = (uint) (i % 28);
+                item.UInt32FieldNull = i % 2 == 0 ? null : (uint?) (item.UInt32Field);
+                item.UInt64Field = (ulong) (i % 31);
+                item.UInt64FieldNull = i % 2 == 0 ? null : (ulong?) (item.UInt64Field);
+                item.FloatField = (float) ((i % 19) * 0.1 * x);
+                item.FloatFieldNull = i % 2 == 0 ? null : (float?) (item.FloatField);
+                item.DoubleField = (double) ((i % 22) * 0.1 * x);
+                item.DoubleFieldNull = i % 2 == 0 ? null : (double?) (item.DoubleField);
+                item.DecimalField = (decimal) ((i % 26) * 0.1 * x);
+                item.DecimalFieldNull = i % 2 == 0 ? null : (decimal?) (item.DecimalField);
                 item.DateTimeField = d.AddMinutes(i * 2);
-                item.DateTimeFieldNull = i % 2 == 0 ? null : (DateTime?)(item.DateTimeField);
+                item.DateTimeFieldNull = i % 2 == 0 ? null : (DateTime?) (item.DateTimeField);
                 item.VarcharField = "testtest" + item.Int32Field;
                 item.VarcharFieldNull = i % 2 == 0 ? null : item.VarcharField;
                 item.TextField = "texttext" + item.Int32Field;
                 item.TextFieldNull = i % 2 == 0 ? null : item.TextField;
                 item.BigDataField = Encoding.UTF8.GetBytes(item.VarcharField);
                 item.BigDataFieldNull = i % 2 == 0 ? null : item.BigDataField;
-                item.EnumInt32Field = (EnumInt32Type)(i % 5 - 1);
-                item.EnumInt32FieldNull = i % 2 == 0 ? null : (EnumInt32Type?)(item.EnumInt32Field);
-                item.EnumInt64Field = (EnumInt64Type)(i % 5 - 1);
-                item.EnumInt64FieldNull = i % 2 == 0 ? null : (EnumInt64Type?)(item.EnumInt64Field);
+                item.EnumInt32Field = (EnumInt32Type) (i % 5 - 1);
+                item.EnumInt32FieldNull = i % 2 == 0 ? null : (EnumInt32Type?) (item.EnumInt32Field);
+                item.EnumInt64Field = (EnumInt64Type) (i % 5 - 1);
+                item.EnumInt64FieldNull = i % 2 == 0 ? null : (EnumInt64Type?) (item.EnumInt64Field);
                 list.Add(item);
             }
+
             return list;
         }
 
@@ -82,11 +85,13 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var listEx = list.Select(x => x.Id).ToList();
-            var listAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ToListAsync(CancellationToken.None);
+            var listAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id)
+                .ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = list.Select(x => x.Id).ToArray();
-            var arrayAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ToArrayAsync(CancellationToken.None);
+            var arrayAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id)
+                .ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
         }
 
@@ -112,11 +117,13 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var firstEx = list.Select(x => x.Id).First();
-            var firstAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).FirstAsync(CancellationToken.None);
+            var firstAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id)
+                .FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = list.Select(x => x.Id).ElementAt(10);
-            var elementAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id).ElementAtAsync(10, CancellationToken.None);
+            var elementAc = await context.Query<TeBaseFieldSelectField>().SelectField(x => x.Id)
+                .ElementAtAsync(10, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -467,11 +474,13 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var listEx = list.Select(x => x.Id).ToList();
-            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ToListAsync(CancellationToken.None);
+            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id)
+                .ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
             var arrayEx = list.Select(x => x.Id).ToArray();
-            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ToArrayAsync(CancellationToken.None);
+            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id)
+                .ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
         }
 
@@ -494,11 +503,13 @@ namespace Light.Data.Mysql.Test
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
             var firstEx = list.Select(x => x.Id).First();
-            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).FirstAsync(CancellationToken.None);
+            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id)
+                .FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
             var elementEx = list.Select(x => x.Id).ElementAt(10);
-            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id).ElementAtAsync(10, CancellationToken.None);
+            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => x.Id)
+                .ElementAtAsync(10, CancellationToken.None);
             AssertExtend.StrictEqual(elementEx, elementAc);
         }
 
@@ -843,11 +854,13 @@ namespace Light.Data.Mysql.Test
         #endregion
 
         #region select multi
+
         [Fact]
         public void TestCase_Query_Select_Multi_Fields()
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
-            var listEx = list.Select(x => new {
+            var listEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -866,7 +879,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).ToList();
-            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -887,7 +901,8 @@ namespace Light.Data.Mysql.Test
             }).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            var arrayEx = list.Select(x => new {
+            var arrayEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -906,7 +921,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).ToArray();
-            var arrayAc = context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var arrayAc = context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -927,7 +943,8 @@ namespace Light.Data.Mysql.Test
             }).ToArray();
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
-            var selectEx = list.Select(x => new {
+            var selectEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -946,7 +963,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             });
-            var selectAc = context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var selectAc = context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -967,7 +985,8 @@ namespace Light.Data.Mysql.Test
             });
             AssertExtend.Equal(selectEx, selectAc);
 
-            var firstEx = list.Select(x => new {
+            var firstEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -986,7 +1005,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).First();
-            var firstAc = context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var firstAc = context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1007,7 +1027,8 @@ namespace Light.Data.Mysql.Test
             }).First();
             AssertExtend.StrictEqual(firstEx, firstAc);
 
-            var elementEx = list.Select(x => new {
+            var elementEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1026,7 +1047,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).ElementAt(10);
-            var elementAc = context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var elementAc = context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1052,7 +1074,8 @@ namespace Light.Data.Mysql.Test
         public async Task TestCase_Query_Select_Multi_Fields_Async()
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
-            var listEx = list.Select(x => new {
+            var listEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1071,7 +1094,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).ToList();
-            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1092,7 +1116,8 @@ namespace Light.Data.Mysql.Test
             }).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
-            var arrayEx = list.Select(x => new {
+            var arrayEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1111,7 +1136,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).ToArray();
-            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1132,7 +1158,8 @@ namespace Light.Data.Mysql.Test
             }).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
-            var firstEx = list.Select(x => new {
+            var firstEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1151,7 +1178,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).First();
-            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1172,7 +1200,8 @@ namespace Light.Data.Mysql.Test
             }).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
-            var elementEx = list.Select(x => new {
+            var elementEx = list.Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1191,7 +1220,8 @@ namespace Light.Data.Mysql.Test
                 x.TextField,
                 x.BigDataField
             }).ElementAt(10);
-            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.Id,
                 x.BoolField,
                 x.SbyteField,
@@ -1217,7 +1247,8 @@ namespace Light.Data.Mysql.Test
         public void TestCase_Query_Select_Multi_Fields_Null()
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
-            var listEx = list.Select(x => new {
+            var listEx = list.Select(x => new
+            {
                 x.BoolFieldNull,
                 x.SbyteFieldNull,
                 x.ByteFieldNull,
@@ -1235,7 +1266,8 @@ namespace Light.Data.Mysql.Test
                 x.TextFieldNull,
                 x.BigDataFieldNull
             }).ToList();
-            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new {
+            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new
+            {
                 x.BoolFieldNull,
                 x.SbyteFieldNull,
                 x.ByteFieldNull,
@@ -1260,7 +1292,8 @@ namespace Light.Data.Mysql.Test
         public void TestCase_Query_Select_Multi_Fields_M2()
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
-            var listEx = list.Select(x => new BaseFieldSelectModel {
+            var listEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1279,7 +1312,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).ToList();
-            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1300,7 +1334,8 @@ namespace Light.Data.Mysql.Test
             }).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
-            var arrayEx = list.Select(x => new BaseFieldSelectModel {
+            var arrayEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1319,7 +1354,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).ToArray();
-            var arrayAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var arrayAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1340,7 +1376,8 @@ namespace Light.Data.Mysql.Test
             }).ToArray();
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
-            var selectEx = list.Select(x => new BaseFieldSelectModel {
+            var selectEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1359,7 +1396,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             });
-            var selectAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var selectAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1380,7 +1418,8 @@ namespace Light.Data.Mysql.Test
             });
             AssertExtend.Equal(selectEx, selectAc);
 
-            var firstEx = list.Select(x => new BaseFieldSelectModel {
+            var firstEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1399,7 +1438,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).First();
-            var firstAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var firstAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1420,7 +1460,8 @@ namespace Light.Data.Mysql.Test
             }).First();
             AssertExtend.StrictEqual(firstEx, firstAc);
 
-            var elementEx = list.Select(x => new BaseFieldSelectModel {
+            var elementEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1439,7 +1480,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).ElementAt(10);
-            var elementAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var elementAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1465,7 +1507,8 @@ namespace Light.Data.Mysql.Test
         public async Task TestCase_Query_Select_Multi_Fields_M2_Async()
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
-            var listEx = list.Select(x => new BaseFieldSelectModel {
+            var listEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1484,7 +1527,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).ToList();
-            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var listAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1505,7 +1549,8 @@ namespace Light.Data.Mysql.Test
             }).ToListAsync(CancellationToken.None);
             AssertExtend.StrictEqual(listEx, listAc);
 
-            var arrayEx = list.Select(x => new BaseFieldSelectModel {
+            var arrayEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1524,7 +1569,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).ToArray();
-            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var arrayAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1545,7 +1591,8 @@ namespace Light.Data.Mysql.Test
             }).ToArrayAsync(CancellationToken.None);
             AssertExtend.StrictEqual(arrayEx, arrayAc);
 
-            var firstEx = list.Select(x => new BaseFieldSelectModel {
+            var firstEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1564,7 +1611,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).First();
-            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var firstAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1585,7 +1633,8 @@ namespace Light.Data.Mysql.Test
             }).FirstAsync(CancellationToken.None);
             AssertExtend.StrictEqual(firstEx, firstAc);
 
-            var elementEx = list.Select(x => new BaseFieldSelectModel {
+            var elementEx = list.Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1604,7 +1653,8 @@ namespace Light.Data.Mysql.Test
                 TextField = x.TextField,
                 BigDataField = x.BigDataField
             }).ElementAt(10);
-            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel {
+            var elementAc = await context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModel
+            {
                 Id = x.Id,
                 BoolField = x.BoolField,
                 SbyteField = x.SbyteField,
@@ -1630,7 +1680,8 @@ namespace Light.Data.Mysql.Test
         public void TestCase_Query_Select_Multi_Fields_M2_Null()
         {
             List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
-            var listEx = list.Select(x => new BaseFieldSelectModelNull {
+            var listEx = list.Select(x => new BaseFieldSelectModelNull
+            {
                 Id = x.Id,
                 BoolFieldNull = x.BoolFieldNull,
                 SbyteFieldNull = x.SbyteFieldNull,
@@ -1649,7 +1700,8 @@ namespace Light.Data.Mysql.Test
                 TextFieldNull = x.TextFieldNull,
                 BigDataFieldNull = x.BigDataFieldNull
             }).ToList();
-            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModelNull {
+            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new BaseFieldSelectModelNull
+            {
                 Id = x.Id,
                 BoolFieldNull = x.BoolFieldNull,
                 SbyteFieldNull = x.SbyteFieldNull,
@@ -1670,8 +1722,8 @@ namespace Light.Data.Mysql.Test
             }).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
         }
-        #endregion
 
+        #endregion
 
 
         [Fact]
@@ -1686,32 +1738,37 @@ namespace Light.Data.Mysql.Test
             int times = tol / cnt;
             times++;
 
-            for (int i = 0; i < times; i++) {
+            for (int i = 0; i < times; i++)
+            {
                 listEx = list.Skip(cnt * i).Take(cnt).Select(x => x.Id).ToList();
                 listAc = context.Query<TeBaseFieldSelectField>().PageSize(i + 1, cnt).Select(x => x.Id).ToList();
                 AssertExtend.StrictEqual(listEx, listAc);
 
                 listEx = list.Skip(cnt * i).Take(cnt).Select(x => x.Id).ToList();
-                listAc = context.Query<TeBaseFieldSelectField>().Range(i * cnt, (i + 1) * cnt).Select(x => x.Id).ToList();
+                listAc = context.Query<TeBaseFieldSelectField>().Range(i * cnt, (i + 1) * cnt).Select(x => x.Id)
+                    .ToList();
                 AssertExtend.StrictEqual(listEx, listAc);
             }
 
             listEx = list.Where(x => x.Id > cnt).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).PageSize(1, cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).PageSize(1, cnt).Select(x => x.Id)
+                .ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Id).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).PageSize(1, cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).PageSize(1, cnt)
+                .Select(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.Id > cnt).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Range(0, cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Range(0, cnt).Select(x => x.Id)
+                .ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Id).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Range(0, cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Range(0, cnt)
+                .Select(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
-
         }
 
         [Fact]
@@ -1728,7 +1785,8 @@ namespace Light.Data.Mysql.Test
             int times = tol / cnt;
             times++;
 
-            for (int i = 0; i < times; i++) {
+            for (int i = 0; i < times; i++)
+            {
                 listEx = list.Skip(cnt * i).Select(x => x.Id).ToList();
                 listAc = context.Query<TeBaseFieldSelectField>().Skip(cnt * i).Select(x => x.Id).ToList();
                 AssertExtend.StrictEqual(listEx, listAc);
@@ -1743,29 +1801,94 @@ namespace Light.Data.Mysql.Test
             }
 
             listEx = list.Where(x => x.Id > cnt).Skip(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Skip(cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Skip(cnt).Select(x => x.Id)
+                .ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Id).Skip(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Skip(cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Skip(cnt).Select(x => x.Id)
+                .ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.Id > cnt).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Take(cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Take(cnt).Select(x => x.Id)
+                .ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Id).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Take(cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Take(cnt).Select(x => x.Id)
+                .ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.Where(x => x.Id > cnt).Skip(cnt).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Skip(cnt).Take(cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().Where(x => x.Id > cnt).Skip(cnt).Take(cnt)
+                .Select(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
 
             listEx = list.OrderByDescending(x => x.Id).Skip(cnt).Take(cnt).Select(x => x.Id).ToList();
-            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Skip(cnt).Take(cnt).Select(x => x.Id).ToList();
+            listAc = context.Query<TeBaseFieldSelectField>().OrderByDescending(x => x.Id).Skip(cnt).Take(cnt)
+                .Select(x => x.Id).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
         }
+
+        byte[] TestBuffer(byte[] buffer)
+        {
+            if (buffer != null && buffer.Length > 0)
+            {
+                var list = new List<byte>(buffer.Reverse());
+                buffer = list.ToArray();
+            }
+
+            return buffer;
+        }
+
+        [Fact]
+        public void TestCase_Query_Select_Multi_Fields_Special()
+        {
+            List<TeBaseFieldSelectField> list = CreateAndInsertBaseFieldTableList(45);
+            var listEx = list.Select(x => new TeBaseFieldSelectField
+            {
+                Id = x.Id,
+                BoolField = x.SbyteField <= 0 || x.BoolField,
+                SbyteField = x.SbyteField,
+                ByteField = x.ByteField,
+                Int16Field = (short) (x.Int16Field + 1),
+                Int32Field = x.Int32Field + x.Int16Field,
+                Int64Field = x.Int64Field,
+                UInt16Field = (ushort) (x.UInt16Field * 2),
+                UInt32Field = x.UInt32Field / 2,
+                UInt64Field = x.UInt64Field + x.UInt64Field,
+                FloatField = Math.Abs(x.FloatField),
+                DoubleField = Math.E + x.DoubleField,
+                DecimalField = x.DecimalField > 0 ? 1.0m : -1.0m,
+                DateTimeField = x.DateTimeField.Date.AddDays(1),
+                VarcharField = x.VarcharField + x.Id,
+                TextField = x.TextField.Length.ToString(),
+                BigDataField = TestBuffer(x.BigDataField)
+            }).ToList();
+            var listAc = context.Query<TeBaseFieldSelectField>().Select(x => new TeBaseFieldSelectField
+            {
+                Id = x.Id,
+                BoolField = x.SbyteField <= 0 || x.BoolField,
+                SbyteField = x.SbyteField,
+                ByteField = x.ByteField,
+                Int16Field = (short) (x.Int16Field + 1),
+                Int32Field = x.Int32Field + x.Int16Field,
+                Int64Field = x.Int64Field,
+                UInt16Field = (ushort) (x.UInt16Field * 2),
+                UInt32Field = x.UInt32Field / 2,
+                UInt64Field = x.UInt64Field + x.UInt64Field,
+                FloatField = Math.Abs(x.FloatField),
+                DoubleField = Math.E + x.DoubleField,
+                DecimalField = x.DecimalField > 0 ? 1.0m : -1.0m,
+                DateTimeField = x.DateTimeField.Date.AddDays(1),
+                VarcharField = x.VarcharField + x.Id,
+                TextField = x.TextField.Length.ToString(),
+                BigDataField = TestBuffer(x.BigDataField)
+            }).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+        }
+
         #endregion
     }
 }

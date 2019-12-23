@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	abstract class LambdaState
+	internal abstract class LambdaState
 	{
-		public abstract bool CheckPamramter (string name, Type type);
+		public abstract bool CheckParameter (string name, Type type);
 
 		public abstract DataFieldInfo GetDataFieldInfo (string fullPath);
 
@@ -14,38 +12,24 @@ namespace Light.Data
 
 		public abstract ISelector CreateSelector (string[] fullPaths);
 
-		bool mutliEntity;
-
-		public bool MutliEntity {
-			get {
-				return mutliEntity;
-			}
-
-			set {
-				mutliEntity = value;
-			}
-		}
-
-		//bool aggregateField;
-
-		//public bool AggregateField {
-		//	get {
-		//		return aggregateField;
-		//	}
-
-		//	set {
-		//		aggregateField = value;
-		//	}
-		//}
+		public bool MultiEntity { get; set; }
+		
+		public  LambdaMode Mode { get; set; }
 	}
 
-	enum LambdaPathType
+	internal enum LambdaPathType
 	{
 		None,
 		Parameter,
 		Field,
 		RelateEntity,
 		RelateCollection
+	}
+
+	internal enum LambdaMode
+	{
+		QueryMode,
+		OutputMode
 	}
 }
 

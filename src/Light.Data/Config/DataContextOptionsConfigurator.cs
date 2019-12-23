@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Light.Data
 {
@@ -10,18 +7,16 @@ namespace Light.Data
     /// </summary>
     public class DataContextOptionsConfigurator<TContext> where TContext : DataContext
     {
-        string _configName;
+        private string _configName;
 
-        ICommandOutput _commandOutput;
+        private ICommandOutput _commandOutput;
 
         /// <summary>
         /// Gets or sets the name of the config.
         /// </summary>
         /// <value>The name of the config.</value>
         public string ConfigName {
-            get {
-                return _configName;
-            }
+            get => _configName;
             set {
                 if (string.IsNullOrWhiteSpace(value)) {
                     throw new ArgumentNullException(nameof(ConfigName));
@@ -51,7 +46,7 @@ namespace Light.Data
             return options;
         }
 
-        void BuildOptions(DataContextOptions options, DataContextConfiguration configuration)
+        private void BuildOptions(DataContextOptions options, DataContextConfiguration configuration)
         {
             DataContextOptions baseOptions = null;
             if (_configName == null) {

@@ -1,20 +1,16 @@
 ﻿using System;
 namespace Light.Data
 {
-	class SelectMap : IMap
+	internal class SelectMap : IMap
 	{
-		readonly SelectModel _model;
+		private readonly SelectModel _model;
 
 		public SelectMap (SelectModel model)
 		{
-			this._model = model;
+			_model = model;
 		}
 
-		public Type Type {
-			get {
-				return _model.OutputMapping.ObjectType;
-			}
-		}
+		public Type Type => _model.OutputMapping.ObjectType;
 
 		public bool CheckIsEntityCollection (string path)
 		{
@@ -47,8 +43,8 @@ namespace Light.Data
 			else {
 				name = path;
 			}
-			DataFieldInfo info = _model.GetFieldData (name);
-			if (!Object.Equals (info, null)) {
+			var info = _model.GetFieldData (name);
+			if (!Equals (info, null)) {
 				return info;
 			}
 			else {
@@ -58,8 +54,8 @@ namespace Light.Data
 
 		public ISelector CreateSelector (string [] paths)
 		{
-			Selector selector = new Selector ();
-			foreach (string path in paths) {
+			var selector = new Selector ();
+			foreach (var path in paths) {
 				string name;
 				if (path.StartsWith (".", StringComparison.Ordinal)) {
 					name = path.Substring (1);
@@ -68,15 +64,15 @@ namespace Light.Data
 					name = path;
 				}
 				if (name == string.Empty) {
-					DataFieldInfo [] nameInfos = _model.GetDataFieldInfos ();
-					foreach (DataFieldInfo fieldInfo in nameInfos) {
+					var nameInfos = _model.GetDataFieldInfos ();
+					foreach (var fieldInfo in nameInfos) {
 						selector.SetSelectField (fieldInfo);
 					}
 				}
 				else {
-					DataFieldInfo info = _model.GetFieldData (name);
-					if (!Object.Equals (info, null)) {
-						DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, false, name);
+					var info = _model.GetFieldData (name);
+					if (!Equals (info, null)) {
+						var nameInfo = new DataFieldInfo (info.TableMapping, false, name);
 						selector.SetSelectField (nameInfo);
 					}
 					else {

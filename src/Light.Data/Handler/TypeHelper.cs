@@ -3,19 +3,19 @@ using System.Reflection;
 
 namespace Light.Data
 {
-	static class TypeHelper
+	internal static class TypeHelper
 	{
 		public static bool IsInherit(this Type target, Type parent) {
 			if (target == null || parent == null) {
 				return false;
 			}
-			TypeInfo targetInfo = target.GetTypeInfo();
-			TypeInfo parentInfo = parent.GetTypeInfo();
+			var targetInfo = target.GetTypeInfo();
+			var parentInfo = parent.GetTypeInfo();
 			if (target == parent || targetInfo.BaseType == null) {
 				return false;
 			}
 			if (parentInfo.IsInterface) {
-				foreach (Type t in targetInfo.ImplementedInterfaces) {
+				foreach (var t in targetInfo.ImplementedInterfaces) {
 					if (t == parent) {
 						return true;
 					}

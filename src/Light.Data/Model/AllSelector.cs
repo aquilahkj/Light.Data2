@@ -1,15 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	sealed class AllSelector : ISelector
+	internal sealed class AllSelector : ISelector
 	{
-		static AllSelector instance = new AllSelector ();
-
-		internal static AllSelector Value {
-			get {
-				return instance;
-			}
-		}
+		internal static AllSelector Value { get; } = new AllSelector ();
 
 		public string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

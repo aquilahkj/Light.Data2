@@ -4,29 +4,29 @@ using System.Data;
 
 namespace Light.Data
 {
-	class DynamicMultiDataMapping : DataMapping
+	internal class DynamicMultiDataMapping : DataMapping
 	{
 		public static DynamicMultiDataMapping CreateDynamicMultiDataMapping (Type type, List<IJoinModel> models)
 		{
-			Tuple<string, IJoinTableMapping> [] array = new Tuple<string, IJoinTableMapping> [models.Count];
-			for (int i = 0; i < models.Count; i++) {
-				IJoinModel model = models [i];
-				Tuple<string, IJoinTableMapping> tuple = new Tuple<string, IJoinTableMapping> (model.AliasTableName, model.JoinMapping);
+			var array = new Tuple<string, IJoinTableMapping> [models.Count];
+			for (var i = 0; i < models.Count; i++) {
+				var model = models [i];
+				var tuple = new Tuple<string, IJoinTableMapping> (model.AliasTableName, model.JoinMapping);
 				array [i] = tuple;
 			}
-			DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
+			var mapping = new DynamicMultiDataMapping (type, array);
 			return mapping;
 		}
 
-		readonly IJoinTableMapping [] mappings;
-		readonly string [] aliasNames;
+		private readonly IJoinTableMapping [] mappings;
+		private readonly string [] aliasNames;
 
 		public DynamicMultiDataMapping (Type type, Tuple<string, IJoinTableMapping> [] targetMappings)
 			: base (type)
 		{
 			mappings = new IJoinTableMapping [targetMappings.Length];
 			aliasNames = new string [targetMappings.Length];
-			for (int i = 0; i < targetMappings.Length; i++) {
+			for (var i = 0; i < targetMappings.Length; i++) {
 				aliasNames [i] = targetMappings [i].Item1;
 				mappings [i] = targetMappings [i].Item2;
 			}
@@ -34,8 +34,8 @@ namespace Light.Data
 
 		public override object InitialData ()
 		{
-			object [] objects = new object [mappings.Length];
-			for (int i = 0; i < mappings.Length; i++) {
+			var objects = new object [mappings.Length];
+			for (var i = 0; i < mappings.Length; i++) {
 				objects [i] = mappings [i].InitialData ();
 			}
 			return objects;
@@ -43,10 +43,10 @@ namespace Light.Data
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
-			QueryState queryState = state as QueryState;
-			object [] objects = new object [mappings.Length];
-			for (int i = 0; i < mappings.Length; i++) {
-				string aliasName = aliasNames [i];
+			var queryState = state as QueryState;
+			var objects = new object [mappings.Length];
+			for (var i = 0; i < mappings.Length; i++) {
+				var aliasName = aliasNames [i];
 				objects [i] = mappings [i].LoadAliasJoinTableData (context, datareader, queryState, aliasName);
 			}
 			return objects;

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
-    class LightMapperOptions
+    internal class LightMapperOptions
     {
         public DataTypeSection[] DataTypes { get; set; }
     }
 
-    class DataTypeSection
+    internal class DataTypeSection
     {
         public string Type { get; set; }
 
@@ -24,7 +22,7 @@ namespace Light.Data
         public Dictionary<string, string> ConfigParams { get; set; }
     }
 
-    class DataFieldSection
+    internal class DataFieldSection
     {
         public string FieldName { get; set; }
 
@@ -45,14 +43,14 @@ namespace Light.Data
         public string FunctionControl { get; set; }
     }
 
-    class RelationFieldSection
+    internal class RelationFieldSection
     {
         public string FieldName { get; set; }
 
         public RelationPairConfig[] RelationPairs { get; set; }
     }
 
-    class RelationPairConfig
+    internal class RelationPairConfig
     {
         public string MasterKey { get; set; }
 

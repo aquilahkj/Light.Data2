@@ -9,296 +9,247 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1> : IJoinTable<T, T1>
+	internal class LightJoinTable<T, T1> : IJoinTable<T, T1>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (QueryBase<T> left, JoinType joinType, QueryBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			DataEntityMapping entityMapping1 = left.Mapping;
-			DataEntityMapping entityMapping2 = right.Mapping;
-			_maps.Add (entityMapping1.GetRelationMap ());
-			_maps.Add (entityMapping2.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model1 = new EntityJoinModel (entityMapping1, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
-			EntityJoinModel model2 = new EntityJoinModel (entityMapping2, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			var entityMapping1 = left.Mapping;
+			var entityMapping2 = right.Mapping;
+			Maps.Add (entityMapping1.GetRelationMap ());
+			Maps.Add (entityMapping2.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new EntityJoinModel (entityMapping1, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			var model2 = new EntityJoinModel (entityMapping2, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (QueryBase<T> left, JoinType joinType, AggregateBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			DataEntityMapping entityMapping1 = left.Mapping;
-			_maps.Add (entityMapping1.GetRelationMap ());
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model1 = new EntityJoinModel (entityMapping1, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
-			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "T1", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			var entityMapping1 = left.Mapping;
+			Maps.Add (entityMapping1.GetRelationMap ());
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new EntityJoinModel (entityMapping1, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			var model2 = new AggregateJoinModel (right.Model, "T1", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (AggregateBase<T> left, JoinType joinType, QueryBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			DataEntityMapping entityMapping1 = right.Mapping;
-			_maps.Add (new AggregateMap (left.Model));
-			_maps.Add (entityMapping1.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "T0", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
-			EntityJoinModel model2 = new EntityJoinModel (entityMapping1, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			var entityMapping1 = right.Mapping;
+			Maps.Add (new AggregateMap (left.Model));
+			Maps.Add (entityMapping1.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new AggregateJoinModel (left.Model, "T0", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
+			var model2 = new EntityJoinModel (entityMapping1, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (AggregateBase<T> left, JoinType joinType, AggregateBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			_maps.Add (new AggregateMap (left.Model));
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "T0", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
-			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "T1", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			Maps.Add (new AggregateMap (left.Model));
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new AggregateJoinModel (left.Model, "T0", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
+			var model2 = new AggregateJoinModel (right.Model, "T1", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (SelectBase<T> left, JoinType joinType, QueryBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (new SelectMap (left.Model));
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model1 = new SelectJoinModel (left.Model, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
-			EntityJoinModel model2 = new EntityJoinModel (entityMapping, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			var entityMapping = right.Mapping;
+			Maps.Add (new SelectMap (left.Model));
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new SelectJoinModel (left.Model, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			var model2 = new EntityJoinModel (entityMapping, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (QueryBase<T> left, JoinType joinType, SelectBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			DataEntityMapping entityMapping = left.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model1 = new EntityJoinModel (entityMapping, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
-			SelectJoinModel model2 = new SelectJoinModel (right.Model, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			var entityMapping = left.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new EntityJoinModel (entityMapping, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			var model2 = new SelectJoinModel (right.Model, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (SelectBase<T> left, JoinType joinType, SelectBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			_maps.Add (new SelectMap (left.Model));
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model1 = new SelectJoinModel (left.Model, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
-			SelectJoinModel model2 = new SelectJoinModel (right.Model, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			Maps.Add (new SelectMap (left.Model));
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new SelectJoinModel (left.Model, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			var model2 = new SelectJoinModel (right.Model, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (AggregateBase<T> left, JoinType joinType, SelectBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			_maps.Add (new AggregateMap (left.Model));
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model1 = new AggregateJoinModel (left.Model, "T0", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
-			SelectJoinModel model2 = new SelectJoinModel (right.Model, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			Maps.Add (new AggregateMap (left.Model));
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new AggregateJoinModel (left.Model, "T0", null, left.QueryExpression, left.HavingExpression, left.OrderExpression, leftSetting);
+			var model2 = new SelectJoinModel (right.Model, "T1", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public LightJoinTable (SelectBase<T> left, JoinType joinType, AggregateBase<T1> right, Expression<Func<T, T1, bool>> onExpression, JoinSetting leftSetting, JoinSetting rightSetting)
 		{
-			_context = left.Context;
-			_maps.Add (new SelectMap (left.Model));
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model1 = new SelectJoinModel (left.Model, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
-			AggregateJoinModel model2 = new AggregateJoinModel (right.Model, "T1", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model1);
-			_modelList.Add (model2);
+			Context = left.Context;
+			Maps.Add (new SelectMap (left.Model));
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model1 = new SelectJoinModel (left.Model, "T0", null, left.QueryExpression, left.OrderExpression, leftSetting);
+			var model2 = new AggregateJoinModel (right.Model, "T1", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model1);
+			ModelList.Add (model2);
 		}
 
 		public IJoinTable<T, T1> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1> Where (Expression<Func<T, T1, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1> WhereWithAnd (Expression<Func<T, T1, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1> WhereWithOr (Expression<Func<T, T1, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1> OrderByConcat<TKey> (Expression<Func<T, T1, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1> OrderBy<TKey> (Expression<Func<T, T1, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1> OrderByDescending<TKey> (Expression<Func<T, T1, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -311,42 +262,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -354,8 +305,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -365,8 +316,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -376,8 +327,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -388,14 +339,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2> Join<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -404,13 +355,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			return new LightJoinTable<T, T1, T2> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -419,13 +370,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			return new LightJoinTable<T, T1, T2> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -434,13 +385,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			return new LightJoinTable<T, T1, T2> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2> Join<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			QueryBase<T2> queryBase = query as QueryBase<T2>;
+			var queryBase = query as QueryBase<T2>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -449,7 +400,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			QueryBase<T2> queryBase = query as QueryBase<T2>;
+			var queryBase = query as QueryBase<T2>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -458,7 +409,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			QueryBase<T2> queryBase = query as QueryBase<T2>;
+			var queryBase = query as QueryBase<T2>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -467,7 +418,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			AggregateBase<T2> aggregateBase = aggregate as AggregateBase<T2>;
+			var aggregateBase = aggregate as AggregateBase<T2>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -476,7 +427,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			AggregateBase<T2> aggregateBase = aggregate as AggregateBase<T2>;
+			var aggregateBase = aggregate as AggregateBase<T2>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -485,7 +436,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			AggregateBase<T2> aggregateBase = aggregate as AggregateBase<T2>;
+			var aggregateBase = aggregate as AggregateBase<T2>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -494,7 +445,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			SelectBase<T2> selectBase = select as SelectBase<T2>;
+			var selectBase = select as SelectBase<T2>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -503,7 +454,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			SelectBase<T2> selectBase = select as SelectBase<T2>;
+			var selectBase = select as SelectBase<T2>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -512,7 +463,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression)
 		{
-			SelectBase<T2> selectBase = select as SelectBase<T2>;
+			var selectBase = select as SelectBase<T2>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -521,7 +472,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -530,13 +481,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			return new LightJoinTable<T, T1, T2> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -545,13 +496,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			return new LightJoinTable<T, T1, T2> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (Expression<Func<T2, bool>> queryExpression, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -560,13 +511,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T2> lightQuery = new LightQuery<T2> (_context);
+			var lightQuery = new LightQuery<T2> (Context);
 			return new LightJoinTable<T, T1, T2> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2> Join<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T2> queryBase = query as QueryBase<T2>;
+			var queryBase = query as QueryBase<T2>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -575,7 +526,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T2> queryBase = query as QueryBase<T2>;
+			var queryBase = query as QueryBase<T2>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -584,7 +535,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (IQuery<T2> query, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T2> queryBase = query as QueryBase<T2>;
+			var queryBase = query as QueryBase<T2>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -593,7 +544,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T2> aggregateBase = aggregate as AggregateBase<T2>;
+			var aggregateBase = aggregate as AggregateBase<T2>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -602,7 +553,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T2> aggregateBase = aggregate as AggregateBase<T2>;
+			var aggregateBase = aggregate as AggregateBase<T2>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -611,7 +562,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (IAggregate<T2> aggregate, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T2> aggregateBase = aggregate as AggregateBase<T2>;
+			var aggregateBase = aggregate as AggregateBase<T2>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -620,7 +571,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> Join<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T2> selectBase = select as SelectBase<T2>;
+			var selectBase = select as SelectBase<T2>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -629,7 +580,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> LeftJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T2> selectBase = select as SelectBase<T2>;
+			var selectBase = select as SelectBase<T2>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -638,7 +589,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2> RightJoin<T2> (ISelect<T2> select, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T2> selectBase = select as SelectBase<T2>;
+			var selectBase = select as SelectBase<T2>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -650,216 +601,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2> : IJoinTable<T, T1, T2>
+	internal class LightJoinTable<T, T1, T2> : IJoinTable<T, T1, T2>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1> left, JoinType joinType, QueryBase<T2> right, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T2", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T2", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1> left, JoinType joinType, AggregateBase<T2> right, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T2", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T2", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1> left, JoinType joinType, SelectBase<T2> right, Expression<Func<T, T1, T2, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T2", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T2", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> Where (Expression<Func<T, T1, T2, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> WhereWithAnd (Expression<Func<T, T1, T2, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> WhereWithOr (Expression<Func<T, T1, T2, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> OrderByConcat<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> OrderBy<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> OrderByDescending<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -872,42 +774,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -915,8 +817,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -926,8 +828,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -937,8 +839,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -949,14 +851,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -965,13 +867,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -980,13 +882,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -995,13 +897,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			QueryBase<T3> queryBase = query as QueryBase<T3>;
+			var queryBase = query as QueryBase<T3>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1010,7 +912,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			QueryBase<T3> queryBase = query as QueryBase<T3>;
+			var queryBase = query as QueryBase<T3>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1019,7 +921,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			QueryBase<T3> queryBase = query as QueryBase<T3>;
+			var queryBase = query as QueryBase<T3>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1028,7 +930,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			AggregateBase<T3> aggregateBase = aggregate as AggregateBase<T3>;
+			var aggregateBase = aggregate as AggregateBase<T3>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1037,7 +939,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			AggregateBase<T3> aggregateBase = aggregate as AggregateBase<T3>;
+			var aggregateBase = aggregate as AggregateBase<T3>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1046,7 +948,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			AggregateBase<T3> aggregateBase = aggregate as AggregateBase<T3>;
+			var aggregateBase = aggregate as AggregateBase<T3>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1055,7 +957,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			SelectBase<T3> selectBase = select as SelectBase<T3>;
+			var selectBase = select as SelectBase<T3>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1064,7 +966,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			SelectBase<T3> selectBase = select as SelectBase<T3>;
+			var selectBase = select as SelectBase<T3>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1073,7 +975,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression)
 		{
-			SelectBase<T3> selectBase = select as SelectBase<T3>;
+			var selectBase = select as SelectBase<T3>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1082,7 +984,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1091,13 +993,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1106,13 +1008,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1121,13 +1023,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T3> lightQuery = new LightQuery<T3> (_context);
+			var lightQuery = new LightQuery<T3> (Context);
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T3> queryBase = query as QueryBase<T3>;
+			var queryBase = query as QueryBase<T3>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1136,7 +1038,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T3> queryBase = query as QueryBase<T3>;
+			var queryBase = query as QueryBase<T3>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1145,7 +1047,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (IQuery<T3> query, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T3> queryBase = query as QueryBase<T3>;
+			var queryBase = query as QueryBase<T3>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1154,7 +1056,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T3> aggregateBase = aggregate as AggregateBase<T3>;
+			var aggregateBase = aggregate as AggregateBase<T3>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1163,7 +1065,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T3> aggregateBase = aggregate as AggregateBase<T3>;
+			var aggregateBase = aggregate as AggregateBase<T3>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1172,7 +1074,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T3> aggregateBase = aggregate as AggregateBase<T3>;
+			var aggregateBase = aggregate as AggregateBase<T3>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1181,7 +1083,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T3> selectBase = select as SelectBase<T3>;
+			var selectBase = select as SelectBase<T3>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1190,7 +1092,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T3> selectBase = select as SelectBase<T3>;
+			var selectBase = select as SelectBase<T3>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1199,7 +1101,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (ISelect<T3> select, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T3> selectBase = select as SelectBase<T3>;
+			var selectBase = select as SelectBase<T3>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1211,216 +1113,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3> : IJoinTable<T, T1, T2, T3>
+	internal class LightJoinTable<T, T1, T2, T3> : IJoinTable<T, T1, T2, T3>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2> left, JoinType joinType, QueryBase<T3> right, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T3", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T3", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2> left, JoinType joinType, AggregateBase<T3> right, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T3", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T3", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2> left, JoinType joinType, SelectBase<T3> right, Expression<Func<T, T1, T2, T3, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T3", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T3", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> Where (Expression<Func<T, T1, T2, T3, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> WhereWithAnd (Expression<Func<T, T1, T2, T3, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> WhereWithOr (Expression<Func<T, T1, T2, T3, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -1433,42 +1286,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -1476,8 +1329,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -1487,8 +1340,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -1498,8 +1351,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -1510,14 +1363,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1526,13 +1379,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1541,13 +1394,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1556,13 +1409,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			QueryBase<T4> queryBase = query as QueryBase<T4>;
+			var queryBase = query as QueryBase<T4>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1571,7 +1424,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			QueryBase<T4> queryBase = query as QueryBase<T4>;
+			var queryBase = query as QueryBase<T4>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1580,7 +1433,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			QueryBase<T4> queryBase = query as QueryBase<T4>;
+			var queryBase = query as QueryBase<T4>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1589,7 +1442,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			AggregateBase<T4> aggregateBase = aggregate as AggregateBase<T4>;
+			var aggregateBase = aggregate as AggregateBase<T4>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1598,7 +1451,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			AggregateBase<T4> aggregateBase = aggregate as AggregateBase<T4>;
+			var aggregateBase = aggregate as AggregateBase<T4>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1607,7 +1460,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			AggregateBase<T4> aggregateBase = aggregate as AggregateBase<T4>;
+			var aggregateBase = aggregate as AggregateBase<T4>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1616,7 +1469,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			SelectBase<T4> selectBase = select as SelectBase<T4>;
+			var selectBase = select as SelectBase<T4>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1625,7 +1478,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			SelectBase<T4> selectBase = select as SelectBase<T4>;
+			var selectBase = select as SelectBase<T4>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1634,7 +1487,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression)
 		{
-			SelectBase<T4> selectBase = select as SelectBase<T4>;
+			var selectBase = select as SelectBase<T4>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1643,7 +1496,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1652,13 +1505,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1667,13 +1520,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -1682,13 +1535,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T4> lightQuery = new LightQuery<T4> (_context);
+			var lightQuery = new LightQuery<T4> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T4> queryBase = query as QueryBase<T4>;
+			var queryBase = query as QueryBase<T4>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1697,7 +1550,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T4> queryBase = query as QueryBase<T4>;
+			var queryBase = query as QueryBase<T4>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1706,7 +1559,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T4> queryBase = query as QueryBase<T4>;
+			var queryBase = query as QueryBase<T4>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -1715,7 +1568,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T4> aggregateBase = aggregate as AggregateBase<T4>;
+			var aggregateBase = aggregate as AggregateBase<T4>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1724,7 +1577,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T4> aggregateBase = aggregate as AggregateBase<T4>;
+			var aggregateBase = aggregate as AggregateBase<T4>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1733,7 +1586,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T4> aggregateBase = aggregate as AggregateBase<T4>;
+			var aggregateBase = aggregate as AggregateBase<T4>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -1742,7 +1595,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T4> selectBase = select as SelectBase<T4>;
+			var selectBase = select as SelectBase<T4>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1751,7 +1604,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T4> selectBase = select as SelectBase<T4>;
+			var selectBase = select as SelectBase<T4>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1760,7 +1613,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (ISelect<T4> select, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T4> selectBase = select as SelectBase<T4>;
+			var selectBase = select as SelectBase<T4>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -1772,216 +1625,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3, T4> : IJoinTable<T, T1, T2, T3, T4>
+	internal class LightJoinTable<T, T1, T2, T3, T4> : IJoinTable<T, T1, T2, T3, T4>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3> left, JoinType joinType, QueryBase<T4> right, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T4", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T4", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3> left, JoinType joinType, AggregateBase<T4> right, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T4", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T4", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3> left, JoinType joinType, SelectBase<T4> right, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T4", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T4", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Where (Expression<Func<T, T1, T2, T3, T4, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> WhereWithAnd (Expression<Func<T, T1, T2, T3, T4, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> WhereWithOr (Expression<Func<T, T1, T2, T3, T4, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, T4, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -1994,42 +1798,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -2037,8 +1841,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -2048,8 +1852,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -2059,8 +1863,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -2071,14 +1875,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2087,13 +1891,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2102,13 +1906,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2117,13 +1921,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			QueryBase<T5> queryBase = query as QueryBase<T5>;
+			var queryBase = query as QueryBase<T5>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2132,7 +1936,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			QueryBase<T5> queryBase = query as QueryBase<T5>;
+			var queryBase = query as QueryBase<T5>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2141,7 +1945,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			QueryBase<T5> queryBase = query as QueryBase<T5>;
+			var queryBase = query as QueryBase<T5>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2150,7 +1954,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			AggregateBase<T5> aggregateBase = aggregate as AggregateBase<T5>;
+			var aggregateBase = aggregate as AggregateBase<T5>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2159,7 +1963,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			AggregateBase<T5> aggregateBase = aggregate as AggregateBase<T5>;
+			var aggregateBase = aggregate as AggregateBase<T5>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2168,7 +1972,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			AggregateBase<T5> aggregateBase = aggregate as AggregateBase<T5>;
+			var aggregateBase = aggregate as AggregateBase<T5>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2177,7 +1981,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			SelectBase<T5> selectBase = select as SelectBase<T5>;
+			var selectBase = select as SelectBase<T5>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2186,7 +1990,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			SelectBase<T5> selectBase = select as SelectBase<T5>;
+			var selectBase = select as SelectBase<T5>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2195,7 +1999,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
 		{
-			SelectBase<T5> selectBase = select as SelectBase<T5>;
+			var selectBase = select as SelectBase<T5>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2204,7 +2008,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2213,13 +2017,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2228,13 +2032,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T5, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2243,13 +2047,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T5> lightQuery = new LightQuery<T5> (_context);
+			var lightQuery = new LightQuery<T5> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T5> queryBase = query as QueryBase<T5>;
+			var queryBase = query as QueryBase<T5>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2258,7 +2062,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T5> queryBase = query as QueryBase<T5>;
+			var queryBase = query as QueryBase<T5>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2267,7 +2071,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T5> queryBase = query as QueryBase<T5>;
+			var queryBase = query as QueryBase<T5>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2276,7 +2080,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T5> aggregateBase = aggregate as AggregateBase<T5>;
+			var aggregateBase = aggregate as AggregateBase<T5>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2285,7 +2089,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T5> aggregateBase = aggregate as AggregateBase<T5>;
+			var aggregateBase = aggregate as AggregateBase<T5>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2294,7 +2098,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T5> aggregateBase = aggregate as AggregateBase<T5>;
+			var aggregateBase = aggregate as AggregateBase<T5>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2303,7 +2107,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T5> selectBase = select as SelectBase<T5>;
+			var selectBase = select as SelectBase<T5>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2312,7 +2116,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T5> selectBase = select as SelectBase<T5>;
+			var selectBase = select as SelectBase<T5>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2321,7 +2125,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (ISelect<T5> select, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T5> selectBase = select as SelectBase<T5>;
+			var selectBase = select as SelectBase<T5>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2333,216 +2137,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3, T4, T5> : IJoinTable<T, T1, T2, T3, T4, T5>
+	internal class LightJoinTable<T, T1, T2, T3, T4, T5> : IJoinTable<T, T1, T2, T3, T4, T5>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4> left, JoinType joinType, QueryBase<T5> right, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T5", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T5", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4> left, JoinType joinType, AggregateBase<T5> right, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T5", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T5", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4> left, JoinType joinType, SelectBase<T5> right, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T5", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T5", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Where (Expression<Func<T, T1, T2, T3, T4, T5, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> WhereWithAnd (Expression<Func<T, T1, T2, T3, T4, T5, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> WhereWithOr (Expression<Func<T, T1, T2, T3, T4, T5, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -2555,42 +2310,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -2598,8 +2353,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -2609,8 +2364,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -2620,8 +2375,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -2632,14 +2387,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2648,13 +2403,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2663,13 +2418,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2678,13 +2433,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			QueryBase<T6> queryBase = query as QueryBase<T6>;
+			var queryBase = query as QueryBase<T6>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2693,7 +2448,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			QueryBase<T6> queryBase = query as QueryBase<T6>;
+			var queryBase = query as QueryBase<T6>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2702,7 +2457,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			QueryBase<T6> queryBase = query as QueryBase<T6>;
+			var queryBase = query as QueryBase<T6>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2711,7 +2466,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			AggregateBase<T6> aggregateBase = aggregate as AggregateBase<T6>;
+			var aggregateBase = aggregate as AggregateBase<T6>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2720,7 +2475,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			AggregateBase<T6> aggregateBase = aggregate as AggregateBase<T6>;
+			var aggregateBase = aggregate as AggregateBase<T6>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2729,7 +2484,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			AggregateBase<T6> aggregateBase = aggregate as AggregateBase<T6>;
+			var aggregateBase = aggregate as AggregateBase<T6>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2738,7 +2493,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			SelectBase<T6> selectBase = select as SelectBase<T6>;
+			var selectBase = select as SelectBase<T6>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2747,7 +2502,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			SelectBase<T6> selectBase = select as SelectBase<T6>;
+			var selectBase = select as SelectBase<T6>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2756,7 +2511,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression)
 		{
-			SelectBase<T6> selectBase = select as SelectBase<T6>;
+			var selectBase = select as SelectBase<T6>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2765,7 +2520,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2774,13 +2529,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2789,13 +2544,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (Expression<Func<T6, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -2804,13 +2559,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T6> lightQuery = new LightQuery<T6> (_context);
+			var lightQuery = new LightQuery<T6> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T6> queryBase = query as QueryBase<T6>;
+			var queryBase = query as QueryBase<T6>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2819,7 +2574,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T6> queryBase = query as QueryBase<T6>;
+			var queryBase = query as QueryBase<T6>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2828,7 +2583,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (IQuery<T6> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T6> queryBase = query as QueryBase<T6>;
+			var queryBase = query as QueryBase<T6>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -2837,7 +2592,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T6> aggregateBase = aggregate as AggregateBase<T6>;
+			var aggregateBase = aggregate as AggregateBase<T6>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2846,7 +2601,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T6> aggregateBase = aggregate as AggregateBase<T6>;
+			var aggregateBase = aggregate as AggregateBase<T6>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2855,7 +2610,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (IAggregate<T6> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T6> aggregateBase = aggregate as AggregateBase<T6>;
+			var aggregateBase = aggregate as AggregateBase<T6>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -2864,7 +2619,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Join<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T6> selectBase = select as SelectBase<T6>;
+			var selectBase = select as SelectBase<T6>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2873,7 +2628,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> LeftJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T6> selectBase = select as SelectBase<T6>;
+			var selectBase = select as SelectBase<T6>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2882,7 +2637,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RightJoin<T6> (ISelect<T6> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T6> selectBase = select as SelectBase<T6>;
+			var selectBase = select as SelectBase<T6>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -2894,216 +2649,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3, T4, T5, T6> : IJoinTable<T, T1, T2, T3, T4, T5, T6>
+	internal class LightJoinTable<T, T1, T2, T3, T4, T5, T6> : IJoinTable<T, T1, T2, T3, T4, T5, T6>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5> left, JoinType joinType, QueryBase<T6> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T6", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T6", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5> left, JoinType joinType, AggregateBase<T6> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T6", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T6", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5> left, JoinType joinType, SelectBase<T6> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T6", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T6", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Where (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> WhereWithAnd (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> WhereWithOr (Expression<Func<T, T1, T2, T3, T4, T5, T6, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -3116,42 +2822,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -3159,8 +2865,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -3170,8 +2876,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -3181,8 +2887,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -3193,14 +2899,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3209,13 +2915,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3224,13 +2930,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3239,13 +2945,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			QueryBase<T7> queryBase = query as QueryBase<T7>;
+			var queryBase = query as QueryBase<T7>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3254,7 +2960,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			QueryBase<T7> queryBase = query as QueryBase<T7>;
+			var queryBase = query as QueryBase<T7>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3263,7 +2969,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			QueryBase<T7> queryBase = query as QueryBase<T7>;
+			var queryBase = query as QueryBase<T7>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3272,7 +2978,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			AggregateBase<T7> aggregateBase = aggregate as AggregateBase<T7>;
+			var aggregateBase = aggregate as AggregateBase<T7>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3281,7 +2987,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			AggregateBase<T7> aggregateBase = aggregate as AggregateBase<T7>;
+			var aggregateBase = aggregate as AggregateBase<T7>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3290,7 +2996,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			AggregateBase<T7> aggregateBase = aggregate as AggregateBase<T7>;
+			var aggregateBase = aggregate as AggregateBase<T7>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3299,7 +3005,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			SelectBase<T7> selectBase = select as SelectBase<T7>;
+			var selectBase = select as SelectBase<T7>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3308,7 +3014,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			SelectBase<T7> selectBase = select as SelectBase<T7>;
+			var selectBase = select as SelectBase<T7>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3317,7 +3023,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression)
 		{
-			SelectBase<T7> selectBase = select as SelectBase<T7>;
+			var selectBase = select as SelectBase<T7>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3326,7 +3032,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3335,13 +3041,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3350,13 +3056,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (Expression<Func<T7, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3365,13 +3071,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T7> lightQuery = new LightQuery<T7> (_context);
+			var lightQuery = new LightQuery<T7> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T7> queryBase = query as QueryBase<T7>;
+			var queryBase = query as QueryBase<T7>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3380,7 +3086,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T7> queryBase = query as QueryBase<T7>;
+			var queryBase = query as QueryBase<T7>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3389,7 +3095,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (IQuery<T7> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T7> queryBase = query as QueryBase<T7>;
+			var queryBase = query as QueryBase<T7>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3398,7 +3104,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T7> aggregateBase = aggregate as AggregateBase<T7>;
+			var aggregateBase = aggregate as AggregateBase<T7>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3407,7 +3113,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T7> aggregateBase = aggregate as AggregateBase<T7>;
+			var aggregateBase = aggregate as AggregateBase<T7>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3416,7 +3122,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (IAggregate<T7> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T7> aggregateBase = aggregate as AggregateBase<T7>;
+			var aggregateBase = aggregate as AggregateBase<T7>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3425,7 +3131,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Join<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T7> selectBase = select as SelectBase<T7>;
+			var selectBase = select as SelectBase<T7>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3434,7 +3140,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> LeftJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T7> selectBase = select as SelectBase<T7>;
+			var selectBase = select as SelectBase<T7>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3443,7 +3149,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RightJoin<T7> (ISelect<T7> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T7> selectBase = select as SelectBase<T7>;
+			var selectBase = select as SelectBase<T7>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3455,216 +3161,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> : IJoinTable<T, T1, T2, T3, T4, T5, T6, T7>
+	internal class LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> : IJoinTable<T, T1, T2, T3, T4, T5, T6, T7>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6> left, JoinType joinType, QueryBase<T7> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T7", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T7", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6> left, JoinType joinType, AggregateBase<T7> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T7", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T7", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6> left, JoinType joinType, SelectBase<T7> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T7", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T7", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Where (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> WhereWithAnd (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> WhereWithOr (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -3677,42 +3334,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, T7, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, T7, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -3720,8 +3377,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -3731,8 +3388,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -3742,8 +3399,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -3754,14 +3411,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3770,13 +3427,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3785,13 +3442,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3800,13 +3457,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			QueryBase<T8> queryBase = query as QueryBase<T8>;
+			var queryBase = query as QueryBase<T8>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3815,7 +3472,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			QueryBase<T8> queryBase = query as QueryBase<T8>;
+			var queryBase = query as QueryBase<T8>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3824,7 +3481,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			QueryBase<T8> queryBase = query as QueryBase<T8>;
+			var queryBase = query as QueryBase<T8>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3833,7 +3490,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			AggregateBase<T8> aggregateBase = aggregate as AggregateBase<T8>;
+			var aggregateBase = aggregate as AggregateBase<T8>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3842,7 +3499,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			AggregateBase<T8> aggregateBase = aggregate as AggregateBase<T8>;
+			var aggregateBase = aggregate as AggregateBase<T8>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3851,7 +3508,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			AggregateBase<T8> aggregateBase = aggregate as AggregateBase<T8>;
+			var aggregateBase = aggregate as AggregateBase<T8>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3860,7 +3517,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			SelectBase<T8> selectBase = select as SelectBase<T8>;
+			var selectBase = select as SelectBase<T8>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3869,7 +3526,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			SelectBase<T8> selectBase = select as SelectBase<T8>;
+			var selectBase = select as SelectBase<T8>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3878,7 +3535,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression)
 		{
-			SelectBase<T8> selectBase = select as SelectBase<T8>;
+			var selectBase = select as SelectBase<T8>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3887,7 +3544,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3896,13 +3553,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3911,13 +3568,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (Expression<Func<T8, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -3926,13 +3583,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T8> lightQuery = new LightQuery<T8> (_context);
+			var lightQuery = new LightQuery<T8> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T8> queryBase = query as QueryBase<T8>;
+			var queryBase = query as QueryBase<T8>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3941,7 +3598,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T8> queryBase = query as QueryBase<T8>;
+			var queryBase = query as QueryBase<T8>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3950,7 +3607,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (IQuery<T8> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T8> queryBase = query as QueryBase<T8>;
+			var queryBase = query as QueryBase<T8>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -3959,7 +3616,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T8> aggregateBase = aggregate as AggregateBase<T8>;
+			var aggregateBase = aggregate as AggregateBase<T8>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3968,7 +3625,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T8> aggregateBase = aggregate as AggregateBase<T8>;
+			var aggregateBase = aggregate as AggregateBase<T8>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3977,7 +3634,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (IAggregate<T8> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T8> aggregateBase = aggregate as AggregateBase<T8>;
+			var aggregateBase = aggregate as AggregateBase<T8>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -3986,7 +3643,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Join<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T8> selectBase = select as SelectBase<T8>;
+			var selectBase = select as SelectBase<T8>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -3995,7 +3652,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T8> selectBase = select as SelectBase<T8>;
+			var selectBase = select as SelectBase<T8>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4004,7 +3661,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8> (ISelect<T8> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T8> selectBase = select as SelectBase<T8>;
+			var selectBase = select as SelectBase<T8>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4016,216 +3673,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> : IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8>
+	internal class LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> : IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> left, JoinType joinType, QueryBase<T8> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T8", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T8", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> left, JoinType joinType, AggregateBase<T8> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T8", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T8", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7> left, JoinType joinType, SelectBase<T8> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T8", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T8", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Where (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> WhereWithAnd (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> WhereWithOr (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -4238,42 +3846,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, T7, T8, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, T7, T8, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -4281,8 +3889,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -4292,8 +3900,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -4303,8 +3911,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -4315,14 +3923,14 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -4331,13 +3939,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> (this, JoinType.InnerJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -4346,13 +3954,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> (this, JoinType.LeftJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -4361,13 +3969,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> (this, JoinType.RightJoin, lightQuery, onExpression, JoinSetting.None);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			QueryBase<T9> queryBase = query as QueryBase<T9>;
+			var queryBase = query as QueryBase<T9>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -4376,7 +3984,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			QueryBase<T9> queryBase = query as QueryBase<T9>;
+			var queryBase = query as QueryBase<T9>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -4385,7 +3993,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			QueryBase<T9> queryBase = query as QueryBase<T9>;
+			var queryBase = query as QueryBase<T9>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -4394,7 +4002,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			AggregateBase<T9> aggregateBase = aggregate as AggregateBase<T9>;
+			var aggregateBase = aggregate as AggregateBase<T9>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -4403,7 +4011,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			AggregateBase<T9> aggregateBase = aggregate as AggregateBase<T9>;
+			var aggregateBase = aggregate as AggregateBase<T9>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -4412,7 +4020,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			AggregateBase<T9> aggregateBase = aggregate as AggregateBase<T9>;
+			var aggregateBase = aggregate as AggregateBase<T9>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -4421,7 +4029,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			SelectBase<T9> selectBase = select as SelectBase<T9>;
+			var selectBase = select as SelectBase<T9>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4430,7 +4038,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			SelectBase<T9> selectBase = select as SelectBase<T9>;
+			var selectBase = select as SelectBase<T9>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4439,7 +4047,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression)
 		{
-			SelectBase<T9> selectBase = select as SelectBase<T9>;
+			var selectBase = select as SelectBase<T9>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4448,7 +4056,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -4457,13 +4065,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> (this, JoinType.InnerJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -4472,13 +4080,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> (this, JoinType.LeftJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (Expression<Func<T9, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			if (queryExpression != null) {
 				lightQuery.Where (queryExpression);
 			}
@@ -4487,13 +4095,13 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			LightQuery<T9> lightQuery = new LightQuery<T9> (_context);
+			var lightQuery = new LightQuery<T9> (Context);
 			return new LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> (this, JoinType.RightJoin, lightQuery, onExpression, joinSetting);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T9> queryBase = query as QueryBase<T9>;
+			var queryBase = query as QueryBase<T9>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -4502,7 +4110,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T9> queryBase = query as QueryBase<T9>;
+			var queryBase = query as QueryBase<T9>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -4511,7 +4119,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (IQuery<T9> query, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			QueryBase<T9> queryBase = query as QueryBase<T9>;
+			var queryBase = query as QueryBase<T9>;
 			if (queryBase == null) {
 				throw new ArgumentException (nameof (queryBase));
 			}
@@ -4520,7 +4128,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T9> aggregateBase = aggregate as AggregateBase<T9>;
+			var aggregateBase = aggregate as AggregateBase<T9>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -4529,7 +4137,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T9> aggregateBase = aggregate as AggregateBase<T9>;
+			var aggregateBase = aggregate as AggregateBase<T9>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -4538,7 +4146,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (IAggregate<T9> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			AggregateBase<T9> aggregateBase = aggregate as AggregateBase<T9>;
+			var aggregateBase = aggregate as AggregateBase<T9>;
 			if (aggregateBase == null) {
 				throw new ArgumentException (nameof (aggregate));
 			}
@@ -4547,7 +4155,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Join<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T9> selectBase = select as SelectBase<T9>;
+			var selectBase = select as SelectBase<T9>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4556,7 +4164,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T9> selectBase = select as SelectBase<T9>;
+			var selectBase = select as SelectBase<T9>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4565,7 +4173,7 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9> (ISelect<T9> select, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting joinSetting)
 		{
-			SelectBase<T9> selectBase = select as SelectBase<T9>;
+			var selectBase = select as SelectBase<T9>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -4577,216 +4185,167 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> : IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>
+	internal class LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> : IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>
 	{
+		public QueryExpression Query { get; private set; }
 
-		QueryExpression _query;
+		public OrderExpression Order { get; private set; }
 
-		public QueryExpression Query {
-			get {
-				return _query;
-			}
-		}
+		public Region Region { get; private set; }
 
-		OrderExpression _order;
+		public DataContext Context { get; }
 
-		public OrderExpression Order {
-			get {
-				return _order;
-			}
-		}
+		public SafeLevel Level { get; private set; } = SafeLevel.None;
 
-		Region _region;
+		internal bool Distinct { get; private set; }
 
-		public Region Region {
-			get {
-				return _region;
-			}
-		}
+		internal List<IJoinModel> ModelList { get; } = new List<IJoinModel> ();
 
-		readonly DataContext _context;
-
-		public DataContext Context {
-			get {
-				return _context;
-			}
-		}
-
-		SafeLevel _level = SafeLevel.None;
-
-		public SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
-		bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
-		}
-
-		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
-
-		internal List<IJoinModel> ModelList {
-			get {
-				return _modelList;
-			}
-		}
-
-		readonly List<IMap> _maps = new List<IMap> ();
-
-		internal List<IMap> Maps {
-			get {
-				return _maps;
-			}
-		}
+		internal List<IMap> Maps { get; } = new List<IMap> ();
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> left, JoinType joinType, QueryBase<T9> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			DataEntityMapping entityMapping = right.Mapping;
-			_maps.Add (entityMapping.GetRelationMap ());
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			EntityJoinModel model = new EntityJoinModel (entityMapping, "T9", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			var entityMapping = right.Mapping;
+			Maps.Add (entityMapping.GetRelationMap ());
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new EntityJoinModel (entityMapping, "T9", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> left, JoinType joinType, AggregateBase<T9> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new AggregateMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			AggregateJoinModel model = new AggregateJoinModel (right.Model, "T9", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new AggregateMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new AggregateJoinModel (right.Model, "T9", connect, right.QueryExpression, right.HavingExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public LightJoinTable (LightJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8> left, JoinType joinType, SelectBase<T9> right, Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> onExpression, JoinSetting rightSetting)
 		{
-			_query = left.Query;
-			_order = left.Order;
-			_context = left.Context;
-			_modelList.AddRange (left.ModelList);
-			_maps.AddRange (left.Maps);
-			_maps.Add (new SelectMap (right.Model));
-			DataFieldExpression on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
-			JoinConnect connect = new JoinConnect (joinType, on);
-			SelectJoinModel model = new SelectJoinModel (right.Model, "T9", connect, right.QueryExpression, right.OrderExpression, rightSetting);
-			_modelList.Add (model);
+			Query = left.Query;
+			Order = left.Order;
+			Context = left.Context;
+			ModelList.AddRange (left.ModelList);
+			Maps.AddRange (left.Maps);
+			Maps.Add (new SelectMap (right.Model));
+			var on = LambdaExpressionExtend.ResolveLambdaOnExpression (onExpression, Maps);
+			var connect = new JoinConnect (joinType, on);
+			var model = new SelectJoinModel (right.Model, "T9", connect, right.QueryExpression, right.OrderExpression, rightSetting);
+			ModelList.Add (model);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> WhereReset ()
 		{
-			_query = null;
+			Query = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Where (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = queryExpression;
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = queryExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> WhereWithAnd (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.And (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.And (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> WhereWithOr (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression)
 		{
-			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
-			_query = QueryExpression.Or (_query, queryExpression);
+			var queryExpression = LambdaExpressionExtend.ResolveLambdaMultiQueryExpression (expression, Maps);
+			Query = QueryExpression.Or (Query, queryExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByDescendingConcat<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = OrderExpression.Concat (_order, orderExpression);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = OrderExpression.Concat (Order, orderExpression);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.ASC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByDescending<TKey> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
-			_order = orderExpression;
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaMultiOrderByExpression (expression, OrderType.DESC, Maps);
+			Order = orderExpression;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> OrderByReset ()
 		{
-			_order = null;
+			Order = null;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Take (int count)
 		{
 			int start;
-			int size = count;
-			if (_region == null) {
+			var size = count;
+			if (Region == null) {
 				start = 0;
 			}
 			else {
-				start = _region.Start;
+				start = Region.Start;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Skip (int index)
 		{
-			int start = index;
+			var start = index;
 			int size;
-			if (_region == null) {
+			if (Region == null) {
 				size = int.MaxValue;
 			}
 			else {
-				size = _region.Size;
+				size = Region.Size;
 			}
-			_region = new Region (start, size);
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> Range (int from, int to)
 		{
-			int start = from;
-			int size = to - from;
-			_region = new Region (start, size);
+			var start = from;
+			var size = to - from;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> RangeReset ()
 		{
-			_region = null;
+			Region = null;
 			return this;
 		}
 
@@ -4799,42 +4358,42 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
-			int start = page * size;
-			_region = new Region (start, size);
+			var start = page * size;
+			Region = new Region (start, size);
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> SafeMode (SafeLevel level)
 		{
-			_level = level;
+			Level = level;
 			return this;
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4, T5, T6, T7, T8, T9> SetDistinct (bool distinct)
 		{
-			_distinct = distinct;
+			Distinct = distinct;
 			return this;
 		}
 
 		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) 
 		{
-			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightSelectJoin<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K> (Context, expression, ModelList, Maps, Query, Order, Distinct, Region, Level);
 			return selectable;
 		}
 
 		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression)
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return _context.ExecuteNonQuery(queryCommand.Command, _level);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return Context.ExecuteNonQuery(queryCommand.Command, Level);
 		}
 
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		public int Count() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt32(value);
 		}
 
@@ -4842,8 +4401,8 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		public long LongCount() {
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value =  _context.ExecuteScalar(queryCommand.Command, _level);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value =  Context.ExecuteScalar(queryCommand.Command, Level);
             return Convert.ToInt64(value);
 		}
 
@@ -4853,8 +4412,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt32(value);
 		}
 
@@ -4864,8 +4423,8 @@ namespace Light.Data
 		/// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			QueryCommand queryCommand = _context.Database.AggregateJoinTableCount(_context, _modelList, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
+            var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
             return Convert.ToInt64(value);
 		}
 
@@ -4876,9 +4435,9 @@ namespace Light.Data
         /// <param name="cancellationToken">CancellationToken.</param>
 		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
-			QueryCommand queryCommand = _context.Database.SelectInsertWithJoinTable(_context, selector, _modelList, _query, _order, _distinct);
-            return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
+			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
+			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
+            return await Context.ExecuteNonQueryAsync(queryCommand.Command, Level, cancellationToken);
 		}
 
 	}

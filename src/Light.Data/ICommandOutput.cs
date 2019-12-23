@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
 	/// <summary>
 	/// ICommand output.

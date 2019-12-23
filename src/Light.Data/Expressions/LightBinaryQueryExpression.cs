@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
-    class LightBinaryQueryExpression : QueryExpression
+    internal class LightBinaryQueryExpression : QueryExpression
     {
-        readonly QueryPredicate _predicate;
+        private readonly QueryPredicate _predicate;
 
-        readonly object _left;
+        private readonly object _left;
 
-        readonly object _right;
+        private readonly object _right;
 
         public LightBinaryQueryExpression(DataEntityMapping mapping, QueryPredicate predicate, object left, object right)
             : base(mapping)
@@ -22,17 +20,17 @@ namespace Light.Data
         {
             string sql = null;
 
-            DataFieldInfo leftInfo = _left as DataFieldInfo;
-            DataFieldInfo rightInfo = _right as DataFieldInfo;
-            if (!Object.Equals(leftInfo, null) && !Object.Equals(rightInfo, null)) {
-                string leftSql = leftInfo.CreateSqlString(factory, isFullName, state);
-                string rightSql = rightInfo.CreateSqlString(factory, isFullName, state);
+            var leftInfo = _left as DataFieldInfo;
+            var rightInfo = _right as DataFieldInfo;
+            if (!Equals(leftInfo, null) && !Equals(rightInfo, null)) {
+                var leftSql = leftInfo.CreateSqlString(factory, isFullName, state);
+                var rightSql = rightInfo.CreateSqlString(factory, isFullName, state);
                 sql = factory.CreateSingleParamSql(leftSql, _predicate, rightSql);
             }
-            else if (!Object.Equals(leftInfo, null)) {
-                string leftSql = leftInfo.CreateSqlString(factory, isFullName, state);
-                object right = LambdaExpressionExtend.ConvertLambdaObject(_right);
-                if (Object.Equals(right, null)) {
+            else if (!Equals(leftInfo, null)) {
+                var leftSql = leftInfo.CreateSqlString(factory, isFullName, state);
+                var right = LambdaExpressionExtend.ConvertLambdaObject(_right);
+                if (Equals(right, null)) {
                     bool predicate;
                     if (_predicate == QueryPredicate.Eq) {
                         predicate = true;
@@ -56,18 +54,18 @@ namespace Light.Data
                     else {
                         throw new LightDataException(string.Format(SR.UnsupportPredicate, _predicate, "bool"));
                     }
-                    bool ret = (bool)right;
+                    var ret = (bool)right;
                     sql = factory.CreateBooleanQuerySql(leftSql, ret, predicate, false);
                 }
                 else {
-                    string name = state.AddDataParameter(factory, leftInfo.ToParameter(right));
+                    var name = state.AddDataParameter(factory, leftInfo.ToParameter(right));
                     sql = factory.CreateSingleParamSql(leftSql, _predicate, name);
                 }
             }
-            else if (!Object.Equals(rightInfo, null)) {
-                string rightSql = rightInfo.CreateSqlString(factory, isFullName, state);
-                object left = LambdaExpressionExtend.ConvertLambdaObject(_left);
-                if (Object.Equals(left, null)) {
+            else if (!Equals(rightInfo, null)) {
+                var rightSql = rightInfo.CreateSqlString(factory, isFullName, state);
+                var left = LambdaExpressionExtend.ConvertLambdaObject(_left);
+                if (Equals(left, null)) {
                     bool predicate;
                     if (_predicate == QueryPredicate.Eq) {
                         predicate = true;
@@ -91,11 +89,11 @@ namespace Light.Data
                     else {
                         throw new LightDataException(string.Format(SR.UnsupportPredicate, _predicate, "bool"));
                     }
-                    bool ret = (bool)left;
+                    var ret = (bool)left;
                     sql = factory.CreateBooleanQuerySql(rightSql, ret, predicate, true);
                 }
                 else {
-                    string name = state.AddDataParameter(factory, rightInfo.ToParameter(left));
+                    var name = state.AddDataParameter(factory, rightInfo.ToParameter(left));
                     sql = factory.CreateSingleParamSql(name, _predicate, rightSql);
                 }
             }

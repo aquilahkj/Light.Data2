@@ -6,9 +6,9 @@ namespace Light.Data
     /// <summary>
     /// Default time function.
     /// </summary>
-    sealed class DefaultTimeFunction
+    internal sealed class DefaultTimeFunction
     {
-        static Dictionary<DefaultTime, DefaultTimeFunction> dict = new Dictionary<DefaultTime, DefaultTimeFunction>();
+        private static Dictionary<DefaultTime, DefaultTimeFunction> dict = new Dictionary<DefaultTime, DefaultTimeFunction>();
 
         static DefaultTimeFunction()
         {
@@ -22,11 +22,11 @@ namespace Light.Data
 
         public static DefaultTimeFunction GetFunction(DefaultTime defaultTime)
         {
-            dict.TryGetValue(defaultTime, out DefaultTimeFunction function);
+            dict.TryGetValue(defaultTime, out var function);
             return function;
         }
 
-        Func<object> func;
+        private Func<object> func;
 
         private DefaultTimeFunction(Func<object> func)
         {
@@ -34,15 +34,11 @@ namespace Light.Data
 
         }
 
-        static bool removeMillisecond = false;
+        private static bool removeMillisecond = false;
 
         internal static bool RemoveMillisecond {
-            get {
-                return removeMillisecond;
-            }
-            set {
-                removeMillisecond = true;
-            }
+            get => removeMillisecond;
+            set => removeMillisecond = true;
         }
 
 
@@ -52,7 +48,7 @@ namespace Light.Data
         }
 
 
-        static object GetNow()
+        private static object GetNow()
         {
             var time = DateTime.Now;
             if (removeMillisecond) {
@@ -63,13 +59,13 @@ namespace Light.Data
             }
         }
 
-        static object GetToday()
+        private static object GetToday()
         {
             return DateTime.Now.Date;
         }
-        
 
-        static object GetUtcNow()
+
+        private static object GetUtcNow()
         {
             var time = DateTime.UtcNow;
             if (removeMillisecond) {
@@ -80,7 +76,7 @@ namespace Light.Data
             }
         }
 
-        static object GetUtcToday()
+        private static object GetUtcToday()
         {
             return DateTime.UtcNow.Date;
         }

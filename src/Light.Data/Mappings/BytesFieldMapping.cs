@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-    class BytesFieldMapping : DataFieldMapping
+    internal class BytesFieldMapping : DataFieldMapping
     {
         public BytesFieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
             : base(type, fieldName, indexName, mapping, isNullable, dbType)
@@ -12,8 +12,8 @@ namespace Light.Data
 
         public override object GetInsertData(object entity, bool refreshField)
         {
-            object value = Handler.Get(entity);
-            if (Object.Equals(value, null)) {
+            var value = Handler.Get(entity);
+            if (Equals(value, null)) {
                 if (IsNullable) {
                     return null;
                 }
@@ -48,7 +48,7 @@ namespace Light.Data
 
         public override object ToParameter(object value)
         {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
+            if (Equals(value, null) || Equals(value, DBNull.Value)) {
                 return null;
             }
             else {
@@ -58,7 +58,7 @@ namespace Light.Data
 
         public override object ToProperty(object value)
         {
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 return null;
             }
             else {

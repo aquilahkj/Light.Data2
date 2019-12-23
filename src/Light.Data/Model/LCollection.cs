@@ -9,17 +9,17 @@ namespace Light.Data
     /// </summary>
     public sealed class LCollection<T> : ICollection<T>
     {
-        List<T> list;
+        private List<T> list;
 
-        QueryExpression query;
+        private QueryExpression query;
 
-        DataContextOptions options;
+        private DataContextOptions options;
 
-        ICommandOutput output;
+        private ICommandOutput output;
 
-        object owner;
+        private object owner;
 
-        string[] fieldPaths;
+        private string[] fieldPaths;
 
         internal LCollection(DataContext context, object owner, QueryExpression query, string[] fieldPaths)
         {
@@ -29,8 +29,8 @@ namespace Light.Data
                 throw new ArgumentNullException(nameof(owner));
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
-            this.options = context.Options;
-            this.output = context.Output;
+            options = context.Options;
+            output = context.Output;
             this.owner = owner;
             this.query = query;
             this.fieldPaths = fieldPaths;
@@ -38,10 +38,10 @@ namespace Light.Data
 
         #region ICollection implementation
 
-        void InitialList()
+        private void InitialList()
         {
             if (list == null) {
-                DataContext context = new DataContext(options);
+                var context = new DataContext(options);
                 context.SetCommandOutput(output);
                 list = context.QueryCollectionRelateData<T>(query, owner, fieldPaths);
                 context.Dispose();
@@ -120,11 +120,7 @@ namespace Light.Data
         /// Gets a value indicating whether this instance is read only.
         /// </summary>
         /// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
-        public bool IsReadOnly {
-            get {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
         #endregion
 

@@ -6,51 +6,41 @@ using System.Data.Common;
 
 namespace Light.Data
 {
-    abstract class DatabaseProvider
+    internal abstract class DatabaseProvider
     {
         protected CommandFactory _factory;
 
-        private string configName;
-
-        public string ConfigName {
-            get {
-                return configName;
-            }
-        }
+        public string ConfigName { get; }
 
         protected DatabaseProvider(string configName, ConfigParamSet configParams)
         {
-            this.configName = configName;
-            string batchInsertCount = configParams.GetParamValue("batchInsertCount");
+            this.ConfigName = configName;
+            var batchInsertCount = configParams.GetParamValue("batchInsertCount");
             if (batchInsertCount != null) {
-                if (int.TryParse(batchInsertCount, out int value) && value > 0)
+                if (int.TryParse(batchInsertCount, out var value) && value > 0)
                     _batchInsertCount = value;
             }
 
-            string batchUpdateCount = configParams.GetParamValue("batchUpdateCount");
+            var batchUpdateCount = configParams.GetParamValue("batchUpdateCount");
             if (batchUpdateCount != null) {
-                if (int.TryParse(batchUpdateCount, out int value) && value > 0)
+                if (int.TryParse(batchUpdateCount, out var value) && value > 0)
                     _batchUpdateCount = value;
             }
 
-            string batchDeleteCount = configParams.GetParamValue("batchDeleteCount");
+            var batchDeleteCount = configParams.GetParamValue("batchDeleteCount");
             if (batchDeleteCount != null) {
-                if (int.TryParse(batchDeleteCount, out int value) && value > 0)
+                if (int.TryParse(batchDeleteCount, out var value) && value > 0)
                     _batchDeleteCount = value;
             }
 
-            string timeout = configParams.GetParamValue("timeout");
+            var timeout = configParams.GetParamValue("timeout");
             if (timeout != null) {
-                if (int.TryParse(batchInsertCount, out int value) && value > 0)
+                if (int.TryParse(batchInsertCount, out var value) && value > 0)
                     _commandTimeout = value;
             }
         }
 
-        public virtual string ParameterPrefix {
-            get {
-                return _factory.ParameterPrefix;
-            }
-        }
+        public virtual string ParameterPrefix => _factory.ParameterPrefix;
 
         /// <summary>
         /// Creates the connection.
@@ -94,24 +84,18 @@ namespace Light.Data
         /// <param name="direction">Direction.</param>
         /// <param name="dataType">Data type.</param>
         /// <param name="commandType">Command type.</param>
-        public abstract IDataParameter CreateParameter(string name, object value, string dbType, System.Data.ParameterDirection direction, Type dataType, CommandType commandType);
+        public abstract IDataParameter CreateParameter(string name, object value, string dbType, ParameterDirection direction, Type dataType, CommandType commandType);
 
         /// <summary>
         /// Gets the factory.
         /// </summary>
         /// <value>The factory.</value>
-        public CommandFactory Factory {
-            get {
-                return _factory;
-            }
-        }
+        public CommandFactory Factory => _factory;
 
-        int _commandTimeout = 60000;
+        private int _commandTimeout = 60000;
 
         public int CommandTimeout {
-            get {
-                return _commandTimeout;
-            }
+            get => _commandTimeout;
             set {
                 if (value > 0) {
                     _commandTimeout = value;
@@ -122,12 +106,10 @@ namespace Light.Data
             }
         }
 
-        int _batchInsertCount = 100;
+        private int _batchInsertCount = 100;
 
         public int BatchInsertCount {
-            get {
-                return _batchInsertCount;
-            }
+            get => _batchInsertCount;
             set {
                 if (value >= 0) {
                     _batchInsertCount = value;
@@ -138,12 +120,10 @@ namespace Light.Data
             }
         }
 
-        int _batchUpdateCount = 100;
+        private int _batchUpdateCount = 100;
 
         public int BatchUpdateCount {
-            get {
-                return _batchUpdateCount;
-            }
+            get => _batchUpdateCount;
             set {
                 if (value >= 0) {
                     _batchUpdateCount = value;
@@ -154,12 +134,10 @@ namespace Light.Data
             }
         }
 
-        int _batchDeleteCount = 100;
+        private int _batchDeleteCount = 100;
 
         public int BatchDeleteCount {
-            get {
-                return _batchDeleteCount;
-            }
+            get => _batchDeleteCount;
             set {
                 if (value >= 0) {
                     _batchDeleteCount = value;
@@ -172,17 +150,17 @@ namespace Light.Data
 
         public virtual QueryCommand QueryEntityData(DataContext context, DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region)
         {
-            RelationMap relationMap = mapping.GetRelationMap();
+            var relationMap = mapping.GetRelationMap();
             if (selector == null) {
                 selector = relationMap.GetDefaultSelector();
             }
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateSelectDataCommand(mapping, relationMap, selector, query, order, distinct, region, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryState queryState = new QueryState();
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateSelectDataCommand(mapping, relationMap, selector, query, order, distinct, region, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryState = new QueryState();
             queryState.SetRelationMap(relationMap);
             queryState.SetSelector(selector);
-            QueryCommand queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage,
                 State = queryState
@@ -192,17 +170,17 @@ namespace Light.Data
 
         public virtual QueryCommand QueryJoinData(DataContext context, DataMapping mapping, ISelector selector, List<IJoinModel> models, QueryExpression query, OrderExpression order, bool distinct, Region region)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateSelectJoinTableCommand(selector, models, query, order, distinct, region, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryState queryState = new QueryState();
-            foreach (IJoinModel model in models) {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateSelectJoinTableCommand(selector, models, query, order, distinct, region, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryState = new QueryState();
+            foreach (var model in models) {
                 if (model.NoDataSetEntityNull) {
                     queryState.SetNoDataSetNull(model.AliasTableName);
                 }
             }
             queryState.SetSelector(selector);
-            QueryCommand queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage,
                 State = queryState
@@ -212,10 +190,10 @@ namespace Light.Data
 
         public virtual QueryCommand QuerySingleField(DataContext context, DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, bool distinct, Region region)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateSelectSingleFieldCommand(fieldInfo, query, order, distinct, region, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateSelectSingleFieldCommand(fieldInfo, query, order, distinct, region, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -224,14 +202,14 @@ namespace Light.Data
 
         public virtual QueryCommand QueryDynamicAggregate(DataContext context, AggregateModel model, QueryExpression query, QueryExpression having, OrderExpression order, Region region)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            AggregateSelector selector = model.GetSelector();
-            AggregateGroupBy groupBy = model.GetGroupBy();
-            CommandData commandData = _factory.CreateAggregateTableCommand(model.EntityMapping, selector, groupBy, query, having, order, region, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryState queryState = new QueryState();
+            var state = new CreateSqlState(context);
+            var selector = model.GetSelector();
+            var groupBy = model.GetGroupBy();
+            var commandData = _factory.CreateAggregateTableCommand(model.EntityMapping, selector, groupBy, query, having, order, region, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryState = new QueryState();
             queryState.SetSelector(selector);
-            QueryCommand queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage,
                 State = queryState
@@ -241,10 +219,10 @@ namespace Light.Data
 
         public virtual QueryCommand AggregateCount(DataContext context, DataEntityMapping mapping, QueryExpression query)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateAggregateCountCommand(mapping, query, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateAggregateCountCommand(mapping, query, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -253,10 +231,10 @@ namespace Light.Data
 
         public virtual QueryCommand AggregateJoinTableCount(DataContext context, List<IJoinModel> models, QueryExpression query)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateAggregateJoinCountCommand(models, query, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateAggregateJoinCountCommand(models, query, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -265,10 +243,10 @@ namespace Light.Data
 
         public virtual QueryCommand Aggregate(DataContext context, DataFieldInfo field, AggregateType aggregateType, QueryExpression query, bool distinct)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateAggregateFunctionCommand(field, aggregateType, query, distinct, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateAggregateFunctionCommand(field, aggregateType, query, distinct, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -277,10 +255,10 @@ namespace Light.Data
 
         public virtual QueryCommand Exists(DataContext context, DataEntityMapping mapping, QueryExpression query)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateExistsCommand(mapping, query, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateExistsCommand(mapping, query, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -289,10 +267,10 @@ namespace Light.Data
 
         public virtual QueryCommand TruncateTable(DataContext context, DataTableEntityMapping mapping)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateTruncateTableCommand(mapping, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateTruncateTableCommand(mapping, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -301,10 +279,10 @@ namespace Light.Data
 
         public virtual QueryCommand SelectInsert(DataContext context, DataTableEntityMapping insertMapping, DataEntityMapping selectMapping, QueryExpression query, OrderExpression order)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateSelectInsertCommand(insertMapping, selectMapping, query, order, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateSelectInsertCommand(insertMapping, selectMapping, query, order, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -312,16 +290,16 @@ namespace Light.Data
 
         public virtual QueryCommand SelectInsert(DataContext context, InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, bool distinct)
         {
-            RelationMap relationMap = mapping.GetRelationMap();
+            var relationMap = mapping.GetRelationMap();
             CommandData commandData;
-            CreateSqlState state = new CreateSqlState(context);
+            var state = new CreateSqlState(context);
             if (mapping.HasJoinRelateModel) {
                 QueryExpression subQuery = null;
                 QueryExpression mainQuery = null;
                 OrderExpression subOrder = null;
                 OrderExpression mainOrder = null;
                 if (query != null) {
-                    if (query.MutliQuery) {
+                    if (query.MultiQuery) {
                         mainQuery = query;
                     }
                     else {
@@ -329,21 +307,21 @@ namespace Light.Data
                     }
                 }
                 if (order != null) {
-                    if (order.MutliOrder) {
+                    if (order.MultiOrder) {
                         mainOrder = order;
                     }
                     else {
                         subOrder = order;
                     }
                 }
-                List<IJoinModel> models = relationMap.CreateJoinModels(subQuery, subOrder);
+                var models = relationMap.CreateJoinModels(subQuery, subOrder);
                 commandData = _factory.CreateSelectInsertCommand(selector, models, mainQuery, mainOrder, distinct, state);
             }
             else {
                 commandData = _factory.CreateSelectInsertCommand(selector, mapping, query, order, distinct, state);
             }
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -351,10 +329,10 @@ namespace Light.Data
 
         public virtual QueryCommand SelectInsertWithJoinTable(DataContext context, InsertSelector selector, List<IJoinModel> models, QueryExpression query, OrderExpression order, bool distinct)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateSelectInsertCommand(selector, models, query, order, distinct, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateSelectInsertCommand(selector, models, query, order, distinct, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -362,12 +340,12 @@ namespace Light.Data
 
         public virtual QueryCommand SelectInsertWithAggregate(DataContext context, InsertSelector selector, AggregateModel model, QueryExpression query, QueryExpression having, OrderExpression order)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            AggregateSelector aselector = model.GetSelector();
-            AggregateGroupBy groupBy = model.GetGroupBy();
-            CommandData commandData = _factory.CreateSelectInsertCommand(selector, model.EntityMapping, aselector, groupBy, query, having, order, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var aselector = model.GetSelector();
+            var groupBy = model.GetGroupBy();
+            var commandData = _factory.CreateSelectInsertCommand(selector, model.EntityMapping, aselector, groupBy, query, having, order, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -375,10 +353,10 @@ namespace Light.Data
 
         public virtual QueryCommand QueryDelete(DataContext context, DataTableEntityMapping mapping, QueryExpression query)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateMassDeleteCommand(mapping, query, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateMassDeleteCommand(mapping, query, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -386,10 +364,10 @@ namespace Light.Data
 
         public virtual QueryCommand QueryUpdate(DataContext context, DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query)
         {
-            CreateSqlState state = new CreateSqlState(context);
-            CommandData commandData = _factory.CreateMassUpdateCommand(mapping, updator, query, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context);
+            var commandData = _factory.CreateMassUpdateCommand(mapping, updator, query, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -397,10 +375,10 @@ namespace Light.Data
 
         public virtual QueryCommand Insert(DataContext context, DataTableEntityMapping mapping, object data, bool refresh, bool updateIdentity)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBaseInsertCommand(mapping, data, refresh, updateIdentity, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBaseInsertCommand(mapping, data, refresh, updateIdentity, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command,
                 IdentitySql = commandData.IdentitySql
             };
@@ -409,12 +387,12 @@ namespace Light.Data
 
         public virtual QueryCommand InsertIdentiy(DataContext context, DataTableEntityMapping mapping)
         {
-            CreateSqlState state = new CreateSqlState(context);
+            var state = new CreateSqlState(context);
             CommandData commandData = null;
             if (mapping.IdentityField != null) {
                 commandData = _factory.CreateIdentityCommand(mapping, state);
-                DbCommand command = commandData.CreateCommand(this);
-                QueryCommand queryCommand = new QueryCommand() {
+                var command = commandData.CreateCommand(this);
+                var queryCommand = new QueryCommand() {
                     Command = command
                 };
                 return queryCommand;
@@ -436,13 +414,13 @@ namespace Light.Data
 
         public virtual QueryCommand Update(DataContext context, DataTableEntityMapping mapping, object data, bool refresh)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBaseUpdateCommand(mapping, data, refresh, state);
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBaseUpdateCommand(mapping, data, refresh, state);
             if (commandData == null) {
                 return null;
             }
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -450,10 +428,10 @@ namespace Light.Data
 
         public virtual QueryCommand Delete(DataContext context, DataTableEntityMapping mapping, object data)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBaseDeleteCommand(mapping, data, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBaseDeleteCommand(mapping, data, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -461,10 +439,10 @@ namespace Light.Data
 
         public virtual QueryCommand BatchInsertWithIdentity(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBatchInsertWithIdentityCommand(mapping, datas, refresh, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBatchInsertWithIdentityCommand(mapping, datas, refresh, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -472,10 +450,10 @@ namespace Light.Data
 
         public virtual QueryCommand BatchInsert(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBatchInsertCommand(mapping, datas, refresh, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBatchInsertCommand(mapping, datas, refresh, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -483,13 +461,13 @@ namespace Light.Data
 
         public virtual QueryCommand BatchUpdate(DataContext context, DataTableEntityMapping mapping, IList datas, bool refresh)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBatchUpdateCommand(mapping, datas, refresh, state);
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBatchUpdateCommand(mapping, datas, refresh, state);
             if (commandData == null) {
                 return null;
             }
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -497,10 +475,10 @@ namespace Light.Data
 
         public virtual QueryCommand BatchDelete(DataContext context, DataTableEntityMapping mapping, IList datas)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateBatchDeleteCommand(mapping, datas, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateBatchDeleteCommand(mapping, datas, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -508,10 +486,10 @@ namespace Light.Data
 
         public virtual QueryCommand SelectById(DataContext context, DataTableEntityMapping mapping, object id)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateSelectByIdCommand(mapping, id, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateSelectByIdCommand(mapping, id, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -519,10 +497,10 @@ namespace Light.Data
 
         public virtual QueryCommand SelectByKey(DataContext context, DataTableEntityMapping mapping, object[] keys)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateSelectByKeyCommand(mapping, keys, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateSelectByKeyCommand(mapping, keys, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -530,10 +508,10 @@ namespace Light.Data
 
         public virtual QueryCommand ExistsByKey(DataContext context, DataTableEntityMapping mapping, object[] keys)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateExistsByKeyCommand(mapping, keys, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateExistsByKeyCommand(mapping, keys, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;
@@ -541,10 +519,10 @@ namespace Light.Data
 
         public virtual QueryCommand DeleteByKey(DataContext context, DataTableEntityMapping mapping, object[] keys)
         {
-            CreateSqlState state = new CreateSqlState(context, false);
-            CommandData commandData = _factory.CreateDeleteKeyCommand(mapping, keys, state);
-            DbCommand command = commandData.CreateCommand(this, state);
-            QueryCommand queryCommand = new QueryCommand() {
+            var state = new CreateSqlState(context, false);
+            var commandData = _factory.CreateDeleteKeyCommand(mapping, keys, state);
+            var command = commandData.CreateCommand(this, state);
+            var queryCommand = new QueryCommand() {
                 Command = command
             };
             return queryCommand;

@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Light.Data.Mssql
 {
-    class MssqlCommandFactory : CommandFactory
+    internal class MssqlCommandFactory : CommandFactory
     {
-        Dictionary<string, string> dateTimeFormatDict = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> dateTimeFormatDict = new Dictionary<string, string>();
 
-        readonly string defaultDateTime = "CONVERT(char(19), {0}, 120)";
+        private readonly string defaultDateTime = "CONVERT(char(19), {0}, 120)";
 
         public MssqlCommandFactory()
         {
@@ -83,7 +83,7 @@ namespace Light.Data.Mssql
 
         public override string CreateMatchSql(object field, bool starts, bool ends)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (starts) {
                 sb.AppendFormat("'{0}'+", _wildcards);
             }
@@ -101,14 +101,14 @@ namespace Light.Data.Mssql
 
         public override string CreateDateTimeFormatSql(object field, string format)
         {
-            string sqlformat;
+            string sqlFormat;
             if (string.IsNullOrEmpty(format)) {
-                sqlformat = defaultDateTime;
+                sqlFormat = defaultDateTime;
             }
-            else if (!dateTimeFormatDict.TryGetValue(format, out sqlformat)) {
+            else if (!dateTimeFormatDict.TryGetValue(format, out sqlFormat)) {
                 throw new NotSupportedException();
             }
-            return string.Format(sqlformat, field);
+            return string.Format(sqlFormat, field);
         }
 
 
@@ -212,6 +212,12 @@ namespace Light.Data.Mssql
             return string.Format("rtrim(ltrim({0}))", field);
         }
 
+        public override string CreateOutputNotSql(object value)
+        {
+            var sql = string.Format("case when not({0})=1 then 1 else 0 end", value);
+            return sql;
+        }
+        
         public override string CreateDividedSql(object field, object value, bool forward)
         {
             if (forward) {
@@ -244,15 +250,15 @@ namespace Light.Data.Mssql
 
         public override CommandData CreateSelectInsertCommand(InsertSelector insertSelector, DataEntityMapping mapping, AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order, CreateSqlState state)
         {
-            CommandData selectCommandData = CreateAggregateTableCommand(mapping, selector, groupBy, query, having, null, null, state);
-            DataFieldInfo[] insertFields = insertSelector.GetInsertFields();
-            string[] insertFieldNames = new string[insertFields.Length];
-            for (int i = 0; i < insertFields.Length; i++) {
+            var selectCommandData = CreateAggregateTableCommand(mapping, selector, groupBy, query, having, null, null, state);
+            var insertFields = insertSelector.GetInsertFields();
+            var insertFieldNames = new string[insertFields.Length];
+            for (var i = 0; i < insertFields.Length; i++) {
                 insertFieldNames[i] = CreateDataFieldSql(insertFields[i].FieldName);
             }
-            string insertString = string.Join(",", insertFieldNames);
-            string selectString = insertSelector.CreateSelectString(this, false, state);
-            string sql = string.Format("insert into {0}({1})select {2} from ({3}) as A", CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString, selectString, selectCommandData.CommandText);
+            var insertString = string.Join(",", insertFieldNames);
+            var selectString = insertSelector.CreateSelectString(this, false, state);
+            var sql = string.Format("insert into {0}({1})select {2} from ({3}) as A", CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString, selectString, selectCommandData.CommandText);
             if (order != null) {
                 state.UseFieldAlias = true;
                 sql += GetOrderString(order, false, state);
@@ -266,7 +272,7 @@ namespace Light.Data.Mssql
         {
             if (region != null) {
                 if (region.Start == 0) {
-                    StringBuilder sql = new StringBuilder();
+                    var sql = new StringBuilder();
                     sql.AppendFormat("select top {2} {0} from {1}", customSelect, CreateDataTableMappingSql(mapping, state), region.Size);
                     if (query != null) {
                         sql.Append(GetQueryString(query, false, state));
@@ -274,7 +280,7 @@ namespace Light.Data.Mssql
                     if (order != null) {
                         sql.Append(GetOrderString(order, false, state));
                     }
-                    CommandData commandData = new CommandData(sql.ToString());
+                    var commandData = new CommandData(sql.ToString());
                     commandData.InnerPage = true;
                     return commandData;
                 }
@@ -283,16 +289,16 @@ namespace Light.Data.Mssql
                         order = CreatePrimaryKeyOrderExpression(mapping);
                     }
                     if (order != null) {
-                        string rname = CreateDataFieldSql("R" + Guid.NewGuid().ToString("N"));
-                        StringBuilder sql = new StringBuilder();
+                        var rname = CreateDataFieldSql("R" + Guid.NewGuid().ToString("N"));
+                        var sql = new StringBuilder();
                         sql.Append("select * from (");
-                        long totalsize = region.Start + (long)region.Size;
+                        var totalsize = region.Start + (long)region.Size;
                         sql.AppendFormat("select top {4} {0},row_number() over (order by {2}) as {3} from {1}", customSelect, CreateDataTableMappingSql(mapping, state), order.CreateSqlString(this, false, state), rname, totalsize);
                         if (query != null) {
                             sql.Append(GetQueryString(query, false, state));
                         }
                         sql.AppendFormat(") as RT where {0}>{1}", rname, region.Start);
-                        CommandData commandData = new CommandData(sql.ToString());
+                        var commandData = new CommandData(sql.ToString());
                         commandData.InnerPage = true;
                         return commandData;
                     }
@@ -305,18 +311,18 @@ namespace Light.Data.Mssql
         {
             if (region != null) {
                 if (region.Start == 0) {
-                    StringBuilder tables = new StringBuilder();
-                    foreach (IJoinModel model in modelList) {
+                    var tables = new StringBuilder();
+                    foreach (var model in modelList) {
                         if (model.Connect != null) {
                             tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
                         }
-                        string modelsql = model.CreateSqlString(this, state);
+                        var modelsql = model.CreateSqlString(this, state);
                         tables.Append(modelsql);
                         if (model.Connect != null && model.Connect.On != null) {
                             tables.Append(GetOnString(model.Connect.On, state));
                         }
                     }
-                    StringBuilder sql = new StringBuilder();
+                    var sql = new StringBuilder();
                     sql.AppendFormat("select top {2} {0} from {1}", customSelect, tables, region.Size);
                     if (query != null) {
                         sql.Append(GetQueryString(query, true, state));
@@ -324,33 +330,33 @@ namespace Light.Data.Mssql
                     if (order != null) {
                         sql.Append(GetOrderString(order, true, state));
                     }
-                    CommandData command = new CommandData(sql.ToString());
+                    var command = new CommandData(sql.ToString());
                     command.InnerPage = true;
                     return command;
                 }
                 else {
                     if (order != null) {
-                        string rname = CreateDataFieldSql("R" + Guid.NewGuid().ToString("N"));
-                        StringBuilder tables = new StringBuilder();
-                        foreach (IJoinModel model in modelList) {
+                        var rname = CreateDataFieldSql("R" + Guid.NewGuid().ToString("N"));
+                        var tables = new StringBuilder();
+                        foreach (var model in modelList) {
                             if (model.Connect != null) {
                                 tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
                             }
-                            string modelsql = model.CreateSqlString(this, state);
+                            var modelsql = model.CreateSqlString(this, state);
                             tables.Append(modelsql);
                             if (model.Connect != null && model.Connect.On != null) {
                                 tables.Append(GetOnString(model.Connect.On, state));
                             }
                         }
-                        StringBuilder sql = new StringBuilder();
+                        var sql = new StringBuilder();
                         sql.Append("select * from (");
-                        long totalsize = region.Start + (long)region.Size;
+                        var totalsize = region.Start + (long)region.Size;
                         sql.AppendFormat("select top {4} {0},row_number() over (order by {2}) as {3} from {1}", customSelect, tables, order.CreateSqlString(this, true, state), rname, totalsize);
                         if (query != null) {
                             sql.Append(GetQueryString(query, false, state));
                         }
                         sql.AppendFormat(") as RT where {0}>{1}", rname, region.Start);
-                        CommandData commandData = new CommandData(sql.ToString());
+                        var commandData = new CommandData(sql.ToString());
                         commandData.InnerPage = true;
                         return commandData;
                     }
@@ -363,8 +369,8 @@ namespace Light.Data.Mssql
         {
             if (region != null) {
                 if (region.Start == 0) {
-                    StringBuilder sql = new StringBuilder();
-                    string selectString = selector.CreateSelectString(this, false, state);
+                    var sql = new StringBuilder();
+                    var selectString = selector.CreateSelectString(this, false, state);
                     sql.AppendFormat("select top {2} {0} from {1}", selectString, CreateDataTableMappingSql(mapping, state), region.Size);
                     if (query != null) {
                         sql.Append(GetQueryString(query, false, state));
@@ -378,7 +384,7 @@ namespace Light.Data.Mssql
                     if (order != null) {
                         sql.Append(GetAggregateOrderString(order, false, state));
                     }
-                    CommandData command = new CommandData(sql.ToString());
+                    var command = new CommandData(sql.ToString());
                     command.InnerPage = true;
                     return command;
                 }
@@ -387,11 +393,11 @@ namespace Light.Data.Mssql
                         order = CreateGroupByOrderExpression(groupBy);
                     }
                     if (order != null) {
-                        string rname = CreateDataFieldSql("R" + Guid.NewGuid().ToString("N"));
-                        StringBuilder sql = new StringBuilder();
-                        string selectString = selector.CreateSelectString(this, false, state);
+                        var rname = CreateDataFieldSql("R" + Guid.NewGuid().ToString("N"));
+                        var sql = new StringBuilder();
+                        var selectString = selector.CreateSelectString(this, false, state);
                         sql.Append("select * from (");
-                        long totalsize = region.Start + (long)region.Size;
+                        var totalsize = region.Start + (long)region.Size;
                         sql.AppendFormat("select top {4} {0},row_number() over (order by {2}) as {3} from {1}", selectString, CreateDataTableMappingSql(mapping, state), order.CreateSqlString(this, false, state), rname, totalsize);
                         if (query != null) {
                             sql.Append(GetQueryString(query, false, state));
@@ -403,7 +409,7 @@ namespace Light.Data.Mssql
                             sql.Append(GetHavingString(having, false, state));
                         }
                         sql.AppendFormat(") as RT where {0}>{1}", rname, region.Start);
-                        CommandData commandData = new CommandData(sql.ToString());
+                        var commandData = new CommandData(sql.ToString());
                         commandData.InnerPage = true;
                         return commandData;
                     }

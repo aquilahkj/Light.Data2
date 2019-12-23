@@ -3,26 +3,20 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class MutliInsertSelector : Selector
+	internal class MutliInsertSelector : Selector
 	{
-		readonly DataTableEntityMapping insertMapping;
-
-		readonly List<DataFieldInfo> insertList = new List<DataFieldInfo> ();
+		private readonly List<DataFieldInfo> insertList = new List<DataFieldInfo> ();
 
 		public MutliInsertSelector (DataTableEntityMapping insertMapping)
 		{
-			this.insertMapping = insertMapping;
+			this.InsertMapping = insertMapping;
 		}
 
-		internal DataTableEntityMapping InsertMapping {
-			get {
-				return insertMapping;
-			}
-		}
+		internal DataTableEntityMapping InsertMapping { get; }
 
 		public void SetInsertField (DataFieldInfo field)
 		{
-			if (Object.Equals (field, null))
+			if (Equals (field, null))
 				throw new ArgumentNullException (nameof (field));
 			insertList.Add (field);
 		}

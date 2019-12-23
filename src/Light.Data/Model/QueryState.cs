@@ -2,23 +2,23 @@
 
 namespace Light.Data
 {
-    class QueryState
+    internal class QueryState
     {
-        RelationMap relationMap;
+        private RelationMap relationMap;
 
-        readonly Dictionary<string, object> joinDatas = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> joinDatas = new Dictionary<string, object>();
 
-        readonly Dictionary<string, object> extendDatas = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> extendDatas = new Dictionary<string, object>();
 
-        HashSet<string> fieldHash;
+        private HashSet<string> fieldHash;
 
-        HashSet<string> nodataSetNullHash;
+        private HashSet<string> nodataSetNullHash;
 
         public void InitialJoinData()
         {
-            this.joinDatas.Clear();
-            if (this.extendDatas.Count > 0) {
-                foreach (KeyValuePair<string, object> kvs in this.extendDatas) {
+            joinDatas.Clear();
+            if (extendDatas.Count > 0) {
+                foreach (var kvs in extendDatas) {
                     joinDatas.Add(kvs.Key, kvs.Value);
                 }
             }
@@ -33,7 +33,7 @@ namespace Light.Data
         public void SetSelector(ISelector selector)
         {
             if (selector != null) {
-                this.fieldHash = new HashSet<string>(selector.GetSelectFieldNames());
+                fieldHash = new HashSet<string>(selector.GetSelectFieldNames());
             }
         }
 
@@ -49,7 +49,7 @@ namespace Light.Data
 
         public bool GetJoinData(string fieldPath, out object value)
         {
-            if (relationMap.TryGetCycleFieldPath(fieldPath, out string m)) {
+            if (relationMap.TryGetCycleFieldPath(fieldPath, out var m)) {
                 return joinDatas.TryGetValue(m, out value);
             } else {
                 return joinDatas.TryGetValue(fieldPath, out value);
@@ -58,7 +58,7 @@ namespace Light.Data
 
         public string GetAliasName(string fieldPath)
         {
-            if (this.relationMap.CheckValid(fieldPath, out string alias)) {
+            if (relationMap.CheckValid(fieldPath, out var alias)) {
                 return alias;
             } else {
                 throw new LightDataException(string.Format(SR.CanNotFindAliasNameViaSpecifiedPath, fieldPath));

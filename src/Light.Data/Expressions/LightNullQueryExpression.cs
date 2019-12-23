@@ -1,18 +1,18 @@
 ﻿namespace Light.Data
 {
-	class LightNullQueryExpression : QueryExpression, ISupportNotDefine
+	internal class LightNullQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		readonly LightNullDataFieldInfo _fieldInfo;
+		private readonly LightNullDataFieldInfo _fieldInfo;
 
 		public LightNullQueryExpression (LightNullDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
-			this._fieldInfo = fieldInfo;
+			_fieldInfo = fieldInfo;
 		}
 
 		public void SetNot ()
 		{
-			this._fieldInfo.SetNot ();
+			_fieldInfo.SetNot ();
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)

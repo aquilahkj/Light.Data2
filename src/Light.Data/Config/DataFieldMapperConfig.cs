@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field config.
 	/// </summary>
-	class DataFieldMapperConfig
+	internal class DataFieldMapperConfig
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DataFieldMapperConfig"/> class.

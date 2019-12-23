@@ -5,7 +5,7 @@ namespace Light.Data
     /// <summary>
     /// Data field info.
     /// </summary>
-    class DataFieldInfo<T> : DataFieldInfo
+    internal class DataFieldInfo<T> : DataFieldInfo
     {
         /// <summary>
         /// Create the specified name.
@@ -30,7 +30,7 @@ namespace Light.Data
     /// <summary>
     /// Data field info.
     /// </summary>
-    class DataFieldInfo : BasicFieldInfo
+    internal class DataFieldInfo : BasicFieldInfo
     {
         /// <summary>
         /// Creates the alias table info.
@@ -39,7 +39,7 @@ namespace Light.Data
         /// <param name="aliasTableName">Alias table name.</param>
         public virtual DataFieldInfo CreateAliasTableInfo(string aliasTableName)
         {
-            DataFieldInfo info = this.MemberwiseClone() as DataFieldInfo;
+            var info = (DataFieldInfo)MemberwiseClone();
             info._aliasTableName = aliasTableName;
             return info;
         }
@@ -104,31 +104,23 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Gets the DBtype of the field.
+        /// Gets the DbType of the field.
         /// </summary>
         /// <value>The type of the DB.</value>
-        internal virtual string DBType {
-            get {
-                return DataField.DBType;
-            }
-        }
+        internal virtual string DBType => DataField.DBType;
 
         /// <summary>
         /// The name of the alias table.
         /// </summary>
         protected string _aliasTableName;
 
-        internal virtual string AliasTableName {
-            get {
-                return _aliasTableName;
-            }
-        }
+        internal virtual string AliasTableName => _aliasTableName;
 
         internal virtual string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
             if (isFullName) {
-				if (this._aliasTableName != null) {
-					return factory.CreateFullDataFieldSql(this._aliasTableName, FieldName);
+				if (_aliasTableName != null) {
+					return factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
 				}
 				else {
 					return factory.CreateFullDataFieldSql(TableMapping, FieldName, state);

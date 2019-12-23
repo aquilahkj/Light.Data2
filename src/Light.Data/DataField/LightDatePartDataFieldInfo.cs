@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LightDatePartDataFieldInfo : LightDataFieldInfo
+	internal class LightDatePartDataFieldInfo : LightDataFieldInfo
 	{
-		readonly DatePart _part;
+		private readonly DatePart _part;
 
-		readonly DataFieldInfo _baseFieldInfo;
+		private readonly DataFieldInfo _baseFieldInfo;
 
 		internal LightDatePartDataFieldInfo (DataFieldInfo info, DatePart part)
 			: base (info.TableMapping)
@@ -15,12 +15,12 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			var field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 			switch (_part) {
 			case DatePart.Year:
 				sql = factory.CreateYearSql (field);

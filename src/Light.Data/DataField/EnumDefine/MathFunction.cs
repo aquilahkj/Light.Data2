@@ -1,7 +1,6 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	enum MathFunction
+	internal enum MathFunction
 	{
 		Abs,
 

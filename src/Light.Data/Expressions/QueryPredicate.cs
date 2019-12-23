@@ -4,7 +4,7 @@ namespace Light.Data
 	/// <summary>
 	/// Query predicate.
 	/// </summary>
-	enum QueryPredicate
+	internal enum QueryPredicate
 	{
 		Eq,
 		Lt,
@@ -17,7 +17,7 @@ namespace Light.Data
 	/// <summary>
 	/// Query collection predicate.
 	/// </summary>
-	enum QueryCollectionPredicate
+	internal enum QueryCollectionPredicate
 	{
 		In,
 		NotIn,

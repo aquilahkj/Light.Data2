@@ -6,7 +6,7 @@ namespace Light.Data
 	/// <summary>
 	/// Custom field mapping.
 	/// </summary>
-	class CustomFieldMapping : DataFieldMapping
+	internal class CustomFieldMapping : DataFieldMapping
 	{
 		public CustomFieldMapping (string fieldName, DataEntityMapping mapping)
 			: base (null, fieldName, null, mapping, true, null)
@@ -18,7 +18,7 @@ namespace Light.Data
 
 		public override object ToProperty (object value)
 		{
-			if (Object.Equals (value, DBNull.Value)) {
+			if (Equals (value, DBNull.Value)) {
 				return null;
 			}
 			else {
@@ -28,7 +28,7 @@ namespace Light.Data
 
 		public override object ToParameter (object value)
 		{
-			if (Object.Equals (value, DBNull.Value)) {
+			if (Equals (value, DBNull.Value)) {
 				return null;
 			}
 			else {
@@ -47,7 +47,7 @@ namespace Light.Data
 
         public override object GetInsertData(object entity, bool refreshField)
         {
-            object value = Handler.Get(entity);
+            var value = Handler.Get(entity);
             return value;
         }
             #endregion

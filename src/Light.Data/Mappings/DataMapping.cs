@@ -7,7 +7,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data mapping.
 	/// </summary>
-	abstract class DataMapping : IDataDefine
+	internal abstract class DataMapping : IDataDefine
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DataMapping"/> class.
@@ -15,47 +15,29 @@ namespace Light.Data
 		/// <param name="type">Type.</param>
 		protected DataMapping (Type type)
 		{
-			this.objectType = type;
-            this.objectTypeInfo = type.GetTypeInfo();
+			ObjectType = type;
+            ObjectTypeInfo = type.GetTypeInfo();
 		}
-
-		Type objectType;
-
-        TypeInfo objectTypeInfo;
 
 		/// <summary>
 		/// Gets or sets the type of the object.
 		/// </summary>
 		/// <value>The type of the object.</value>
-		public Type ObjectType {
-			get {
-				return objectType;
-			}
+		public Type ObjectType
+		{
+			get;
 			//protected set {
 			//	objectType = value;
 			//}
 		}
 
-        public TypeInfo ObjectTypeInfo {
-            get {
-                return objectTypeInfo;
-            }
-        }
-
-		ConfigParamSet extentParams;
+		public TypeInfo ObjectTypeInfo { get; }
 
 		/// <summary>
 		/// Gets or sets the extent parameters.
 		/// </summary>
 		/// <value>The extent parameters.</value>
-		public ConfigParamSet ExtentParams {
-			get {
-				return extentParams;
-			}
-			protected set {
-				extentParams = value;
-			}
-		}
+		public ConfigParamSet ExtentParams { get; protected set; }
 
 		#region IFieldCollection 成员
 

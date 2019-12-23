@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-    class DataContextSetting
+    internal class DataContextSetting
     {
         internal static DataContextSetting CreateSetting(IConnectionSetting setting, bool throwOnError)
         {
@@ -10,7 +10,7 @@ namespace Light.Data
                 throw new ArgumentNullException(nameof(setting));
             }
             Type type;
-            string connection = setting.ConnectionString;
+            var connection = setting.ConnectionString;
 
             type = Type.GetType(setting.ProviderName, throwOnError);
 
@@ -19,13 +19,13 @@ namespace Light.Data
             }
 
             if (!throwOnError) {
-                Type dataBaseType = typeof(DatabaseProvider);
+                var dataBaseType = typeof(DatabaseProvider);
                 if (!type.IsInherit(dataBaseType)) {
                     return null;
                 }
             }
 
-            DatabaseProvider dataBase = Activator.CreateInstance(type, setting.Name, setting.ConfigParam) as DatabaseProvider;
+            var dataBase = Activator.CreateInstance(type, setting.Name, setting.ConfigParam) as DatabaseProvider;
             if (dataBase == null) {
                 if (!throwOnError) {
                     return null;
@@ -35,36 +35,20 @@ namespace Light.Data
                 }
             }
             //dataBase.SetExtendParams(setting.ConfigParam);
-            DataContextSetting context = new DataContextSetting(connection, dataBase);
+            var context = new DataContextSetting(connection, dataBase);
             return context;
         }
 
-        readonly DatabaseProvider dataBase;
+        public DatabaseProvider DataBase { get; }
 
-        public DatabaseProvider DataBase {
-            get {
-                return dataBase;
-            }
-        }
+        public string Name => DataBase.ConfigName;
 
-        public string Name {
-            get {
-                return dataBase.ConfigName;
-            }
-        }
-
-        readonly string connection;
-
-        public string Connection {
-            get {
-                return connection;
-            }
-        }
+        public string Connection { get; }
 
         public DataContextSetting(string connection, DatabaseProvider dataBase)
         {
-            this.connection = connection;
-            this.dataBase = dataBase;
+            this.Connection = connection;
+            this.DataBase = dataBase;
         }
     }
 }

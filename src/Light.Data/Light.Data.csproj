@@ -11,13 +11,14 @@
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <AssemblyVersion>2.1.4.0</AssemblyVersion>
-    <FileVersion>2.1.4.0</FileVersion>
+    <AssemblyVersion>2.1.4.1</AssemblyVersion>
+    <FileVersion>2.1.4.1</FileVersion>
     <PackageReleaseNotes>Light.Data.Mssql for SqlServer
 Light.Data.Mysql for Mysql
 Light.Data.Postgre for Postgre</PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
+    <PackageVersion>2.1.4.1</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

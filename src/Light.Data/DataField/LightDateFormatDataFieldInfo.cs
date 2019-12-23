@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LightDateFormatDataFieldInfo : LightDataFieldInfo
+	internal class LightDateFormatDataFieldInfo : LightDataFieldInfo
 	{
-		readonly string _format;
+		private readonly string _format;
 
-		readonly DataFieldInfo _baseFieldInfo;
+		private readonly DataFieldInfo _baseFieldInfo;
 
 		internal LightDateFormatDataFieldInfo (DataFieldInfo info, string format)
 			: base (info.TableMapping)
@@ -15,12 +15,12 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			var field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 			sql = factory.CreateDateTimeFormatSql (field, _format);
 			state.SetDataSql (this, isFullName, sql);
 			return sql;

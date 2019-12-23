@@ -3,19 +3,19 @@
 	/// <summary>
 	/// Data field expression.
 	/// </summary>
-	class DataFieldExpression : LightExpression
+	internal class DataFieldExpression : LightExpression
 	{
-		DataFieldExpression _expression1;
+		private DataFieldExpression _expression1;
 
-		DataFieldExpression _expression2;
+		private DataFieldExpression _expression2;
 
-		ConcatOperatorType _operatorType = ConcatOperatorType.AND;
+		private ConcatOperatorType _operatorType = ConcatOperatorType.AND;
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
+			var expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
 
-			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
+			var expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
 
 			return factory.CreateConcatExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
@@ -31,7 +31,7 @@
 			else if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
-			DataFieldExpression newExpression = new DataFieldExpression ();
+			var newExpression = new DataFieldExpression ();
 			newExpression._expression1 = expression1;
 			newExpression._expression2 = expression2;
 			newExpression._operatorType = operatorType;
@@ -76,8 +76,8 @@
 		/// <returns>The query expression.</returns>
 		protected virtual QueryExpression ConvertQueryExpression ()
 		{
-			QueryExpression query1 = _expression1.ConvertQueryExpression ();
-			QueryExpression query2 = _expression2.ConvertQueryExpression ();
+			var query1 = _expression1.ConvertQueryExpression ();
+			var query2 = _expression2.ConvertQueryExpression ();
 			return QueryExpression.Concat (query1, _operatorType, query2);
 		}
 

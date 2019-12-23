@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
-    class CommandCache
+    internal class CommandCache
     {
 
         //public CommandCache(string command)
@@ -25,7 +23,7 @@ namespace Light.Data
         public static string CreateKey(DataTableEntityMapping mapping, CreateSqlState state)
         {
             string name;
-            state.TryGetAliasTableName(mapping, out string aliasName);
+            state.TryGetAliasTableName(mapping, out var aliasName);
             var type = mapping.ObjectType;
             if (aliasName == null) {
                 name = type.FullName;
@@ -36,7 +34,7 @@ namespace Light.Data
             return name;
         }
 
-        Dictionary<string, string> commandDict = new Dictionary<string, string>();
+        private Dictionary<string, string> commandDict = new Dictionary<string, string>();
 
         public bool TryGetCommand(string name, out string command)
         {

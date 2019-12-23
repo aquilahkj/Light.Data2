@@ -2,77 +2,77 @@
 
 namespace Light.Data
 {
-    class PrimitiveFieldMapping : DataFieldMapping
+    internal class PrimitiveFieldMapping : DataFieldMapping
     {
-        const SByte MinSByte = 0;
+        private const SByte MinSByte = 0;
 
-        const Int16 MinInt16 = 0;
+        private const Int16 MinInt16 = 0;
 
-        const Int32 MinInt32 = 0;
+        private const Int32 MinInt32 = 0;
 
-        const Int64 MinInt64 = 0;
+        private const Int64 MinInt64 = 0;
 
-        const Decimal MinDecimal = 0;
+        private const Decimal MinDecimal = 0;
 
-        const Single MinSingle = 0;
+        private const Single MinSingle = 0;
 
-        const Double MinDouble = 0;
+        private const Double MinDouble = 0;
 
-        readonly object _minValue;
+        private readonly object _minValue;
 
-        readonly object _defaultValue;
+        private readonly object _defaultValue;
 
-        readonly DefaultTimeFunction _defaultTimeFunction;
+        private readonly DefaultTimeFunction _defaultTimeFunction;
 
         public PrimitiveFieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue, bool isIdentity, bool isPrimaryKey)
             : base(type, fieldName, indexName, mapping, isNullable, dbType)
         {
             if (type != typeof(string)) {
-                Type itemstype = Type.GetType("System.Nullable`1");
-                _nullableType = itemstype.MakeGenericType(type);
+                var itemstype = Type.GetType("System.Nullable`1");
+                NullableType = itemstype.MakeGenericType(type);
             }
             else {
-                _nullableType = type;
+                NullableType = type;
             }
             if (defaultValue != null) {
-                Type defaultValueType = defaultValue.GetType();
+                var defaultValueType = defaultValue.GetType();
                 if (_typeCode == TypeCode.DateTime) {
                     if (defaultValueType == typeof(DefaultTime)) {
-                        DefaultTime defaultTime = (DefaultTime)defaultValue;
-                        this._defaultTimeFunction = DefaultTimeFunction.GetFunction(defaultTime);
+                        var defaultTime = (DefaultTime)defaultValue;
+                        _defaultTimeFunction = DefaultTimeFunction.GetFunction(defaultTime);
                         if (defaultTime == DefaultTime.TimeStamp || defaultTime == DefaultTime.UtcTimeStamp) {
                             isTimeStamp = true;
                         }
-                        this._defaultValue = this._defaultTimeFunction;
+                        _defaultValue = _defaultTimeFunction;
                     }
                     else if (defaultValueType == typeof(DateTime)) {
-                        this._defaultValue = defaultValue;
+                        _defaultValue = defaultValue;
                     }
                     else if (defaultValueType == typeof(string)) {
-                        string str = defaultValue as string;
-                        if (DateTime.TryParse(str, out DateTime dt)) {
-                            this._defaultValue = dt;
+                        var str = defaultValue as string;
+                        if (DateTime.TryParse(str, out var dt)) {
+                            _defaultValue = dt;
                         }
                     }
                 }
                 else if (defaultValueType == type) {
-                    this._defaultValue = defaultValue;
+                    _defaultValue = defaultValue;
                 }
                 else {
-                    this._defaultValue = Convert.ChangeType(defaultValue, type);
+                    _defaultValue = Convert.ChangeType(defaultValue, type);
                 }
 
             }
             if (isIdentity) {
                 if (_typeCode == TypeCode.Int32 || _typeCode == TypeCode.Int64 || _typeCode == TypeCode.UInt32 || _typeCode == TypeCode.UInt64) {
-                    _isIdentity = true;
+                    IsIdentity = true;
                 }
                 else {
                     throw new LightDataException(string.Format(SR.DataMappingUnsupportIdentityFieldType, ObjectType, fieldName, type));
                 }
             }
 
-            _isPrimaryKey = isPrimaryKey;
+            IsPrimaryKey = isPrimaryKey;
             switch (_typeCode) {
                 case TypeCode.String:
                     _minValue = string.Empty;
@@ -122,33 +122,15 @@ namespace Light.Data
             }
         }
 
-        Type _nullableType;
+        public Type NullableType { get; }
 
-        public Type NullableType {
-            get {
-                return _nullableType;
-            }
-        }
+        public bool IsPrimaryKey { get; }
 
-        bool _isPrimaryKey;
-
-        public bool IsPrimaryKey {
-            get {
-                return _isPrimaryKey;
-            }
-        }
-
-        bool _isIdentity;
-
-        public bool IsIdentity {
-            get {
-                return _isIdentity;
-            }
-        }
+        public bool IsIdentity { get; }
 
         public override object ToProperty(object value)
         {
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 return null;
             }
             else {
@@ -173,10 +155,10 @@ namespace Light.Data
 
         public override object GetInsertData(object entity, bool refreshField)
         {
-            object value = Handler.Get(entity);
+            var value = Handler.Get(entity);
             object result;
-            bool useDef = false;
-            if (Object.Equals(value, null)) {
+            var useDef = false;
+            if (Equals(value, null)) {
                 if (_defaultValue != null) {
                     useDef = true;
                     if (_typeCode == TypeCode.DateTime && _defaultTimeFunction != null) {
@@ -196,10 +178,10 @@ namespace Light.Data
                     }
                 }
             }
-            else if (_typeCode == TypeCode.DateTime && Object.Equals(value, DateTime.MinValue)) {
+            else if (_typeCode == TypeCode.DateTime && Equals(value, DateTime.MinValue)) {
                 if (_defaultTimeFunction != null) {
                     useDef = true;
-                    result = this._defaultTimeFunction.GetValue();
+                    result = _defaultTimeFunction.GetValue();
                 }
                 else if (_defaultValue != null) {
                     useDef = true;
@@ -211,7 +193,7 @@ namespace Light.Data
             }
             else if (isTimeStamp) {
                 useDef = true;
-                result = this._defaultTimeFunction.GetValue();
+                result = _defaultTimeFunction.GetValue();
             }
             else {
                 result = value;
@@ -222,18 +204,14 @@ namespace Light.Data
             return result;
         }
 
-        bool isTimeStamp = false;
+        private bool isTimeStamp = false;
 
-        public override bool IsTimeStamp {
-            get {
-                return isTimeStamp;
-            }
-        }
+        public override bool IsTimeStamp => isTimeStamp;
 
         public override object GetTimeStamp(object entity, bool refreshField)
         {
             if (isTimeStamp && _defaultTimeFunction != null) {
-                object value = _defaultTimeFunction.GetValue();
+                var value = _defaultTimeFunction.GetValue();
                 if (refreshField) {
                     Handler.Set(entity, value);
                 }

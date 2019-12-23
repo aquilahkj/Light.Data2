@@ -1,13 +1,12 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class LightMathCalculateDataFieldInfo : LightDataFieldInfo
+	internal class LightMathCalculateDataFieldInfo : LightDataFieldInfo
 	{
-		readonly MathOperator _opera;
+		private readonly MathOperator _opera;
 
-		readonly object _left;
+		private readonly object _left;
 
-		readonly object _right;
+		private readonly object _right;
 
 		public LightMathCalculateDataFieldInfo (DataEntityMapping mapping, MathOperator opera, object left, object right)
 			: base (mapping)
@@ -19,27 +18,27 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
 			object left;
 			object right;
-			DataFieldInfo leftInfo = _left as DataFieldInfo;
-			DataFieldInfo rightInfo = _right as DataFieldInfo;
-			if (!Object.Equals (leftInfo, null) && !Object.Equals (rightInfo, null)) {
+			var leftInfo = _left as DataFieldInfo;
+			var rightInfo = _right as DataFieldInfo;
+			if (!Equals (leftInfo, null) && !Equals (rightInfo, null)) {
 				left = leftInfo.CreateSqlString (factory, isFullName, state);
 				right = rightInfo.CreateSqlString (factory, isFullName, state);
 			}
-			else if (!Object.Equals (leftInfo, null)) {
+			else if (!Equals (leftInfo, null)) {
 				left = leftInfo.CreateSqlString (factory, isFullName, state);
-				object rightObject = LambdaExpressionExtend.ConvertLambdaObject (_right);
+				var rightObject = LambdaExpressionExtend.ConvertLambdaObject (_right);
 				right = state.AddDataParameter (factory, rightObject);
 			}
-			else if (!Object.Equals (rightInfo, null)) {
+			else if (!Equals (rightInfo, null)) {
 				right = rightInfo.CreateSqlString (factory, isFullName, state);
-				object leftObject = LambdaExpressionExtend.ConvertLambdaObject (_left);
+				var leftObject = LambdaExpressionExtend.ConvertLambdaObject (_left);
 				left = state.AddDataParameter (factory, leftObject);
 			}
 			else {

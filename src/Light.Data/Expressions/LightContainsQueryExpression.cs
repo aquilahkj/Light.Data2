@@ -1,18 +1,18 @@
 ﻿namespace Light.Data
 {
-	class LightContainsQueryExpression : QueryExpression, ISupportNotDefine
+	internal class LightContainsQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		readonly LightContainsDataFieldInfo _fieldInfo;
+		private readonly LightContainsDataFieldInfo _fieldInfo;
 
 		public LightContainsQueryExpression (LightContainsDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
-			this._fieldInfo = fieldInfo;
+			_fieldInfo = fieldInfo;
 		}
 
 		public void SetNot ()
 		{
-			this._fieldInfo.SetNot ();
+			_fieldInfo.SetNot ();
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)

@@ -5,20 +5,20 @@ using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
-    static class Utility
+    internal static class Utility
     {
-        const sbyte MIN_SBYTE = 0;
+        private const sbyte MIN_SBYTE = 0;
 
-        const byte MIN_BYTE = 0;
+        private const byte MIN_BYTE = 0;
 
-        const short MIN_SHORT = 0;
+        private const short MIN_SHORT = 0;
 
-        const ushort MIN_USHORT = 0;
+        private const ushort MIN_USHORT = 0;
 
         public static bool ParseDbType(string dbType, out DbType type)
         {
             type = DbType.Object;
-            int index = dbType.IndexOf('(');
+            var index = dbType.IndexOf('(');
             string typeString;
             if (index < 0) {
                 typeString = dbType;
@@ -29,7 +29,7 @@ namespace Light.Data
             else {
                 typeString = dbType.Substring(0, index);
             }
-            bool result = false;
+            var result = false;
             if (Enum.TryParse(typeString, true, out type)) {
                 result = true;
             }
@@ -74,14 +74,14 @@ namespace Light.Data
         {
             size = 0;
             scale = null;
-            string result = Regex.Match(dbType, "(?<=\\u0028).*?(?=\\u0029)").Value;
+            var result = Regex.Match(dbType, "(?<=\\u0028).*?(?=\\u0029)").Value;
             if (string.IsNullOrEmpty(result)) {
                 return false;
             }
-            string[] arr = result.Split(',');
+            var arr = result.Split(',');
             if (int.TryParse(arr[0], out size)) {
                 if (arr.Length == 2) {
-                    if (byte.TryParse(arr[1], out byte s)) {
+                    if (byte.TryParse(arr[1], out var s)) {
                         scale = s;
                     }
                     else {
@@ -95,11 +95,11 @@ namespace Light.Data
 
         public static bool EnumableObjectEquals(object value1, object value2)
         {
-            if (Object.Equals(value1, value2)) {
+            if (Equals(value1, value2)) {
                 return true;
             }
-            Type objType1 = value1.GetType();
-            Type objType2 = value2.GetType();
+            var objType1 = value1.GetType();
+            var objType2 = value2.GetType();
             if (objType1 != objType2) {
                 return false;
             }
@@ -107,14 +107,14 @@ namespace Light.Data
                 return (value1 as string) == (value2 as string);
             }
             if (value1 is IEnumerable enumerable) {
-                IEnumerator e1 = enumerable.GetEnumerator();
-                IEnumerator e2 = (value2 as IEnumerable).GetEnumerator();
+                var e1 = enumerable.GetEnumerator();
+                var e2 = (value2 as IEnumerable).GetEnumerator();
 
                 while (true) {
-                    bool b1 = e1.MoveNext();
-                    bool b2 = e2.MoveNext();
+                    var b1 = e1.MoveNext();
+                    var b2 = e2.MoveNext();
                     if (b1 && b2) {
-                        if (!Object.Equals(e1.Current, e2.Current)) {
+                        if (!Equals(e1.Current, e2.Current)) {
                             return false;
                         }
                     }
@@ -133,8 +133,8 @@ namespace Light.Data
 
         public static int EnumableHashCode(IEnumerable e)
         {
-            int result = 0;
-            foreach (object obj in e) {
+            var result = 0;
+            foreach (var obj in e) {
                 result ^= obj.GetHashCode();
             }
             return result;

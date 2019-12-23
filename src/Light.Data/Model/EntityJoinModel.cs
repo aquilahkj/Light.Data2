@@ -1,118 +1,56 @@
-﻿
-using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Light.Data
 {
-    class EntityJoinModel : IJoinModel
+    internal class EntityJoinModel : IJoinModel
     {
-        readonly JoinConnect _connect;
+        public JoinConnect Connect { get; }
 
-        public JoinConnect Connect {
-            get {
-                return _connect;
-            }
-        }
+        public DataEntityMapping Mapping { get; }
 
-        readonly DataEntityMapping _mapping;
+        public IJoinTableMapping JoinMapping { get; }
 
-        public DataEntityMapping Mapping {
-            get {
-                return _mapping;
-            }
-        }
+        public QueryExpression Query { get; set; }
 
-        readonly IJoinTableMapping _joinMapping;
+        public OrderExpression Order { get; set; }
 
-        public IJoinTableMapping JoinMapping {
-            get {
-                return _joinMapping;
-            }
-        }
+        public bool Distinct { get; set; }
 
-        QueryExpression _query;
+        public string AliasTableName { get; }
 
-        public QueryExpression Query {
-            get {
-                return _query;
-            }
-            set {
-                _query = value;
-            }
-        }
-
-        OrderExpression _order;
-
-        public OrderExpression Order {
-            get {
-                return _order;
-            }
-            set {
-                _order = value;
-            }
-        }
-
-        bool _distinct;
-
-        public bool Distinct {
-            get {
-                return _distinct;
-            }
-            set {
-                _distinct = value;
-            }
-        }
-
-        readonly string _aliasTableName;
-
-        public string AliasTableName {
-            get {
-                return _aliasTableName;
-            }
-        }
-
-        bool _noDataSetEntityNull;
-
-        public bool NoDataSetEntityNull {
-            get {
-                return _noDataSetEntityNull;
-            }
-            set {
-                _noDataSetEntityNull = value;
-            }
-        }
+        public bool NoDataSetEntityNull { get; set; }
 
         public EntityJoinModel(DataEntityMapping mapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order, JoinSetting setting)
         {
-            this._mapping = mapping;
+            Mapping = mapping;
             //this._selector = AllSelector.Value;
-            this._connect = connect;
-            this._query = query;
-            this._order = order;
-            this._aliasTableName = aliasTableName;
-            this._joinMapping = mapping;
+            Connect = connect;
+            Query = query;
+            Order = order;
+            AliasTableName = aliasTableName;
+            JoinMapping = mapping;
             if ((setting & JoinSetting.QueryDistinct) == JoinSetting.QueryDistinct) {
-                _distinct = true;
+                Distinct = true;
             }
             if ((setting & JoinSetting.NoDataSetEntityNull) == JoinSetting.NoDataSetEntityNull) {
-               _noDataSetEntityNull = true;
+               NoDataSetEntityNull = true;
             }
         }
 
         public string CreateSqlString(CommandFactory factory, CreateSqlState state)
         {
-            StringBuilder sb = new StringBuilder();
-            if (_query != null || _order != null || _distinct) {
-                CommandData command = factory.CreateSelectCommand(_mapping, AllSelector.Value, _query, _order, _distinct, null, state);
-                string aliasName = _aliasTableName;// ?? factory.CreateDataTableMappingSql(_mapping, state);
+            var sb = new StringBuilder();
+            if (Query != null || Order != null || Distinct) {
+                var command = factory.CreateSelectCommand(Mapping, AllSelector.Value, Query, Order, Distinct, null, state);
+                var aliasName = AliasTableName;// ?? factory.CreateDataTableMappingSql(_mapping, state);
                 sb.Append(factory.CreateAliasQuerySql(command.CommandText, aliasName));
             }
             else {
-                if (_aliasTableName != null) {
-                    sb.Append(factory.CreateAliasTableSql(factory.CreateDataTableMappingSql(_mapping, state), _aliasTableName));
+                if (AliasTableName != null) {
+                    sb.Append(factory.CreateAliasTableSql(factory.CreateDataTableMappingSql(Mapping, state), AliasTableName));
                 }
                 else {
-                    sb.Append(factory.CreateDataTableMappingSql(_mapping, state));
+                    sb.Append(factory.CreateDataTableMappingSql(Mapping, state));
                 }
             }
             return sb.ToString();

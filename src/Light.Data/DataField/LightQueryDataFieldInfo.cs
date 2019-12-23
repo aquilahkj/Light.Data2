@@ -1,8 +1,8 @@
 ﻿namespace Light.Data
 {
-	class LightQueryDataFieldInfo : LightDataFieldInfo
+	internal class LightQueryDataFieldInfo : LightDataFieldInfo
 	{
-		readonly QueryExpression _query;
+		private readonly QueryExpression _query;
 
 		public LightQueryDataFieldInfo (QueryExpression query)
 			: base (query.TableMapping)
@@ -12,7 +12,7 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}

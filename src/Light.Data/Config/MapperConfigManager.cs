@@ -3,11 +3,11 @@ using System.Reflection;
 
 namespace Light.Data
 {
-    static class MapperConfigManager
+    internal static class MapperConfigManager
     {
         public static DataTableMapperConfig LoadDataTableConfig(Type type)
         {
-            if (DataMapperConfiguration.TryGetSetting(type, out DataTableMapperSetting setting)) {
+            if (DataMapperConfiguration.TryGetSetting(type, out var setting)) {
                 return setting.DataTableMapConfig;
             }
 
@@ -35,7 +35,7 @@ namespace Light.Data
 
         public static DataFieldMapperConfig LoadDataFieldConfig(Type type, PropertyInfo pi)
         {
-            if (DataMapperConfiguration.TryGetDataFieldConfig(type, pi.Name, out DataFieldMapperConfig mapperConfig)) {
+            if (DataMapperConfiguration.TryGetDataFieldConfig(type, pi.Name, out var mapperConfig)) {
                 return mapperConfig;
             }
 
@@ -61,13 +61,13 @@ namespace Light.Data
 
         public static RelationFieldMapConfig LoadRelationDataFieldConfig(Type type, PropertyInfo pi)
         {
-            if (DataMapperConfiguration.TryGetRelateFieldConfig(type, pi.Name, out RelationFieldMapConfig mapperConfig)) {
+            if (DataMapperConfiguration.TryGetRelateFieldConfig(type, pi.Name, out var mapperConfig)) {
                 return mapperConfig;
             }
 
             var relationAttributes = AttributeCore.GetPropertyAttributes<RelationFieldAttribute>(pi, true);
             if (relationAttributes.Length > 0) {
-                RelationFieldMapConfig rfConfig = new RelationFieldMapConfig(pi.Name);
+                var rfConfig = new RelationFieldMapConfig(pi.Name);
                 foreach (var ra in relationAttributes) {
                     rfConfig.AddRelationKeys(ra.MasterKey, ra.RelateKey);
                 }

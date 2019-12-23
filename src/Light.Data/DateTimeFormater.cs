@@ -7,26 +7,24 @@ namespace Light.Data
 	/// </summary>
 	public class DateTimeFormater
 	{
-		string yearFormat = "yyyy";
+		private string yearFormat = "yyyy";
 
-		string monthFormat = "MM";
+		private string monthFormat = "MM";
 
-		string dayFormat = "dd";
+		private string dayFormat = "dd";
 
-		string hourFormat = "HH";
+		private string hourFormat = "HH";
 
-		string minuteFormat = "mm";
+		private string minuteFormat = "mm";
 
-		string secondFormat = "ss";
+		private string secondFormat = "ss";
 
 		/// <summary>
 		/// Gets or sets the year format.
 		/// </summary>
 		/// <value>The year format.</value>
 		public string YearFormat {
-			get {
-				return yearFormat;
-			}
+			get => yearFormat;
 
 			set {
 				if (!string.IsNullOrEmpty(value))
@@ -39,9 +37,7 @@ namespace Light.Data
 		/// </summary>
 		/// <value>The month format.</value>
 		public string MonthFormat {
-			get {
-				return monthFormat;
-			}
+			get => monthFormat;
 
 			set {
 				if (!string.IsNullOrEmpty(value))
@@ -54,9 +50,7 @@ namespace Light.Data
 		/// </summary>
 		/// <value>The day format.</value>
 		public string DayFormat {
-			get {
-				return dayFormat;
-			}
+			get => dayFormat;
 
 			set {
 				if (!string.IsNullOrEmpty(value))
@@ -69,9 +63,7 @@ namespace Light.Data
 		/// </summary>
 		/// <value>The hour format.</value>
 		public string HourFormat {
-			get {
-				return hourFormat;
-			}
+			get => hourFormat;
 
 			set {
 				if (!string.IsNullOrEmpty(value))
@@ -84,9 +76,7 @@ namespace Light.Data
 		/// </summary>
 		/// <value>The minute format.</value>
 		public string MinuteFormat {
-			get {
-				return minuteFormat;
-			}
+			get => minuteFormat;
 
 			set {
 				if (!string.IsNullOrEmpty(value))
@@ -99,9 +89,7 @@ namespace Light.Data
 		/// </summary>
 		/// <value>The second format.</value>
 		public string SecondFormat {
-			get {
-				return secondFormat;
-			}
+			get => secondFormat;
 
 			set {
 				if (!string.IsNullOrEmpty(value))
@@ -115,15 +103,15 @@ namespace Light.Data
 		/// <returns>The data.</returns>
 		/// <param name="format">Format.</param>
 		public string FormatData(string format) {
-			StringBuilder sb = new StringBuilder();
-			char[] chars = format.ToCharArray();
-			int len = chars.Length;
-			int i = 0;
+			var sb = new StringBuilder();
+			var chars = format.ToCharArray();
+			var len = chars.Length;
+			var i = 0;
 			while (i < len) {
-				char c = chars[i];
+				var c = chars[i];
 				switch (c) {
 					case 'y': {
-							int ret = ParseValue(chars, i, 4, 'y');
+							var ret = ParseValue(chars, i, 4, 'y');
 							if (ret > 0) {
 								i += ret;
 								sb.Append(yearFormat);
@@ -132,7 +120,7 @@ namespace Light.Data
 						}
 						break;
 					case 'M': {
-							int ret = ParseValue(chars, i, 2, 'M');
+							var ret = ParseValue(chars, i, 2, 'M');
 							if (ret > 0) {
 								i += ret;
 								sb.Append(monthFormat);
@@ -141,7 +129,7 @@ namespace Light.Data
 						}
 						break;
 					case 'd': {
-							int ret = ParseValue(chars, i, 2, 'd');
+							var ret = ParseValue(chars, i, 2, 'd');
 							if (ret > 0) {
 								i += ret;
 								sb.Append(dayFormat);
@@ -150,7 +138,7 @@ namespace Light.Data
 						}
 						break;
 					case 'H': {
-							int ret = ParseValue(chars, i, 2, 'H');
+							var ret = ParseValue(chars, i, 2, 'H');
 							if (ret > 0) {
 								i += ret;
 								sb.Append(hourFormat);
@@ -159,7 +147,7 @@ namespace Light.Data
 						}
 						break;
 					case 'm': {
-							int ret = ParseValue(chars, i, 2, 'm');
+							var ret = ParseValue(chars, i, 2, 'm');
 							if (ret > 0) {
 								i += ret;
 								sb.Append(minuteFormat);
@@ -168,7 +156,7 @@ namespace Light.Data
 						}
 						break;
 					case 's': {
-							int ret = ParseValue(chars, i, 2, 's');
+							var ret = ParseValue(chars, i, 2, 's');
 							if (ret > 0) {
 								i += ret;
 								sb.Append(secondFormat);
@@ -184,11 +172,11 @@ namespace Light.Data
 			return sb.ToString();
 		}
 
-		int ParseValue(char[] chars, int i, int max, char c) {
+		private int ParseValue(char[] chars, int i, int max, char c) {
 			if (chars.Length < i + max) {
 				return 0;
 			}
-			for (int j = i; j < i + max; j++) {
+			for (var j = i; j < i + max; j++) {
 				if (chars[j] != c) {
 					return 0;
 				}

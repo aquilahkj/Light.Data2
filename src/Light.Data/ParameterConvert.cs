@@ -2,37 +2,36 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using System.Text;
 
 namespace Light.Data
 {
-    static class ParameterConvert
+    internal static class ParameterConvert
     {
-        static readonly Dictionary<Type, DataParameterMapping[]> TypeDict = new Dictionary<Type, DataParameterMapping[]>();
+        private static readonly Dictionary<Type, DataParameterMapping[]> TypeDict = new Dictionary<Type, DataParameterMapping[]>();
 
         public static DataParameter[] ConvertParameter(object data)
         {
             if (data == null) {
                 return null;
             }
-            Type type = data.GetType();
-            if (!TypeDict.TryGetValue(type, out DataParameterMapping[] mappings)) {
+            var type = data.GetType();
+            if (!TypeDict.TryGetValue(type, out var mappings)) {
                 lock (TypeDict) {
                     if (!TypeDict.TryGetValue(type, out mappings)) {
-                        TypeInfo typeInfo = type.GetTypeInfo();
-                        PropertyInfo[] properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                        List<DataParameterMapping> list = new List<DataParameterMapping>();
-                        foreach (PropertyInfo propertie in properties) {
+                        var typeInfo = type.GetTypeInfo();
+                        var properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                        var list = new List<DataParameterMapping>();
+                        foreach (var propertie in properties) {
                             var handler = new PropertyHandler(propertie);
                             string name = null;
-                            ParameterDirection direction = ParameterDirection.Input;
+                            var direction = ParameterDirection.Input;
                             var attributes = AttributeCore.GetPropertyAttributes<DataParameterAttribute>(propertie, true);
                             if (attributes.Length > 0) {
                                 var attribute = attributes[0];
                                 name = attribute.Name;
                                 direction = attribute.Direction;
                             }
-                            DataParameterMapping mapping = new DataParameterMapping(propertie, name, direction);
+                            var mapping = new DataParameterMapping(propertie, name, direction);
                             list.Add(mapping);
                         }
                         mappings = list.ToArray();
@@ -43,11 +42,11 @@ namespace Light.Data
             if (mappings.Length == 0) {
                 return null;
             }
-            DataParameter[] dataParameters = new DataParameter[mappings.Length];
-            for (int i = 0; i < mappings.Length; i++) {
-                DataParameterMapping mapping = mappings[i];
-                object value = mapping.Get(data);
-                if (!Object.Equals(value, null) && mapping.ConvertString) {
+            var dataParameters = new DataParameter[mappings.Length];
+            for (var i = 0; i < mappings.Length; i++) {
+                var mapping = mappings[i];
+                var value = mapping.Get(data);
+                if (!Equals(value, null) && mapping.ConvertString) {
                     value = value.ToString();
                 }
                 DataParameter dataParameter;

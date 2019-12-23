@@ -1,7 +1,6 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	interface ISupportNotDefine
+	internal interface ISupportNotDefine
 	{
 		void SetNot ();
 	}

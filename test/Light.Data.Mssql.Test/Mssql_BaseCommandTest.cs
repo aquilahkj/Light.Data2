@@ -917,6 +917,42 @@ namespace Light.Data.Mssql.Test
         }
 
         [Fact]
+        public void TestCase_UpdateMass_Dynamic()
+        {
+            const int count = 33;
+            var listEx = CreateBaseFieldTableList(count);
+            int result;
+            List<TeBaseField> listAc;
+            context.TruncateTable<TeBaseField>();
+            var total = context.BatchInsert(listEx);
+            Assert.Equal(count, total);
+            DateTime uptime = GetNow();
+            result = context.Query<TeBaseField>()
+                .Update(x => new TeBaseField
+                {
+                    BoolField = !x.BoolField,
+                    DateTimeField = uptime,
+                    Int32Field = 2,
+                    Int32FieldNull = null,
+                    VarcharFieldNull = x.Int64Field > 3 ? "aa" : x.VarcharField,
+                    TextField = x.Int64Field > 10 ? "aa" : "bb",
+                    EnumInt32Field = total > 3 ? EnumInt32Type.Negative1 : EnumInt32Type.Positive2,
+                });
+            listEx.ForEach(x =>
+            {
+                x.BoolField = !x.BoolField;
+                x.DateTimeField = uptime;
+                x.Int32Field = 2;
+                x.Int32FieldNull = null;
+                x.VarcharFieldNull = x.Int64Field > 3 ? "aa" : x.VarcharField;
+                x.TextField = x.Int64Field > 10 ? "aa" : "bb";
+                x.EnumInt32Field = total > 3 ? EnumInt32Type.Negative1 : EnumInt32Type.Positive2;
+            });
+            listAc = context.Query<TeBaseField>().OrderBy(x=>x.Id).ToList();
+            AssertExtend.Equal(listEx, listAc);
+        }
+        
+        [Fact]
         public void TestCase_InsertTable()
         {
             const int count = 33;

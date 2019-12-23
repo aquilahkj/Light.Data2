@@ -6,7 +6,7 @@ namespace Light.Data
     /// <summary>
     /// Single relation field mapping.
     /// </summary>
-    class SingleRelationFieldMapping : BaseRelationFieldMapping
+    internal class SingleRelationFieldMapping : BaseRelationFieldMapping
     {
         public SingleRelationFieldMapping(string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
             : base(fieldName, mapping, relateType, keyPairs, handler)
@@ -21,13 +21,13 @@ namespace Light.Data
 
         public object ToProperty(DataContext context, IDataReader datareader, QueryState queryState, string fieldPath)
         {
-            if (!queryState.GetJoinData(fieldPath, out object value)) {
-                string aliasName = queryState.GetAliasName(fieldPath);
-                foreach (DataFieldInfo info in this.relateInfos) {
-                    string name = string.Format("{0}_{1}", aliasName, info.FieldName);
+            if (!queryState.GetJoinData(fieldPath, out var value)) {
+                var aliasName = queryState.GetAliasName(fieldPath);
+                foreach (var info in relateInfos) {
+                    var name = string.Format("{0}_{1}", aliasName, info.FieldName);
                     if (queryState.CheckSelectField(aliasName)) {
-                        object obj = datareader[name];
-                        if (Object.Equals(obj, DBNull.Value) || Object.Equals(obj, null)) {
+                        var obj = datareader[name];
+                        if (Equals(obj, DBNull.Value) || Equals(obj, null)) {
                             queryState.SetJoinData(fieldPath, null);
                             return null;
                         }
@@ -41,7 +41,7 @@ namespace Light.Data
                     //queryState.SetJoinData(fieldPath, item);
                     //this.relateEntityMapping.LoadJoinTableData(context, datareader, item, queryState, fieldPath);
                     //value = item;
-                    value = this.relateEntityMapping.LoadJoinTableData(context, datareader, queryState, fieldPath);
+                    value = relateEntityMapping.LoadJoinTableData(context, datareader, queryState, fieldPath);
                 } else {
                     queryState.SetJoinData(fieldPath, null);
                     return null;

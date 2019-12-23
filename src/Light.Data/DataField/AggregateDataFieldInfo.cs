@@ -1,64 +1,46 @@
 ﻿namespace Light.Data
 {
-    class AggregateDataFieldInfo : LightDataFieldInfo, IAliasDataFieldInfo
+    internal class AggregateDataFieldInfo : LightDataFieldInfo, IAliasDataFieldInfo
     {
-        readonly DataFieldInfo _fieldInfo;
-
-        readonly string _aggregateName;
-
-        readonly bool _aggregate;
-
         public AggregateDataFieldInfo(DataFieldInfo fieldInfo, string name, bool aggregate)
             : base(fieldInfo.TableMapping, true, name)
         {
-            _fieldInfo = fieldInfo;
-            _aggregateName = name;
-            _aggregate = aggregate;
+            FieldInfo = fieldInfo;
+            AggregateName = name;
+            Aggregate = aggregate;
         }
 
-        public DataFieldInfo FieldInfo {
-            get {
-                return _fieldInfo;
-            }
-        }
+        public DataFieldInfo FieldInfo { get; }
 
-        public string AggregateName {
-            get {
-                return _aggregateName;
-            }
-        }
+        public string AggregateName { get; }
 
-        public bool Aggregate {
-            get {
-                return _aggregate;
-            }
-        }
+        public bool Aggregate { get; }
 
         public override DataFieldInfo CreateAliasTableInfo(string aliasTableName)
         {
-            DataFieldInfo info = new DataFieldInfo(_fieldInfo.TableMapping, true, _aggregateName, aliasTableName);
+            var info = new DataFieldInfo(FieldInfo.TableMapping, true, AggregateName, aliasTableName);
             return info;
         }
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
             if (state.UseFieldAlias) {
-                return factory.CreateDataFieldSql(_aggregateName);
+                return factory.CreateDataFieldSql(AggregateName);
             }
             else {
-                return _fieldInfo.CreateSqlString(factory, isFullName, state);
+                return FieldInfo.CreateSqlString(factory, isFullName, state);
             }
         }
 
         internal string CreateGroupBySqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            return _fieldInfo.CreateSqlString(factory, isFullName, state);
+            return FieldInfo.CreateSqlString(factory, isFullName, state);
         }
 
         public string CreateAliasDataFieldSql(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            string fieldSql = _fieldInfo.CreateSqlString(factory, isFullName, state);
-            string sql = factory.CreateAliasFieldSql(fieldSql, _aggregateName);
+            var fieldSql = FieldInfo.CreateSqlString(factory, isFullName, state);
+            var sql = factory.CreateAliasFieldSql(fieldSql, AggregateName);
             return sql;
         }
     }

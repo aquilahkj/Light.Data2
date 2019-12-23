@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Light.Data
 {
-    class CreateSqlState
+    internal class CreateSqlState
     {
         //readonly CommandFactory _factory;
 
@@ -13,7 +13,7 @@ namespace Light.Data
         //    this._factory = factory;
         //}
 
-        readonly DataContext context;
+        private readonly DataContext context;
 
         public CreateSqlState(DataContext context)
         {
@@ -23,7 +23,7 @@ namespace Light.Data
         public CreateSqlState(DataContext context, bool useDirectNull)
         {
             this.context = context;
-            this._useDirectNull = useDirectNull;
+            UseDirectNull = useDirectNull;
         }
 
         public bool TryGetAliasTableName(DataEntityMapping mapping, out string name)
@@ -31,45 +31,28 @@ namespace Light.Data
             return context.TryGetAliasTableName(mapping, out name);
         }
 
-        class ObjectData
+        private class ObjectData
         {
             public string Full;
 
             public string Normal;
         }
 
-        int seed;
+        public int Seed { get; private set; }
 
-        public int Seed {
-            get {
-                return seed;
-            }
-        }
-
-        string GetNextParameterName(CommandFactory factory)
+        private string GetNextParameterName(CommandFactory factory)
         {
-            seed++;
-            return factory.CreateParamName("P" + seed);
+            Seed++;
+            return factory.CreateParamName("P" + Seed);
         }
 
-        Dictionary<object, ObjectData> dict = new Dictionary<object, ObjectData>();
+        private Dictionary<object, ObjectData> dict = new Dictionary<object, ObjectData>();
 
-        List<DataParameter> parameters = new List<DataParameter>();
+        private List<DataParameter> parameters = new List<DataParameter>();
 
-        Dictionary<object, string> aliasDict = new Dictionary<object, string>();
+        private Dictionary<object, string> aliasDict = new Dictionary<object, string>();
 
-        bool useFieldAlias;
-        private bool _useDirectNull = true;
-
-        public bool UseFieldAlias {
-            get {
-                return useFieldAlias;
-            }
-
-            set {
-                useFieldAlias = value;
-            }
-        }
+        public bool UseFieldAlias { get; set; }
 
         public void SetAliasData(object obj, string alias)
         {
@@ -80,13 +63,13 @@ namespace Light.Data
 
         public string GetDataSql(object obj, bool isFullName)
         {
-            if (useFieldAlias) {
-                if (aliasDict.TryGetValue(obj, out string sql)) {
+            if (UseFieldAlias) {
+                if (aliasDict.TryGetValue(obj, out var sql)) {
                     return sql;
                 }
             }
 
-            if (dict.TryGetValue(obj, out ObjectData data)) {
+            if (dict.TryGetValue(obj, out var data)) {
                 if (isFullName) {
                     return data.Full;
                 }
@@ -101,7 +84,7 @@ namespace Light.Data
 
         public void SetDataSql(object obj, bool isFullName, string sql)
         {
-            if (dict.TryGetValue(obj, out ObjectData data)) {
+            if (dict.TryGetValue(obj, out var data)) {
                 if (isFullName) {
                     if (data.Full != null)
                         data.Full = sql;
@@ -123,12 +106,7 @@ namespace Light.Data
             }
         }
 
-        public bool UseDirectNull {
-            get {
-                return _useDirectNull;
-            }
-
-        }
+        public bool UseDirectNull { get; } = true;
 
         /// <summary>
         /// Add the data parameter.
@@ -141,13 +119,13 @@ namespace Light.Data
         /// <param name="dataType">Data type.</param>
         public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, ParameterDirection direction, Type dataType)
         {
-            if (_useDirectNull) {
-                if (Object.Equals(paramValue, null)) {
+            if (UseDirectNull) {
+                if (Equals(paramValue, null)) {
                     return factory.Null;
                 }
             }
-            string paramName = GetNextParameterName(factory);
-            DataParameter dataParameter = new DataParameter(paramName, paramValue, dbType, direction, dataType);
+            var paramName = GetNextParameterName(factory);
+            var dataParameter = new DataParameter(paramName, paramValue, dbType, direction, dataType);
             parameters.Add(dataParameter);
             return paramName;
         }
@@ -162,13 +140,13 @@ namespace Light.Data
         /// <param name="dataType">Data type.</param>
         public string AddDataParameter(CommandFactory factory, object paramValue, string dbType, Type dataType)
         {
-            if (_useDirectNull) {
-                if (Object.Equals(paramValue, null)) {
+            if (UseDirectNull) {
+                if (Equals(paramValue, null)) {
                     return factory.Null;
                 }
             }
-            string paramName = GetNextParameterName(factory);
-            DataParameter dataParameter = new DataParameter(paramName, paramValue, dbType, ParameterDirection.Input, dataType);
+            var paramName = GetNextParameterName(factory);
+            var dataParameter = new DataParameter(paramName, paramValue, dbType, ParameterDirection.Input, dataType);
             parameters.Add(dataParameter);
             return paramName;
         }

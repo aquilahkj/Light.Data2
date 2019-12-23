@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using Light.Data;
 using Microsoft.Extensions.Configuration;
 
@@ -126,7 +123,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDataContext(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<DataContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
         {
-            DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
+            var configuration = new DataContextConfiguration(configFilePath);
             return AddDataContext<DataContext>(serviceCollection, configFilePath, optionsAction, contextLifetime);
         }
         /// <summary>
@@ -140,7 +137,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDataContext<TContext>(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<TContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Scoped) where TContext : DataContext
         {
-            DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
+            var configuration = new DataContextConfiguration(configFilePath);
             return AddDataContext(serviceCollection, configuration, optionsAction, contextLifetime);
         }
 
@@ -261,7 +258,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDataContextFactory(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<DataContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Singleton)
         {
-            DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
+            var configuration = new DataContextConfiguration(configFilePath);
             return AddDataContextFactory<LightDataContextFactory, DataContext>(serviceCollection, configFilePath, optionsAction, contextLifetime);
         }
         /// <summary>
@@ -276,7 +273,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDataContextFactory<TContextFactory, TContext>(this IServiceCollection serviceCollection, string configFilePath, Action<DataContextOptionsConfigurator<TContext>> optionsAction = null, ServiceLifetime contextLifetime = ServiceLifetime.Singleton) where TContextFactory : DataContextFactory<TContext> where TContext : DataContext
         {
-            DataContextConfiguration configuration = new DataContextConfiguration(configFilePath);
+            var configuration = new DataContextConfiguration(configFilePath);
             return AddDataContextFactory<TContextFactory, TContext>(serviceCollection, configuration, optionsAction, contextLifetime);
         }
 

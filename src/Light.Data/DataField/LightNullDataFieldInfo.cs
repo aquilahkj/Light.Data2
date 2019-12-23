@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LightNullDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	internal class LightNullDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
-		bool _isNull;
+		private bool _isNull;
 
-		readonly DataFieldInfo _baseFieldInfo;
+		private readonly DataFieldInfo _baseFieldInfo;
 
 		public LightNullDataFieldInfo (DataFieldInfo info, bool isNull)
 			: base (info.TableMapping)
@@ -20,7 +20,7 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}

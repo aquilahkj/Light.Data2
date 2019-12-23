@@ -1,15 +1,14 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class LightConditionDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	internal class LightConditionDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
-		readonly object _ifTrue;
+		private readonly object _ifTrue;
 
-		readonly object _ifFalse;
+		private readonly object _ifFalse;
 
-		readonly QueryExpression _query;
+		private readonly QueryExpression _query;
 
-		bool _isNot;
+		private bool _isNot;
 
 		public LightConditionDataFieldInfo (QueryExpression query, object ifTrue, object ifFalse)
 			: base (query.TableMapping)
@@ -26,34 +25,34 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			string query = _query.CreateSqlString (factory, isFullName, state);
+			var query = _query.CreateSqlString (factory, isFullName, state);
 
 			object ifTrue;
 			object ifFalse;
-			DataFieldInfo ifTrueInfo = _ifTrue as DataFieldInfo;
-			DataFieldInfo ifFalseInfo = _ifFalse as DataFieldInfo;
-			if (!Object.Equals (ifTrueInfo, null) && !Object.Equals (ifFalseInfo, null)) {
+			var ifTrueInfo = _ifTrue as DataFieldInfo;
+			var ifFalseInfo = _ifFalse as DataFieldInfo;
+			if (!Equals (ifTrueInfo, null) && !Equals (ifFalseInfo, null)) {
 				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, state);
 				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, state);
 			}
-			else if (!Object.Equals (ifTrueInfo, null)) {
+			else if (!Equals (ifTrueInfo, null)) {
 				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, state);
-				object ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
+				var ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
 				ifFalse = state.AddDataParameter (factory, ifFalseObject);
 			}
-			else if (!Object.Equals (ifFalseInfo, null)) {
+			else if (!Equals (ifFalseInfo, null)) {
 				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, state);
-				object ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
+				var ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
 				ifTrue = state.AddDataParameter (factory, ifTrueObject);
 			}
 			else {
-				object ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
-				object ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
+				var ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
+				var ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
 				ifTrue = state.AddDataParameter (factory, ifTrueObject);
 				ifFalse = state.AddDataParameter (factory, ifFalseObject);
 			}

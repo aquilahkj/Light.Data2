@@ -67,9 +67,9 @@ namespace Light.Data
 
         private int SimpleSave(bool refresh)
         {
-            DataContext context = GetContext();
+            var context = GetContext();
             int ret;
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+            var mapping = DataEntityMapping.GetTableMapping(GetType());
             if (_hasLoadData) {
                 ret = context.Update(mapping, this, refresh);
             }
@@ -81,9 +81,9 @@ namespace Light.Data
 
         private int CheckDbSave(bool refresh, SafeLevel level)
         {
-            DataContext context = GetContext();
+            var context = GetContext();
             int ret;
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+            var mapping = DataEntityMapping.GetTableMapping(GetType());
             ret = context.InsertOrUpdate(mapping, this, level, refresh);
             return ret;
         }
@@ -150,9 +150,9 @@ namespace Light.Data
 
         private async Task<int> SimpleSaveAsync(bool refresh, CancellationToken cancellationToken = default(CancellationToken))
         {
-            DataContext context = GetContext();
+            var context = GetContext();
             int ret;
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+            var mapping = DataEntityMapping.GetTableMapping(GetType());
             if (_hasLoadData) {
                 ret = await context.UpdateAsync(mapping, this, refresh, cancellationToken);
             }
@@ -164,9 +164,9 @@ namespace Light.Data
 
         private async Task<int> CheckDbSaveAsync(bool refresh, SafeLevel level, CancellationToken cancellationToken = default(CancellationToken))
         {
-            DataContext context = GetContext();
+            var context = GetContext();
             int ret;
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+            var mapping = DataEntityMapping.GetTableMapping(GetType());
             ret = await context.InsertOrUpdateAsync(mapping, this, level, refresh, cancellationToken);
             return ret;
         }
@@ -177,10 +177,10 @@ namespace Light.Data
         /// <returns></returns>
         public int Erase()
         {
-            DataContext context = GetContext();
+            var context = GetContext();
             int ret;
             if (_hasLoadData) {
-                DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+                var mapping = DataEntityMapping.GetTableMapping(GetType());
                 ret = context.Delete(mapping, this);
             }
             else {
@@ -196,10 +196,10 @@ namespace Light.Data
         /// <returns></returns>
         public async Task<int> EraseAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            DataContext context = GetContext();
+            var context = GetContext();
             int ret;
             if (_hasLoadData) {
-                DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(this.GetType());
+                var mapping = DataEntityMapping.GetTableMapping(GetType());
                 ret = await context.DeleteAsync(mapping, this, cancellationToken);
             }
             else {
@@ -220,7 +220,7 @@ namespace Light.Data
             }
         }
 
-        HashSet<string> _updateFields;
+        private HashSet<string> _updateFields;
 
         /// <summary>
         /// Set update field
@@ -239,7 +239,7 @@ namespace Light.Data
         internal string[] GetUpdateFields()
         {
             if (_updateFields != null) {
-                string[] array = new string[_updateFields.Count];
+                var array = new string[_updateFields.Count];
                 _updateFields.CopyTo(array);
                 return array;
             }
@@ -256,7 +256,7 @@ namespace Light.Data
             }
         }
 
-        bool allowUpdatePrimaryKey;
+        private bool allowUpdatePrimaryKey;
 
         internal bool IsAllowUpdatePrimaryKey()
         {
@@ -272,7 +272,7 @@ namespace Light.Data
             if (allow) {
                 allowUpdatePrimaryKey = true;
                 if (_hasLoadData && rawKeys == null) {
-                    DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(GetType());
+                    var mapping = DataEntityMapping.GetTableMapping(GetType());
                     SetRawPrimaryKeys(mapping.GetPrimaryKeys(this));
                 }
             }
@@ -281,7 +281,7 @@ namespace Light.Data
             }
         }
 
-        object[] rawKeys = null;
+        private object[] rawKeys = null;
 
         internal void SetRawPrimaryKeys(object[] keys)
         {
@@ -299,7 +299,7 @@ namespace Light.Data
         }
 
 
-        bool _hasLoadData;
+        private bool _hasLoadData;
 
         internal void LoadData()
         {

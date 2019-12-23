@@ -1,14 +1,14 @@
 ﻿namespace Light.Data
 {
-    class LightInQueryDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+    internal class LightInQueryDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
     {
-        bool _isTrue;
+        private bool _isTrue;
 
-        readonly QueryExpression _expression;
+        private readonly QueryExpression _expression;
 
-        readonly DataFieldInfo _selectField;
+        private readonly DataFieldInfo _selectField;
 
-        readonly DataFieldInfo _field;
+        private readonly DataFieldInfo _field;
 
         public LightInQueryDataFieldInfo(DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryExpression expression, bool isTrue)
             : base(mapping)
@@ -26,21 +26,21 @@
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            string sql = state.GetDataSql(this, isFullName);
+            var sql = state.GetDataSql(this, isFullName);
             if (sql != null) {
                 return sql;
             }
 
-            string tableName = factory.CreateDataTableMappingSql(TableMapping, state);
-            string selectField = _selectField.CreateSqlString(factory, true, state);
+            var tableName = factory.CreateDataTableMappingSql(TableMapping, state);
+            var selectField = _selectField.CreateSqlString(factory, true, state);
 
-            string field = _field.CreateSqlString(factory, isFullName, state);
+            var field = _field.CreateSqlString(factory, isFullName, state);
 
             string query = null;
             if (_expression != null) {
                 query = _expression.CreateSqlString(factory, true, state);
             }
-            QueryCollectionPredicate op = _isTrue ? QueryCollectionPredicate.In : QueryCollectionPredicate.NotIn;
+            var op = _isTrue ? QueryCollectionPredicate.In : QueryCollectionPredicate.NotIn;
             sql = factory.CreateSubQuerySql(field, op, selectField, tableName, query);
 
             state.SetDataSql(this, isFullName, sql);

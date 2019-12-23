@@ -1,7 +1,6 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-    interface IJoinModel
+    internal interface IJoinModel
     {
         JoinConnect Connect {
             get;

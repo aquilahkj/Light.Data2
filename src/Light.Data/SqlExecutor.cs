@@ -13,25 +13,21 @@ namespace Light.Data
     /// </summary>
     public class SqlExecutor
     {
-        DbCommand _command;
+        private DbCommand _command;
 
-        DataContext _context;
+        private DataContext _context;
 
-        SafeLevel _level = SafeLevel.None;
+        private SafeLevel _level = SafeLevel.None;
 
-        DataParameter[] _parameters;
+        private DataParameter[] _parameters;
 
         /// <summary>
         /// Gets or sets the command time out.
         /// </summary>
         /// <value>The command time out.</value>
         public int CommandTimeOut {
-            get {
-                return _command.CommandTimeout;
-            }
-            set {
-                _command.CommandTimeout = value;
-            }
+            get => _command.CommandTimeout;
+            set => _command.CommandTimeout = value;
         }
 
         /// <summary>
@@ -51,9 +47,9 @@ namespace Light.Data
             _command.CommandType = commandType;
             if (parameters != null) {
                 _parameters = new DataParameter[parameters.Length];
-                int i = 0;
-                foreach (DataParameter param in parameters) {
-                    IDataParameter dataParameter = param.ConvertDbParameter(database, commandType);
+                var i = 0;
+                foreach (var param in parameters) {
+                    var dataParameter = param.ConvertDbParameter(database, commandType);
                     _command.Parameters.Add(dataParameter);
                     _parameters[i] = param;
                     i++;
@@ -68,7 +64,7 @@ namespace Light.Data
         /// <returns>The affected rows.</returns>
         public int ExecuteNonQuery()
         {
-            int ret = _context.ExecuteNonQuery(_command, _level);
+            var ret = _context.ExecuteNonQuery(_command, _level);
             Callback();
             return ret;
         }
@@ -79,7 +75,7 @@ namespace Light.Data
         /// <returns>The execute result.</returns>
         public object ExecuteScalar()
         {
-            object ret = _context.ExecuteScalar(_command, _level);
+            var ret = _context.ExecuteScalar(_command, _level);
             Callback();
             return ret;
         }
@@ -91,7 +87,7 @@ namespace Light.Data
         /// <returns>First data</returns>
         public T QueryFirst<T>()
         {
-            T target = _context.QueryDataDefineSingle<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null);
+            var target = _context.QueryDataDefineSingle<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null);
             Callback();
             return target;
         }
@@ -104,7 +100,7 @@ namespace Light.Data
         /// <returns>Data list</returns>
         private List<T> QueryList<T>(Region region)
         {
-            List<T> list = _context.QueryDataDefineList<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
+            var list = _context.QueryDataDefineList<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
             Callback();
             return list;
         }
@@ -134,7 +130,7 @@ namespace Light.Data
             if (size < 1) {
                 throw new ArgumentOutOfRangeException(nameof(size));
             }
-            Region region = new Region(start, size);
+            var region = new Region(start, size);
             return QueryList<T>(region);
         }
 
@@ -152,7 +148,7 @@ namespace Light.Data
             if (size < 1) {
                 throw new ArgumentOutOfRangeException(nameof(size));
             }
-            Region region = new Region(start, size);
+            var region = new Region(start, size);
             return Query<T>(region);
         }
 
@@ -164,7 +160,7 @@ namespace Light.Data
         /// <returns>Data enumerable</returns>
         private IEnumerable<T> Query<T>(Region region)
         {
-            IEnumerable<T> enumable = _context.QueryDataDefineReader<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
+            var enumable = _context.QueryDataDefineReader<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null);
             Callback();
             return enumable;
         }
@@ -185,7 +181,7 @@ namespace Light.Data
         /// <returns>DataSet</returns>
         public DataSet QueryDataSet()
         {
-            DataSet ds = _context.QueryDataSet(_level, _command);
+            var ds = _context.QueryDataSet(_level, _command);
             Callback();
             return ds;
         }
@@ -198,7 +194,7 @@ namespace Light.Data
         /// <returns>The affected rows.</returns>
         public async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            int ret = await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
+            var ret = await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
             Callback();
             return ret;
         }
@@ -210,7 +206,7 @@ namespace Light.Data
         /// <returns>The execute result.</returns>
         public async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            object ret = await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
+            var ret = await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
             Callback();
             return ret;
         }
@@ -223,7 +219,7 @@ namespace Light.Data
         /// <returns>First data</returns>
         public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
         {
-            T target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null, cancellationToken);
+            var target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null, cancellationToken);
             Callback();
             return target;
         }
@@ -237,7 +233,7 @@ namespace Light.Data
         /// <returns>Data list</returns>
         private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken = default(CancellationToken))
         {
-            List<T> list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null, cancellationToken);
+            var list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null, cancellationToken);
             Callback();
             return list;
         }
@@ -269,13 +265,13 @@ namespace Light.Data
             if (size < 1) {
                 throw new ArgumentOutOfRangeException(nameof(size));
             }
-            Region region = new Region(start, size);
+            var region = new Region(start, size);
             return await QueryListAsync<T>(region, cancellationToken);
         }
 
         #endregion
 
-        void Callback()
+        private void Callback()
         {
             if (_parameters != null) {
                 foreach (var item in _parameters) {

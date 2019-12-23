@@ -3,11 +3,11 @@ using System.Data;
 
 namespace Light.Data
 {
-	class ErrorDataMapping : DataEntityMapping
+	internal class ErrorDataMapping : DataEntityMapping
 	{
 		public ErrorDataMapping (Type type, Exception ex) : base (type, type.Name, false)
 		{
-			this.innerException = ex;
+			InnerException = ex;
 		}
 
 		#region implemented abstract members of DataMapping
@@ -24,13 +24,7 @@ namespace Light.Data
 
 		#endregion
 
-		readonly Exception innerException;
-
-		public Exception InnerException {
-			get {
-				return innerException;
-			}
-		}
+		public Exception InnerException { get; }
 	}
 }
 

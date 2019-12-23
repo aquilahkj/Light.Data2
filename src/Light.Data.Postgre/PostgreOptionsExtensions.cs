@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static DataContextOptionsBuilder<TContext> UsePostgre<TContext>(this DataContextOptionsBuilder<TContext> builder, string connection) where TContext : DataContext
         {
             builder.SetDataConfig(connection, (configName, configParams) => {
-                PostgreProvider database = new PostgreProvider(configName, configParams);
+                var database = new PostgreProvider(configName, configParams);
                 return database;
             });
             return builder;

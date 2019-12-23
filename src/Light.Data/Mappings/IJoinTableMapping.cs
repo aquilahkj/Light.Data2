@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Light.Data
 {
-    interface IJoinTableMapping
+    internal interface IJoinTableMapping
     {
         Type ObjectType {
             get;

@@ -1,12 +1,12 @@
 ﻿namespace Light.Data
 {
-	class LightAggregateFieldDataFieldInfo : LightAggregateDataFieldInfo
+	internal class LightAggregateFieldDataFieldInfo : LightAggregateDataFieldInfo
 	{
-		readonly DataFieldInfo _baseFieldInfo;
+		private readonly DataFieldInfo _baseFieldInfo;
 
-		readonly AggregateType _type;
+		private readonly AggregateType _type;
 
-		readonly bool _distinct;
+		private readonly bool _distinct;
 
 		public LightAggregateFieldDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct)
 			: base (fieldInfo.TableMapping)
@@ -18,12 +18,12 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			var field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 
 			switch (_type) {
 			case AggregateType.COUNT:

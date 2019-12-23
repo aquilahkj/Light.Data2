@@ -4,13 +4,13 @@ namespace Light.Data
     /// <summary>
     /// Basic field info.
     /// </summary>
-    abstract class BasicFieldInfo
+    internal abstract class BasicFieldInfo
     {
         internal BasicFieldInfo(DataEntityMapping tableMapping)
         {
             if (tableMapping == null)
                 throw new System.ArgumentNullException(nameof(tableMapping));
-            _tableMapping = tableMapping;
+            TableMapping = tableMapping;
         }
 
         internal BasicFieldInfo(DataEntityMapping tableMapping, DataFieldMapping dataField)
@@ -19,8 +19,8 @@ namespace Light.Data
                 throw new System.ArgumentNullException(nameof(tableMapping));
             if (tableMapping != DataEntityMapping.Default && dataField == null)
                 throw new System.ArgumentNullException(nameof(dataField));
-            _tableMapping = tableMapping;
-            _dataField = dataField;
+            TableMapping = tableMapping;
+            DataField = dataField;
         }
 
         internal BasicFieldInfo(DataEntityMapping tableMapping, bool customName, string name)
@@ -29,37 +29,25 @@ namespace Light.Data
                 throw new System.ArgumentNullException(nameof(tableMapping));
             if (name == null)
                 throw new System.ArgumentNullException(nameof(name));
-            _tableMapping = tableMapping;
+            TableMapping = tableMapping;
             if (customName) {
-                _dataField = new CustomFieldMapping(name, tableMapping);
+                DataField = new CustomFieldMapping(name, tableMapping);
             }
             else {
-                _dataField = TableMapping.FindDataEntityField(name);
-                if (_dataField == null) {
-                    _dataField = new CustomFieldMapping(name, tableMapping);
+                DataField = TableMapping.FindDataEntityField(name);
+                if (DataField == null) {
+                    DataField = new CustomFieldMapping(name, tableMapping);
                 }
             }
         }
 
-        readonly DataFieldMapping _dataField;
-
-        internal DataFieldMapping DataField {
-            get {
-                return _dataField;
-            }
-        }
-
-        readonly DataEntityMapping _tableMapping;
+        internal DataFieldMapping DataField { get; }
 
         /// <summary>
         /// Gets or sets the table mapping.
         /// </summary>
         /// <value>The table mapping.</value>
-        internal DataEntityMapping TableMapping {
-            get {
-                return _tableMapping;
-            }
-        }
+        internal DataEntityMapping TableMapping { get; }
 
         /// <summary>
         /// Gets the name of the field.
@@ -67,8 +55,8 @@ namespace Light.Data
         /// <value>The name of the field.</value>
         public virtual string FieldName {
             get {
-                if (_dataField != null) {
-                    return _dataField.Name;
+                if (DataField != null) {
+                    return DataField.Name;
                 }
                 else {
                     return null;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
 	/// <summary>
 	/// Command output event handle.

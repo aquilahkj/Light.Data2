@@ -1,7 +1,6 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	interface IAliasDataFieldInfo
+	internal interface IAliasDataFieldInfo
 	{
 		string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state);
 	}

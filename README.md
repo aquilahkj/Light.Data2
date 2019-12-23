@@ -22,7 +22,7 @@ Supported Database
 
 #### Basic Operation
 
-* Basic CURD
+* Basic CRUD
 * Batch CUD
 * Supports transaction processing
 * Supports data fields default value and automatic timestamp

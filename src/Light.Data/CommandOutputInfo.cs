@@ -8,199 +8,69 @@ namespace Light.Data
     /// </summary>
 	public class CommandOutputInfo
 	{
-		string action;
-
-        /// <summary>
+		/// <summary>
         /// Get command action name
         /// </summary>
-		public string Action {
-			get {
-				return action;
-			}
+		public string Action { get; set; }
 
-			set {
-				action = value;
-			}
-		}
-
-		string command;
-
-        /// <summary>
+		/// <summary>
         /// Get sql command text
         /// </summary>
-		public string Command {
-			get {
-				return command;
-			}
+		public string Command { get; set; }
 
-			set {
-				command = value;
-			}
-		}
-
-		IDataParameter[] datas;
-
-        /// <summary>
+		/// <summary>
         /// Get sql parameters
         /// </summary>
-		public IDataParameter[] Datas {
-			get {
-				return datas;
-			}
+		public IDataParameter[] Datas { get; set; }
 
-			set {
-				datas = value;
-			}
-		}
-
-		CommandType commandType;
-
-        /// <summary>
+		/// <summary>
         /// Get sql command type, text or stored procedure
         /// </summary>
-		public CommandType CommandType {
-			get {
-				return commandType;
-			}
+		public CommandType CommandType { get; set; }
 
-			set {
-				commandType = value;
-			}
-		}
-
-		bool isTransaction;
-
-        /// <summary>
+		/// <summary>
         /// Get the action is use transaction
         /// </summary>
-		public bool IsTransaction {
-			get {
-				return isTransaction;
-			}
+		public bool IsTransaction { get; set; }
 
-			set {
-				isTransaction = value;
-			}
-		}
-
-		SafeLevel level;
-
-        /// <summary>
+		/// <summary>
         /// Get the action safe level
         /// </summary>
-		public SafeLevel Level {
-			get {
-				return level;
-			}
+		public SafeLevel Level { get; set; }
 
-			set {
-				level = value;
-			}
-		}
-
-		DateTime startTime;
-
-        /// <summary>
+		/// <summary>
         /// Get the action start time
         /// </summary>
-        public DateTime StartTime {
-			get {
-				return startTime;
-			}
+        public DateTime StartTime { get; set; }
 
-			set {
-				startTime = value;
-			}
-		}
-
-		DateTime endTime;
-
-        /// <summary>
+		/// <summary>
         /// Get the action end time
         /// </summary>
-		public DateTime EndTime {
-			get {
-				return endTime;
-			}
+		public DateTime EndTime { get; set; }
 
-			set {
-				endTime = value;
-			}
-		}
-
-		int start;
-
-        /// <summary>
+		/// <summary>
         /// get data query region offset
         /// </summary>
-		public int Start {
-			get {
-				return start;
-			}
+		public int Start { get; set; }
 
-			set {
-				start = value;
-			}
-		}
-
-		int size;
-
-        /// <summary>
+		/// <summary>
         /// get data query region max size
         /// </summary>
-		public int Size {
-			get {
-				return size;
-			}
+		public int Size { get; set; }
 
-			set {
-				size = value;
-			}
-		}
-
-		bool success;
-
-        /// <summary>
+		/// <summary>
         /// Get the action is success
         /// </summary>
-		public bool Success {
-			get {
-				return success;
-			}
+		public bool Success { get; set; }
 
-			set {
-				success = value;
-			}
-		}
-
-		string exceptionMessage;
-
-        /// <summary>
+		/// <summary>
         /// If the action throw exception, get the exception message
         /// </summary>
-		public string ExceptionMessage {
-			get {
-				return exceptionMessage;
-			}
+		public string ExceptionMessage { get; set; }
 
-			set {
-				exceptionMessage = value;
-			}
-		}
-
-		object result;
-
-        /// <summary>
+		/// <summary>
         /// Get the action result
         /// </summary>
-		public object Result {
-			get {
-				return result;
-			}
-
-			set {
-				result = value;
-			}
-		}
+		public object Result { get; set; }
 	}
 }

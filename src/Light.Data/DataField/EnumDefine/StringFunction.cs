@@ -1,7 +1,7 @@
 ﻿
 namespace Light.Data
 {
-	enum StringFunction
+	internal enum StringFunction
 	{
 		Substring,
 

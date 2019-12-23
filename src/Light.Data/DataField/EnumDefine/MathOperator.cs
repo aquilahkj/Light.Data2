@@ -1,7 +1,7 @@
 ﻿
 namespace Light.Data
 {
-    enum MathOperator
+	internal enum MathOperator
     {
 		/// <summary>
 		/// The puls.

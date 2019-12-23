@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
@@ -7,65 +6,41 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    partial class LightQuery<T> : QueryBase<T>
+    internal partial class LightQuery<T> : QueryBase<T>
     {
         #region IEnumerable implementation
 
         public override IEnumerator<T> GetEnumerator()
         {
-            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
+            var queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return _context.QueryDataDefineReader<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null).GetEnumerator();
         }
 
         #endregion
 
-        QueryExpression _query;
+        private QueryExpression _query;
 
-        public override QueryExpression QueryExpression {
-            get {
-                return _query;
-            }
-        }
+        public override QueryExpression QueryExpression => _query;
 
-        OrderExpression _order;
+        private OrderExpression _order;
 
-        public override OrderExpression OrderExpression {
-            get {
-                return _order;
-            }
-        }
+        public override OrderExpression OrderExpression => _order;
 
-        Region _region;
+        private Region _region;
 
-        public override Region Region {
-            get {
-                return _region;
-            }
-        }
+        public override Region Region => _region;
 
-        bool _distinct;
+        private bool _distinct;
 
-        public override bool Distinct {
-            get {
-                return _distinct;
-            }
-        }
+        public override bool Distinct => _distinct;
 
-        JoinSetting _joinSetting;
+        private JoinSetting _joinSetting;
 
-        public override JoinSetting JoinSetting {
-            get {
-                return _joinSetting;
-            }
-        }
+        public override JoinSetting JoinSetting => _joinSetting;
 
-        SafeLevel _level = SafeLevel.None;
+        private SafeLevel _level = SafeLevel.None;
 
-        public override SafeLevel Level {
-            get {
-                return _level;
-            }
-        }
+        public override SafeLevel Level => _level;
 
         internal LightQuery(DataContext dataContext)
             : base(dataContext)
@@ -145,7 +120,7 @@ namespace Light.Data
         public override IQuery<T> Take(int count)
         {
             int start;
-            int size = count;
+            var size = count;
             if (_region == null) {
                 start = 0;
             }
@@ -158,7 +133,7 @@ namespace Light.Data
 
         public override IQuery<T> Skip(int index)
         {
-            int start = index;
+            var start = index;
             int size;
             if (_region == null) {
                 size = int.MaxValue;
@@ -172,8 +147,8 @@ namespace Light.Data
 
         public override IQuery<T> Range(int from, int to)
         {
-            int start = from;
-            int size = to - from;
+            var start = from;
+            var size = to - from;
             _region = new Region(start, size);
             return this;
         }
@@ -193,7 +168,7 @@ namespace Light.Data
                 throw new ArgumentOutOfRangeException(nameof(size));
             }
             page--;
-            int start = page * size;
+            var start = page * size;
             _region = new Region(start, size);
             return this;
         }
@@ -221,15 +196,15 @@ namespace Light.Data
 
         public override int Count()
         {
-            QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
-            object value = _context.ExecuteScalar(queryCommand.Command, _level);
+            var queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
+            var value = _context.ExecuteScalar(queryCommand.Command, _level);
             return Convert.ToInt32(value);
         }
 
         public override long LongCount()
         {
-            QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
-            object value = _context.ExecuteScalar(queryCommand.Command, _level);
+            var queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
+            var value = _context.ExecuteScalar(queryCommand.Command, _level);
             return Convert.ToInt64(value);
         }
 
@@ -243,22 +218,22 @@ namespace Light.Data
 
         public override T ElementAt(int index)
         {
-            Region region = new Region(index, 1);
-            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
+            var region = new Region(index, 1);
+            var queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
             return _context.QueryDataDefineSingle<T>(_mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
         }
 
         public override bool Exists()
         {
-            QueryCommand queryCommand = _context.Database.Exists(_context, _mapping, _query);
-            DataDefine define = DataDefine.GetDefine(typeof(int?));
-            int? obj = _context.QueryDataDefineSingle<int?>(define, _level, queryCommand.Command, 0, null, null);
+            var queryCommand = _context.Database.Exists(_context, _mapping, _query);
+            var define = DataDefine.GetDefine(typeof(int?));
+            var obj = _context.QueryDataDefineSingle<int?>(define, _level, queryCommand.Command, 0, null, null);
             return obj.HasValue;
         }
 
         public override List<T> ToList()
         {
-            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
+            var queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return _context.QueryDataDefineList<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null);
         }
 
@@ -271,36 +246,36 @@ namespace Light.Data
 
         public override int Insert<K>()
         {
-            DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
-            QueryCommand queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
+            var insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
+            var queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
         }
 
         public override int SelectInsert<K>(Expression<Func<T, K>> expression)
         {
-            InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector(expression);
-            QueryCommand queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
+            var selector = LambdaExpressionExtend.CreateInsertSelector(expression);
+            var queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
         }
 
         public override int Update(Expression<Func<T, T>> expression)
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            MassUpdator updator = LambdaExpressionExtend.CreateMassUpdator(expression);
-            QueryCommand queryCommand = _context.Database.QueryUpdate(_context, mapping, updator, _query);
+            var mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            var updator = LambdaExpressionExtend.CreateMassUpdateExpression(expression);
+            var queryCommand = _context.Database.QueryUpdate(_context, mapping, updator, _query);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
         }
 
         public override int Delete()
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            QueryCommand queryCommand = _context.Database.QueryDelete(_context, mapping, _query);
+            var mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            var queryCommand = _context.Database.QueryDelete(_context, mapping, _query);
             return _context.ExecuteNonQuery(queryCommand.Command, _level);
         }
 
         public override ISelect<K> Select<K>(Expression<Func<T, K>> expression)
         {
-            LightSelect<T, K> selectable = new LightSelect<T, K>(_context, expression, _query, _order, _distinct, _joinSetting, _region, _level);
+            var selectable = new LightSelect<T, K>(_context, expression, _query, _order, _distinct, _joinSetting, _region, _level);
             return selectable;
         }
 
@@ -311,7 +286,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             if (queryExpression != null) {
                 lightQuery.Where(queryExpression);
             }
@@ -320,13 +295,13 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(Expression<Func<T, T1, bool>> onExpression)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             return new LightJoinTable<T, T1>(this, JoinType.InnerJoin, lightQuery, onExpression, _joinSetting, JoinSetting.None);
         }
 
         public override IJoinTable<T, T1> Join<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression)
         {
-            QueryBase<T1> queryBase = query as QueryBase<T1>;
+            var queryBase = query as QueryBase<T1>;
             if (queryBase == null) {
                 throw new ArgumentException(nameof(query));
             }
@@ -335,7 +310,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             if (queryExpression != null) {
                 lightQuery.Where(queryExpression);
             }
@@ -344,13 +319,13 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T, T1, bool>> onExpression)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             return new LightJoinTable<T, T1>(this, JoinType.LeftJoin, lightQuery, onExpression, _joinSetting, JoinSetting.None);
         }
 
         public override IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             if (queryExpression != null) {
                 lightQuery.Where(queryExpression);
             }
@@ -359,7 +334,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression)
         {
-            QueryBase<T1> queryBase = query as QueryBase<T1>;
+            var queryBase = query as QueryBase<T1>;
             if (queryBase == null) {
                 throw new ArgumentException(nameof(query));
             }
@@ -368,13 +343,13 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T, T1, bool>> onExpression)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             return new LightJoinTable<T, T1>(this, JoinType.RightJoin, lightQuery, onExpression, _joinSetting, JoinSetting.None);
         }
 
         public override IJoinTable<T, T1> RightJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression)
         {
-            QueryBase<T1> queryBase = query as QueryBase<T1>;
+            var queryBase = query as QueryBase<T1>;
             if (queryBase == null) {
                 throw new ArgumentException(nameof(query));
             }
@@ -383,7 +358,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
         {
-            AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+            var aggregateBase = aggregate as AggregateBase<T1>;
             if (aggregateBase == null) {
                 throw new ArgumentException(nameof(aggregate));
             }
@@ -392,7 +367,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
         {
-            AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+            var aggregateBase = aggregate as AggregateBase<T1>;
             if (aggregateBase == null) {
                 throw new ArgumentException(nameof(aggregate));
             }
@@ -401,7 +376,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> RightJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
         {
-            AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+            var aggregateBase = aggregate as AggregateBase<T1>;
             if (aggregateBase == null) {
                 throw new ArgumentException(nameof(aggregate));
             }
@@ -410,7 +385,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression)
         {
-            SelectBase<T1> selectBase = select as SelectBase<T1>;
+            var selectBase = select as SelectBase<T1>;
             if (selectBase == null) {
                 throw new ArgumentException(nameof(select));
             }
@@ -419,7 +394,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression)
         {
-            SelectBase<T1> selectBase = select as SelectBase<T1>;
+            var selectBase = select as SelectBase<T1>;
             if (selectBase == null) {
                 throw new ArgumentException(nameof(select));
             }
@@ -428,7 +403,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression)
         {
-            SelectBase<T1> selectBase = select as SelectBase<T1>;
+            var selectBase = select as SelectBase<T1>;
             if (selectBase == null) {
                 throw new ArgumentException(nameof(select));
             }
@@ -440,7 +415,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             if (queryExpression != null) {
                 lightQuery.Where(queryExpression);
             }
@@ -449,13 +424,13 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             return new LightJoinTable<T, T1>(this, JoinType.InnerJoin, lightQuery, onExpression, _joinSetting, joinSetting);
         }
 
         public override IJoinTable<T, T1> Join<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            QueryBase<T1> queryBase = query as QueryBase<T1>;
+            var queryBase = query as QueryBase<T1>;
             if (queryBase == null) {
                 throw new ArgumentException(nameof(query));
             }
@@ -464,7 +439,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             if (queryExpression != null) {
                 lightQuery.Where(queryExpression);
             }
@@ -473,13 +448,13 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             return new LightJoinTable<T, T1>(this, JoinType.LeftJoin, lightQuery, onExpression, _joinSetting, joinSetting);
         }
 
         public override IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             if (queryExpression != null) {
                 lightQuery.Where(queryExpression);
             }
@@ -488,7 +463,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            QueryBase<T1> queryBase = query as QueryBase<T1>;
+            var queryBase = query as QueryBase<T1>;
             if (queryBase == null) {
                 throw new ArgumentException(nameof(query));
             }
@@ -497,13 +472,13 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> RightJoin<T1>(Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            LightQuery<T1> lightQuery = new LightQuery<T1>(_context);
+            var lightQuery = new LightQuery<T1>(_context);
             return new LightJoinTable<T, T1>(this, JoinType.RightJoin, lightQuery, onExpression, _joinSetting, joinSetting);
         }
 
         public override IJoinTable<T, T1> RightJoin<T1>(IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            QueryBase<T1> queryBase = query as QueryBase<T1>;
+            var queryBase = query as QueryBase<T1>;
             if (queryBase == null) {
                 throw new ArgumentException(nameof(query));
             }
@@ -512,7 +487,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+            var aggregateBase = aggregate as AggregateBase<T1>;
             if (aggregateBase == null) {
                 throw new ArgumentException(nameof(aggregate));
             }
@@ -521,7 +496,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+            var aggregateBase = aggregate as AggregateBase<T1>;
             if (aggregateBase == null) {
                 throw new ArgumentException(nameof(aggregate));
             }
@@ -530,7 +505,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> RightJoin<T1>(IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+            var aggregateBase = aggregate as AggregateBase<T1>;
             if (aggregateBase == null) {
                 throw new ArgumentException(nameof(aggregate));
             }
@@ -539,7 +514,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> Join<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            SelectBase<T1> selectBase = select as SelectBase<T1>;
+            var selectBase = select as SelectBase<T1>;
             if (selectBase == null) {
                 throw new ArgumentException(nameof(select));
             }
@@ -548,7 +523,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> LeftJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            SelectBase<T1> selectBase = select as SelectBase<T1>;
+            var selectBase = select as SelectBase<T1>;
             if (selectBase == null) {
                 throw new ArgumentException(nameof(select));
             }
@@ -557,7 +532,7 @@ namespace Light.Data
 
         public override IJoinTable<T, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression, JoinSetting joinSetting)
         {
-            SelectBase<T1> selectBase = select as SelectBase<T1>;
+            var selectBase = select as SelectBase<T1>;
             if (selectBase == null) {
                 throw new ArgumentException(nameof(select));
             }
@@ -566,21 +541,21 @@ namespace Light.Data
 
         public override ISelectField<K> SelectField<K>(Expression<Func<T, K>> expression)
         {
-            LightSelectField<K> selectField = new LightSelectField<K>(Context, expression, _query, _order, _distinct, _region, _level);
+            var selectField = new LightSelectField<K>(Context, expression, _query, _order, _distinct, _region, _level);
             return selectField;
         }
 
 
         public override K AggregateField<K>(Expression<Func<T, K>> expression)
         {
-            AggregateModel model = LambdaExpressionExtend.CreateAggregateModel(expression);
+            var model = LambdaExpressionExtend.CreateAggregateModel(expression);
             model.OnlyAggregate = true;
-            Region region = new Region(0, 1);
+            var region = new Region(0, 1);
             //target = _context.QueryDynamicAggregateSingle<K>(model, _query, null, _order, region, _level, null);
-            QueryCommand queryCommand = _context.Database.QueryDynamicAggregate(_context, model, _query, null, _order, region);
-            K target = _context.QueryDataDefineSingle<K>(model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
+            var queryCommand = _context.Database.QueryDynamicAggregate(_context, model, _query, null, _order, region);
+            var target = _context.QueryDataDefineSingle<K>(model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
             if (target == null) {
-                object obj = model.OutputMapping.InitialData();
+                var obj = model.OutputMapping.InitialData();
                 target = (K)obj;
             }
             return target;
@@ -591,13 +566,13 @@ namespace Light.Data
         #region async
         public async override Task<List<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
+            var queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return await _context.QueryDataDefineListAsync<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null, cancellationToken);
         }
 
         public async override Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            List<T> list = await ToListAsync(CancellationToken.None);
+            var list = await ToListAsync(CancellationToken.None);
             return list.ToArray();
         }
 
@@ -608,71 +583,71 @@ namespace Light.Data
 
         public async override Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Region region = new Region(index, 1);
-            QueryCommand queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
+            var region = new Region(index, 1);
+            var queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
             return await _context.QueryDataDefineSingleAsync<T>(_mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
         }
 
         public async override Task<int> InsertAsync<K>(CancellationToken cancellationToken = default(CancellationToken))
         {
-            DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
-            QueryCommand queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
+            var insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
+            var queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
         public async override Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
         {
-            InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector(expression);
-            QueryCommand queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
+            var selector = LambdaExpressionExtend.CreateInsertSelector(expression);
+            var queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
         public async override Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default(CancellationToken))
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            MassUpdator updator = LambdaExpressionExtend.CreateMassUpdator(expression);
-            QueryCommand queryCommand = _context.Database.QueryUpdate(_context, mapping, updator, _query);
+            var mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            var updator = LambdaExpressionExtend.CreateMassUpdateExpression(expression);
+            var queryCommand = _context.Database.QueryUpdate(_context, mapping, updator, _query);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
         public async override Task<int> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping(typeof(T));
-            QueryCommand queryCommand = _context.Database.QueryDelete(_context, mapping, _query);
+            var mapping = DataEntityMapping.GetTableMapping(typeof(T));
+            var queryCommand = _context.Database.QueryDelete(_context, mapping, _query);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
         public async override Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+            var queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
+            var value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt32(value);
         }
 
         public async override Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            QueryCommand queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
-            object value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
+            var queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
+            var value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt64(value);
         }
 
         public async override Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            QueryCommand queryCommand = _context.Database.Exists(_context, _mapping, _query);
-            DataDefine define = DataDefine.GetDefine(typeof(int?));
-            int? obj = await _context.QueryDataDefineSingleAsync<int?>(define, _level, queryCommand.Command, 0, null, null, cancellationToken);
+            var queryCommand = _context.Database.Exists(_context, _mapping, _query);
+            var define = DataDefine.GetDefine(typeof(int?));
+            var obj = await _context.QueryDataDefineSingleAsync<int?>(define, _level, queryCommand.Command, 0, null, null, cancellationToken);
             return obj.HasValue;
         }
 
         public async override Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
         {
-            AggregateModel model = LambdaExpressionExtend.CreateAggregateModel(expression);
+            var model = LambdaExpressionExtend.CreateAggregateModel(expression);
             model.OnlyAggregate = true;
-            Region region = new Region(0, 1);
-            QueryCommand queryCommand = _context.Database.QueryDynamicAggregate(_context, model, _query, null, _order, region);
-            K target = await _context.QueryDataDefineSingleAsync<K>(model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
+            var region = new Region(0, 1);
+            var queryCommand = _context.Database.QueryDynamicAggregate(_context, model, _query, null, _order, region);
+            var target = await _context.QueryDataDefineSingleAsync<K>(model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
             if (target == null) {
-                object obj = model.OutputMapping.InitialData();
+                var obj = model.OutputMapping.InitialData();
                 target = (K)obj;
             }
             return target;

@@ -11,12 +11,13 @@ namespace Light.Data
     /// </summary>
     public static class DataMapperConfiguration
     {
-        static object locker = new object();
-        static HashSet<string> configFilePaths = new HashSet<string>();
+        private static readonly object Locker = new object();
+        
+        private static readonly HashSet<string> ConfigFilePaths = new HashSet<string>();
 
-        static bool initialed;
+        private static bool _initialed;
 
-        static Dictionary<Type, DataTableMapperSetting> settingDict = new Dictionary<Type, DataTableMapperSetting>();
+        private static readonly Dictionary<Type, DataTableMapperSetting> SettingDict = new Dictionary<Type, DataTableMapperSetting>();
 
         /// <summary>
         /// Sets whether to use entry assembly directory
@@ -31,28 +32,28 @@ namespace Light.Data
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 throw new ArgumentNullException(nameof(filePath));
-            if (initialed) {
+            if (_initialed) {
                 throw new LightDataException(SR.ConfigurationHasBeenInitialized);
             }
-            configFilePaths.Add(filePath);
+            ConfigFilePaths.Add(filePath);
         }
 
-        static void Initial()
+        private static void Initial()
         {
-            if (configFilePaths.Count == 0) {
-                configFilePaths.Add("lightdata.json");
+            if (ConfigFilePaths.Count == 0) {
+                ConfigFilePaths.Add("lightdata.json");
             }
-            foreach (var file in configFilePaths) {
+            foreach (var file in ConfigFilePaths) {
                 LoadData(file);
             }
-            initialed = true;
+            _initialed = true;
         }
 
-        static void LoadData(string configFilePath)
+        private static void LoadData(string configFilePath)
         {
             FileInfo fileInfo;
             if (UseEntryAssemblyDirectory) {
-                fileInfo = FileHelper.GetFileInfo(configFilePath, out bool absolute);
+                fileInfo = FileHelper.GetFileInfo(configFilePath, out var absolute);
                 if (!fileInfo.Exists && !absolute) {
                     fileInfo = new FileInfo(configFilePath);
                 }
@@ -61,17 +62,17 @@ namespace Light.Data
                 fileInfo = new FileInfo(configFilePath);
             }
             if (fileInfo.Exists) {
-                using (StreamReader reader = fileInfo.OpenText()) {
-                    string content = reader.ReadToEnd();
-                    JObject dom = JObject.Parse(content);
+                using (var reader = fileInfo.OpenText()) {
+                    var content = reader.ReadToEnd();
+                    var dom = JObject.Parse(content);
                     var section = dom.GetValue("lightDataMapper");
                     if (section == null) {
                         return;
                     }
                     var optionList = section.ToObject<LightMapperOptions>();
-                    if (optionList != null && optionList.DataTypes != null && optionList.DataTypes.Length > 0) {
-                        int typeIndex = 0;
-                        foreach (DataTypeSection typeConfig in optionList.DataTypes) {
+                    if (optionList?.DataTypes != null && optionList.DataTypes.Length > 0) {
+                        var typeIndex = 0;
+                        foreach (var typeConfig in optionList.DataTypes) {
                             typeIndex++;
                             var typeName = typeConfig.Type;
                             if (typeName == null) {
@@ -83,7 +84,7 @@ namespace Light.Data
                             var setting = new DataTableMapperSetting(dataTableMap);
 
                             dataTableMap.TableName = typeConfig.TableName;
-                            dataTableMap.IsEntityTable = typeConfig.IsEntityTable.HasValue ? typeConfig.IsEntityTable.Value : true;
+                            dataTableMap.IsEntityTable = typeConfig.IsEntityTable ?? true;
                             var configParam = new ConfigParamSet();
                             var paramConfigs = typeConfig.ConfigParams;
                             if (paramConfigs != null && paramConfigs.Count > 0) {
@@ -95,7 +96,7 @@ namespace Light.Data
                             var dataFieldConfigs = typeConfig.DataFields;
 
                             if (dataFieldConfigs != null && dataFieldConfigs.Length > 0) {
-                                int fieldIndex = 0;
+                                var fieldIndex = 0;
                                 foreach (var fieldConfig in dataFieldConfigs) {
                                     fieldIndex++;
                                     var fieldName = fieldConfig.FieldName;
@@ -136,7 +137,7 @@ namespace Light.Data
                             }
                             var relationFieldConfigs = typeConfig.RelationFields;
                             if (relationFieldConfigs != null && relationFieldConfigs.Length > 0) {
-                                int fieldIndex = 0;
+                                var fieldIndex = 0;
                                 foreach (var fieldConfig in relationFieldConfigs) {
                                     fieldIndex++;
                                     if (fieldConfig.RelationPairs != null && fieldConfig.RelationPairs.Length > 0) {
@@ -156,7 +157,7 @@ namespace Light.Data
                                     }
                                 }
                             }
-                            settingDict[dataType] = setting;
+                            SettingDict[dataType] = setting;
                         }
                     }
                 }
@@ -168,9 +169,9 @@ namespace Light.Data
             FunctionControl functionControl;
             if (!string.IsNullOrEmpty(fieldConfig.FunctionControl)) {
                 string name;
-                int index = fieldConfig.FunctionControl.IndexOf('.');
+                var index = fieldConfig.FunctionControl.IndexOf('.');
                 if (index > 0) {
-                    string type = fieldConfig.FunctionControl.Substring(0, index);
+                    var type = fieldConfig.FunctionControl.Substring(0, index);
                     if (type != "FunctionControl") {
                         throw new Exception(SR.NotFunctionControlType);
                     }
@@ -195,11 +196,11 @@ namespace Light.Data
         private static object CreateDefaultValue(Type type, string defaultValue)
         {
             if (!string.IsNullOrEmpty(defaultValue)) {
-                TypeInfo typeInfo = type.GetTypeInfo();
+                var typeInfo = type.GetTypeInfo();
                 if (typeInfo.IsGenericType) {
-                    Type frameType = type.GetGenericTypeDefinition();
+                    var frameType = type.GetGenericTypeDefinition();
                     if (frameType.FullName == "System.Nullable`1") {
-                        Type[] arguments = typeInfo.GetGenericArguments();
+                        var arguments = typeInfo.GetGenericArguments();
                         type = arguments[0];
                         typeInfo = type.GetTypeInfo();
                     }
@@ -209,11 +210,11 @@ namespace Light.Data
                     valueObj = defaultValue;
                 }
                 else if (typeInfo.IsEnum) {
-                    int index = defaultValue.LastIndexOf(".");
+                    var index = defaultValue.LastIndexOf(".", StringComparison.Ordinal);
                     if (index > 0) {
-                        string typeName = defaultValue.Substring(0, index);
+                        var typeName = defaultValue.Substring(0, index);
                         if (typeName != type.Name) {
-                            throw new Exception(string.Format("\"{0}\" is not correct type", defaultValue));
+                            throw new Exception($"\"{defaultValue}\" is not correct type");
                         }
                         defaultValue = defaultValue.Substring(index + 1);
                     }
@@ -221,15 +222,15 @@ namespace Light.Data
                 }
                 else {
                     if (type == typeof(DateTime)) {
-                        if (DateTime.TryParse(defaultValue, out DateTime dt)) {
+                        if (DateTime.TryParse(defaultValue, out var dt)) {
                             valueObj = dt;
                         }
                         else {
-                            int index = defaultValue.LastIndexOf(".");
+                            var index = defaultValue.LastIndexOf(".", StringComparison.Ordinal);
                             if (index > 0) {
-                                string typeName = defaultValue.Substring(0, index);
+                                var typeName = defaultValue.Substring(0, index);
                                 if (typeName != "DefaultTime") {
-                                    throw new Exception(string.Format("\"{0}\" is not correct type", defaultValue));
+                                    throw new Exception($"\"{defaultValue}\" is not correct type");
                                 }
                                 defaultValue = defaultValue.Substring(index + 1);
 
@@ -243,16 +244,15 @@ namespace Light.Data
                 }
                 return valueObj;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         private static void CheckData()
         {
-            if (!initialed) {
-                lock (locker) {
-                    if (!initialed) {
+            if (!_initialed) {
+                lock (Locker) {
+                    if (!_initialed) {
                         Initial();
                     }
                 }
@@ -262,7 +262,7 @@ namespace Light.Data
         internal static bool TryGetSetting(Type type, out DataTableMapperSetting setting)
         {
             CheckData();
-            return settingDict.TryGetValue(type, out setting);
+            return SettingDict.TryGetValue(type, out setting);
 
         }
 
@@ -270,14 +270,14 @@ namespace Light.Data
         {
             CheckData();
             while (true) {
-                if (settingDict.TryGetValue(type, out DataTableMapperSetting setting)) {
+                if (SettingDict.TryGetValue(type, out var setting)) {
                     config = setting.GetDataFieldMapConfig(fieldName);
                     if (config != null) {
                         return true;
                     }
                 }
                 type = type.BaseType;
-                if (type.Equals(typeof(object)) || type.Equals(null)) {
+                if (type == null || type == typeof(object)) {
                     config = null;
                     return false;
                 }
@@ -288,14 +288,14 @@ namespace Light.Data
         {
             CheckData();
             while (true) {
-                if (settingDict.TryGetValue(type, out DataTableMapperSetting setting)) {
+                if (SettingDict.TryGetValue(type, out var setting)) {
                     config = setting.GetRelationFieldMapConfig(fieldName);
                     if (config != null) {
                         return true;
                     }
                 }
                 type = type.BaseType;
-                if (type.Equals(typeof(object)) || type.Equals(null)) {
+                if (type == null || type == typeof(object)) {
                     config = null;
                     return false;
                 }

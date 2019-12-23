@@ -1,43 +1,37 @@
 ﻿using System.Collections.Generic;
 namespace Light.Data
 {
-	class DataTableMapperSetting
+	internal class DataTableMapperSetting
 	{
-		readonly DataTableMapperConfig dataTableMapConfig;
+		private readonly Dictionary<string, DataFieldMapperConfig> dataFieldMapConfigDict = new Dictionary<string, DataFieldMapperConfig>();
 
-		readonly Dictionary<string, DataFieldMapperConfig> dataFieldMapConfigDict = new Dictionary<string, DataFieldMapperConfig>();
+		private readonly Dictionary<string, RelationFieldMapConfig> relationFieldMapConfigDict = new Dictionary<string, RelationFieldMapConfig>();
 
-		readonly Dictionary<string, RelationFieldMapConfig> relationFieldMapConfigDict = new Dictionary<string, RelationFieldMapConfig>();
-
-		public DataTableMapperConfig DataTableMapConfig {
-			get {
-				return dataTableMapConfig;
-			}
-		}
+		public DataTableMapperConfig DataTableMapConfig { get; }
 
 		public DataTableMapperSetting(DataTableMapperConfig dataTableMapConfig)
 		{
-			this.dataTableMapConfig = dataTableMapConfig;
+			this.DataTableMapConfig = dataTableMapConfig;
 		}
 
 		public void AddDataFieldMapConfig(string fieldName, DataFieldMapperConfig config)
 		{
-			this.dataFieldMapConfigDict.Add(fieldName, config);
+			dataFieldMapConfigDict.Add(fieldName, config);
 		}
 
 		public DataFieldMapperConfig GetDataFieldMapConfig(string fieldName){
-			this.dataFieldMapConfigDict.TryGetValue(fieldName, out DataFieldMapperConfig config);
+			dataFieldMapConfigDict.TryGetValue(fieldName, out var config);
 			return config;
 		}
 
 		public void AddRelationFieldMapConfig(string fieldName, RelationFieldMapConfig config)
 		{
-			this.relationFieldMapConfigDict.Add(fieldName, config);
+			relationFieldMapConfigDict.Add(fieldName, config);
 		}
 
 		public RelationFieldMapConfig GetRelationFieldMapConfig(string fieldName)
 		{
-			this.relationFieldMapConfigDict.TryGetValue(fieldName, out RelationFieldMapConfig config);
+			relationFieldMapConfigDict.TryGetValue(fieldName, out var config);
 			return config;
 		}
 

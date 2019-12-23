@@ -1,22 +1,21 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	/// <summary>
 	/// Lambda match expression.
 	/// </summary>
-	class LightMatchQuerryExpression : QueryExpression, ISupportNotDefine
+	internal class LightMatchQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		LightStringMatchDataFieldInfo _fieldInfo;
+		private LightStringMatchDataFieldInfo _fieldInfo;
 
-		public LightMatchQuerryExpression (LightStringMatchDataFieldInfo fieldInfo)
+		public LightMatchQueryExpression (LightStringMatchDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
-			this._fieldInfo = fieldInfo;
+			_fieldInfo = fieldInfo;
 		}
 
 		public void SetNot ()
 		{
-			this._fieldInfo.SetNot ();
+			_fieldInfo.SetNot ();
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)

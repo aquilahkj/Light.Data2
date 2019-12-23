@@ -3,10 +3,6 @@
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Xml"#>
 <#@ assembly name="System.Data"#>
-<#@ import namespace="System"#>
-<#@ import namespace="System.Data"#>
-<#@ import namespace="System.Collections.Generic"#>
-<#@ import namespace="System.Text"#>
 <# 
 	var MaxCount=9;
 	var InterFaceName="IJoinTable";
@@ -19,7 +15,7 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-<# for(int i=1;i<=MaxCount;i++){ #>
+<# for(var i=1;i<=MaxCount;i++){ #>
 	/// <summary>
 	/// Join table.
 	/// </summary>		
@@ -36,8 +32,8 @@ namespace Light.Data
 }
 
 
-<#+ 
-	const string PP="T";
+<#+
+    private const string PP="T";
 
 	public string GetRaw()
 	{
@@ -51,8 +47,8 @@ namespace Light.Data
 
 	public string GetAll(int max)
 	{
-		string ss=PP;
-		for(int i=1;i<=max;i++)
+		var ss=PP;
+		for(var i=1;i<=max;i++)
 		{
 			ss+=(", "+PP+i);
 		}
@@ -61,20 +57,20 @@ namespace Light.Data
 
 	public string GetMax(int max)
 	{
-		string ss=PP+max;
+		var ss=PP+max;
 		return ss;
 	}
 
 	public string GetAdd(int max)
 	{
-		string ss=PP+(max+1);
+		var ss=PP+(max+1);
 		return ss;
 	}
 
 	public string GetPrev(int max)
 	{
-		string ss=PP;
-		for(int i=1;i<=max-1;i++)
+		var ss=PP;
+		for(var i=1;i<=max-1;i++)
 		{
 			ss+=(", "+PP+i);
 		}
@@ -83,8 +79,8 @@ namespace Light.Data
 
 	public string GetNext(int max)
 	{
-		string ss=PP;
-		for(int i=1;i<=max+1;i++)
+		var ss=PP;
+		for(var i=1;i<=max+1;i++)
 		{
 			ss+=(", "+PP+i);
 		}

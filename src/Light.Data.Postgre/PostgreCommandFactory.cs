@@ -6,13 +6,13 @@ using System.Collections;
 
 namespace Light.Data.Postgre
 {
-    class PostgreCommandFactory : CommandFactory
+    internal class PostgreCommandFactory : CommandFactory
     {
         public override bool SupportBatchInsertIdentity => true;
 
-        DateTimeFormater dateTimeFormater = new DateTimeFormater();
+        private readonly DateTimeFormater dateTimeFormater = new DateTimeFormater();
 
-        readonly string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
+        private readonly string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
 
         public PostgreCommandFactory()
         {
@@ -27,9 +27,9 @@ namespace Light.Data.Postgre
 
         public override CommandData CreateTruncateTableCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            CommandData data = base.CreateTruncateTableCommand(mapping, state);
+            var data = base.CreateTruncateTableCommand(mapping, state);
             if (mapping.IdentityField != null) {
-                string restartSeq = string.Format("alter sequence \"{0}\" restart;", GetIndentitySeq(mapping, state));
+                var restartSeq = string.Format("alter sequence \"{0}\" restart;", GetIndentitySeq(mapping, state));
                 data.CommandText += restartSeq;
             }
             return data;
@@ -72,7 +72,7 @@ namespace Light.Data.Postgre
 
         public override CommandData CreateSelectBaseCommand(DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
         {
-            CommandData command = base.CreateSelectBaseCommand(mapping, customSelect, query, order, region, state);
+            var command = base.CreateSelectBaseCommand(mapping, customSelect, query, order, region, state);
             if (region != null) {
                 if (region.Start == 0) {
                     command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
@@ -87,7 +87,7 @@ namespace Light.Data.Postgre
 
         public override CommandData CreateSelectJoinTableBaseCommand(string customSelect, List<IJoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
         {
-            CommandData command = base.CreateSelectJoinTableBaseCommand(customSelect, modelList, query, order, region, state);
+            var command = base.CreateSelectJoinTableBaseCommand(customSelect, modelList, query, order, region, state);
             if (region != null) {
                 if (region.Start == 0) {
                     command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
@@ -102,7 +102,7 @@ namespace Light.Data.Postgre
 
         public override CommandData CreateAggregateTableCommand(DataEntityMapping mapping, AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order, Region region, CreateSqlState state)
         {
-            CommandData command = base.CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, region, state);
+            var command = base.CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, region, state);
             if (region != null) {
                 if (region.Start == 0) {
                     command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
@@ -117,9 +117,9 @@ namespace Light.Data.Postgre
 
         public override CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, bool updateIdentity, CreateSqlState state)
         {
-            CommandData command = base.CreateBaseInsertCommand(mapping, entity, refresh, false, state);
+            var command = base.CreateBaseInsertCommand(mapping, entity, refresh, false, state);
             if (updateIdentity && mapping.IdentityField != null) {
-                string idensql = string.Format("returning {0}", CreateDataFieldSql(mapping.IdentityField.Name));
+                var idensql = string.Format("returning {0}", CreateDataFieldSql(mapping.IdentityField.Name));
                 command.CommandText = command.CommandText + idensql;
                 command.IdentitySql = true;
             }
@@ -131,9 +131,9 @@ namespace Light.Data.Postgre
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            int totalCount = entitys.Count;
+            var totalCount = entitys.Count;
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
-            int insertLen = fields.Count;
+            var insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
@@ -144,35 +144,35 @@ namespace Light.Data.Postgre
             string cachekey = null;
             if (state.Seed == 0) {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+                if (_batchInsertCache.TryGetCommand(cachekey, out var cache)) {
                     insertSql = cache;
                 }
             }
             if (insertSql == null) {
-                string[] insertList = new string[insertLen];
-                for (int i = 0; i < insertLen; i++) {
-                    DataFieldMapping field = fields[i];
+                var insertList = new string[insertLen];
+                for (var i = 0; i < insertLen; i++) {
+                    var field = fields[i];
                     insertList[i] = CreateDataFieldSql(field.Name);
                 }
-                string insert = string.Join(",", insertList);
+                var insert = string.Join(",", insertList);
                 insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
                 if (cachekey != null) {
                     _batchInsertCache.SetCommand(cachekey, insertSql);
                 }
             }
-            StringBuilder totalSql = new StringBuilder();
+            var totalSql = new StringBuilder();
 
             totalSql.AppendFormat("{0}values", insertSql);
-            int cur = 0;
-            int end = entitys.Count;
-            foreach (object entity in entitys) {
-                string[] valuesList = new string[insertLen];
-                for (int i = 0; i < insertLen; i++) {
-                    DataFieldMapping field = fields[i];
-                    object value = field.GetInsertData(entity, refresh);
+            var cur = 0;
+            var end = entitys.Count;
+            foreach (var entity in entitys) {
+                var valuesList = new string[insertLen];
+                for (var i = 0; i < insertLen; i++) {
+                    var field = fields[i];
+                    var value = field.GetInsertData(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
-                string values = string.Join(",", valuesList);
+                var values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);
                 cur++;
                 if (cur < end) {
@@ -182,7 +182,7 @@ namespace Light.Data.Postgre
                     totalSql.AppendFormat("returning {0} as id;", CreateDataFieldSql(mapping.IdentityField.Name));
                 }
             }
-            CommandData command = new CommandData(totalSql.ToString());
+            var command = new CommandData(totalSql.ToString());
             return command;
         }
 
@@ -191,9 +191,9 @@ namespace Light.Data.Postgre
             if (entitys == null || entitys.Count == 0) {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            int totalCount = entitys.Count;
+            var totalCount = entitys.Count;
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
-            int insertLen = fields.Count;
+            var insertLen = fields.Count;
             if (insertLen == 0) {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
@@ -201,35 +201,35 @@ namespace Light.Data.Postgre
             string cachekey = null;
             if (state.Seed == 0) {
                 cachekey = CommandCache.CreateKey(mapping, state);
-                if (_batchInsertCache.TryGetCommand(cachekey, out string cache)) {
+                if (_batchInsertCache.TryGetCommand(cachekey, out var cache)) {
                     insertSql = cache;
                 }
             }
             if (insertSql == null) {
-                string[] insertList = new string[insertLen];
-                for (int i = 0; i < insertLen; i++) {
-                    DataFieldMapping field = fields[i];
+                var insertList = new string[insertLen];
+                for (var i = 0; i < insertLen; i++) {
+                    var field = fields[i];
                     insertList[i] = CreateDataFieldSql(field.Name);
                 }
-                string insert = string.Join(",", insertList);
+                var insert = string.Join(",", insertList);
                 insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
                 if (cachekey != null) {
                     _batchInsertCache.SetCommand(cachekey, insertSql);
                 }
             }
-            StringBuilder totalSql = new StringBuilder();
+            var totalSql = new StringBuilder();
 
             totalSql.AppendFormat("{0}values", insertSql);
-            int cur = 0;
-            int end = entitys.Count;
-            foreach (object entity in entitys) {
-                string[] valuesList = new string[insertLen];
-                for (int i = 0; i < insertLen; i++) {
-                    DataFieldMapping field = fields[i];
-                    object value = field.GetInsertData(entity, refresh);
+            var cur = 0;
+            var end = entitys.Count;
+            foreach (var entity in entitys) {
+                var valuesList = new string[insertLen];
+                for (var i = 0; i < insertLen; i++) {
+                    var field = fields[i];
+                    var value = field.GetInsertData(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
-                string values = string.Join(",", valuesList);
+                var values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);
                 cur++;
                 if (cur < end) {
@@ -239,7 +239,7 @@ namespace Light.Data.Postgre
                     totalSql.Append(';');
                 }
             }
-            CommandData command = new CommandData(totalSql.ToString());
+            var command = new CommandData(totalSql.ToString());
             return command;
         }
 
@@ -248,12 +248,12 @@ namespace Light.Data.Postgre
             if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
                 return base.CreateCollectionParamsQuerySql(fieldName, predicate, list);
             }
-            string op = GetQueryCollectionPredicate(predicate);
+            var op = GetQueryCollectionPredicate(predicate);
 
-            int i = 0;
-            StringBuilder sb = new StringBuilder();
+            var i = 0;
+            var sb = new StringBuilder();
             sb.AppendFormat("{0} {1} (", fieldName, op);
-            foreach (object item in list) {
+            foreach (var item in list) {
                 if (i > 0)
                     sb.Append(" union all ");
                 sb.AppendFormat("select {0}", item);
@@ -284,12 +284,12 @@ namespace Light.Data.Postgre
                 throw new LightDataException(SR.NoIdentityField);
             }
             string seq;
-            string postgreIdentity = mapping.ExtentParams.GetParamValue("PostgreIdentitySeq");
+            var postgreIdentity = mapping.ExtentParams.GetParamValue("PostgreIdentitySeq");
             if (!string.IsNullOrEmpty(postgreIdentity)) {
                 seq = postgreIdentity;
             }
             else {
-                if (!state.TryGetAliasTableName(mapping, out string name)) {
+                if (!state.TryGetAliasTableName(mapping, out var name)) {
                     name = mapping.TableName;
                 }
                 seq = string.Format("{0}_{1}_seq", name, mapping.IdentityField.Name);
@@ -299,7 +299,7 @@ namespace Light.Data.Postgre
 
         public override string CreateMatchSql(object field, bool starts, bool ends)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (starts) {
                 sb.AppendFormat("'{0}'||", _wildcards);
             }
@@ -322,8 +322,8 @@ namespace Light.Data.Postgre
 
         public override string CreateConcatSql(params object[] values)
         {
-            string value1 = string.Join("||", values);
-            string sql = string.Format("({0})", value1);
+            var value1 = string.Join("||", values);
+            var sql = string.Format("({0})", value1);
             return sql;
         }
 

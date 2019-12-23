@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    abstract class SelectJoinBase<K> : ISelectJoin<K>
+    internal abstract class SelectJoinBase<K> : ISelectJoin<K>
     {
         public abstract QueryExpression QueryExpression {
             get;
@@ -31,26 +31,20 @@ namespace Light.Data
 
         protected readonly DataContext _context;
 
-        LambdaExpression _expression;
+        private LambdaExpression _expression;
 
-        List<IMap> _maps;
+        private List<IMap> _maps;
 
-        ISelector _selector;
+        private ISelector _selector;
 
-        List<IJoinModel> _models;
+        private Delegate _dele;
 
-        Delegate _dele;
-
-        public DataContext Context {
-            get {
-                return _context;
-            }
-        }
+        public DataContext Context => _context;
 
         public ISelector Selector {
             get {
                 if (_selector == null) {
-                    _selector = LambdaExpressionExtend.CreateMutliSelector(_expression, _maps);
+                    _selector = LambdaExpressionExtend.CreateMultiSelector(_expression, _maps);
                 }
                 return _selector;
             }
@@ -65,25 +59,15 @@ namespace Light.Data
             }
         }
 
-        public List<IJoinModel> Models {
-            get {
-                return _models;
-            }
-        }
+        public List<IJoinModel> Models { get; }
 
-        readonly DynamicMultiDataMapping _mapping;
-
-        public DynamicMultiDataMapping Mapping {
-            get {
-                return _mapping;
-            }
-        }
+        public DynamicMultiDataMapping Mapping { get; }
 
         protected SelectJoinBase(DataContext context, LambdaExpression expression, List<IJoinModel> models, List<IMap> maps)
         {
-            _models = models;
+            Models = models;
             _context = context;
-            _mapping = DynamicMultiDataMapping.CreateDynamicMultiDataMapping(typeof(K), _models);
+            Mapping = DynamicMultiDataMapping.CreateDynamicMultiDataMapping(typeof(K), Models);
             _expression = expression;
             _maps = maps;
         }
@@ -92,7 +76,7 @@ namespace Light.Data
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public abstract List<K> ToList();

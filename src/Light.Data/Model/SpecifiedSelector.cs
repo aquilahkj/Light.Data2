@@ -1,13 +1,12 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class SpecifiedSelector : Selector
+	internal class SpecifiedSelector : Selector
 	{
 		public override string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string [] list = new string [this.selectList.Count];
-			int index = 0;
-			foreach (DataFieldInfo fieldInfo in this.selectList) {
+			var list = new string [selectList.Count];
+			var index = 0;
+			foreach (var fieldInfo in selectList) {
                 if (fieldInfo is IAliasDataFieldInfo alias) {
                     list[index] = alias.CreateAliasDataFieldSql(factory, isFullName, state);
                 }
@@ -16,7 +15,7 @@ namespace Light.Data
                 }
                 index++;
 			}
-			string customSelect = string.Join (",", list);
+			var customSelect = string.Join (",", list);
 			return customSelect;
 		}
 	}

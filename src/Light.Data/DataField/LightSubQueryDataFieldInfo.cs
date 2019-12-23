@@ -1,15 +1,14 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-    class LightSubQueryDataFieldInfo : LightDataFieldInfo, IDataFieldInfoConvert
+    internal class LightSubQueryDataFieldInfo : LightDataFieldInfo, IDataFieldInfoConvert
     {
-        readonly QueryExpression _expression;
+        private readonly QueryExpression _expression;
 
-        readonly DataFieldInfo _selectField;
+        private readonly DataFieldInfo _selectField;
 
-        readonly DataFieldInfo _field;
+        private readonly DataFieldInfo _field;
 
-        readonly QueryCollectionPredicate _predicate;
+        private readonly QueryCollectionPredicate _predicate;
 
         public LightSubQueryDataFieldInfo(DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryCollectionPredicate predicate, QueryExpression expression)
             : base(mapping)
@@ -22,15 +21,15 @@ namespace Light.Data
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            string sql = state.GetDataSql(this, isFullName);
+            var sql = state.GetDataSql(this, isFullName);
             if (sql != null) {
                 return sql;
             }
 
-            string tableName = factory.CreateDataTableMappingSql(TableMapping, state);
-            string selectField = _selectField.CreateSqlString(factory, true, state);
+            var tableName = factory.CreateDataTableMappingSql(TableMapping, state);
+            var selectField = _selectField.CreateSqlString(factory, true, state);
 
-            string field = _field.CreateSqlString(factory, isFullName, state);
+            var field = _field.CreateSqlString(factory, isFullName, state);
 
             string query = null;
             if (_expression != null) {

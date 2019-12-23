@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LightStringFunctionDataFieldInfo : LightDataFieldInfo
+	internal class LightStringFunctionDataFieldInfo : LightDataFieldInfo
 	{
-		readonly StringFunction _function;
+		private readonly StringFunction _function;
 
-		readonly object _callObject;
+		private readonly object _callObject;
 
-		readonly object [] _argsObjects;
+		private readonly object [] _argsObjects;
 
 		public LightStringFunctionDataFieldInfo (DataEntityMapping mapping, StringFunction function, object callObject, params object [] argsObjects)
 			: base (mapping)
@@ -38,16 +38,16 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			List<object> objectList = new List<object> ();
+			var objectList = new List<object> ();
 
 			object obj;
-			DataFieldInfo info = _callObject as DataFieldInfo;
-			if (!Object.Equals (info, null)) {
+			var info = _callObject as DataFieldInfo;
+			if (!Equals (info, null)) {
 				obj = info.CreateSqlString (factory, isFullName, state);
 			}
 			else {
@@ -55,10 +55,10 @@ namespace Light.Data
 				obj = state.AddDataParameter (factory, obj);
 			}
             if (_argsObjects != null) {
-                foreach (object item in _argsObjects) {
+                foreach (var item in _argsObjects) {
                     object obj1;
-                    DataFieldInfo info1 = item as DataFieldInfo;
-                    if (!Object.Equals(info1, null)) {
+                    var info1 = item as DataFieldInfo;
+                    if (!Equals(info1, null)) {
                         obj1 = info1.CreateSqlString(factory, isFullName, state);
                     } else {
                         obj1 = LambdaExpressionExtend.ConvertLambdaObject(item);

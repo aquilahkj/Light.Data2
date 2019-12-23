@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Text;
 
 namespace Light.Data
@@ -13,7 +10,7 @@ namespace Light.Data
     /// </summary>
     public class TextFormatter
     {
-        class Section
+        private class Section
         {
             public string Name;
             public SectionType Type;
@@ -21,52 +18,36 @@ namespace Light.Data
             public bool Nullable;
             public bool ExtendFormat;
         }
-        
-        class GetPropertyHandler
+
+        private class GetPropertyHandler
         {
-            private GetValueHandler mGetValue;
-            private PropertyInfo mProperty;
-            private string mName;
+            public GetValueHandler Get { get; }
 
-            public GetValueHandler Get {
-                get {
-                    return this.mGetValue;
-                }
-            }
+            public PropertyInfo Property { get; }
 
-            public PropertyInfo Property {
-                get {
-                    return this.mProperty;
-                }
-            }
-
-            public string Name {
-                get {
-                    return this.mName;
-                }
-            }
+            public string Name { get; }
 
             public GetPropertyHandler(PropertyInfo property)
             {
                 if (property.CanRead) {
-                    this.mGetValue = ReflectionHandlerFactory.PropertyGetHandler(property);
+                    Get = ReflectionHandlerFactory.PropertyGetHandler(property);
                 }
-                this.mProperty = property;
-                this.mName = property.Name;
+                Property = property;
+                Name = property.Name;
             }
         }
 
-        enum SectionType
+        private enum SectionType
         {
             NormalText,
             FormatText
         }
 
-        static Dictionary<Type, Dictionary<string, GetPropertyHandler>> TypeDict = new Dictionary<Type, Dictionary<string, GetPropertyHandler>>();
+        private static Dictionary<Type, Dictionary<string, GetPropertyHandler>> TypeDict = new Dictionary<Type, Dictionary<string, GetPropertyHandler>>();
 
-        static Dictionary<string, Section[]> SectionDict = new Dictionary<string, Section[]>();
+        private static Dictionary<string, Section[]> SectionDict = new Dictionary<string, Section[]>();
 
-        static readonly TextFormatProvider textFormatProvider = new TextFormatProvider();
+        private static readonly TextFormatProvider textFormatProvider = new TextFormatProvider();
 
         /// <summary>
         /// Format
@@ -88,11 +69,11 @@ namespace Light.Data
         /// <returns></returns>
         public static string Format(string pattern, object obj, TextTemplateOptions options)
         {
-            TextFormatter template = new TextFormatter(pattern, options);
+            var template = new TextFormatter(pattern, options);
             return template.Format(obj);
         }
 
-        readonly Section[] sectionList;
+        private readonly Section[] sectionList;
 
         /// <summary>
         /// 
@@ -104,11 +85,11 @@ namespace Light.Data
 
         }
 
-        readonly TextTemplateOptions options;
+        private readonly TextTemplateOptions options;
 
         //readonly StringComparison comparison;
 
-        readonly bool notAllowNullValue;
+        private readonly bool notAllowNullValue;
 
         /// <summary>
         /// 
@@ -121,20 +102,20 @@ namespace Light.Data
                 throw new ArgumentNullException(nameof(pattern));
             }
             this.options = options;
-            bool extend = (this.options & TextTemplateOptions.NotAllowNullValue) != TextTemplateOptions.Compiled;
+            var extend = (this.options & TextTemplateOptions.NotAllowNullValue) != TextTemplateOptions.Compiled;
             if ((this.options & TextTemplateOptions.Compiled) == TextTemplateOptions.Compiled) {
-                if (!SectionDict.TryGetValue(pattern, out Section[] array)) {
+                if (!SectionDict.TryGetValue(pattern, out var array)) {
                     lock (SectionDict) {
                         array = LoadSections(pattern, extend);
                         SectionDict[pattern] = array;
                     }
                 }
-                this.sectionList = array;
+                sectionList = array;
             }
             else {
-                this.sectionList = LoadSections(pattern, extend);
+                sectionList = LoadSections(pattern, extend);
             }
-            this.notAllowNullValue = ((this.options & TextTemplateOptions.NotAllowNullValue) == TextTemplateOptions.NotAllowNullValue);
+            notAllowNullValue = ((this.options & TextTemplateOptions.NotAllowNullValue) == TextTemplateOptions.NotAllowNullValue);
         }
 
         /// <summary>
@@ -144,17 +125,17 @@ namespace Light.Data
         /// <returns></returns>
         public string Format(object obj)
         {
-            if (object.Equals(obj, null)) {
+            if (Equals(obj, null)) {
                 throw new ArgumentNullException(nameof(obj));
             }
-            StringBuilder sb = new StringBuilder();
-            foreach (Section s in sectionList) {
+            var sb = new StringBuilder();
+            foreach (var s in sectionList) {
                 if (s.Type == SectionType.NormalText) {
                     sb.Append(s.Value);
                 }
                 else if (s.Type == SectionType.FormatText) {
-                    object data = LoadObject(obj, s.Name);
-                    if (!Object.Equals(data, null)) {
+                    var data = LoadObject(obj, s.Name);
+                    if (!Equals(data, null)) {
                         if (data is string) {
                             sb.AppendFormat(textFormatProvider, s.Value, data);
                         }
@@ -163,7 +144,7 @@ namespace Light.Data
                         }
                     }
                     else {
-                        if (this.notAllowNullValue || !s.Nullable) {
+                        if (notAllowNullValue || !s.Nullable) {
                             throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
                         }
                         else {
@@ -185,13 +166,13 @@ namespace Light.Data
             if (Equals(dict, null)) {
                 throw new ArgumentNullException(nameof(dict));
             }
-            StringBuilder sb = new StringBuilder();
-            foreach (Section s in sectionList) {
+            var sb = new StringBuilder();
+            foreach (var s in sectionList) {
                 if (s.Type == SectionType.NormalText) {
                     sb.Append(s.Value);
                 }
                 else if (s.Type == SectionType.FormatText) {
-                    dict.TryGetValue(s.Name, out object data);
+                    dict.TryGetValue(s.Name, out var data);
                     if (!Equals(data, null)) {
                         if (data is string) {
                             sb.AppendFormat(textFormatProvider, s.Value, data);
@@ -201,7 +182,7 @@ namespace Light.Data
                         }
                     }
                     else {
-                        if (this.notAllowNullValue || !s.Nullable) {
+                        if (notAllowNullValue || !s.Nullable) {
                             throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
                         }
                         else {
@@ -214,7 +195,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Formar sql string
+        /// Format sql string
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="prefix"></param>
@@ -225,9 +206,9 @@ namespace Light.Data
             //if (object.Equals(obj, null)) {
             //    throw new ArgumentNullException(nameof(obj));
             //}
-            StringBuilder sb = new StringBuilder();
-            Dictionary<string, DataParameter> dict = new Dictionary<string, DataParameter>();
-            foreach (Section s in sectionList) {
+            var sb = new StringBuilder();
+            var dict = new Dictionary<string, DataParameter>();
+            foreach (var s in sectionList) {
                 if (s.Type == SectionType.NormalText) {
                     sb.Append(s.Value);
                 }
@@ -235,15 +216,15 @@ namespace Light.Data
                     if (s.ExtendFormat) {
                         throw new FormatException(string.Format("Not support extend format in \'{0}\'.", s.Name));
                     }
-                    if (!dict.TryGetValue(s.Name, out DataParameter parameter)) {
-                        object data = LoadObject(obj, s.Name);
-                        string name = string.Concat(prefix, "P", dict.Count + 1);
-                        if (!Object.Equals(data, null)) {
+                    if (!dict.TryGetValue(s.Name, out var parameter)) {
+                        var data = LoadObject(obj, s.Name);
+                        var name = string.Concat(prefix, "P", dict.Count + 1);
+                        if (!Equals(data, null)) {
                             parameter = new DataParameter(name, data);
                             dict.Add(s.Name, parameter);
                         }
                         else {
-                            if (this.notAllowNullValue || !s.Nullable) {
+                            if (notAllowNullValue || !s.Nullable) {
                                 throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
                             }
                             else {
@@ -256,7 +237,7 @@ namespace Light.Data
                 }
             }
             parameters = new DataParameter[dict.Count];
-            int i = 0;
+            var i = 0;
             foreach(var item in dict.Values) {
                 parameters[i] = item;
                 i++;
@@ -264,27 +245,27 @@ namespace Light.Data
             return sb.ToString();
         }
 
-        static object LoadObject(object obj, string name)
+        private static object LoadObject(object obj, string name)
         {
-            if(object.Equals(obj, null)) {
+            if(Equals(obj, null)) {
                 return null;
             }
-            Type type = obj.GetType();
-            if (!TypeDict.TryGetValue(type, out Dictionary<string, GetPropertyHandler> dict)) {
+            var type = obj.GetType();
+            if (!TypeDict.TryGetValue(type, out var dict)) {
                 lock (TypeDict) {
                     if (!TypeDict.TryGetValue(type, out dict)) {
-                        TypeInfo typeInfo = type.GetTypeInfo();
-                        PropertyInfo[] properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                        var typeInfo = type.GetTypeInfo();
+                        var properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                         dict = new Dictionary<string, GetPropertyHandler>();
-                        foreach (PropertyInfo propertie in properties) {
+                        foreach (var propertie in properties) {
                             dict[propertie.Name] = new GetPropertyHandler(propertie);
                         }
                     }
                 }
             }
-            int index = name.IndexOf(".", StringComparison.Ordinal);
+            var index = name.IndexOf(".", StringComparison.Ordinal);
             if (index == -1) {
-                if (dict.TryGetValue(name, out GetPropertyHandler handler)) {
+                if (dict.TryGetValue(name, out var handler)) {
                     return handler.Get(obj);
                 }
                 else {
@@ -292,9 +273,9 @@ namespace Light.Data
                 }
             }
             else {
-                string typeName = name.Substring(0, index);
-                if (dict.TryGetValue(typeName, out GetPropertyHandler handler)) {
-                    object subObj = handler.Get(obj);
+                var typeName = name.Substring(0, index);
+                if (dict.TryGetValue(typeName, out var handler)) {
+                    var subObj = handler.Get(obj);
                     if (subObj == null) {
                         return null;
                     }
@@ -308,18 +289,18 @@ namespace Light.Data
             }
         }
 
-        static Section[] LoadSections(string pattern, bool supportExtend)
+        private static Section[] LoadSections(string pattern, bool supportExtend)
         {
-            int prev = 0;
+            var prev = 0;
 
-            char[] chars = pattern.ToCharArray();
-            int realLen = chars.Length;
-            int safeLen = realLen - 1;
+            var chars = pattern.ToCharArray();
+            var realLen = chars.Length;
+            var safeLen = realLen - 1;
 
-            bool endflag = false;
-            List<Section> list = new List<Section>();
-            for (int i = 0; i < safeLen; i++) {
-                char c = chars[i];
+            var endflag = false;
+            var list = new List<Section>();
+            for (var i = 0; i < safeLen; i++) {
+                var c = chars[i];
                 if (c == '{') {
                     if (chars[i + 1] == '{') {
                         i++;
@@ -327,7 +308,7 @@ namespace Light.Data
                     }
                     else {
                         if (i > 0) {
-                            Section normalSection = new Section {
+                            var normalSection = new Section {
                                 Type = SectionType.NormalText,
                                 Value = string.Format(new string(chars, prev, i - prev))
                             };
@@ -346,11 +327,11 @@ namespace Light.Data
                             throw new FormatException(string.Format("Input param name was not a valid word, index is {0}, char is '{1}'", i + 1, '.'));
                         }
 
-                        int start = i + 1;
-                        int end = -1;
-                        int split = -1;
-                        for (int j = start; j < realLen; j++) {
-                            char e = chars[j];
+                        var start = i + 1;
+                        var end = -1;
+                        var split = -1;
+                        for (var j = start; j < realLen; j++) {
+                            var e = chars[j];
                             if (e == '}') {
                                 if (j == start) {
                                     throw new FormatException(string.Format("Input string was not in a correct format, index is {0}, char is '{1}'", j, e));
@@ -419,7 +400,7 @@ namespace Light.Data
                         bool extendFormat;
                         if (split > -1) {
                             name = new string(chars, start, split - start);
-                            string format = new string(chars, split, end - split);
+                            var format = new string(chars, split, end - split);
                             value = string.Concat("{0", format, "}");
                             extendFormat = true;
                         }
@@ -428,7 +409,7 @@ namespace Light.Data
                             value = "{0}";
                             extendFormat = false;
                         }
-                        Section forrmatSection = new Section {
+                        var forrmatSection = new Section {
                             Type = SectionType.FormatText,
                             Name = name,
                             Value = value,
@@ -451,11 +432,11 @@ namespace Light.Data
                 }
             }
             if (!endflag) {
-                char c = chars[safeLen];
+                var c = chars[safeLen];
                 if (c == '{' || c == '}') {
                     throw new FormatException(string.Format("Input string was not in a correct format, Index is {0}, char is '{1}'", safeLen, c));
                 }
-                Section normalSection = new Section {
+                var normalSection = new Section {
                     Type = SectionType.NormalText,
                     Value = string.Format(new string(chars, prev, realLen - prev))
                 };
@@ -490,7 +471,7 @@ namespace Light.Data
         NotAllowExtend = 3
     }
 
-    class TextFormatProvider : ICustomFormatter, IFormatProvider
+    internal class TextFormatProvider : ICustomFormatter, IFormatProvider
     {
         public string Format(string format, object arg, IFormatProvider provider)
         {
@@ -505,18 +486,18 @@ namespace Light.Data
                 }
             }
             else {
-                StringBuilder result = new StringBuilder();
-                int len = format.Length;
-                int i = 0;
+                var result = new StringBuilder();
+                var len = format.Length;
+                var i = 0;
                 int tokenLen;
-                bool flag = false;
+                var flag = false;
                 while (i < format.Length) {
-                    char ch = format[i];
+                    var ch = format[i];
                     int nextChar;
                     switch (ch) {
                         case '#':
                             tokenLen = ParseRepeatPattern(format, i, ch);
-                            string data = TransData(arg, tokenLen);
+                            var data = TransData(arg, tokenLen);
                             result.Append(data);
                             flag = true;
                             break;
@@ -551,9 +532,9 @@ namespace Light.Data
             }
         }
 
-        static string TransData(object arg, int tokenLen)
+        private static string TransData(object arg, int tokenLen)
         {
-            string data = arg as string;
+            var data = arg as string;
             if (data == null) {
                 data = arg.ToString();
             }
@@ -575,8 +556,8 @@ namespace Light.Data
 
         internal static int ParseRepeatPattern(string format, int pos, char patternChar)
         {
-            int len = format.Length;
-            int index = pos + 1;
+            var len = format.Length;
+            var index = pos + 1;
             while ((index < len) && (format[index] == patternChar)) {
                 index++;
             }

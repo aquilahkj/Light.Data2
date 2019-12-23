@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Light.Data
 {
-	class AttributeCore
+	internal class AttributeCore
 	{
 		private AttributeCore()
 		{

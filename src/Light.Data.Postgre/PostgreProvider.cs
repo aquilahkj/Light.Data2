@@ -7,15 +7,16 @@ using System.Collections.Generic;
 
 namespace Light.Data.Postgre
 {
-    class PostgreProvider : DatabaseProvider
+    internal class PostgreProvider : DatabaseProvider
     {
         public PostgreProvider(string configName, ConfigParamSet configParams)
             : base(configName, configParams)
         {
             _factory = new PostgreCommandFactory();
-            string strictMode = configParams.GetParamValue("strictMode");
-            if (strictMode != null) {
-                if (bool.TryParse(strictMode, out bool value))
+            var strictMode = configParams.GetParamValue("strictMode");
+            if (strictMode != null)
+            {
+                if (bool.TryParse(strictMode, out var value))
                     _factory.SetStrictMode(value);
             }
         }
@@ -34,7 +35,8 @@ namespace Light.Data.Postgre
 
         public override DbCommand CreateCommand(string sql)
         {
-            NpgsqlCommand command = new NpgsqlCommand {
+            var command = new NpgsqlCommand
+            {
                 CommandText = sql,
                 CommandTimeout = CommandTimeout
             };
@@ -43,7 +45,8 @@ namespace Light.Data.Postgre
 
         public override DbCommand CreateCommand()
         {
-            NpgsqlCommand command = new NpgsqlCommand {
+            var command = new NpgsqlCommand
+            {
                 CommandTimeout = CommandTimeout
             };
             return command;
@@ -51,175 +54,245 @@ namespace Light.Data.Postgre
 
         public override DataAdapter CreateDataAdapter(DbCommand command)
         {
-            return new NpgsqlDataAdapter((NpgsqlCommand)command);
+            return new NpgsqlDataAdapter((NpgsqlCommand) command);
         }
 
-        public override IDataParameter CreateParameter(string name, object value, string dbType, System.Data.ParameterDirection direction, Type dataType, CommandType commandType)
+        public override IDataParameter CreateParameter(string name, object value, string dbType,
+            System.Data.ParameterDirection direction, Type dataType, CommandType commandType)
         {
-            string parameterName = name;
-            if (commandType == CommandType.StoredProcedure) {
-                if (parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+            var parameterName = name;
+            if (commandType == CommandType.StoredProcedure)
+            {
+                if (parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal))
+                {
                     parameterName = parameterName.TrimStart(ParameterPrefix[0]);
                 }
             }
-            else {
-                if (!parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal)) {
+            else
+            {
+                if (!parameterName.StartsWith(ParameterPrefix, StringComparison.Ordinal))
+                {
                     parameterName = ParameterPrefix + parameterName;
                 }
             }
-            NpgsqlParameter sp = new NpgsqlParameter() {
+
+            var sp = new NpgsqlParameter()
+            {
                 ParameterName = parameterName,
                 Direction = direction
             };
-            if (value == null) {
+            if (value == null)
+            {
                 sp.Value = DBNull.Value;
-                if (string.IsNullOrEmpty(dbType) && dataType != null) {
-                    if (ConvertDbType(dataType, out NpgsqlDbType sqlType)) {
+                if (string.IsNullOrEmpty(dbType) && dataType != null)
+                {
+                    if (ConvertDbType(dataType, out var sqlType))
+                    {
                         sp.NpgsqlDbType = sqlType;
                     }
                 }
             }
-            else if (value is UInt16) {
+            else if (value is UInt16)
+            {
                 sp.Value = Convert.ToInt32(value);
             }
-            else if (value is UInt32) {
+            else if (value is UInt32)
+            {
                 sp.Value = Convert.ToInt64(value);
             }
-            else if (value is UInt64) {
+            else if (value is UInt64)
+            {
                 sp.Value = Convert.ToDecimal(value);
             }
-            else {
-                sp.Value = value;
+            else
+            {
+                var type = value.GetType();
+                if (type.IsEnum)
+                {
+                    var code = Type.GetTypeCode(type);
+                    sp.Value = Convert.ChangeType(value, code);
+                }
+                else
+                {
+                    sp.Value = value;
+                }
+                
             }
-            if (!string.IsNullOrEmpty(dbType)) {
-                if (!dbTypeDict.TryGetValue(dbType, out DbTypeInfo info)) {
-                    lock (dbTypeDict) {
-                        if (!dbTypeDict.TryGetValue(dbType, out info)) {
+
+            if (!string.IsNullOrEmpty(dbType))
+            {
+                if (!dbTypeDict.TryGetValue(dbType, out var info))
+                {
+                    lock (dbTypeDict)
+                    {
+                        if (!dbTypeDict.TryGetValue(dbType, out info))
+                        {
                             info = new DbTypeInfo();
-                            try {
-                                if (ParseSqlDbType(dbType, out NpgsqlDbType sqltype)) {
+                            try
+                            {
+                                if (ParseSqlDbType(dbType, out var sqltype))
+                                {
                                     info.NpgsqlDbType = sqltype;
                                 }
-                                else if (Utility.ParseDbType(dbType, out DbType dType)) {
+                                else if (Utility.ParseDbType(dbType, out var dType))
+                                {
                                     info.DbType = dType;
                                 }
-                                if (Utility.ParseSize(dbType, out int size, out byte? scale)) {
+
+                                if (Utility.ParseSize(dbType, out var size, out var scale))
+                                {
                                     info.Size = size;
                                     info.Scale = scale;
                                 }
                             }
-                            catch (Exception ex) {
+                            catch (Exception ex)
+                            {
                                 info.InnerException = ex;
                             }
-                            finally {
+                            finally
+                            {
                                 dbTypeDict.Add(dbType, info);
                             }
                         }
                     }
                 }
-                if (info != null) {
-                    if (info.InnerException != null) {
+
+                if (info != null)
+                {
+                    if (info.InnerException != null)
+                    {
                         throw info.InnerException;
                     }
-                    if (info.NpgsqlDbType != null) {
+
+                    if (info.NpgsqlDbType != null)
+                    {
                         sp.NpgsqlDbType = info.NpgsqlDbType.Value;
                     }
-                    else if (info.DbType != null) {
+                    else if (info.DbType != null)
+                    {
                         sp.DbType = info.DbType.Value;
                     }
-                    if (info.Size != null) {
-                        if (sp.NpgsqlDbType == NpgsqlDbType.Numeric) {
-                            sp.Precision = (byte)info.Size.Value;
+
+                    if (info.Size != null)
+                    {
+                        if (sp.NpgsqlDbType == NpgsqlDbType.Numeric)
+                        {
+                            sp.Precision = (byte) info.Size.Value;
                         }
-                        else {
+                        else
+                        {
                             sp.Size = info.Size.Value;
                         }
                     }
-                    if (info.Scale != null && sp.NpgsqlDbType == NpgsqlDbType.Numeric) {
+
+                    if (info.Scale != null && sp.NpgsqlDbType == NpgsqlDbType.Numeric)
+                    {
                         sp.Scale = info.Scale.Value;
                     }
                 }
             }
+
             return sp;
         }
 
         #endregion
 
-        bool ParseSqlDbType(string dbType, out NpgsqlDbType type)
+        private bool ParseSqlDbType(string dbType, out NpgsqlDbType type)
         {
             type = NpgsqlDbType.Varchar;
-            int index = dbType.IndexOf('(');
-            string typeString = string.Empty;
-            if (index < 0) {
+            var index = dbType.IndexOf('(');
+            var typeString = string.Empty;
+            if (index < 0)
+            {
                 typeString = dbType;
             }
-            else if (index == 0) {
+            else if (index == 0)
+            {
                 return false;
             }
-            else {
+            else
+            {
                 typeString = dbType.Substring(0, index);
             }
+
             return Enum.TryParse(typeString, true, out type);
         }
 
-        bool ConvertDbType(Type type, out NpgsqlDbType sqlType)
+        private bool ConvertDbType(Type type, out NpgsqlDbType sqlType)
         {
-            bool ret = true;
-            if (type == typeof(Byte[])) {
+            var ret = true;
+            if (type == typeof(Byte[]))
+            {
                 sqlType = NpgsqlDbType.Bytea;
             }
-            else if (type == typeof(String)) {
+            else if (type == typeof(String))
+            {
                 sqlType = NpgsqlDbType.Varchar;
             }
-            else if (type == typeof(Boolean)) {
+            else if (type == typeof(Boolean))
+            {
                 sqlType = NpgsqlDbType.Boolean;
             }
-            else if (type == typeof(Byte)) {
+            else if (type == typeof(Byte))
+            {
                 sqlType = NpgsqlDbType.Smallint;
             }
-            else if (type == typeof(SByte)) {
+            else if (type == typeof(SByte))
+            {
                 sqlType = NpgsqlDbType.Smallint;
             }
-            else if (type == typeof(Int16)) {
+            else if (type == typeof(Int16))
+            {
                 sqlType = NpgsqlDbType.Smallint;
             }
-            else if (type == typeof(Int32)) {
+            else if (type == typeof(Int32))
+            {
                 sqlType = NpgsqlDbType.Integer;
             }
-            else if (type == typeof(Int64)) {
+            else if (type == typeof(Int64))
+            {
                 sqlType = NpgsqlDbType.Bigint;
             }
-            else if (type == typeof(UInt16)) {
+            else if (type == typeof(UInt16))
+            {
                 sqlType = NpgsqlDbType.Integer;
             }
-            else if (type == typeof(UInt32)) {
+            else if (type == typeof(UInt32))
+            {
                 sqlType = NpgsqlDbType.Bigint;
             }
-            else if (type == typeof(UInt64)) {
+            else if (type == typeof(UInt64))
+            {
                 sqlType = NpgsqlDbType.Numeric;
             }
-            else if (type == typeof(Single)) {
+            else if (type == typeof(Single))
+            {
                 sqlType = NpgsqlDbType.Real;
             }
-            else if (type == typeof(Double)) {
+            else if (type == typeof(Double))
+            {
                 sqlType = NpgsqlDbType.Double;
             }
-            else if (type == typeof(Decimal)) {
+            else if (type == typeof(Decimal))
+            {
                 sqlType = NpgsqlDbType.Numeric;
             }
-            else if (type == typeof(DateTime)) {
+            else if (type == typeof(DateTime))
+            {
                 sqlType = NpgsqlDbType.Timestamp;
             }
-            else {
+            else
+            {
                 sqlType = NpgsqlDbType.Varchar;
                 ret = false;
             }
+
             return ret;
         }
 
-        Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
+        private readonly Dictionary<string, DbTypeInfo> dbTypeDict = new Dictionary<string, DbTypeInfo>();
 
-        class DbTypeInfo
+        private class DbTypeInfo
         {
             public NpgsqlDbType? NpgsqlDbType;
             public DbType? DbType;
@@ -229,4 +302,3 @@ namespace Light.Data.Postgre
         }
     }
 }
-

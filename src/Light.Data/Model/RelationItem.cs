@@ -1,79 +1,18 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class RelationItem
+	internal class RelationItem
 	{
-		DataEntityMapping dataMapping;
+		public string CurrentFieldPath { get; set; }
 
-		SingleRelationFieldMapping fieldMapping;
+		public string [] Keys { get; set; }
 
-		string prevFieldPath;
+		public DataEntityMapping DataMapping { get; set; }
 
-		string currentFieldPath;
+		public SingleRelationFieldMapping FieldMapping { get; set; }
 
-		string [] keys;
+		public string AliasName { get; set; }
 
-		string aliasName;
-
-		public string CurrentFieldPath {
-			get {
-				return currentFieldPath;
-			}
-
-			set {
-				currentFieldPath = value;
-			}
-		}
-
-		public string [] Keys {
-			get {
-				return keys;
-			}
-
-			set {
-				keys = value;
-			}
-		}
-
-		public DataEntityMapping DataMapping {
-			get {
-				return dataMapping;
-			}
-
-			set {
-				dataMapping = value;
-			}
-		}
-
-		public SingleRelationFieldMapping FieldMapping {
-			get {
-				return fieldMapping;
-			}
-
-			set {
-				fieldMapping = value;
-			}
-		}
-
-		public string AliasName {
-			get {
-				return aliasName;
-			}
-
-			set {
-				aliasName = value;
-			}
-		}
-
-		public string PrevFieldPath {
-			get {
-				return prevFieldPath;
-			}
-
-			set {
-				prevFieldPath = value;
-			}
-		}
+		public string PrevFieldPath { get; set; }
 	}
 }
 

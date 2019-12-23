@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
     /// <summary>
     /// Abstract DataContext Factory

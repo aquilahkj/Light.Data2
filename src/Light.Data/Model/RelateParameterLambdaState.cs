@@ -3,37 +3,33 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	class RelateParameterLambdaState : LambdaState
+	internal class RelateParameterLambdaState : LambdaState
 	{
-		readonly string singleEntityName;
+		private readonly string singleEntityName;
 
-		readonly RelationMap singleEntityMap;
+		private readonly RelationMap singleEntityMap;
 
-		readonly LambdaState state;
+		private readonly LambdaState state;
 
 		public RelateParameterLambdaState (ParameterExpression parameter, LambdaState state)
 		{
-			this.singleEntityName = parameter.Name;
-			Type type = parameter.Type;
-			DataEntityMapping entityMapping = DataEntityMapping.GetEntityMapping (type);
-			this.singleEntityMap = entityMapping.GetRelationMap ();
+			singleEntityName = parameter.Name;
+			var type = parameter.Type;
+			var entityMapping = DataEntityMapping.GetEntityMapping (type);
+			singleEntityMap = entityMapping.GetRelationMap ();
 			this.state = state;
 		}
 
-		public DataEntityMapping MainMapping {
-			get {
-				return singleEntityMap.RootMapping;
-			}
-		}
+		public DataEntityMapping MainMapping => singleEntityMap.RootMapping;
 
 
-		public override bool CheckPamramter (string name, Type type)
+		public override bool CheckParameter (string name, Type type)
 		{
 			if (singleEntityName == name && singleEntityMap.RootMapping.ObjectType == type) {
 				return true;
 			}
 			else {
-				return state.CheckPamramter (name, type);
+				return state.CheckParameter (name, type);
 			}
 		}
 
@@ -44,14 +40,14 @@ namespace Light.Data
 
 		public override DataFieldInfo GetDataFieldInfo (string fullPath)
 		{
-			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
+			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index < 0) {
 				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
-			string name = fullPath.Substring (0, index);
-			string path = fullPath.Substring (index);
+			var name = fullPath.Substring (0, index);
+			var path = fullPath.Substring (index);
 			if (singleEntityName == name) {
-				DataFieldInfo info = singleEntityMap.GetFieldInfoForPath (path);
+				var info = singleEntityMap.GetFieldInfoForPath (path);
 				return info;
 			}
 			else {
@@ -61,7 +57,7 @@ namespace Light.Data
 
 		public override LambdaPathType ParsePath (string fullPath)
 		{
-			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
+			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index == -1) {
 				if (fullPath == singleEntityName) {
 					return LambdaPathType.Parameter;
@@ -70,8 +66,8 @@ namespace Light.Data
 					return state.ParsePath (fullPath);
 				}
 			}
-			string name = fullPath.Substring (0, index);
-			string path = fullPath.Substring (index);
+			var name = fullPath.Substring (0, index);
+			var path = fullPath.Substring (index);
 			if (singleEntityName != name) {
 				return state.ParsePath (fullPath);
 			}

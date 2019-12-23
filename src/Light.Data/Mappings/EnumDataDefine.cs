@@ -3,24 +3,24 @@ using System.Data;
 
 namespace Light.Data
 {
-    class EnumDataDefine : DataDefine
+    internal class EnumDataDefine : DataDefine
     {
-        readonly TypeCode _typeCode;
+        private readonly TypeCode _typeCode;
 
-        readonly object _defaultValue = null;
+        private readonly object _defaultValue = null;
 
         public EnumDataDefine(Type type, bool isNullable)
             : base(type, isNullable)
         {
-            Array values = Enum.GetValues(type);
+            var values = Enum.GetValues(type);
             _defaultValue = values.GetValue(0);
             _typeCode = Type.GetTypeCode(ObjectType);
         }
 
         public override object LoadData(DataContext context, IDataReader datareader, object state)
         {
-            object value = datareader[0];
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            var value = datareader[0];
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 if (!IsNullable) {
                     return _defaultValue;
                 } else {
@@ -34,8 +34,8 @@ namespace Light.Data
 
         public override object LoadData(DataContext context, IDataReader datareader, string name, object state)
         {
-            object value = datareader[name];
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            var value = datareader[name];
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 if (!IsNullable) {
                     return _defaultValue;
                 } else {

@@ -1,24 +1,26 @@
 ﻿namespace Light.Data
 {
-	class LightNotDataFieldInfo : LightDataFieldInfo
+	internal class LightNotDataFieldInfo : LightDataFieldInfo
 	{
-		readonly DataFieldInfo _baseFieldInfo;
+		private readonly DataFieldInfo _baseFieldInfo;
+		private readonly bool _query;
 
-		public LightNotDataFieldInfo (DataFieldInfo info)
+		public LightNotDataFieldInfo (DataFieldInfo info, bool query)
 			: base (info.TableMapping)
 		{
 			_baseFieldInfo = info;
+			_query = query;
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
 			sql = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
-			sql = factory.CreateNotSql (sql);
+			sql = _query ? factory.CreateNotSql(sql) : factory.CreateOutputNotSql(sql);
 
 			state.SetDataSql (this, isFullName, sql);
 			return sql;

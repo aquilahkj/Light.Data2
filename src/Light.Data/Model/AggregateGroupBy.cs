@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-    class AggregateGroupBy
+    internal class AggregateGroupBy
     {
-        List<AggregateDataFieldInfo> groupList = new List<AggregateDataFieldInfo>();
+        private List<AggregateDataFieldInfo> groupList = new List<AggregateDataFieldInfo>();
 
         //public bool HasData {
         //    get {
@@ -13,34 +13,26 @@ namespace Light.Data
         //    }
         //}
 
-        public int FieldCount {
-            get {
-                return groupList.Count;
-            }
-        }
+        public int FieldCount => groupList.Count;
 
-        public AggregateDataFieldInfo this[int index] {
-            get {
-                return groupList[index];
-            }
-        }
+        public AggregateDataFieldInfo this[int index] => groupList[index];
 
         public void SetGroupField(AggregateDataFieldInfo field)
         {
-            if (Object.Equals(field, null))
+            if (Equals(field, null))
                 throw new ArgumentNullException(nameof(field));
             groupList.Add(field);
         }
 
         public string CreateGroupByString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            string[] list = new string[this.groupList.Count];
-            int index = 0;
-            foreach (AggregateDataFieldInfo fieldInfo in this.groupList) {
+            var list = new string[groupList.Count];
+            var index = 0;
+            foreach (var fieldInfo in groupList) {
                 list[index] = fieldInfo.CreateGroupBySqlString(factory, isFullName, state);
                 index++;
             }
-            string data = string.Join(",", list);
+            var data = string.Join(",", list);
             return data;
         }
     }

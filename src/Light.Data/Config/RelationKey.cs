@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Relation key.
 	/// </summary>
-	class RelationKey
+	internal class RelationKey
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RelationKey"/> class.
@@ -20,33 +20,21 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (relateKey)) {
 				throw new ArgumentNullException (nameof (relateKey));
 			}
-			this.masterKey = masterKey;
-			this.relateKey = relateKey;
+			this.MasterKey = masterKey;
+			this.RelateKey = relateKey;
 		}
-
-		readonly string masterKey;
 
 		/// <summary>
 		/// Gets the master key.
 		/// </summary>
 		/// <value>The master key.</value>
-		public string MasterKey {
-			get {
-				return masterKey;
-			}
-		}
-
-		readonly string relateKey;
+		public string MasterKey { get; }
 
 		/// <summary>
 		/// Gets the relate key.
 		/// </summary>
 		/// <value>The relate key.</value>
-		public string RelateKey {
-			get {
-				return relateKey;
-			}
-		}
+		public string RelateKey { get; }
 
 		/// <summary>
 		/// Determines whether this instance is reverse match the specified target.
@@ -55,7 +43,7 @@ namespace Light.Data
 		/// <param name="target">Target.</param>
 		public bool IsReverseMatch (RelationKey target)
 		{
-			return this.masterKey == target.relateKey && this.relateKey == target.masterKey;
+			return MasterKey == target.RelateKey && RelateKey == target.MasterKey;
 		}
 
 		/// <summary>
@@ -65,7 +53,7 @@ namespace Light.Data
 		/// <param name="target">Target.</param>
 		public bool IsMatch (RelationKey target)
 		{
-			return this.masterKey == target.masterKey && this.relateKey == target.relateKey;
+			return MasterKey == target.MasterKey && RelateKey == target.RelateKey;
 		}
 	}
 }

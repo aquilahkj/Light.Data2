@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Light.Data
 {
@@ -11,16 +9,13 @@ namespace Light.Data
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class DataParameterAttribute : Attribute
     {
-        private string name;
-
-        private ParameterDirection direction = ParameterDirection.Input;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name"></param>
         public DataParameterAttribute(string name)
         {
-            this.name = name;
+            Name = name;
         }
         /// <summary>
         /// 
@@ -33,25 +28,12 @@ namespace Light.Data
         /// <summary>
         /// Parameter name
         /// </summary>
-        public string Name {
-            get {
-                return name;
-            }
-            set {
-                name = value;
-            }
-        }
+        public string Name { get; set; }
+
         /// <summary>
         /// Data Parameter Direction Mode
         /// </summary>
-        public ParameterDirection Direction {
-            get {
-                return direction;
-            }
-            set {
-                direction = value;
-            }
-        }
+        public ParameterDirection Direction { get; set; } = ParameterDirection.Input;
     }
     
 }

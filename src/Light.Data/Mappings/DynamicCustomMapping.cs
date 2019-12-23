@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Light.Data
 {
-    class DynamicCustomMapping : CustomMapping
+    internal class DynamicCustomMapping : CustomMapping
     {
         protected Dictionary<string, DynamicFieldMapping> _fieldMappingDictionary = new Dictionary<string, DynamicFieldMapping>();
 
@@ -14,14 +14,14 @@ namespace Light.Data
 
         #region static
 
-        static object _synobj = new object();
+        private static object _synobj = new object();
 
-        static Dictionary<Type, DynamicCustomMapping> _defaultMapping = new Dictionary<Type, DynamicCustomMapping>();
+        private static Dictionary<Type, DynamicCustomMapping> _defaultMapping = new Dictionary<Type, DynamicCustomMapping>();
 
         public static DynamicCustomMapping GetMapping(Type type)
         {
-            Dictionary<Type, DynamicCustomMapping> mappings = _defaultMapping;
-            if (!mappings.TryGetValue(type, out DynamicCustomMapping mapping)) {
+            var mappings = _defaultMapping;
+            if (!mappings.TryGetValue(type, out var mapping)) {
                 lock (_synobj) {
                     if (!mappings.ContainsKey(type)) {
                         mapping = CreateMapping(type);
@@ -34,7 +34,7 @@ namespace Light.Data
 
         private static DynamicCustomMapping CreateMapping(Type type)
         {
-            DynamicCustomMapping mapping = new DynamicCustomMapping(type);
+            var mapping = new DynamicCustomMapping(type);
             return mapping;
         }
 
@@ -49,10 +49,10 @@ namespace Light.Data
 
         private void InitialDynamicFieldMapping()
         {
-            PropertyInfo[] propertys = ObjectTypeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            List<DynamicFieldMapping> tmepList = new List<DynamicFieldMapping>();
-            foreach (PropertyInfo pi in propertys) {
-                DynamicFieldMapping mapping = DynamicFieldMapping.CreateDynmaicFieldMapping(pi, this);
+            var propertys = ObjectTypeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var tmepList = new List<DynamicFieldMapping>();
+            foreach (var pi in propertys) {
+                var mapping = DynamicFieldMapping.CreateDynmaicFieldMapping(pi, this);
                 _fieldMappingDictionary.Add(mapping.IndexName, mapping);
                 tmepList.Add(mapping);
             }
@@ -62,55 +62,47 @@ namespace Light.Data
             _fieldList = new ReadOnlyCollection<DynamicFieldMapping>(tmepList);
         }
 
-        public int FieldCount {
-            get {
-                return this._fieldList.Count;
-            }
-        }
+        public int FieldCount => _fieldList.Count;
 
-        public ReadOnlyCollection<DynamicFieldMapping> DataEntityFields {
-            get {
-                return _fieldList;
-            }
-        }
+        public ReadOnlyCollection<DynamicFieldMapping> DataEntityFields => _fieldList;
 
         public override object InitialData()
         {
-            object[] args = new object[this._fieldList.Count];
-            object item = Activator.CreateInstance(ObjectType, args);
+            var args = new object[_fieldList.Count];
+            var item = Activator.CreateInstance(ObjectType, args);
             return item;
         }
 
         public override object LoadData(DataContext context, IDataReader datareader, object state)
         {
-            object[] args = new object[this._fieldList.Count];
-            int index = 0;
-            foreach (DynamicFieldMapping field in this._fieldList) {
-                object obj = datareader[field.Name];
-                object value = field.ToProperty(obj);
+            var args = new object[_fieldList.Count];
+            var index = 0;
+            foreach (var field in _fieldList) {
+                var obj = datareader[field.Name];
+                var value = field.ToProperty(obj);
                 args[index] = value;
                 index++;
             }
-            object item = Activator.CreateInstance(ObjectType, args);
+            var item = Activator.CreateInstance(ObjectType, args);
             return item;
         }
 
         public override object LoadAliasJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
         {
-            object[] args = new object[this._fieldList.Count];
-            int index = 0;
-            bool nodataSetNull = queryState != null ? queryState.CheckNoDataSetNull(aliasName) : false;
-            bool hasData = false;
-            foreach (DynamicFieldMapping field in this._fieldList) {
-                string name = string.Format("{0}_{1}", aliasName, field.Name);
+            var args = new object[_fieldList.Count];
+            var index = 0;
+            var nodataSetNull = queryState != null ? queryState.CheckNoDataSetNull(aliasName) : false;
+            var hasData = false;
+            foreach (var field in _fieldList) {
+                var name = string.Format("{0}_{1}", aliasName, field.Name);
                 if (queryState == null) {
-                    object obj = datareader[name];
-                    object value = field.ToProperty(obj);
+                    var obj = datareader[name];
+                    var value = field.ToProperty(obj);
                     args[index] = value;
                 } else if (queryState.CheckSelectField(name)) {
-                    object obj = datareader[name];
-                    object value = field.ToProperty(obj);
-                    if (!Object.Equals(value, null)) {
+                    var obj = datareader[name];
+                    var value = field.ToProperty(obj);
+                    if (!Equals(value, null)) {
                         hasData = true;
                     }
                     args[index] = value;
@@ -120,7 +112,7 @@ namespace Light.Data
             if (!hasData && nodataSetNull) {
                 return null;
             }
-            object item = Activator.CreateInstance(ObjectType, args);
+            var item = Activator.CreateInstance(ObjectType, args);
             return item;
         }
     }

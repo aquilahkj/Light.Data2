@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 
 namespace Light.Data
 {
-	class DynamicEnumFieldMapping : DynamicFieldMapping
+	internal class DynamicEnumFieldMapping : DynamicFieldMapping
 	{
 		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicCustomMapping mapping)
 			: base (type, fieldName, mapping, true)
@@ -13,7 +12,7 @@ namespace Light.Data
 
 		public override object ToProperty (object value)
 		{
-			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
+			if (Equals (value, DBNull.Value) || Equals (value, null)) {
 				return null;
 			}
 			else {

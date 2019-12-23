@@ -7,7 +7,7 @@ namespace Light.Data
     /// </summary>
     public abstract class DataEntity
     {
-        DataContext _context;
+        private DataContext _context;
 
         /// <summary>
         /// Gets the context.

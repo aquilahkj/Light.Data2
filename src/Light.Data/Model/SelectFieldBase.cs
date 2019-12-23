@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    abstract class SelectFieldBase<K> : ISelectField<K>
+    internal abstract class SelectFieldBase<K> : ISelectField<K>
     {
         public abstract QueryExpression QueryExpression {
             get;
@@ -31,15 +30,11 @@ namespace Light.Data
 
         protected readonly DataContext _context;
 
-        public DataContext Context {
-            get {
-                return _context;
-            }
-        }
+        public DataContext Context => _context;
 
-        LambdaExpression _expression;
+        private LambdaExpression _expression;
 
-        DataFieldInfo _specifiedFieldInfo;
+        private DataFieldInfo _specifiedFieldInfo;
 
         public DataFieldInfo SpecifiedFieldInfo {
             get {
@@ -60,7 +55,7 @@ namespace Light.Data
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public abstract List<K> ToList();

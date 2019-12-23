@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace Light.Data
 {
-	static class ReflectionHandlerFactory
+	internal static class ReflectionHandlerFactory
 	{
 		private static readonly Dictionary<FieldInfo, GetValueHandler> mFieldGetHandlers = new Dictionary<FieldInfo, GetValueHandler>();
 		private static readonly Dictionary<FieldInfo, SetValueHandler> mFieldSetHandlers = new Dictionary<FieldInfo, SetValueHandler>();
@@ -15,8 +15,8 @@ namespace Light.Data
 		private static readonly Dictionary<PropertyInfo, SetValueHandler> mPropertySetHandlers = new Dictionary<PropertyInfo, SetValueHandler>();
 
 		private static GetValueHandler CreateFieldGetHandler(FieldInfo field) {
-			DynamicMethod method = new DynamicMethod("", typeof(object), new Type[] { typeof(object) }, field.DeclaringType);
-			ILGenerator iLGenerator = method.GetILGenerator();
+			var method = new DynamicMethod("", typeof(object), new Type[] { typeof(object) }, field.DeclaringType);
+			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.Emit(OpCodes.Ldfld, field);
 			EmitBoxIfNeeded(iLGenerator, field.FieldType);
@@ -25,8 +25,8 @@ namespace Light.Data
 		}
 
 		private static SetValueHandler CreateFieldSetHandler(FieldInfo field) {
-			DynamicMethod method = new DynamicMethod("", null, new Type[] { typeof(object), typeof(object) }, field.DeclaringType);
-			ILGenerator iLGenerator = method.GetILGenerator();
+			var method = new DynamicMethod("", null, new Type[] { typeof(object), typeof(object) }, field.DeclaringType);
+			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.Emit(OpCodes.Ldarg_1);
 			EmitCastToReference(iLGenerator, field.FieldType);
@@ -36,8 +36,8 @@ namespace Light.Data
 		}
 
 		private static ObjectInstanceHandler CreateInstanceHandler(Type type) {
-			DynamicMethod method = new DynamicMethod(string.Empty, type, null, type.GetTypeInfo().Module);
-			ILGenerator iLGenerator = method.GetILGenerator();
+			var method = new DynamicMethod(string.Empty, type, null, type.GetTypeInfo().Module);
+			var iLGenerator = method.GetILGenerator();
 			iLGenerator.DeclareLocal(type, true);
 			iLGenerator.Emit(OpCodes.Newobj, type.GetTypeInfo().GetConstructor(new Type[0]));
 			iLGenerator.Emit(OpCodes.Stloc_0);
@@ -48,13 +48,13 @@ namespace Light.Data
 
 		private static FastMethodHandler CreateMethodHandler(MethodInfo methodInfo) {
 			int num;
-			DynamicMethod method = new DynamicMethod(string.Empty, typeof(object), new Type[] {
+			var method = new DynamicMethod(string.Empty, typeof(object), new Type[] {
 				typeof(object),
 				typeof(object[])
 			}, methodInfo.DeclaringType.GetTypeInfo().Module);
-			ILGenerator iLGenerator = method.GetILGenerator();
-			ParameterInfo[] parameters = methodInfo.GetParameters();
-			Type[] typeArray = new Type[parameters.Length];
+			var iLGenerator = method.GetILGenerator();
+			var parameters = methodInfo.GetParameters();
+			var typeArray = new Type[parameters.Length];
 			for (num = 0; num < typeArray.Length; num++) {
 				if (parameters[num].ParameterType.IsByRef) {
 					typeArray[num] = parameters[num].ParameterType.GetElementType();
@@ -63,7 +63,7 @@ namespace Light.Data
 					typeArray[num] = parameters[num].ParameterType;
 				}
 			}
-			LocalBuilder[] builderArray = new LocalBuilder[typeArray.Length];
+			var builderArray = new LocalBuilder[typeArray.Length];
 			for (num = 0; num < typeArray.Length; num++) {
 				builderArray[num] = iLGenerator.DeclareLocal(typeArray[num], true);
 			}
@@ -113,8 +113,8 @@ namespace Light.Data
 		}
 
 		private static GetValueHandler CreatePropertyGetHandler(PropertyInfo property) {
-			DynamicMethod method = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
-			ILGenerator iLGenerator = method.GetILGenerator();
+			var method = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
+			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.EmitCall(OpCodes.Callvirt, property.GetMethod, null);
 			EmitBoxIfNeeded(iLGenerator, property.PropertyType);
@@ -123,8 +123,8 @@ namespace Light.Data
 		}
 
 		private static SetValueHandler CreatePropertySetHandler(PropertyInfo property) {
-			DynamicMethod method = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
-			ILGenerator iLGenerator = method.GetILGenerator();
+			var method = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
+			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.Emit(OpCodes.Ldarg_1);
 			EmitCastToReference(iLGenerator, property.PropertyType);

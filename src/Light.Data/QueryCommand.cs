@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
+﻿using System.Data.Common;
 
 namespace Light.Data
 {
-    class QueryCommand
+    internal class QueryCommand
     {
         public DbCommand Command {
             get;

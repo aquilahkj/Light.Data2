@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace Light.Data
 {
-    class FileHelper
+    internal static class FileHelper
     {
         public static FileInfo GetFileInfo(string path, out bool absolute)
         {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException(nameof(path));
-            char c = path[0];
+            var c = path[0];
             if (c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar)
             {
                 absolute = true;
@@ -25,10 +23,13 @@ namespace Light.Data
             }
             else
             {
+                
+
+                var gg = AppContext.BaseDirectory;
                 absolute = false;
-                string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                string newpath = Path.Combine(currentDirectory, path);
-                return new FileInfo(newpath);
+                var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var newPath = Path.Combine(currentDirectory, path);
+                return new FileInfo(newPath);
             }
         }
     }

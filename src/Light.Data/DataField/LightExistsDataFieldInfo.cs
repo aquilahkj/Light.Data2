@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-    class LightExistsDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+    internal class LightExistsDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
     {
-        bool _isTrue;
+        private bool _isTrue;
 
-        readonly QueryExpression _expression;
+        private readonly QueryExpression _expression;
 
         public LightExistsDataFieldInfo(DataEntityMapping mapping, QueryExpression expression, bool isTrue)
             : base(mapping)
@@ -20,12 +20,12 @@
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            string sql = state.GetDataSql(this, isFullName);
+            var sql = state.GetDataSql(this, isFullName);
             if (sql != null) {
                 return sql;
             }
-            string query = _expression.CreateSqlString(factory, true, state);
-            string tableName = factory.CreateDataTableMappingSql(TableMapping, state);
+            var query = _expression.CreateSqlString(factory, true, state);
+            var tableName = factory.CreateDataTableMappingSql(TableMapping, state);
             sql = factory.CreateExistsQuerySql(tableName, query, !_isTrue);
 
             state.SetDataSql(this, isFullName, sql);

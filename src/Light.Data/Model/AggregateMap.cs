@@ -1,20 +1,16 @@
 ﻿using System;
 namespace Light.Data
 {
-	class AggregateMap : IMap
+	internal class AggregateMap : IMap
 	{
-		readonly AggregateModel _model;
+		private readonly AggregateModel _model;
 
 		public AggregateMap (AggregateModel model)
 		{
-			this._model = model;
+			_model = model;
 		}
 
-		public Type Type {
-			get {
-				return _model.OutputMapping.ObjectType;
-			}
-		}
+		public Type Type => _model.OutputMapping.ObjectType;
 
 		public bool CheckIsEntityCollection (string path)
 		{
@@ -47,8 +43,8 @@ namespace Light.Data
 			else {
 				name = path;
 			}
-			DataFieldInfo info = _model.GetAggregateData (name);
-			if (!Object.Equals (info, null)) {
+			var info = _model.GetAggregateData (name);
+			if (!Equals (info, null)) {
 				return info;
 			}
 			else {
@@ -58,8 +54,8 @@ namespace Light.Data
 
 		public ISelector CreateSelector (string [] paths)
 		{
-			Selector selector = new Selector ();
-			foreach (string path in paths) {
+			var selector = new Selector ();
+			foreach (var path in paths) {
 				string name;
 				if (path.StartsWith (".", StringComparison.Ordinal)) {
 					name = path.Substring (1);
@@ -69,13 +65,13 @@ namespace Light.Data
 				}
 				if (name == string.Empty) {
 					DataFieldInfo [] nameInfos = _model.GetAggregateDataFieldInfos();
-					foreach (DataFieldInfo fieldInfo in nameInfos) {
+					foreach (var fieldInfo in nameInfos) {
 						selector.SetSelectField (fieldInfo);
 					}
 				}
 				else {
-					DataFieldInfo nameInfo = _model.GetAggregateData (name);
-					if (!Object.Equals (nameInfo, null)) {
+					var nameInfo = _model.GetAggregateData (name);
+					if (!Equals (nameInfo, null)) {
 						selector.SetSelectField (nameInfo);
 					}
 					else {

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
 	/// <summary>
 	/// Order expression.
 	/// </summary>
-	class OrderExpression : LightExpression
+	internal class OrderExpression : LightExpression
 	{
-		List<OrderExpression> _orderExpressions;
+		private List<OrderExpression> _orderExpressions;
 
 		internal OrderExpression (DataEntityMapping tableMapping)
 		{
@@ -31,15 +30,15 @@ namespace Light.Data
 			else if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
-			else if (Object.ReferenceEquals (expression1, expression2)) {
+			else if (ReferenceEquals (expression1, expression2)) {
 				return expression1;
 			}
 			else if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
 				return expression2;
 			}
 			DataEntityMapping demapping = null;
-			OrderExpression newExpression = new OrderExpression (demapping);
-			List<OrderExpression> list = new List<OrderExpression> ();
+			var newExpression = new OrderExpression (demapping);
+			var list = new List<OrderExpression> ();
 			if (expression1._orderExpressions == null) {
 				list.Add (expression1);
 			}
@@ -53,7 +52,7 @@ namespace Light.Data
 				list.AddRange (expression2._orderExpressions);
 			}
 			newExpression._orderExpressions = list;
-			newExpression.mutliOrder = expression1.mutliOrder | expression2.mutliOrder;
+			newExpression.MultiOrder = expression1.MultiOrder | expression2.MultiOrder;
 			return newExpression;
 		}
 
@@ -66,10 +65,10 @@ namespace Light.Data
 
 		internal virtual OrderExpression CreateAliasTableNameOrder (string aliasTableName)
 		{
-			OrderExpression newExpression = new OrderExpression (TableMapping);
-			List<OrderExpression> list = new List<OrderExpression> ();
-			foreach (OrderExpression item in list) {
-				OrderExpression newitem = item.CreateAliasTableNameOrder (aliasTableName);
+			var newExpression = new OrderExpression (TableMapping);
+			var list = new List<OrderExpression> ();
+			foreach (var item in list) {
+				var newitem = item.CreateAliasTableNameOrder (aliasTableName);
 				list.Add (newitem);
 			}
 			newExpression._orderExpressions = list;
@@ -85,24 +84,14 @@ namespace Light.Data
 		/// <param name="state">State.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string [] array = new string [_orderExpressions.Count];
-			int len = array.Length;
-			for (int i = 0; i < len; i++) {
+			var array = new string [_orderExpressions.Count];
+			var len = array.Length;
+			for (var i = 0; i < len; i++) {
 				array [i] = _orderExpressions [i].CreateSqlString (factory, isFullName, state);
 			}
 			return factory.CreateConcatExpressionSql (array);
 		}
 
-		bool mutliOrder;
-
-		internal bool MutliOrder {
-			get {
-				return mutliOrder;
-			}
-
-			set {
-				mutliOrder = value;
-			}
-		}
+		internal bool MultiOrder { get; set; }
 	}
 }

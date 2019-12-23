@@ -3,62 +3,30 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-    enum RelationLinkType
+    internal enum RelationLinkType
     {
         NoMatch,
         AddLink,
         Cycle
     }
 
-    class RelationLink
+    internal class RelationLink
     {
-        public string LastFieldPath {
-            get {
-                return lastFieldPath;
-            }
-        }
+        public string LastFieldPath { get; private set; }
 
-        public RelationItem CycleItem {
-            get {
-                return cycleItem;
-            }
-        }
+        public RelationItem CycleItem { get; private set; }
 
-        List<RelationItem> items = new List<RelationItem>();
+        private List<RelationItem> items = new List<RelationItem>();
 
-        int keyCount;
+        private int keyCount;
 
-        string lastFieldPath;
+        public RelationItem LastItem => items[items.Count - 1];
 
-        string prevFieldPath;
+        public string CycleFieldPath { get; private set; }
 
-        string cycleFieldPath;
+        public string PrevFieldPath { get; private set; }
 
-        RelationItem cycleItem;
-
-        public RelationItem LastItem {
-            get {
-                return items[items.Count - 1];
-            }
-        }
-
-        public string CycleFieldPath {
-            get {
-                return cycleFieldPath;
-            }
-        }
-
-        public string PrevFieldPath {
-            get {
-                return prevFieldPath;
-            }
-        }
-
-        public int Count {
-            get {
-                return items.Count;
-            }
-        }
+        public int Count => items.Count;
 
         private RelationLink()
         {
@@ -70,29 +38,29 @@ namespace Light.Data
             if (rootRelationMapping == null)
                 throw new ArgumentNullException(nameof(rootRelationMapping));
             //this.rootRelationMapping = rootRelationMapping;
-            RelationKey[] keys = rootRelationMapping.GetKeyPairs();
-            this.keyCount = keys.Length;
-            string[] masters = new string[this.keyCount];
-            string[] relates = new string[this.keyCount];
-            for (int i = 0; i < this.keyCount; i++) {
+            var keys = rootRelationMapping.GetKeyPairs();
+            keyCount = keys.Length;
+            var masters = new string[keyCount];
+            var relates = new string[keyCount];
+            for (var i = 0; i < keyCount; i++) {
                 masters[i] = keys[i].MasterKey;
                 relates[i] = keys[i].RelateKey;
             }
-            lastFieldPath = string.Format("{0}.{1}", fieldPath, rootRelationMapping.FieldName);
-            prevFieldPath = fieldPath;
-            RelationItem masterItem = new RelationItem() {
+            LastFieldPath = string.Format("{0}.{1}", fieldPath, rootRelationMapping.FieldName);
+            PrevFieldPath = fieldPath;
+            var masterItem = new RelationItem() {
                 DataMapping = rootRelationMapping.MasterMapping,
                 FieldMapping = null,
                 //PrevFieldPath = prevFieldPath,
-                CurrentFieldPath = prevFieldPath,
+                CurrentFieldPath = PrevFieldPath,
                 Keys = masters
             };
 
-            RelationItem relateItem = new RelationItem() {
+            var relateItem = new RelationItem() {
                 DataMapping = rootRelationMapping.RelateMapping,
                 FieldMapping = rootRelationMapping,
-                PrevFieldPath = prevFieldPath,
-                CurrentFieldPath = lastFieldPath,
+                PrevFieldPath = PrevFieldPath,
+                CurrentFieldPath = LastFieldPath,
                 Keys = relates
             };
 
@@ -102,9 +70,9 @@ namespace Light.Data
 
         private bool IsMatch(string[] array1, string[] array2)
         {
-            for (int i = 0; i < array1.Length; i++) {
-                bool flag = false;
-                for (int j = 0; j < array2.Length; j++) {
+            for (var i = 0; i < array1.Length; i++) {
+                var flag = false;
+                for (var j = 0; j < array2.Length; j++) {
                     if (array1[i] == array2[j]) {
                         flag = true;
                         break;
@@ -119,31 +87,31 @@ namespace Light.Data
 
         public RelationLinkType TryAddField(SingleRelationFieldMapping relateMapping)
         {
-            RelationItem last = items[items.Count - 1];
-            if (!Object.Equals(relateMapping.MasterMapping, last.DataMapping)) {
+            var last = items[items.Count - 1];
+            if (!Equals(relateMapping.MasterMapping, last.DataMapping)) {
                 throw new LightDataException(string.Format(SR.RelationFieldError, relateMapping.MasterMapping.ObjectType, relateMapping.FieldName));
             }
-            RelationKey[] keys = relateMapping.GetKeyPairs();
+            var keys = relateMapping.GetKeyPairs();
             if (keys.Length != keyCount) {
                 return RelationLinkType.NoMatch;
             }
-            string[] masters = new string[this.keyCount];
-            string[] relates = new string[this.keyCount];
-            for (int i = 0; i < this.keyCount; i++) {
+            var masters = new string[keyCount];
+            var relates = new string[keyCount];
+            for (var i = 0; i < keyCount; i++) {
                 masters[i] = keys[i].MasterKey;
                 relates[i] = keys[i].RelateKey;
             }
             if (!IsMatch(last.Keys, masters)) {
                 return RelationLinkType.NoMatch;
             }
-            prevFieldPath = lastFieldPath;
-            lastFieldPath = string.Format("{0}.{1}", last.CurrentFieldPath, relateMapping.FieldName);
-            int len = items.Count - 1;
-            for (int i = 0; i < len; i++) {
-                RelationItem item = items[i];
-                if (Object.Equals(relateMapping.RelateMapping, item.DataMapping)) {
+            PrevFieldPath = LastFieldPath;
+            LastFieldPath = string.Format("{0}.{1}", last.CurrentFieldPath, relateMapping.FieldName);
+            var len = items.Count - 1;
+            for (var i = 0; i < len; i++) {
+                var item = items[i];
+                if (Equals(relateMapping.RelateMapping, item.DataMapping)) {
                     if (IsMatch(item.Keys, relates)) {
-                        cycleFieldPath = item.CurrentFieldPath;
+                        CycleFieldPath = item.CurrentFieldPath;
                         return RelationLinkType.Cycle;
                     }
                     else {
@@ -151,11 +119,11 @@ namespace Light.Data
                     }
                 }
             }
-            RelationItem relateItem = new RelationItem() {
+            var relateItem = new RelationItem() {
                 DataMapping = relateMapping.RelateMapping,
                 FieldMapping = relateMapping,
-                PrevFieldPath = prevFieldPath,
-                CurrentFieldPath = lastFieldPath,
+                PrevFieldPath = PrevFieldPath,
+                CurrentFieldPath = LastFieldPath,
                 Keys = relates
             };
             items.Add(relateItem);
@@ -169,9 +137,9 @@ namespace Light.Data
 
         public RelationLink Fork()
         {
-            RelationLink link = new RelationLink();
-            link.cycleItem = cycleItem;
-            link.lastFieldPath = lastFieldPath;
+            var link = new RelationLink();
+            link.CycleItem = CycleItem;
+            link.LastFieldPath = LastFieldPath;
             link.keyCount = keyCount;
             link.items = new List<RelationItem>(items);
             return link;

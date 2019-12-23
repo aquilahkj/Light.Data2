@@ -6,18 +6,18 @@ using System.Reflection;
 
 namespace Light.Data
 {
-	class SpecifiedCustomMapping : CustomMapping
+	internal class SpecifiedCustomMapping : CustomMapping
 	{
 		#region static
 
-		static object _synobj = new object ();
+		private static object _synobj = new object ();
 
-		static Dictionary<Type, SpecifiedCustomMapping> _defaultMapping = new Dictionary<Type, SpecifiedCustomMapping> ();
+		private static Dictionary<Type, SpecifiedCustomMapping> _defaultMapping = new Dictionary<Type, SpecifiedCustomMapping> ();
 
 		public static SpecifiedCustomMapping GetMapping (Type type)
 		{
-			Dictionary<Type, SpecifiedCustomMapping> mappings = _defaultMapping;
-			if (!mappings.TryGetValue(type, out SpecifiedCustomMapping mapping)) {
+			var mappings = _defaultMapping;
+			if (!mappings.TryGetValue(type, out var mapping)) {
 				lock (_synobj) {
 					if (!mappings.ContainsKey(type)) {
 						mapping = CreateMapping(type);
@@ -30,7 +30,7 @@ namespace Light.Data
 
 		private static SpecifiedCustomMapping CreateMapping (Type type)
 		{
-			SpecifiedCustomMapping mapping = new SpecifiedCustomMapping (type);
+			var mapping = new SpecifiedCustomMapping (type);
 			return mapping;
 		}
 
@@ -40,7 +40,7 @@ namespace Light.Data
 
 		protected ReadOnlyCollection<DataFieldMapping> _fieldList;
 
-		SpecifiedCustomMapping (Type type)
+		private SpecifiedCustomMapping (Type type)
 			: base (type)
 		{
 			InitialDataFieldMapping ();
@@ -48,10 +48,10 @@ namespace Light.Data
 
 		private void InitialDataFieldMapping ()
 		{
-			PropertyInfo [] propertys = ObjectTypeInfo.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-			List<DataFieldMapping> tmepList = new List<DataFieldMapping> ();
-			foreach (PropertyInfo pi in propertys) {
-				DataFieldMapping mapping = DataFieldMapping.CreateCustomFieldMapping (pi, this);
+			var propertys = ObjectTypeInfo.GetProperties (BindingFlags.Public | BindingFlags.Instance);
+			var tmepList = new List<DataFieldMapping> ();
+			foreach (var pi in propertys) {
+				var mapping = DataFieldMapping.CreateCustomFieldMapping (pi, this);
 				if (mapping != null) {
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					tmepList.Add (mapping);
@@ -65,20 +65,20 @@ namespace Light.Data
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
-			object item = Activator.CreateInstance (ObjectType);
-			QueryState queryState = state as QueryState;
-			foreach (DataFieldMapping field in this._fieldList) {
+			var item = Activator.CreateInstance (ObjectType);
+			var queryState = state as QueryState;
+			foreach (var field in _fieldList) {
 				if (queryState == null) {
-					object obj = datareader[field.Name];
-					object value = field.ToProperty(obj);
-					if (!Object.Equals(value, null)) {
+					var obj = datareader[field.Name];
+					var value = field.ToProperty(obj);
+					if (!Equals(value, null)) {
 						field.Handler.Set(item, value);
 					}
 				}
 				else if (queryState.CheckSelectField(field.Name)) {
-					object obj = datareader[field.Name];
-					object value = field.ToProperty(obj);
-					if (!Object.Equals(value, null)) {
+					var obj = datareader[field.Name];
+					var value = field.ToProperty(obj);
+					if (!Equals(value, null)) {
 						field.Handler.Set(item, value);
 					}
 				}
@@ -88,22 +88,22 @@ namespace Light.Data
 
 		public override object LoadAliasJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
 		{
-			object item = Activator.CreateInstance (ObjectType);
-            bool nodataSetNull = queryState != null ? queryState.CheckNoDataSetNull(aliasName) : false;
-            bool hasData = false;
-            foreach (DataFieldMapping field in this._fieldList) {
-				string name = string.Format ("{0}_{1}", aliasName, field.Name);
+			var item = Activator.CreateInstance (ObjectType);
+            var nodataSetNull = queryState != null ? queryState.CheckNoDataSetNull(aliasName) : false;
+            var hasData = false;
+            foreach (var field in _fieldList) {
+				var name = string.Format ("{0}_{1}", aliasName, field.Name);
 				if (queryState == null) {
-					object obj = datareader [name];
-					object value = field.ToProperty (obj);
-					if (!Object.Equals (value, null)) {
+					var obj = datareader [name];
+					var value = field.ToProperty (obj);
+					if (!Equals (value, null)) {
 						field.Handler.Set (item, value);
 					}
 				}
 				else if (queryState.CheckSelectField (name)) {
-					object obj = datareader [name];
-					object value = field.ToProperty (obj);
-					if (!Object.Equals (value, null)) {
+					var obj = datareader [name];
+					var value = field.ToProperty (obj);
+					if (!Equals (value, null)) {
 						field.Handler.Set (item, value);
                         hasData = true;
                     }
@@ -117,7 +117,7 @@ namespace Light.Data
 
 		public override object InitialData ()
 		{
-			object item = Activator.CreateInstance (ObjectType);
+			var item = Activator.CreateInstance (ObjectType);
 			return item;
 		}
 	}

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -15,7 +13,7 @@ namespace Light.Data
                 throw new ArgumentNullException(nameof(setting));
             }
             Type type;
-            string connection = setting.ConnectionString;
+            var connection = setting.ConnectionString;
 
             type = Type.GetType(setting.ProviderName, true);
 
@@ -23,11 +21,11 @@ namespace Light.Data
                 return null;
             }
 
-            DatabaseProvider dataBase = (DatabaseProvider)Activator.CreateInstance(type, setting.Name, setting.ConfigParam) as DatabaseProvider;
+            var dataBase = (DatabaseProvider)Activator.CreateInstance(type, setting.Name, setting.ConfigParam) as DatabaseProvider;
             if (dataBase == null) {
                 throw new LightDataException(string.Format(SR.TypeIsNotDatabaseType, type.FullName));
             }
-            DataContextOptions contextOptions = new DataContextOptions() {
+            var contextOptions = new DataContextOptions() {
                 Connection = connection,
                 Database = dataBase
             };

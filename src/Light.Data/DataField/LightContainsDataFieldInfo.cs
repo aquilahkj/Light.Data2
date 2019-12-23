@@ -4,21 +4,21 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-    class LightContainsDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+    internal class LightContainsDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
     {
-        bool _isNot;
+        private bool _isNot;
 
-        readonly object _collection;
+        private readonly object _collection;
 
-        readonly DataFieldInfo _baseFieldInfo;
+        private readonly DataFieldInfo _baseFieldInfo;
 
         public LightContainsDataFieldInfo(DataFieldInfo info, object collection)
             : base(info.TableMapping)
         {
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
-            this._collection = collection;
-            this._baseFieldInfo = info;
+            _collection = collection;
+            _baseFieldInfo = info;
         }
 
         public void SetNot()
@@ -28,19 +28,28 @@ namespace Light.Data
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            string sql = state.GetDataSql(this, isFullName);
+            var sql = state.GetDataSql(this, isFullName);
             if (sql != null) {
                 return sql;
             }
 
             object obj = _baseFieldInfo.CreateSqlString(factory, isFullName, state);
-            IEnumerable values = (IEnumerable)LambdaExpressionExtend.ConvertLambdaObject(_collection);
-            List<string> list = new List<string>();
-            foreach (object item in values) {
+            var values = (IEnumerable)LambdaExpressionExtend.ConvertLambdaObject(_collection);
+            var list = new List<string>();
+            foreach (var item in values) {
                 list.Add(state.AddDataParameter(factory, _baseFieldInfo.ToParameter(item)));
             }
 
-            sql = factory.CreateCollectionParamsQuerySql(obj, _isNot ? QueryCollectionPredicate.NotIn : QueryCollectionPredicate.In, list);
+            if (list.Count > 0)
+            {
+                sql = factory.CreateCollectionParamsQuerySql(obj,
+                    _isNot ? QueryCollectionPredicate.NotIn : QueryCollectionPredicate.In, list);
+            }
+            else
+            {
+                var value = _isNot;
+                sql = factory.CreateBooleanConstantSql(value);
+            }
             state.SetDataSql(this, isFullName, sql);
             return sql;
         }

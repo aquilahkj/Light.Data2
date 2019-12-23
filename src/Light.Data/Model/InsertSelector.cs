@@ -3,40 +3,28 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class InsertSelector : Selector
+	internal class InsertSelector : Selector
 	{
-		readonly DataTableEntityMapping insertMapping;
-
-		readonly DataEntityMapping selectMapping;
-
-		readonly List<DataFieldInfo> insertList = new List<DataFieldInfo> ();
+		private readonly List<DataFieldInfo> insertList = new List<DataFieldInfo> ();
 
 		public InsertSelector (DataTableEntityMapping insertMapping, DataEntityMapping selectMapping)
 		{
-			this.selectMapping = selectMapping;
-			this.insertMapping = insertMapping;
+			this.SelectMapping = selectMapping;
+			this.InsertMapping = insertMapping;
 		}
 
 		public InsertSelector (DataTableEntityMapping insertMapping)
 		{
-			this.insertMapping = insertMapping;
+			this.InsertMapping = insertMapping;
 		}
 
-		internal DataTableEntityMapping InsertMapping {
-			get {
-				return insertMapping;
-			}
-		}
+		internal DataTableEntityMapping InsertMapping { get; }
 
-		internal DataEntityMapping SelectMapping {
-			get {
-				return selectMapping;
-			}
-		}
+		internal DataEntityMapping SelectMapping { get; }
 
 		public void SetInsertField (DataFieldInfo field)
 		{
-			if (Object.Equals (field, null))
+			if (Equals (field, null))
 				throw new ArgumentNullException (nameof (field));
 			insertList.Add (field);
 		}

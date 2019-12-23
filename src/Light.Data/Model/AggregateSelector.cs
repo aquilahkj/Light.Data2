@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-    class AggregateSelector : ISelector
+	internal class AggregateSelector : ISelector
     {
-        List<AggregateDataFieldInfo> selectList = new List<AggregateDataFieldInfo>();
+	    private List<AggregateDataFieldInfo> selectList = new List<AggregateDataFieldInfo>();
 
 		public virtual void SetSelectField(AggregateDataFieldInfo field)
 		{
-			if (Object.Equals(field, null))
+			if (Equals(field, null))
 				throw new ArgumentNullException(nameof(field));
 			selectList.Add(field);
 		}
@@ -17,22 +17,22 @@ namespace Light.Data
        
         public string CreateSelectString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-			string[] list = new string[this.selectList.Count];
-			int index = 0;
-			foreach (AggregateDataFieldInfo fieldInfo in this.selectList) {
+			var list = new string[selectList.Count];
+			var index = 0;
+			foreach (var fieldInfo in selectList) {
                 state.SetAliasData(fieldInfo.FieldInfo, factory.CreateDataFieldSql(fieldInfo.AggregateName));
 				list[index] = fieldInfo.CreateAliasDataFieldSql(factory, false, state);
 				index++;
 			}
-            string data = string.Join(",", list);
+            var data = string.Join(",", list);
 			return data;
         }
 
         public string[] GetSelectFieldNames()
         {
-			List<string> list = new List<string>();
-			foreach (AggregateDataFieldInfo fieldInfo in this.selectList) {
-				string name = fieldInfo.FieldName;
+			var list = new List<string>();
+			foreach (var fieldInfo in selectList) {
+				var name = fieldInfo.FieldName;
 				if (name != null) {
 					list.Add(name);
 				}

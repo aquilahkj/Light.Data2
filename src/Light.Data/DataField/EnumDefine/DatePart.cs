@@ -1,7 +1,7 @@
 ﻿
 namespace Light.Data
 {
-	enum DatePart
+	internal enum DatePart
 	{
 		/// <summary>
 		/// The year.

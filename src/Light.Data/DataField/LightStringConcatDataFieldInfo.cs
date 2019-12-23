@@ -3,30 +3,30 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LightStringConcatDataFieldInfo : LightDataFieldInfo
+	internal class LightStringConcatDataFieldInfo : LightDataFieldInfo
 	{
-		readonly object [] _values;
+		private readonly object [] _values;
 
 		public LightStringConcatDataFieldInfo (DataEntityMapping mapping, params object [] values)
 			: base (mapping)
 		{
 			if (values == null)
 				throw new ArgumentNullException (nameof (values));
-			this._values = values;
+			_values = values;
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			List<object> objectList = new List<object> ();
-			foreach (object item in _values) {
+			var objectList = new List<object> ();
+			foreach (var item in _values) {
 				object obj1;
-				DataFieldInfo info1 = item as DataFieldInfo;
-				if (!Object.Equals (info1, null)) {
+				var info1 = item as DataFieldInfo;
+				if (!Equals (info1, null)) {
 					obj1 = info1.CreateSqlString (factory, isFullName, state);
 				}
 				else {

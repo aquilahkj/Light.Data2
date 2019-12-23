@@ -1,14 +1,14 @@
 ﻿using System;
 namespace Light.Data
 {
-	class DynamicPrimitiveFieldMapping : DynamicFieldMapping
+	internal class DynamicPrimitiveFieldMapping : DynamicFieldMapping
 	{
 		public DynamicPrimitiveFieldMapping(Type type, string fieldName, DynamicCustomMapping mapping)
 			: base(type, fieldName, mapping, true) {
 		}
 
 		public override object ToProperty(object value) {
-			if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+			if (Equals(value, DBNull.Value) || Equals(value, null)) {
 				return null;
 			}
 			else {

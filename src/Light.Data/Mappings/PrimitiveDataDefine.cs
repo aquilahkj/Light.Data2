@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 
 namespace Light.Data
 {
-    class PrimitiveDataDefine : DataDefine
+    internal class PrimitiveDataDefine : DataDefine
     {
         public PrimitiveDataDefine(Type type, bool isNullable)
             : base(type, isNullable)
@@ -12,7 +11,7 @@ namespace Light.Data
             _typeCode = Type.GetTypeCode(type);
         }
 
-        TypeCode _typeCode;
+        private TypeCode _typeCode;
 
         /// <summary>
         /// Loads the data.
@@ -23,8 +22,8 @@ namespace Light.Data
         /// <param name="state">State.</param>
         public override object LoadData(DataContext context, IDataReader datareader, object state)
         {
-            object value = datareader[0];
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            var value = datareader[0];
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 if (!IsNullable) {
                     return Utility.GetDefaultValue(_typeCode);
                 } else {
@@ -37,8 +36,8 @@ namespace Light.Data
 
         public override object LoadData(DataContext context, IDataReader datareader, string name, object state)
         {
-            object value = datareader[name];
-            if (Object.Equals(value, DBNull.Value) || Object.Equals(value, null)) {
+            var value = datareader[name];
+            if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 if (!IsNullable) {
                     return Utility.GetDefaultValue(_typeCode);
                 } else {

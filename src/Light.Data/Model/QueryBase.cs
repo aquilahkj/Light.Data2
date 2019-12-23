@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    abstract partial class QueryBase<T> : IQuery<T>
+    internal abstract partial class QueryBase<T> : IQuery<T>
     {
         public abstract QueryExpression QueryExpression {
             get;
@@ -35,19 +35,11 @@ namespace Light.Data
 
         protected readonly DataContext _context;
 
-        public DataContext Context {
-            get {
-                return _context;
-            }
-        }
+        public DataContext Context => _context;
 
         protected readonly DataEntityMapping _mapping;
 
-        public DataEntityMapping Mapping {
-            get {
-                return _mapping;
-            }
-        }
+        public DataEntityMapping Mapping => _mapping;
 
         protected QueryBase(DataContext dataContext)
         {
@@ -121,7 +113,7 @@ namespace Light.Data
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public abstract IJoinTable<T, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression);

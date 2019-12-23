@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.SetDataConfig(connection, (configName, configParams) =>
             {
-                MysqlProvider database = new MysqlProvider(configName, configParams);
+                var database = new MysqlProvider(configName, configParams);
                 return database;
             });
             return builder;

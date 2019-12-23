@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    abstract class SelectBase<K> : ISelect<K>
+    internal abstract class SelectBase<K> : ISelect<K>
     {
         public abstract QueryExpression QueryExpression {
             get;
@@ -35,27 +35,17 @@ namespace Light.Data
 
         protected readonly DataContext _context;
 
-        public DataContext Context {
-            get {
-                return _context;
-            }
-        }
+        public DataContext Context => _context;
 
-        ISelector _selector;
+        private ISelector _selector;
 
-        LambdaExpression _expression;
+        private LambdaExpression _expression;
 
-        readonly DataEntityMapping _mapping;
+        private SelectModel _model;
 
-        SelectModel _model;
+        private Delegate _dele;
 
-        Delegate _dele;
-
-        public DataEntityMapping Mapping {
-            get {
-                return _mapping;
-            }
-        }
+        public DataEntityMapping Mapping { get; }
 
         public SelectModel Model {
             get {
@@ -89,7 +79,7 @@ namespace Light.Data
         {
             _context = context;
             _expression = expression;
-            _mapping = DataEntityMapping.GetEntityMapping(type);
+            Mapping = DataEntityMapping.GetEntityMapping(type);
         }
 
         public abstract K First();
@@ -104,7 +94,7 @@ namespace Light.Data
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public abstract IJoinTable<K, T1> Join<T1>(Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression);

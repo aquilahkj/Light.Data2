@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Light.Data
 {
-	abstract class CustomMapping : DataMapping, IJoinTableMapping
+	internal abstract class CustomMapping : DataMapping, IJoinTableMapping
 	{
 		protected CustomMapping (Type type)
 			: base (type)

@@ -2074,6 +2074,24 @@ namespace Light.Data.Mysql.Test
             listAc = context.Query<TeBaseFieldExpression>().Where(x => !"test".Contains(x.VarcharField)).ToList();
             AssertExtend.StrictEqual(listEx, listAc);
         }
+        
+        
+        [Fact]
+        public void TestCase_QueryIn_NoData()
+        {
+            List<TeBaseFieldExpression> list = CreateAndInsertBaseFieldTableList(45);
+            List<TeBaseFieldExpression> listEx;
+            List<TeBaseFieldExpression> listAc;
+            List<int> listx = new List<int>() {};
+
+            listEx = list.Where(x => listx.Contains(x.Int32Field)).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => listx.Contains(x.Int32Field)).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+
+            listEx = list.Where(x => !listx.Contains(x.Int32Field)).ToList();
+            listAc = context.Query<TeBaseFieldExpression>().Where(x => !listx.Contains(x.Int32Field)).ToList();
+            AssertExtend.StrictEqual(listEx, listAc);
+        }
 
         #endregion
 

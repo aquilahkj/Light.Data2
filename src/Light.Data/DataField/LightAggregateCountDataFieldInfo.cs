@@ -1,8 +1,8 @@
 ﻿namespace Light.Data
 {
-	class LightAggregateCountDataFieldInfo : LightAggregateDataFieldInfo
+	internal class LightAggregateCountDataFieldInfo : LightAggregateDataFieldInfo
 	{
-		readonly QueryExpression _expression;
+		private readonly QueryExpression _expression;
 
 		public LightAggregateCountDataFieldInfo ()
 			: base (DataEntityMapping.Default)
@@ -17,7 +17,7 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
@@ -25,7 +25,7 @@
 				sql = factory.CreateCountAllSql ();
 			}
 			else {
-				string expressionSql = _expression.CreateSqlString (factory, isFullName, state);
+				var expressionSql = _expression.CreateSqlString (factory, isFullName, state);
 				sql = factory.CreateCountAllSql (expressionSql);
 			}
 

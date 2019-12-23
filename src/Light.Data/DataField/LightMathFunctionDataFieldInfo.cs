@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LightMathFunctionDataFieldInfo : LightDataFieldInfo
+	internal class LightMathFunctionDataFieldInfo : LightDataFieldInfo
 	{
-		readonly MathFunction _function;
+		private readonly MathFunction _function;
 
-		readonly object [] _argsObjects;
+		private readonly object [] _argsObjects;
 
 		public LightMathFunctionDataFieldInfo (DataEntityMapping mapping, MathFunction function, params object [] argsObjects)
 			: base (mapping)
@@ -30,16 +30,16 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string sql = state.GetDataSql (this, isFullName);
+			var sql = state.GetDataSql (this, isFullName);
 			if (sql != null) {
 				return sql;
 			}
 
-			List<object> objectList = new List<object> ();
-			foreach (object item in _argsObjects) {
+			var objectList = new List<object> ();
+			foreach (var item in _argsObjects) {
 				object obj1;
-				DataFieldInfo info1 = item as DataFieldInfo;
-				if (!Object.Equals (info1, null)) {
+				var info1 = item as DataFieldInfo;
+				if (!Equals (info1, null)) {
 					obj1 = info1.CreateSqlString (factory, isFullName, state);
 				}
 				else {

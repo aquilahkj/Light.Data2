@@ -6,43 +6,19 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    class TransactionConnection : IDisposable
+    internal class TransactionConnection : IDisposable
     {
-        DbTransaction _transaction;
+        private DbTransaction _transaction;
 
-        DbConnection _connection;
+        private DbConnection _connection;
 
-        SafeLevel _level;
+        public bool IsOpen { get; private set; }
 
-        bool _isOpen;
+        public bool ExecuteFlag { get; private set; }
 
-        public bool IsOpen {
-            get {
-                return _isOpen;
-            }
-        }
+        public SafeLevel Level { get; }
 
-        bool _executeFlag;
-
-        public bool ExecuteFlag {
-            get {
-                return _executeFlag;
-            }
-        }
-
-        public SafeLevel Level {
-            get {
-                return _level;
-            }
-        }
-
-        bool _isDisposed;
-
-        public bool IsDisposed {
-            get {
-                return _isDisposed;
-            }
-        }
+        public bool IsDisposed { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionConnection"/> class.
@@ -52,7 +28,7 @@ namespace Light.Data
         public TransactionConnection(DbConnection connection, SafeLevel level)
         {
             _connection = connection;
-            _level = level;
+            Level = level;
         }
 
         ///// <summary>
@@ -69,15 +45,15 @@ namespace Light.Data
             if (_transaction != null) {
                 _transaction.Dispose();
             }
-            if (_level == SafeLevel.None) {
+            if (Level == SafeLevel.None) {
                 _transaction = null;
             }
-            else if (_level == SafeLevel.Default) {
+            else if (Level == SafeLevel.Default) {
                 _transaction = _connection.BeginTransaction();
             }
             else {
                 IsolationLevel isoLevel;
-                switch (_level) {
+                switch (Level) {
                     case SafeLevel.Low:
                         isoLevel = IsolationLevel.ReadUncommitted;
                         break;
@@ -93,7 +69,7 @@ namespace Light.Data
                 }
                 _transaction = _connection.BeginTransaction(isoLevel);
             }
-            _isOpen = true;
+            IsOpen = true;
         }
 
         /// <summary>
@@ -102,7 +78,7 @@ namespace Light.Data
         /// <param name="command">Command.</param>
         public void SetupCommand(DbCommand command)
         {
-            if (_isDisposed) {
+            if (IsDisposed) {
                 throw new LightDataException(SR.TransactionHasClosed);
             }
 
@@ -110,7 +86,7 @@ namespace Light.Data
                 command.Transaction = _transaction;
             }
             command.Connection = _connection;
-            _executeFlag = true;
+            ExecuteFlag = true;
         }
 
         /// <summary>
@@ -128,7 +104,7 @@ namespace Light.Data
         public void Commit()
         {
             if (_transaction != null) {
-                _executeFlag = false;
+                ExecuteFlag = false;
                 _transaction.Commit();
             }
         }
@@ -140,7 +116,7 @@ namespace Light.Data
         {
             if (_transaction != null) {
                 try {
-                    _executeFlag = false;
+                    ExecuteFlag = false;
                     _transaction.Rollback();
                 }
                 catch {
@@ -170,7 +146,7 @@ namespace Light.Data
         /// <param name="disposing">If set to <c>true</c> disposing.</param>
         private void Dispose(bool disposing)
         {
-            if (_isDisposed) {
+            if (IsDisposed) {
                 return;
             }
 
@@ -184,7 +160,7 @@ namespace Light.Data
                     _transaction = null;
                 }
             }
-            _isDisposed = true;
+            IsDisposed = true;
         }
 
         /// <summary>

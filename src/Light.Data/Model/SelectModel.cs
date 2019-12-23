@@ -1,44 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class SelectModel
+	internal class SelectModel
 	{
 		public SelectModel (DataEntityMapping entityMapping, CustomMapping outputMapping)
 		{
-			_entityMapping = entityMapping;
+			EntityMapping = entityMapping;
 			_customOuputMapping = outputMapping;
 		}
 
-		DataEntityMapping _entityMapping;
-
-		CustomMapping _customOuputMapping;
+		private CustomMapping _customOuputMapping;
         
-		public DataMapping OutputMapping {
-			get {
-				return _customOuputMapping;
-			}
-		}
+		public DataMapping OutputMapping => _customOuputMapping;
 
-        public IJoinTableMapping JoinTableMapping {
-            get {
-                return _customOuputMapping;
-            }
-        }
+		public IJoinTableMapping JoinTableMapping => _customOuputMapping;
 
-		public DataEntityMapping EntityMapping {
-			get {
-				return _entityMapping;
-			}
-		}
+		public DataEntityMapping EntityMapping { get; }
 
-		readonly Dictionary<string, DataFieldInfo> _selectDict = new Dictionary<string, DataFieldInfo> ();
+		private readonly Dictionary<string, DataFieldInfo> _selectDict = new Dictionary<string, DataFieldInfo> ();
 
 		public void AddSelectField (string name, DataFieldInfo fieldInfo)
 		{
 			if (name != fieldInfo.FieldName) {
-				SpecifiedDataFieldInfo selectInfo = new SpecifiedDataFieldInfo (fieldInfo, name);
+				var selectInfo = new SpecifiedDataFieldInfo (fieldInfo, name);
 				_selectDict.Add (name, selectInfo);
 			}
 			else {
@@ -48,9 +33,9 @@ namespace Light.Data
 
 		public virtual DataFieldInfo [] GetDataFieldInfos ()
 		{
-			DataFieldInfo [] infos = new DataFieldInfo [_selectDict.Count];
-			int index = 0;
-			foreach (KeyValuePair<string, DataFieldInfo> kvp in _selectDict) {
+			var infos = new DataFieldInfo [_selectDict.Count];
+			var index = 0;
+			foreach (var kvp in _selectDict) {
 				infos [index] = kvp.Value;
 				index++;
 			}
@@ -59,7 +44,7 @@ namespace Light.Data
 
 		public DataFieldInfo GetFieldData (string name)
 		{
-            if (_selectDict.TryGetValue(name, out DataFieldInfo info)) {
+            if (_selectDict.TryGetValue(name, out var info)) {
                 return info;
             }
             else {
@@ -74,8 +59,8 @@ namespace Light.Data
 
 		public Selector CreateSelector ()
 		{
-			SpecifiedSelector selecor = new SpecifiedSelector ();
-			foreach (DataFieldInfo item in _selectDict.Values) {
+			var selecor = new SpecifiedSelector ();
+			foreach (var item in _selectDict.Values) {
 				selecor.SetSelectField (item);
 			}
 			return selecor;

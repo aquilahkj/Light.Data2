@@ -3,31 +3,25 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	class AggregateLambdaState : LambdaState
+	internal class AggregateLambdaState : LambdaState
 	{
-		readonly string aggregateName;
+		private readonly string aggregateName;
 
-		readonly Type aggregateType;
+		private readonly Type aggregateType;
 
-		readonly DataEntityMapping entityMapping;
-
-        readonly AggregateModel aggregateModel;
+		private readonly AggregateModel aggregateModel;
 
 		public AggregateLambdaState (ParameterExpression parameter, AggregateModel model)
 		{
 			aggregateModel = model;
 			aggregateName = parameter.Name;
 			aggregateType = parameter.Type;
-			entityMapping = model.EntityMapping;
+			MainMapping = model.EntityMapping;
 		}
 
-		public DataEntityMapping MainMapping {
-			get {
-				return entityMapping;
-			}
-		}
+		public DataEntityMapping MainMapping { get; }
 
-		public override bool CheckPamramter (string name, Type type)
+		public override bool CheckParameter (string name, Type type)
 		{
 			return aggregateName == name && aggregateType == type;
 		}
@@ -39,22 +33,22 @@ namespace Light.Data
 
 		public override DataFieldInfo GetDataFieldInfo (string fullPath)
 		{
-			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
+			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index < 0) {
 				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
-			string name = fullPath.Substring (0, index);
-			string path = fullPath.Substring (index + 1);
+			var name = fullPath.Substring (0, index);
+			var path = fullPath.Substring (index + 1);
 			if (aggregateName != name) {
 				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
-			DataFieldInfo info = aggregateModel.GetAggregateData (path);
+			var info = aggregateModel.GetAggregateData (path);
 			return info;
 		}
 
 		public override LambdaPathType ParsePath (string fullPath)
 		{
-			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
+			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index == -1) {
 				if (fullPath == aggregateName) {
 					return LambdaPathType.Parameter;
@@ -63,8 +57,8 @@ namespace Light.Data
 					throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 				}
 			}
-			string name = fullPath.Substring (0, index);
-			string path = fullPath.Substring (index + 1);
+			var name = fullPath.Substring (0, index);
+			var path = fullPath.Substring (index + 1);
 			if (aggregateName != name) {
 				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}

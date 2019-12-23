@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    abstract class AggregateBase<K> : IAggregate<K>
+    internal abstract class AggregateBase<K> : IAggregate<K>
     {
         protected readonly DataContext _context;
 
-        public DataContext Context {
-            get {
-                return _context;
-            }
-        }
+        public DataContext Context => _context;
 
-        AggregateModel _model;
+        private AggregateModel _model;
 
-        LambdaExpression _expression;
+        private LambdaExpression _expression;
 
         public AggregateModel Model {
             get {
@@ -65,7 +61,7 @@ namespace Light.Data
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public abstract K First();

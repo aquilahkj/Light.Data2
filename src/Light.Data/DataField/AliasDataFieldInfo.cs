@@ -3,31 +3,19 @@
     /// <summary>
     /// Alias data field info.
     /// </summary>
-    class AliasDataFieldInfo : DataFieldInfo, IAliasDataFieldInfo
+    internal class AliasDataFieldInfo : DataFieldInfo, IAliasDataFieldInfo
     {
-        readonly DataFieldInfo _baseFieldInfo;
-
-        readonly string _aliasName;
-
         /// <summary>
         /// Gets the alias.
         /// </summary>
         /// <value>The alias.</value>
-        public string AliasName {
-            get {
-                return _aliasName;
-            }
-        }
+        public string AliasName { get; }
 
         /// <summary>
         /// Gets the base field info.
         /// </summary>
         /// <value>The base field info.</value>
-        public DataFieldInfo BaseFieldInfo {
-            get {
-                return _baseFieldInfo;
-            }
-        }
+        public DataFieldInfo BaseFieldInfo { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AliasDataFieldInfo"/> class.
@@ -37,22 +25,22 @@
         internal AliasDataFieldInfo(DataFieldInfo info, string alias)
             : base(info.TableMapping, info.DataField)
         {
-            _baseFieldInfo = info;
-            _aliasName = alias;
+            BaseFieldInfo = info;
+            AliasName = alias;
         }
 
         internal AliasDataFieldInfo(DataFieldInfo info, string alias, string aliasTableName)
             : base(info.TableMapping, info.DataField, aliasTableName)
         {
-            _baseFieldInfo = info;
-            _aliasName = alias;
+            BaseFieldInfo = info;
+            AliasName = alias;
         }
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
             if (isFullName) {
-                if (this._aliasTableName != null) {
-                    return factory.CreateFullDataFieldSql(this._aliasTableName, FieldName);
+                if (_aliasTableName != null) {
+                    return factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
                 }
                 else {
                     return factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
@@ -67,8 +55,8 @@
         {
             string field;
             if (isFullName) {
-                if (this._aliasTableName != null) {
-                    field = factory.CreateFullDataFieldSql(this._aliasTableName, FieldName);
+                if (_aliasTableName != null) {
+                    field = factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
                 }
                 else {
                     field = factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
@@ -78,7 +66,7 @@
                 field = factory.CreateDataFieldSql(FieldName);
             }
 
-            return factory.CreateAliasFieldSql(field, this._aliasName);
+            return factory.CreateAliasFieldSql(field, AliasName);
         }
     }
 }

@@ -3,23 +3,17 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class MassUpdator
+	internal class MassUpdator
 	{
-		Dictionary<DataFieldInfo, DataFieldInfo> dict = new Dictionary<DataFieldInfo, DataFieldInfo> ();
+		private Dictionary<DataFieldInfo, DataFieldInfo> dict = new Dictionary<DataFieldInfo, DataFieldInfo> ();
 
-		readonly DataTableEntityMapping mapping;
-
-		internal DataTableEntityMapping Mapping {
-			get {
-				return mapping;
-			}
-		}
+		internal DataTableEntityMapping Mapping { get; }
 
 		public MassUpdator (DataTableEntityMapping mapping)
 		{
 			if (mapping == null)
 				throw new ArgumentNullException (nameof (mapping));
-			this.mapping = mapping;
+			this.Mapping = mapping;
 		}
 
 		public void SetUpdateData (DataFieldInfo key, DataFieldInfo value)
@@ -29,15 +23,15 @@ namespace Light.Data
 
 		public string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string [] setList = new string[dict.Count];
-			int index = 0;
-			foreach (KeyValuePair<DataFieldInfo, DataFieldInfo> kvs in dict) {
-				string left = kvs.Key.CreateSqlString (factory, isFullName, state);
-				string right = kvs.Value.CreateSqlString (factory, isFullName, state);
+			var setList = new string[dict.Count];
+			var index = 0;
+			foreach (var kvs in dict) {
+				var left = kvs.Key.CreateSqlString (factory, isFullName, state);
+				var right = kvs.Value.CreateSqlString (factory, isFullName, state);
 				setList [index] = string.Format ("{0}={1}", left, right);
 				index++;
 			}
-			string sql = string.Join (",", setList);
+			var sql = string.Join (",", setList);
 			return sql;
 		}
 	}

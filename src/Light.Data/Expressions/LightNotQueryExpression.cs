@@ -1,8 +1,8 @@
 ﻿namespace Light.Data
 {
-	class LightNotQueryExpression : QueryExpression
+	internal class LightNotQueryExpression : QueryExpression
 	{
-		readonly QueryExpression _queryExpression;
+		private readonly QueryExpression _queryExpression;
 
 		public LightNotQueryExpression (QueryExpression expression)
 			: base (expression.TableMapping)
@@ -12,7 +12,7 @@
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string queryString = _queryExpression.CreateSqlString (factory, isFullName, state);
+			var queryString = _queryExpression.CreateSqlString (factory, isFullName, state);
 			return factory.CreateNotQuerySql (queryString);
 		}
 	}

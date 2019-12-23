@@ -5,15 +5,9 @@ namespace Light.Data
 	/// <summary>
 	/// Data region
 	/// </summary>
-	class Region
+	internal class Region
 	{
-		static readonly Region region = new Region (0, 1);
-
-		public static Region OneTimes {
-			get {
-				return region;
-			}
-		}
+		public static Region OneTimes { get; } = new Region (0, 1);
 
 
 		/// <summary>
@@ -26,41 +20,35 @@ namespace Light.Data
 			if (start < 0) {
 				throw new ArgumentOutOfRangeException (nameof (start));
 			}
-			_start = start;
+			Start = start;
 			if (size < 0) {
 				throw new ArgumentOutOfRangeException (nameof (size));
 			}
-			_size = size;
+			Size = size;
 		}
 
-		int _start;
-
-        /// <summary>
+		/// <summary>
         /// Start index,start from 0
         /// </summary>
-        public int Start {
-			get {
-				return _start;
-			}
-			//set {
-			//	if (value < 0) {
-			//		throw new ArgumentOutOfRangeException (nameof (value));
-			//	}
-			//	else {
-			//		_start = value;
-			//	}
-			//}
-		}
-
-		int _size = 1;
+        public int Start
+        {
+	        get;
+	        //set {
+	        //	if (value < 0) {
+	        //		throw new ArgumentOutOfRangeException (nameof (value));
+	        //	}
+	        //	else {
+	        //		_start = value;
+	        //	}
+	        //}
+        }
 
 		/// <summary>
 		/// Size
 		/// </summary>
-		public int Size {
-			get {
-				return _size;
-			}
+		public int Size
+		{
+			get;
 			//set {
 			//	if (value <= 0) {
 			//		throw new ArgumentOutOfRangeException (nameof (value));
@@ -69,7 +57,7 @@ namespace Light.Data
 			//		_size = value;
 			//	}
 			//}
-		}
+		} = 1;
 
 		/// <summary>
 		/// 

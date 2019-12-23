@@ -1,15 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class ExistsSelector : ISelector
+	internal class ExistsSelector : ISelector
 	{
-		static ExistsSelector instance = new ExistsSelector ();
-
-		internal static ExistsSelector Value {
-			get {
-				return instance;
-			}
-		}
+		internal static ExistsSelector Value { get; } = new ExistsSelector ();
 
 		public string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
