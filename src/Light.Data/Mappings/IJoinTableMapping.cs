@@ -11,7 +11,7 @@ namespace Light.Data
 
         object InitialData();
 
-        object LoadAliasJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName);
+        object LoadAliasJoinTableData(DataContext context, IDataReader dataReader, QueryState queryState, string aliasName);
     }
 }
 

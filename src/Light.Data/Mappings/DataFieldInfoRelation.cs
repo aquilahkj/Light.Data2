@@ -8,8 +8,8 @@
 
 		public DataFieldInfoRelation (DataFieldInfo masterInfo, DataFieldInfo relateInfo)
 		{
-			this.MasterInfo = masterInfo;
-			this.RelateInfo = relateInfo;
+			MasterInfo = masterInfo;
+			RelateInfo = relateInfo;
 		}
 	}
 }

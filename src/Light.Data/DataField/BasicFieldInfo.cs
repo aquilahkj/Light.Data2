@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Light.Data
 {
     /// <summary>
@@ -9,16 +11,16 @@ namespace Light.Data
         internal BasicFieldInfo(DataEntityMapping tableMapping)
         {
             if (tableMapping == null)
-                throw new System.ArgumentNullException(nameof(tableMapping));
+                throw new ArgumentNullException(nameof(tableMapping));
             TableMapping = tableMapping;
         }
 
         internal BasicFieldInfo(DataEntityMapping tableMapping, DataFieldMapping dataField)
         {
             if (tableMapping == null)
-                throw new System.ArgumentNullException(nameof(tableMapping));
+                throw new ArgumentNullException(nameof(tableMapping));
             if (tableMapping != DataEntityMapping.Default && dataField == null)
-                throw new System.ArgumentNullException(nameof(dataField));
+                throw new ArgumentNullException(nameof(dataField));
             TableMapping = tableMapping;
             DataField = dataField;
         }
@@ -26,9 +28,9 @@ namespace Light.Data
         internal BasicFieldInfo(DataEntityMapping tableMapping, bool customName, string name)
         {
             if (tableMapping == null)
-                throw new System.ArgumentNullException(nameof(tableMapping));
+                throw new ArgumentNullException(nameof(tableMapping));
             if (name == null)
-                throw new System.ArgumentNullException(nameof(name));
+                throw new ArgumentNullException(nameof(name));
             TableMapping = tableMapping;
             if (customName) {
                 DataField = new CustomFieldMapping(name, tableMapping);
@@ -54,13 +56,13 @@ namespace Light.Data
         /// </summary>
         /// <value>The name of the field.</value>
         public virtual string FieldName {
-            get {
+            get
+            {
                 if (DataField != null) {
                     return DataField.Name;
                 }
-                else {
-                    return null;
-                }
+
+                return null;
             }
         }
     }

@@ -5,7 +5,7 @@ namespace Light.Data
 {
 	internal class MassUpdator
 	{
-		private Dictionary<DataFieldInfo, DataFieldInfo> dict = new Dictionary<DataFieldInfo, DataFieldInfo> ();
+		private readonly Dictionary<DataFieldInfo, DataFieldInfo> dict = new Dictionary<DataFieldInfo, DataFieldInfo> ();
 
 		internal DataTableEntityMapping Mapping { get; }
 
@@ -13,7 +13,7 @@ namespace Light.Data
 		{
 			if (mapping == null)
 				throw new ArgumentNullException (nameof (mapping));
-			this.Mapping = mapping;
+			Mapping = mapping;
 		}
 
 		public void SetUpdateData (DataFieldInfo key, DataFieldInfo value)

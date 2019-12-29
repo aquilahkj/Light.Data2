@@ -306,7 +306,7 @@ namespace Light.Data.Mysql.Test
 
         }
 
-        public override TestContext CreateDataContext()
+        public virtual TestContext CreateDataContext()
         {
             return new TestContext(options);
         }

@@ -5,7 +5,7 @@ namespace Light.Data
 {
     internal class AggregateGroupBy
     {
-        private List<AggregateDataFieldInfo> groupList = new List<AggregateDataFieldInfo>();
+        private readonly List<AggregateDataFieldInfo> groupList = new List<AggregateDataFieldInfo>();
 
         //public bool HasData {
         //    get {

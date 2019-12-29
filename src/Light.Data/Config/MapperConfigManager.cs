@@ -28,9 +28,8 @@ namespace Light.Data
                 };
                 return config;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         public static DataFieldMapperConfig LoadDataFieldConfig(Type type, PropertyInfo pi)
@@ -54,9 +53,8 @@ namespace Light.Data
                 };
                 return config;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         public static RelationFieldMapConfig LoadRelationDataFieldConfig(Type type, PropertyInfo pi)
@@ -73,9 +71,8 @@ namespace Light.Data
                 }
                 return rfConfig;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
     }
 }

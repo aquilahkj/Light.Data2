@@ -23,8 +23,8 @@ namespace Light.Data.Mysql
             dateTimeFormater.MinuteFormat = "%i";
             dateTimeFormater.SecondFormat = "%S";
 
-            _havingAlias = true;
-            _orderbyAlias = true;
+            HavingAlias = true;
+            OrderByAlias = true;
         }
 
         public override string CreateDataFieldSql(string fieldName)
@@ -134,7 +134,7 @@ namespace Light.Data.Mysql
                 var valuesList = new string[insertLen];
                 for (var i = 0; i < insertLen; i++) {
                     var field = fields[i];
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 var values = string.Join(",", valuesList);
@@ -185,7 +185,7 @@ namespace Light.Data.Mysql
                 var valuesList = new string[insertLen];
                 for (var i = 0; i < insertLen; i++) {
                     var field = fields[i];
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 var values = string.Join(",", valuesList);
@@ -243,11 +243,11 @@ namespace Light.Data.Mysql
             var sb = new StringBuilder();
             sb.Append("concat(");
             if (starts) {
-                sb.AppendFormat("'{0}',", _wildcards);
+                sb.AppendFormat("'{0}',", Wildcards);
             }
             sb.Append(field);
             if (ends) {
-                sb.AppendFormat(",'{0}'", _wildcards);
+                sb.AppendFormat(",'{0}'", Wildcards);
             }
             sb.Append(")");
             return sb.ToString();

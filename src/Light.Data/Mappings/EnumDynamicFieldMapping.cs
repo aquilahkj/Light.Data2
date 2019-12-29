@@ -2,9 +2,9 @@
 
 namespace Light.Data
 {
-	internal class DynamicEnumFieldMapping : DynamicFieldMapping
+	internal class EnumDynamicFieldMapping : DynamicFieldMapping
 	{
-		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicCustomMapping mapping)
+		public EnumDynamicFieldMapping (Type type, string fieldName, DynamicDataMapping mapping)
 			: base (type, fieldName, mapping, true)
 		{
 
@@ -15,10 +15,9 @@ namespace Light.Data
 			if (Equals (value, DBNull.Value) || Equals (value, null)) {
 				return null;
 			}
-			else {
-				value = Enum.ToObject (_objectType, value);
-				return value;
-			}
+
+			value = Enum.ToObject (ObjectType, value);
+			return value;
 		}
 	}
 }

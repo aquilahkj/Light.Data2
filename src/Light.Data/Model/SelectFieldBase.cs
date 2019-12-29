@@ -32,7 +32,7 @@ namespace Light.Data
 
         public DataContext Context => _context;
 
-        private LambdaExpression _expression;
+        private readonly LambdaExpression _expression;
 
         private DataFieldInfo _specifiedFieldInfo;
 
@@ -66,12 +66,12 @@ namespace Light.Data
 
         public abstract K ElementAt(int index);
 
-        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default);
     }
 }

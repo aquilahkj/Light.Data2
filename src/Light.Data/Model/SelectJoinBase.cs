@@ -31,9 +31,9 @@ namespace Light.Data
 
         protected readonly DataContext _context;
 
-        private LambdaExpression _expression;
+        private readonly LambdaExpression _expression;
 
-        private List<IMap> _maps;
+        private readonly List<IMap> _maps;
 
         private ISelector _selector;
 
@@ -61,13 +61,13 @@ namespace Light.Data
 
         public List<IJoinModel> Models { get; }
 
-        public DynamicMultiDataMapping Mapping { get; }
+        public MultiDataDynamicMapping Mapping { get; }
 
         protected SelectJoinBase(DataContext context, LambdaExpression expression, List<IJoinModel> models, List<IMap> maps)
         {
             Models = models;
             _context = context;
-            Mapping = DynamicMultiDataMapping.CreateDynamicMultiDataMapping(typeof(K), Models);
+            Mapping = MultiDataDynamicMapping.CreateMultiDataDynamicMapping(typeof(K), Models);
             _expression = expression;
             _maps = maps;
         }
@@ -87,12 +87,12 @@ namespace Light.Data
 
         public abstract K ElementAt(int index);
 
-        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default);
     }
 }

@@ -9,7 +9,7 @@ namespace Light.Data
     /// </summary>
     internal class CollectionRelationFieldMapping : BaseRelationFieldMapping
     {
-        private static Type LCollectionFrameType;
+        private static readonly Type LCollectionFrameType;
 
         static CollectionRelationFieldMapping()
         {

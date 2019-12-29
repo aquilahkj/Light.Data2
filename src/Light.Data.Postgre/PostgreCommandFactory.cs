@@ -169,7 +169,7 @@ namespace Light.Data.Postgre
                 var valuesList = new string[insertLen];
                 for (var i = 0; i < insertLen; i++) {
                     var field = fields[i];
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 var values = string.Join(",", valuesList);
@@ -226,7 +226,7 @@ namespace Light.Data.Postgre
                 var valuesList = new string[insertLen];
                 for (var i = 0; i < insertLen; i++) {
                     var field = fields[i];
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 var values = string.Join(",", valuesList);
@@ -301,11 +301,11 @@ namespace Light.Data.Postgre
         {
             var sb = new StringBuilder();
             if (starts) {
-                sb.AppendFormat("'{0}'||", _wildcards);
+                sb.AppendFormat("'{0}'||", Wildcards);
             }
             sb.Append(field);
             if (ends) {
-                sb.AppendFormat("||'{0}'", _wildcards);
+                sb.AppendFormat("||'{0}'", Wildcards);
             }
             return sb.ToString();
         }

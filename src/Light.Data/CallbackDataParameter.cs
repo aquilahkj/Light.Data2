@@ -21,21 +21,16 @@ namespace Light.Data
                 var value = Value;
                 if (!Equals(value, null)) {
                     var type = value.GetType();
-                    if (type != mapping.ParameterType) {
-                        if (mapping.ParameterType == typeof(string)) {
-                            value = value.ToString();
-                        }
-                        else {
-                            value = Convert.ChangeType(value, mapping.ParameterType);
-                        }
+                    if (type != mapping.ParameterType)
+                    {
+                        value = mapping.ParameterType == typeof(string) ? value.ToString() : Convert.ChangeType(value, mapping.ParameterType);
                     }
                 }
                 mapping.Set(callbackData, value);
                 return true;
             }
-            else {
-                return false;
-            }
+
+            return false;
         }
     }
 }

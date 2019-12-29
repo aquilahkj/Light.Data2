@@ -93,13 +93,13 @@ namespace Light.Data
         /// </summary>
         /// <value>The position.</value>
         public int Position {
-            get {
+            get
+            {
                 if (DataField != null) {
                     return DataField.PositionOrder;
                 }
-                else {
-                    return -1;
-                }
+
+                return -1;
             }
         }
 
@@ -118,17 +118,16 @@ namespace Light.Data
 
         internal virtual string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            if (isFullName) {
-				if (_aliasTableName != null) {
+            if (isFullName)
+            {
+                if (_aliasTableName != null) {
 					return factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
 				}
-				else {
-					return factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
-				}
+
+                return factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
             }
-            else {
-                return factory.CreateDataFieldSql(FieldName);
-            }
+
+            return factory.CreateDataFieldSql(FieldName);
         }
 
         /// <summary>

@@ -1,4 +1,7 @@
-﻿namespace Light.Data
+﻿using System;
+using System.Reflection;
+
+namespace Light.Data
 {
 	internal class LightConstantDataFieldInfo : LightDataFieldInfo
 	{
@@ -16,7 +19,7 @@
 			if (sql != null) {
 				return sql;
 			}
-			var value = LambdaExpressionExtend.ConvertLambdaObject (_value);
+			var value = LambdaExpressionExtend.ConvertLambdaObject (_value).EnumCheck();
 			sql = state.AddDataParameter (factory, value);
 
 			state.SetDataSql (this, false, sql);

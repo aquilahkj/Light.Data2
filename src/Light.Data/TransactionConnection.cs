@@ -131,7 +131,7 @@ namespace Light.Data
         /// Async open this transaction collection..
         /// </summary>
         /// <returns>The async.</returns>
-        public async Task OpenAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task OpenAsync(CancellationToken cancellationToken = default)
         {
             await _connection.OpenAsync(cancellationToken);
             SetupTransaction();

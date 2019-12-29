@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Reflection;
-using System.Linq.Expressions;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Light.Data
 {
@@ -801,7 +801,7 @@ namespace Light.Data
         private static SelectModel ParseSelectModel(MemberInitExpression expression, SingleParameterLambdaState state)
         {
             var entityMapping = state.MainMapping;
-            var customMapping = SpecifiedCustomMapping.GetMapping(expression.Type);
+            var customMapping = SpecifiedDataMapping.GetMapping(expression.Type);
             var model = new SelectModel(entityMapping, customMapping);
             foreach (var binding in expression.Bindings)
             {
@@ -824,8 +824,8 @@ namespace Light.Data
                     }
                     else
                     {
-                        var value = ConvertObject(innerExpression);
-                        fieldInfo = new LightConstantDataFieldInfo(value);
+                        var obj = ConvertObject(innerExpression);
+                        fieldInfo = new LightConstantDataFieldInfo(obj);
                         model.AddSelectField(ass.Member.Name, fieldInfo);
                     }
                 }
@@ -841,7 +841,7 @@ namespace Light.Data
         private static SelectModel ParseSelectModel(NewExpression expression, SingleParameterLambdaState state)
         {
             var entityMapping = state.MainMapping;
-            var customMapping = DynamicCustomMapping.GetMapping(expression.Type);
+            var customMapping = DynamicDataMapping.GetMapping(expression.Type);
             var model = new SelectModel(entityMapping, customMapping);
             if (expression.Arguments.Count > 0)
             {
@@ -867,8 +867,8 @@ namespace Light.Data
                     }
                     else
                     {
-                        var value = ConvertObject(innerExpression);
-                        fieldInfo = new LightConstantDataFieldInfo(value);
+                        var obj = ConvertObject(innerExpression);
+                        fieldInfo = new LightConstantDataFieldInfo(obj);
                         model.AddSelectField(member.Name, fieldInfo);
                     }
                 }
@@ -885,7 +885,7 @@ namespace Light.Data
             SingleParameterLambdaState state)
         {
             var entityMapping = state.MainMapping;
-            var aggregateMapping = SpecifiedCustomMapping.GetMapping(expression.Type);
+            var aggregateMapping = SpecifiedDataMapping.GetMapping(expression.Type);
             var model = new AggregateModel(entityMapping, aggregateMapping);
             if (expression.Bindings.Count > 0)
             {
@@ -914,8 +914,8 @@ namespace Light.Data
                         }
                         else
                         {
-                            var value = ConvertObject(innerExpression);
-                            fieldInfo = new LightConstantDataFieldInfo(value);
+                            var obj = ConvertObject(innerExpression);
+                            fieldInfo = new LightConstantDataFieldInfo(obj);
                             model.AddAggregateField(ass.Member.Name, fieldInfo);
                         }
                     }
@@ -941,7 +941,7 @@ namespace Light.Data
         private static AggregateModel ParseAggregateModel(NewExpression expression, SingleParameterLambdaState state)
         {
             var entityMapping = state.MainMapping;
-            var aggregateMapping = DynamicCustomMapping.GetMapping(expression.Type);
+            var aggregateMapping = DynamicDataMapping.GetMapping(expression.Type);
             var model = new AggregateModel(entityMapping, aggregateMapping);
             if (expression.Arguments.Count > 0)
             {
@@ -970,8 +970,8 @@ namespace Light.Data
                     }
                     else
                     {
-                        var value = ConvertObject(innerExpression);
-                        fieldInfo = new LightConstantDataFieldInfo(value);
+                        var obj = ConvertObject(innerExpression);
+                        fieldInfo = new LightConstantDataFieldInfo(obj);
                         model.AddAggregateField(member.Name, fieldInfo);
                     }
 
@@ -1009,7 +1009,8 @@ namespace Light.Data
                 }
                 else
                 {
-                    leftValue = ConvertObject(binaryObj.Left);
+                    var obj = ConvertObject(binaryObj.Left);
+                    leftValue = new LightConstantDataFieldInfo(obj);
                 }
 
                 object rightValue = null;
@@ -1020,7 +1021,8 @@ namespace Light.Data
                 }
                 else
                 {
-                    rightValue = ConvertObject(binaryObj.Right);
+                    var obj = ConvertObject(binaryObj.Right);
+                    rightValue = new LightConstantDataFieldInfo(obj);
                 }
 
                 if (!left && !right)
@@ -1313,7 +1315,7 @@ namespace Light.Data
                             return true;
                         }
 
-                        if (methodInfo.DeclaringType == typeof(String))
+                        if (methodInfo.DeclaringType == typeof(string))
                         {
                             fieldInfo = ParseStaticStringFunctionDataFieldInfo(methodInfo, mainFieldInfo, argObjects);
                             return true;
@@ -1469,11 +1471,9 @@ namespace Light.Data
                 argObjects = array;
                 return false;
             }
-            else
-            {
-                argObjects = array;
-                return true;
-            }
+
+            argObjects = array;
+            return true;
         }
 
         private static bool CheckConcatOperatorsType(ExpressionType expressionType, out ConcatOperatorType concatType)
@@ -1483,16 +1483,15 @@ namespace Light.Data
                 concatType = ConcatOperatorType.AND;
                 return true;
             }
-            else if (expressionType == ExpressionType.Or || expressionType == ExpressionType.OrElse)
+
+            if (expressionType == ExpressionType.Or || expressionType == ExpressionType.OrElse)
             {
                 concatType = ConcatOperatorType.OR;
                 return true;
             }
-            else
-            {
-                concatType = ConcatOperatorType.AND;
-                return false;
-            }
+
+            concatType = ConcatOperatorType.AND;
+            return false;
         }
 
         private static bool CheckQueryPredicate(ExpressionType expressionType, out QueryPredicate queryPredicate)

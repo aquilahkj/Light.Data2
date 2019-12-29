@@ -8,7 +8,7 @@ namespace Light.Data
     /// </summary>
     public class ConfigParamSet
     {
-        private Dictionary<string, string> dict = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> dict = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the parameter value.
@@ -22,9 +22,8 @@ namespace Light.Data
             if (dict.TryGetValue(name, out var value)) {
                 return value;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>

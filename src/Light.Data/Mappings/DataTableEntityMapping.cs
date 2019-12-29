@@ -31,7 +31,7 @@ namespace Light.Data
 
         public ReadOnlyCollection<DataFieldMapping> UpdateFieldList { get; private set; }
 
-        public ReadOnlyCollection<DataFieldMapping> TimeStampFieldList { get; private set; }
+        public ReadOnlyCollection<DataFieldMapping> AutoUpdateFieldList { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has identity.
@@ -56,86 +56,108 @@ namespace Light.Data
             var noIdentityTmpList = new List<DataFieldMapping>();
             var primaryKeyTmpList = new List<DataFieldMapping>();
             var noPrimaryKeyTmpList = new List<DataFieldMapping>();
-            var createTmpList = new List<DataFieldMapping>();
-            var updateTmpList = new List<DataFieldMapping>();
+            var createFieldTmpList = new List<DataFieldMapping>();
+            var updateFieldTmpList = new List<DataFieldMapping>();
+            var autoUpdateTmpList = new List<DataFieldMapping>();
 
-            foreach (FieldMapping field in _fieldList) {
-                if (field is PrimitiveFieldMapping pfmapping) {
-                    if (pfmapping.IsIdentity) {
-                        if (IdentityField == null) {
-                            IdentityField = pfmapping;
-                        }
-                        else {
-                            throw new LightDataException(string.Format(SR.MultipleIdentityField, ObjectType));
-                        }
+            foreach (var field in _fieldList)
+            {
+                if (field.IsIdentity)
+                {
+                    if (IdentityField == null)
+                    {
+                        IdentityField = field;
                     }
-                    else {
-                        noIdentityTmpList.Add(pfmapping);
-                    }
-                    if (pfmapping.IsPrimaryKey) {
-                        primaryKeyTmpList.Add(pfmapping);
-                    }
-                    else {
-                        noPrimaryKeyTmpList.Add(pfmapping);
+                    else
+                    {
+                        throw new LightDataException(string.Format(SR.MultipleIdentityField, ObjectType));
                     }
                 }
-                else {
-                    var mapping = field as DataFieldMapping;
-                    noIdentityTmpList.Add(mapping);
-                    noPrimaryKeyTmpList.Add(mapping);
+                else
+                {
+                    noIdentityTmpList.Add(field);
+                    if ((field.FunctionControl & FunctionControl.Create) == FunctionControl.Create)
+                    {
+                        createFieldTmpList.Add(field);
+                    }
+                }
+
+                if (field.IsPrimaryKey)
+                {
+                    primaryKeyTmpList.Add(field);
+                }
+                else
+                {
+                    noPrimaryKeyTmpList.Add(field);
+                    if ((field.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
+                    {
+                        updateFieldTmpList.Add(field);
+                    }
+                    if (field.IsAutoUpdate)
+                    {
+                        autoUpdateTmpList.Add(field);
+                    }
                 }
             }
 
             NoIdentityFields = new ReadOnlyCollection<DataFieldMapping>(noIdentityTmpList);
             PrimaryKeyFields = new ReadOnlyCollection<DataFieldMapping>(primaryKeyTmpList);
             NoPrimaryKeyFields = new ReadOnlyCollection<DataFieldMapping>(noPrimaryKeyTmpList);
-            CreateFieldList = new ReadOnlyCollection<DataFieldMapping>(noIdentityTmpList.FindAll(x => (x.FunctionControl & FunctionControl.Create) == FunctionControl.Create));
-            UpdateFieldList = new ReadOnlyCollection<DataFieldMapping>(noPrimaryKeyTmpList.FindAll(x => (x.FunctionControl & FunctionControl.Update) == FunctionControl.Update));
-            TimeStampFieldList = new ReadOnlyCollection<DataFieldMapping>(noPrimaryKeyTmpList.FindAll(x => x.IsTimeStamp));
-
+            CreateFieldList = new ReadOnlyCollection<DataFieldMapping>(createFieldTmpList);
+            UpdateFieldList = new ReadOnlyCollection<DataFieldMapping>(updateFieldTmpList);
+            AutoUpdateFieldList = new ReadOnlyCollection<DataFieldMapping>(autoUpdateTmpList);
         }
 
         public object[] GetPrimaryKeys(object data)
         {
-            var rawkeys = new object[PrimaryKeyCount];
-            for (var i = 0; i < PrimaryKeyCount; i++) {
+            var rawKeys = new object[PrimaryKeyCount];
+            for (var i = 0; i < PrimaryKeyCount; i++)
+            {
                 var field = PrimaryKeyFields[i];
-                rawkeys[i] = field.Handler.Get(data);
+                rawKeys[i] = field.Handler.Get(data);
             }
-            return rawkeys;
+
+            return rawKeys;
         }
 
-        public override object LoadAliasJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+        public override object LoadAliasJoinTableData(DataContext context, IDataReader dataReader,
+            QueryState queryState, string aliasName)
         {
-            var data = base.LoadAliasJoinTableData(context, datareader, queryState, aliasName);
-            if (IsDataTableEntity) {
+            var data = base.LoadAliasJoinTableData(context, dataReader, queryState, aliasName);
+            if (IsDataTableEntity)
+            {
                 UpdateDateTableEntity(data);
             }
+
             return data;
         }
 
-        public override object LoadData(DataContext context, IDataReader datareader, object state)
+        public override object LoadData(DataContext context, IDataReader dataReader, object state)
         {
-            var data = base.LoadData(context, datareader, state);
-            if (IsDataTableEntity) {
+            var data = base.LoadData(context, dataReader, state);
+            if (IsDataTableEntity)
+            {
                 UpdateDateTableEntity(data);
             }
+
             return data;
         }
 
-        public override object LoadJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string fieldPath)
+        public override object LoadJoinTableData(DataContext context, IDataReader dataReader, QueryState queryState,
+            string fieldPath)
         {
-            var data = base.LoadJoinTableData(context, datareader, queryState, fieldPath);
-            if (IsDataTableEntity) {
+            var data = base.LoadJoinTableData(context, dataReader, queryState, fieldPath);
+            if (IsDataTableEntity)
+            {
                 UpdateDateTableEntity(data);
             }
+
             return data;
         }
 
         private void UpdateDateTableEntity(object data)
         {
-            var tableEntity = data as DataTableEntity;
-            tableEntity.LoadData();
+            if (data is DataTableEntity tableEntity) tableEntity.LoadData();
             //if (tableEntity.IsAllowUpdatePrimaryKey()) {
             //    tableEntity.SetRawPrimaryKeys(GetRawKeys(tableEntity));
             //}

@@ -27,9 +27,8 @@
             if (state.UseFieldAlias) {
                 return factory.CreateDataFieldSql(AggregateName);
             }
-            else {
-                return FieldInfo.CreateSqlString(factory, isFullName, state);
-            }
+
+            return FieldInfo.CreateSqlString(factory, isFullName, state);
         }
 
         internal string CreateGroupBySqlString(CommandFactory factory, bool isFullName, CreateSqlState state)

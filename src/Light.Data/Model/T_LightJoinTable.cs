@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Light.Data
 {
@@ -314,7 +314,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -325,7 +325,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -337,7 +337,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -826,7 +826,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -837,7 +837,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -849,7 +849,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -1338,7 +1338,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -1349,7 +1349,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -1361,7 +1361,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -1850,7 +1850,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -1861,7 +1861,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -1873,7 +1873,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -2362,7 +2362,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -2373,7 +2373,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -2385,7 +2385,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -2874,7 +2874,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -2885,7 +2885,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -2897,7 +2897,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -3386,7 +3386,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -3397,7 +3397,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -3409,7 +3409,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -3898,7 +3898,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -3909,7 +3909,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -3921,7 +3921,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);
@@ -4410,7 +4410,7 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> CountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -4421,7 +4421,7 @@ namespace Light.Data
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
 		{
 			var queryCommand = Context.Database.AggregateJoinTableCount(Context, ModelList, Query);
             var value = await Context.ExecuteScalarAsync(queryCommand.Command, Level, cancellationToken);
@@ -4433,7 +4433,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken = default)
 		{
 			var selector = LambdaExpressionExtend.CreateMultiInsertSelector (expression, Maps);
 			var queryCommand = Context.Database.SelectInsertWithJoinTable(Context, selector, ModelList, Query, Order, Distinct);

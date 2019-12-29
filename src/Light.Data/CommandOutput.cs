@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Light.Data
@@ -126,17 +126,17 @@ namespace Light.Data
                                 }
                             }
                             dict[data.ParameterName] = value;
-                            var pname = data.ParameterName.Replace("?", "\\?");
-                            patterns.Add(pname + "\\b");
+                            var name = data.ParameterName.Replace("?", "\\?");
+                            patterns.Add(name + "\\b");
                         }
                         var regex = new Regex(string.Join("|", patterns), RegexOptions.Compiled);
-                        temp = regex.Replace(temp, x => {
+                        temp = regex.Replace(temp, x =>
+                        {
                             if (dict.TryGetValue(x.Value, out var data)) {
                                 return data;
                             }
-                            else {
-                                return x.Value;
-                            }
+
+                            return x.Value;
                         });
                         runnableCommand = temp;
                     }
@@ -146,9 +146,11 @@ namespace Light.Data
                 }
 
                 if (OnCommandOutput != null) {
-                    var args = new CommandOutputEventArgs();
-                    args.CommandInfo = commandInfo;
-                    args.RunnableCommand = runnableCommand;
+                    var args = new CommandOutputEventArgs
+                    {
+                        CommandInfo = commandInfo, 
+                        RunnableCommand = runnableCommand
+                    };
                     OnCommandOutput(this, args);
                 }
                 if (UseConsoleOutput) {

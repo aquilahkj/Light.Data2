@@ -5,7 +5,7 @@
 	/// </summary>
 	internal class LightMatchQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		private LightStringMatchDataFieldInfo _fieldInfo;
+		private readonly LightStringMatchDataFieldInfo _fieldInfo;
 
 		public LightMatchQueryExpression (LightStringMatchDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)

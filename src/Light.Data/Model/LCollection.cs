@@ -11,15 +11,15 @@ namespace Light.Data
     {
         private List<T> list;
 
-        private QueryExpression query;
+        private readonly QueryExpression query;
 
-        private DataContextOptions options;
+        private readonly DataContextOptions options;
 
-        private ICommandOutput output;
+        private readonly ICommandOutput output;
 
-        private object owner;
+        private readonly object owner;
 
-        private string[] fieldPaths;
+        private readonly string[] fieldPaths;
 
         internal LCollection(DataContext context, object owner, QueryExpression query, string[] fieldPaths)
         {

@@ -8,44 +8,54 @@ namespace Light.Data
         public PrimitiveDataDefine(Type type, bool isNullable)
             : base(type, isNullable)
         {
-            _typeCode = Type.GetTypeCode(type);
         }
-
-        private TypeCode _typeCode;
 
         /// <summary>
         /// Loads the data.
         /// </summary>
         /// <returns>The data.</returns>
         /// <param name="context">Context.</param>
-        /// <param name="datareader">Datareader.</param>
+        /// <param name="dataReader">DataReader.</param>
         /// <param name="state">State.</param>
-        public override object LoadData(DataContext context, IDataReader datareader, object state)
+        public override object LoadData(DataContext context, IDataReader dataReader, object state)
         {
-            var value = datareader[0];
-            if (Equals(value, DBNull.Value) || Equals(value, null)) {
-                if (!IsNullable) {
-                    return Utility.GetDefaultValue(_typeCode);
-                } else {
-                    return null;
+            var value = dataReader[0];
+            if (Equals(value, DBNull.Value) || Equals(value, null))
+            {
+                if (!IsNullable)
+                {
+                    return ObjectType.GetDefaultValue();
                 }
-            } else {
+
+                return null;
+            }
+
+            if (value.GetType() != ObjectType)
+            {
                 return Convert.ChangeType(value, ObjectType);
             }
+
+            return value;
         }
 
-        public override object LoadData(DataContext context, IDataReader datareader, string name, object state)
+        public override object LoadData(DataContext context, IDataReader dataReader, string name, object state)
         {
-            var value = datareader[name];
-            if (Equals(value, DBNull.Value) || Equals(value, null)) {
+            var value = dataReader[name];
+            if (Equals(value, DBNull.Value) || Equals(value, null))
+            {
                 if (!IsNullable) {
-                    return Utility.GetDefaultValue(_typeCode);
-                } else {
-                    return null;
+                    return ObjectType.GetDefaultValue();
                 }
-            } else {
+
+                return null;
+            }
+
+            if (value.GetType() != ObjectType)
+            {
                 return Convert.ChangeType(value, ObjectType);
             }
+
+            return value;
         }
     }
 }

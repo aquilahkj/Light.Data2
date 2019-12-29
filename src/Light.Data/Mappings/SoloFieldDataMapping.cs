@@ -8,15 +8,15 @@ namespace Light.Data
     {
         #region static
 
-        private static object _synobj = new object();
+        private static readonly object locker = new object();
 
-        private static Dictionary<Type, SoloFieldDataMapping> _defaultMapping = new Dictionary<Type, SoloFieldDataMapping>();
+        private static readonly Dictionary<Type, SoloFieldDataMapping> _defaultMapping = new Dictionary<Type, SoloFieldDataMapping>();
 
         public static SoloFieldDataMapping GetMapping(Type type)
         {
             var mappings = _defaultMapping;
             if (!mappings.TryGetValue(type, out var mapping)) {
-                lock (_synobj) {
+                lock (locker) {
                     if (!mappings.ContainsKey(type)) {
                         mapping = CreateMapping(type);
                         mappings[type] = mapping;
@@ -34,7 +34,7 @@ namespace Light.Data
 
         #endregion
 
-        private DataDefine dataDefine;
+        private readonly DataDefine dataDefine;
 
         public string Name { get; } = "F";
 
@@ -44,28 +44,29 @@ namespace Light.Data
             dataDefine = DataDefine.GetDefine(type);
         }
 
-        public override object LoadData(DataContext context, IDataReader datareader, object state)
+        public override object LoadData(DataContext context, IDataReader dataReader, object state)
         {
-            var queryState = state as QueryState;
-            object value = null;
-            if (queryState == null) {
-                value = dataDefine.LoadData(context, datareader, Name, state);
-            } else if (queryState.CheckSelectField(Name)) {
-                value = dataDefine.LoadData(context, datareader, Name, state);
-            }
-            return value;
+            // var queryState = state as QueryState;
+            // object value = null;
+            // if (queryState == null) {
+            //     value = dataDefine.LoadData(context, dataReader, Name, state);
+            // } else if (queryState.CheckSelectField(Name)) {
+            //     value = dataDefine.LoadData(context, dataReader, Name, state);
+            // }
+            // return value;
+            return dataDefine.LoadData(context, dataReader, state);
         }
 
-        public object LoadAliasJoinTableData(DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+        public object LoadAliasJoinTableData(DataContext context, IDataReader dataReader, QueryState queryState, string aliasName)
         {
-            var fieldname = string.Format("{0}_{1}", aliasName, Name);
-            object value = null;
-            if (queryState == null) {
-                value = dataDefine.LoadData(context, datareader, Name, queryState);
-            } else if (queryState.CheckSelectField(Name)) {
-                value = dataDefine.LoadData(context, datareader, Name, queryState);
-            }
-            return value;
+            // object value = null;
+            // if (queryState == null) {
+            //     value = dataDefine.LoadData(context, dataReader, Name, null);
+            // } else if (queryState.CheckSelectField(Name)) {
+            //     value = dataDefine.LoadData(context, dataReader, Name, queryState);
+            // }
+            // return value;
+            return dataDefine.LoadData(context, dataReader, queryState);
         }
 
         public override object InitialData()

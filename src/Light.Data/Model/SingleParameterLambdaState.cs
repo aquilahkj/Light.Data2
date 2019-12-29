@@ -42,13 +42,13 @@ namespace Light.Data
 		public override LambdaPathType ParsePath (string fullPath)
 		{
 			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
-			if (index == -1) {
+			if (index == -1)
+			{
 				if (fullPath == _singleEntityName) {
 					return LambdaPathType.Parameter;
 				}
-				else {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
-				}
+
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
 			var name = fullPath.Substring (0, index);
 			var path = fullPath.Substring (index);

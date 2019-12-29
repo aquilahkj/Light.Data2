@@ -7,57 +7,71 @@ namespace Light.Data
 {
     internal static class ParameterConvert
     {
-        private static readonly Dictionary<Type, DataParameterMapping[]> TypeDict = new Dictionary<Type, DataParameterMapping[]>();
+        private static readonly Dictionary<Type, DataParameterMapping[]> TypeDict =
+            new Dictionary<Type, DataParameterMapping[]>();
 
         public static DataParameter[] ConvertParameter(object data)
         {
-            if (data == null) {
+            if (data == null)
+            {
                 return null;
             }
+
             var type = data.GetType();
-            if (!TypeDict.TryGetValue(type, out var mappings)) {
-                lock (TypeDict) {
-                    if (!TypeDict.TryGetValue(type, out mappings)) {
+            if (!TypeDict.TryGetValue(type, out var mappings))
+            {
+                lock (TypeDict)
+                {
+                    if (!TypeDict.TryGetValue(type, out mappings))
+                    {
                         var typeInfo = type.GetTypeInfo();
                         var properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                         var list = new List<DataParameterMapping>();
-                        foreach (var propertie in properties) {
-                            var handler = new PropertyHandler(propertie);
+                        foreach (var property in properties)
+                        {
+                            var handler = new PropertyHandler(property);
                             string name = null;
                             var direction = ParameterDirection.Input;
-                            var attributes = AttributeCore.GetPropertyAttributes<DataParameterAttribute>(propertie, true);
-                            if (attributes.Length > 0) {
+                            var attributes =
+                                AttributeCore.GetPropertyAttributes<DataParameterAttribute>(property, true);
+                            if (attributes.Length > 0)
+                            {
                                 var attribute = attributes[0];
                                 name = attribute.Name;
                                 direction = attribute.Direction;
                             }
-                            var mapping = new DataParameterMapping(propertie, name, direction);
+
+                            var mapping = new DataParameterMapping(property, name, direction);
                             list.Add(mapping);
                         }
+
                         mappings = list.ToArray();
                         TypeDict.Add(type, mappings);
                     }
                 }
             }
-            if (mappings.Length == 0) {
+
+            if (mappings.Length == 0)
+            {
                 return null;
             }
+
             var dataParameters = new DataParameter[mappings.Length];
-            for (var i = 0; i < mappings.Length; i++) {
+            for (var i = 0; i < mappings.Length; i++)
+            {
                 var mapping = mappings[i];
                 var value = mapping.Get(data);
-                if (!Equals(value, null) && mapping.ConvertString) {
+                if (!Equals(value, null) && mapping.ConvertString)
+                {
                     value = value.ToString();
                 }
-                DataParameter dataParameter;
-                if ((mapping.Direction | ParameterDirection.Output) == ParameterDirection.Output) {
-                    dataParameter = new CallbackDataParameter(mapping.Name, value, mapping.Direction, data, mapping);
-                }
-                else {
-                    dataParameter = new DataParameter(mapping.Name, value, mapping.Direction);
-                }
+
+                var dataParameter = mapping.Direction != ParameterDirection.Input
+                    ? new CallbackDataParameter(mapping.Name, value, mapping.Direction, data, mapping)
+                    : new DataParameter(mapping.Name, value, mapping.Direction);
                 dataParameters[i] = dataParameter;
             }
+
             return dataParameters;
         }
     }

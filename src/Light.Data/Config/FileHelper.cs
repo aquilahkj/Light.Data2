@@ -16,21 +16,18 @@ namespace Light.Data
                 absolute = true;
                 return new FileInfo(path);
             }
-            else if (Environment.OSVersion.Platform == PlatformID.Win32NT && path.Length >= 2 && path[1] == ':' && ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')))
+
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT && path.Length >= 2 && path[1] == ':' && ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')))
             {
                 absolute = true;
                 return new FileInfo(path);
             }
-            else
-            {
-                
 
-                var gg = AppContext.BaseDirectory;
-                absolute = false;
-                var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                var newPath = Path.Combine(currentDirectory, path);
-                return new FileInfo(newPath);
-            }
+            var gg = AppContext.BaseDirectory;
+            absolute = false;
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var newPath = Path.Combine(currentDirectory, path);
+            return new FileInfo(newPath);
         }
     }
 }

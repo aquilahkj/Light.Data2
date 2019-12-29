@@ -24,16 +24,20 @@ namespace Light.Data
 			if (expression1 == null && expression2 == null) {
 				return null;
 			}
-			else if (expression1 == null && expression2 != null) {
+
+			if (expression1 == null && expression2 != null) {
 				return expression2;
 			}
-			else if (expression1 != null && expression2 == null) {
+
+			if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
-			else if (ReferenceEquals (expression1, expression2)) {
+
+			if (ReferenceEquals (expression1, expression2)) {
 				return expression1;
 			}
-			else if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
+
+			if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
 				return expression2;
 			}
 			DataEntityMapping demapping = null;

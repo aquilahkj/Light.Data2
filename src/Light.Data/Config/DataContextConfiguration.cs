@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Light.Data
@@ -10,9 +10,9 @@ namespace Light.Data
     /// </summary>
     public class DataContextConfiguration
     {
-        private static DataContextConfiguration instance = null;
+        private static DataContextConfiguration instance;
 
-        private static object locker = new object();
+        private static readonly object locker = new object();
 
         private static string gobalConfigFilePath;
 
@@ -122,7 +122,8 @@ namespace Light.Data
         {
             if (optionList != null && optionList.Connections != null && optionList.Connections.Length > 0) {
                 foreach (var connection in optionList.Connections) {
-                    var setting = new ConnectionSetting() {
+                    var setting = new ConnectionSetting
+                    {
                         Name = connection.Name,
                         ConnectionString = connection.ConnectionString,
                         ProviderName = connection.ProviderName
@@ -147,7 +148,7 @@ namespace Light.Data
 
         private DataContextOptions defaultOptions;
 
-        private Dictionary<string, DataContextOptions> optionsDict = new Dictionary<string, DataContextOptions>();
+        private readonly Dictionary<string, DataContextOptions> optionsDict = new Dictionary<string, DataContextOptions>();
 
         /// <summary>
         /// Gets the default options.
@@ -179,9 +180,8 @@ namespace Light.Data
             if (optionsDict.TryGetValue(name, out var options)) {
                 return options;
             }
-            else {
-                throw new LightDataException(string.Format(SR.SpecifiedConfigNotExists, name));
-            }
+
+            throw new LightDataException(string.Format(SR.SpecifiedConfigNotExists, name));
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Light.Data
 
 		public MutliInsertSelector (DataTableEntityMapping insertMapping)
 		{
-			this.InsertMapping = insertMapping;
+			InsertMapping = insertMapping;
 		}
 
 		internal DataTableEntityMapping InsertMapping { get; }

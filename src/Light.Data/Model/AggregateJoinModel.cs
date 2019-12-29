@@ -28,7 +28,7 @@ namespace Light.Data
             Having = having;
             Order = order;
             AliasTableName = aliasTableName;
-            JoinMapping = model.OutputMapping;
+            JoinMapping = model.OutputDataMapping;
             if ((setting & JoinSetting.NoDataSetEntityNull) == JoinSetting.NoDataSetEntityNull) {
                 NoDataSetEntityNull = true;
             }

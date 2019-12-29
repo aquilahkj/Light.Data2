@@ -5,8 +5,8 @@ namespace Light.Data
 {
     internal class BytesDataDefine : DataDefine
     {
-        public BytesDataDefine(Type type, bool isNullable)
-            : base(type, isNullable)
+        public BytesDataDefine(bool isNullable)
+            : base(typeof(byte[]), isNullable)
         {
 
         }
@@ -16,34 +16,36 @@ namespace Light.Data
         /// </summary>
         /// <returns>The data.</returns>
         /// <param name="context">Context.</param>
-        /// <param name="datareader">Datareader.</param>
+        /// <param name="dataReader">DataReader.</param>
         /// <param name="state">State.</param>
-        public override object LoadData(DataContext context, IDataReader datareader, object state)
+        public override object LoadData(DataContext context, IDataReader dataReader, object state)
         {
-            var value = datareader[0];
-            if (Equals(value, DBNull.Value) || Equals(value, null)) {
+            var value = dataReader[0];
+            if (Equals(value, DBNull.Value) || Equals(value, null))
+            {
                 if (IsNullable) {
                     return null;
-                } else {
-                    return new byte[0];
                 }
-            } else {
-                return value;
+
+                return new byte[0];
             }
+
+            return value;
         }
 
-        public override object LoadData(DataContext context, IDataReader datareader, string name, object state)
+        public override object LoadData(DataContext context, IDataReader dataReader, string name, object state)
         {
-            var value = datareader[name];
-            if (Equals(value, DBNull.Value) || Equals(value, null)) {
+            var value = dataReader[name];
+            if (Equals(value, DBNull.Value) || Equals(value, null))
+            {
                 if (IsNullable) {
                     return null;
-                } else {
-                    return new byte[0];
                 }
-            } else {
-                return value;
+
+                return new byte[0];
             }
+
+            return value;
         }
     }
 }

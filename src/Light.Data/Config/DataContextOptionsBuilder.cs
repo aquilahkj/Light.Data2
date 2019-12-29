@@ -44,16 +44,16 @@ namespace Light.Data
 
         }
 
-        private Dictionary<string, string> _dict = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _dict = new Dictionary<string, string>();
 
-        private string _connection = null;
+        private string _connection;
 
         /// <summary>
         /// CommandOutput
         /// </summary>
         protected ICommandOutput _commandOutput;
 
-        private Func<string, ConfigParamSet, DatabaseProvider> _func = null;
+        private Func<string, ConfigParamSet, DatabaseProvider> _func;
 
         /// <summary>
         /// Sets the config parameter.

@@ -28,9 +28,8 @@ namespace Light.Data
 			if (singleEntityName == name && singleEntityMap.RootMapping.ObjectType == type) {
 				return true;
 			}
-			else {
-				return state.CheckParameter (name, type);
-			}
+
+			return state.CheckParameter (name, type);
 		}
 
 		public override ISelector CreateSelector (string [] fullPaths)
@@ -50,21 +49,20 @@ namespace Light.Data
 				var info = singleEntityMap.GetFieldInfoForPath (path);
 				return info;
 			}
-			else {
-				return state.GetDataFieldInfo (fullPath);
-			}
+
+			return state.GetDataFieldInfo (fullPath);
 		}
 
 		public override LambdaPathType ParsePath (string fullPath)
 		{
 			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
-			if (index == -1) {
+			if (index == -1)
+			{
 				if (fullPath == singleEntityName) {
 					return LambdaPathType.Parameter;
 				}
-				else {
-					return state.ParsePath (fullPath);
-				}
+
+				return state.ParsePath (fullPath);
 			}
 			var name = fullPath.Substring (0, index);
 			var path = fullPath.Substring (index);
@@ -74,15 +72,16 @@ namespace Light.Data
 			if (singleEntityMap.CheckIsField (path)) {
 				return LambdaPathType.Field;
 			}
-			else if (singleEntityMap.CheckIsRelateEntity (path)) {
+
+			if (singleEntityMap.CheckIsRelateEntity (path)) {
 				return LambdaPathType.RelateEntity;
 			}
-			else if (singleEntityMap.CheckIsEntityCollection (path)) {
+
+			if (singleEntityMap.CheckIsEntityCollection (path)) {
 				return LambdaPathType.RelateCollection;
 			}
-			else {
-				return LambdaPathType.None;
-			}
+
+			return LambdaPathType.None;
 		}
 	}
 }

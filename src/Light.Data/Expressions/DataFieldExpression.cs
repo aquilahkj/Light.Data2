@@ -25,10 +25,12 @@
 			if (expression1 == null && expression2 == null) {
 				return null;
 			}
-			else if (expression1 == null && expression2 != null) {
+
+			if (expression1 == null && expression2 != null) {
 				return expression2;
 			}
-			else if (expression1 != null && expression2 == null) {
+
+			if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
 			var newExpression = new DataFieldExpression ();

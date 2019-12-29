@@ -48,7 +48,8 @@ namespace Light.Data
             }
             LastFieldPath = string.Format("{0}.{1}", fieldPath, rootRelationMapping.FieldName);
             PrevFieldPath = fieldPath;
-            var masterItem = new RelationItem() {
+            var masterItem = new RelationItem
+            {
                 DataMapping = rootRelationMapping.MasterMapping,
                 FieldMapping = null,
                 //PrevFieldPath = prevFieldPath,
@@ -56,7 +57,8 @@ namespace Light.Data
                 Keys = masters
             };
 
-            var relateItem = new RelationItem() {
+            var relateItem = new RelationItem
+            {
                 DataMapping = rootRelationMapping.RelateMapping,
                 FieldMapping = rootRelationMapping,
                 PrevFieldPath = PrevFieldPath,
@@ -109,17 +111,18 @@ namespace Light.Data
             var len = items.Count - 1;
             for (var i = 0; i < len; i++) {
                 var item = items[i];
-                if (Equals(relateMapping.RelateMapping, item.DataMapping)) {
+                if (Equals(relateMapping.RelateMapping, item.DataMapping))
+                {
                     if (IsMatch(item.Keys, relates)) {
                         CycleFieldPath = item.CurrentFieldPath;
                         return RelationLinkType.Cycle;
                     }
-                    else {
-                        throw new LightDataException(string.Format(SR.RelationFieldKeyNotMatch, relateMapping.MasterMapping.ObjectType, relateMapping.FieldName));
-                    }
+
+                    throw new LightDataException(string.Format(SR.RelationFieldKeyNotMatch, relateMapping.MasterMapping.ObjectType, relateMapping.FieldName));
                 }
             }
-            var relateItem = new RelationItem() {
+            var relateItem = new RelationItem
+            {
                 DataMapping = relateMapping.RelateMapping,
                 FieldMapping = relateMapping,
                 PrevFieldPath = PrevFieldPath,

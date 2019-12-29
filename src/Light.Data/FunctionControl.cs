@@ -3,7 +3,7 @@
 namespace Light.Data
 {
     /// <summary>
-    /// Data fielf function control
+    /// Data field function control
     /// </summary>
     [Flags]
     public enum FunctionControl

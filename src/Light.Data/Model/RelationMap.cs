@@ -135,7 +135,7 @@ namespace Light.Data
 
         public RelationMap(DataEntityMapping rootMapping)
         {
-            this.RootMapping = rootMapping;
+            RootMapping = rootMapping;
             if (rootMapping.HasJoinRelateModel) {
                 LoadJoinRelate();
             }
@@ -248,9 +248,8 @@ namespace Light.Data
             if (fieldInfoDict.TryGetValue(path, out var info)) {
                 return info;
             }
-            else {
-                throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedFieldViaPath, path));
-            }
+
+            throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedFieldViaPath, path));
         }
 
         private DataFieldInfo GetFieldInfoForField(string path)
@@ -258,9 +257,8 @@ namespace Light.Data
             if (fieldInfoDict.TryGetValue(path, out var info)) {
                 return info;
             }
-            else {
-                throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedFieldViaPath, path));
-            }
+
+            throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedFieldViaPath, path));
         }
 
         private DataFieldInfo[] GetFieldInfoForSingleField(string path)
@@ -272,9 +270,8 @@ namespace Light.Data
                 }
                 return infos;
             }
-            else {
-                throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedFieldViaPath, path));
-            }
+
+            throw new LightDataException(string.Format(SR.CanNotFindTheSpecifiedFieldViaPath, path));
         }
 
         public ISelector GetDefaultSelector()
@@ -358,13 +355,12 @@ namespace Light.Data
                 }
                 return jselector;
             }
-            else {
-                var nselector = new Selector();
-                foreach (var finfo in hash) {
-                    nselector.SetSelectField(finfo);
-                }
-                return nselector;
+
+            var nselector = new Selector();
+            foreach (var finfo in hash) {
+                nselector.SetSelectField(finfo);
             }
+            return nselector;
         }
 
         public ISelector CreateExceptSelector(string[] paths)
@@ -379,15 +375,14 @@ namespace Light.Data
                 }
                 return jselector;
             }
-            else {
-                var nselector = new Selector();
-                foreach (var kvs in fieldInfoDict) {
-                    if (!exceptInfo.Contains(kvs.Value)) {
-                        nselector.SetSelectField(kvs.Value);
-                    }
+
+            var nselector = new Selector();
+            foreach (var kvs in fieldInfoDict) {
+                if (!exceptInfo.Contains(kvs.Value)) {
+                    nselector.SetSelectField(kvs.Value);
                 }
-                return nselector;
             }
+            return nselector;
         }
     }
 }

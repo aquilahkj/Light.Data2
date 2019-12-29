@@ -9,26 +9,21 @@
         /// <summary>
         /// Options
         /// </summary>
-        readonly protected DataContextOptions<TContxt> options;
+        protected readonly DataContextOptions<TContxt> options;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="options"></param>
-        public DataContextFactory(DataContextOptions<TContxt> options)
+        protected DataContextFactory(DataContextOptions<TContxt> options)
         {
             this.options = options;
         }
-        /// <summary>
-        /// Create Specified DataContext
-        /// </summary>
-        /// <returns></returns>
-        public abstract TContxt CreateDataContext();
     }
     /// <summary>
     /// Basic DataContext Factory 
     /// </summary>
-    public class LightDataContextFactory : DataContextFactory<DataContext>
+    public sealed class LightDataContextFactory : DataContextFactory<DataContext>
     {
         /// <summary>
         /// 
@@ -42,7 +37,7 @@
         /// Create Basic DataContext
         /// </summary>
         /// <returns></returns>
-        public override DataContext CreateDataContext()
+        public DataContext CreateDataContext()
         {
             return new DataContext(options);
         }

@@ -45,8 +45,8 @@ namespace Light.Data.Mssql
             dateTimeFormatDict.Add("dd MM", "CONVERT(char(5), {0}, 106)");
             dateTimeFormatDict.Add("MM dd", "CONVERT(char(5), {0}, 107)");
 
-            _havingAlias = false;
-            _orderbyAlias = true;
+            HavingAlias = false;
+            OrderByAlias = true;
         }
 
         public override int MaxParameterCount => 2000;
@@ -85,11 +85,11 @@ namespace Light.Data.Mssql
         {
             var sb = new StringBuilder();
             if (starts) {
-                sb.AppendFormat("'{0}'+", _wildcards);
+                sb.AppendFormat("'{0}'+", Wildcards);
             }
             sb.Append(field);
             if (ends) {
-                sb.AppendFormat("+'{0}'", _wildcards);
+                sb.AppendFormat("+'{0}'", Wildcards);
             }
             return sb.ToString();
         }

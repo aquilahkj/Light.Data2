@@ -9,10 +9,10 @@ namespace Light.Data
             if (setting == null) {
                 throw new ArgumentNullException(nameof(setting));
             }
-            Type type;
+
             var connection = setting.ConnectionString;
 
-            type = Type.GetType(setting.ProviderName, throwOnError);
+            var type = Type.GetType(setting.ProviderName, throwOnError);
 
             if (type == null) {
                 return null;
@@ -26,13 +26,13 @@ namespace Light.Data
             }
 
             var dataBase = Activator.CreateInstance(type, setting.Name, setting.ConfigParam) as DatabaseProvider;
-            if (dataBase == null) {
+            if (dataBase == null)
+            {
                 if (!throwOnError) {
                     return null;
                 }
-                else {
-                    throw new LightDataException(string.Format(SR.TypeIsNotDatabaseType, type.FullName));
-                }
+
+                throw new LightDataException(string.Format(SR.TypeIsNotDatabaseType, type.FullName));
             }
             //dataBase.SetExtendParams(setting.ConfigParam);
             var context = new DataContextSetting(connection, dataBase);
@@ -47,8 +47,8 @@ namespace Light.Data
 
         public DataContextSetting(string connection, DatabaseProvider dataBase)
         {
-            this.Connection = connection;
-            this.DataBase = dataBase;
+            Connection = connection;
+            DataBase = dataBase;
         }
     }
 }

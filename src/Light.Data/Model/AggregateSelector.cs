@@ -5,7 +5,7 @@ namespace Light.Data
 {
 	internal class AggregateSelector : ISelector
     {
-	    private List<AggregateDataFieldInfo> selectList = new List<AggregateDataFieldInfo>();
+	    private readonly List<AggregateDataFieldInfo> selectList = new List<AggregateDataFieldInfo>();
 
 		public virtual void SetSelectField(AggregateDataFieldInfo field)
 		{

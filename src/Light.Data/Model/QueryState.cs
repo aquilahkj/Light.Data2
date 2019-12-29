@@ -51,27 +51,27 @@ namespace Light.Data
         {
             if (relationMap.TryGetCycleFieldPath(fieldPath, out var m)) {
                 return joinDatas.TryGetValue(m, out value);
-            } else {
-                return joinDatas.TryGetValue(fieldPath, out value);
             }
+
+            return joinDatas.TryGetValue(fieldPath, out value);
         }
 
         public string GetAliasName(string fieldPath)
         {
             if (relationMap.CheckValid(fieldPath, out var alias)) {
                 return alias;
-            } else {
-                throw new LightDataException(string.Format(SR.CanNotFindAliasNameViaSpecifiedPath, fieldPath));
             }
+
+            throw new LightDataException(string.Format(SR.CanNotFindAliasNameViaSpecifiedPath, fieldPath));
         }
 
         public bool CheckSelectField(string fieldName)
         {
             if (fieldHash != null) {
                 return fieldHash.Contains(fieldName);
-            } else {
-                return true;
             }
+
+            return true;
         }
 
         public void SetNoDataSetNull(string aliasName)
@@ -86,9 +86,9 @@ namespace Light.Data
         {
             if (nodataSetNullHash != null) {
                 return nodataSetNullHash.Contains(aliasName);
-            } else {
-                return false;
             }
+
+            return false;
         }
     }
 }

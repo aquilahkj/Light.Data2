@@ -9,19 +9,17 @@ namespace Light.Data
     {
         #region Private Field
 
-        protected string _dbType;
+        protected readonly string _dbType;
 
-        protected bool _isNullable;
+        protected readonly bool _isNullable;
 
-        protected Type _objectType;
+        protected readonly string _name;
 
-        protected string _name;
+        protected readonly string _indexName;
 
-        protected string _indexName;
+        protected readonly DataMapping _typeMapping;
 
-        protected DataMapping _typeMapping;
-
-        protected TypeCode _typeCode = TypeCode.Empty;
+        protected readonly TypeCode _typeCode = TypeCode.Empty;
 
         #endregion
 
@@ -31,7 +29,7 @@ namespace Light.Data
 
         public virtual bool IsNullable => _isNullable;
 
-        public Type ObjectType => _objectType;
+        public Type ObjectType { get; }
 
         public string Name => _name;
 
@@ -47,7 +45,7 @@ namespace Light.Data
 
         protected FieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
         {
-            _objectType = type;
+            ObjectType = type;
             if (type != null) {
                 _typeCode = Type.GetTypeCode(type);
             }

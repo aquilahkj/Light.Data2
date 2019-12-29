@@ -8,22 +8,22 @@ namespace Light.Data
 	/// </summary>
 	internal class CustomFieldMapping : DataFieldMapping
 	{
+		public override bool IsPrimaryKey => false;
+		public override bool IsIdentity => false;
+		public override bool IsAutoUpdate => false;
 		public CustomFieldMapping (string fieldName, DataEntityMapping mapping)
 			: base (null, fieldName, null, mapping, true, null)
 		{
-
+			
 		}
-
-		#region implemented abstract members of FieldMapping
 
 		public override object ToProperty (object value)
 		{
 			if (Equals (value, DBNull.Value)) {
 				return null;
 			}
-			else {
-				return value;
-			}
+
+			return value;
 		}
 
 		public override object ToParameter (object value)
@@ -31,25 +31,20 @@ namespace Light.Data
 			if (Equals (value, DBNull.Value)) {
 				return null;
 			}
-			else {
-				return value;
-			}
+
+			return value;
 		}
-
-		#endregion
-
-		#region implemented abstract members of DataFieldMapping
-
-		//public override object ToColumn (object value)
-		//{
-		//	return value;
-		//}
-
-        public override object GetInsertData(object entity, bool refreshField)
+		
+		public override object ToUpdate(object entity, bool refreshField)
+		{
+			var value = Handler.Get(entity);
+			return value;
+		}
+		
+		public override object ToInsert(object entity, bool refreshField)
         {
             var value = Handler.Get(entity);
             return value;
         }
-            #endregion
-        }
+	}
 }

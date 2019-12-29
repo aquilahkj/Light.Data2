@@ -4,17 +4,17 @@ namespace Light.Data
 {
     internal class AggregateModel
     {
-        public AggregateModel(DataEntityMapping entityMapping, CustomMapping aggregateMapping)
+        public AggregateModel(DataEntityMapping entityMapping, CustomDataMapping aggregateDataMapping)
         {
             EntityMapping = entityMapping;
-            OutputMapping = aggregateMapping;
+            OutputDataMapping = aggregateDataMapping;
         }
 
         private bool _hasGroupBy;
 
         public bool OnlyAggregate { get; set; }
 
-        public CustomMapping OutputMapping { get; }
+        public CustomDataMapping OutputDataMapping { get; }
 
         public DataEntityMapping EntityMapping { get; }
 
@@ -38,9 +38,8 @@ namespace Light.Data
             if (_aggregateDict.TryGetValue(name, out var info)) {
                 return info;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         public bool CheckName(string name)

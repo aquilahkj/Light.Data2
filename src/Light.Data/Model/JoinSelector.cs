@@ -5,9 +5,9 @@ namespace Light.Data
 {
 	internal class JoinSelector : ISelector
 	{
-		private Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
+		private readonly Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
 
-		private HashSet<string> aliasTableHash = new HashSet<string> ();
+		private readonly HashSet<string> aliasTableHash = new HashSet<string> ();
 
 		public void SetDataEntity (DataEntityMapping entityMapping)
 		{

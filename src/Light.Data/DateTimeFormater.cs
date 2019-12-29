@@ -117,8 +117,8 @@ namespace Light.Data
 								sb.Append(yearFormat);
 								continue;
 							}
+							break;
 						}
-						break;
 					case 'M': {
 							var ret = ParseValue(chars, i, 2, 'M');
 							if (ret > 0) {
@@ -126,8 +126,8 @@ namespace Light.Data
 								sb.Append(monthFormat);
 								continue;
 							}
+							break;
 						}
-						break;
 					case 'd': {
 							var ret = ParseValue(chars, i, 2, 'd');
 							if (ret > 0) {
@@ -135,8 +135,8 @@ namespace Light.Data
 								sb.Append(dayFormat);
 								continue;
 							}
+							break;
 						}
-						break;
 					case 'H': {
 							var ret = ParseValue(chars, i, 2, 'H');
 							if (ret > 0) {
@@ -144,8 +144,8 @@ namespace Light.Data
 								sb.Append(hourFormat);
 								continue;
 							}
+							break;
 						}
-						break;
 					case 'm': {
 							var ret = ParseValue(chars, i, 2, 'm');
 							if (ret > 0) {
@@ -153,8 +153,8 @@ namespace Light.Data
 								sb.Append(minuteFormat);
 								continue;
 							}
+							break;
 						}
-						break;
 					case 's': {
 							var ret = ParseValue(chars, i, 2, 's');
 							if (ret > 0) {
@@ -162,8 +162,8 @@ namespace Light.Data
 								sb.Append(secondFormat);
 								continue;
 							}
+							break;
 						}
-						break;
 				}
 
 				sb.Append(c);

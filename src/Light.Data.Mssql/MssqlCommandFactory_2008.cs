@@ -23,7 +23,7 @@ namespace Light.Data.Mssql
                     var command1 = new CommandData(cache);
                     command1.IdentitySql = identity;
                     foreach (var field in mapping.CreateFieldList) {
-                        var value = field.GetInsertData(entity, refresh);
+                        var value = field.ToInsert(entity, refresh);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
                     return command1;
@@ -40,7 +40,7 @@ namespace Light.Data.Mssql
             var valuesList = new string[insertLen];
             for (var i = 0; i < insertLen; i++) {
                 var field = fields[i];
-                var value = field.GetInsertData(entity, refresh);
+                var value = field.ToInsert(entity, refresh);
                 insertList[i] = CreateDataFieldSql(field.Name);
                 valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
             }
@@ -105,7 +105,7 @@ namespace Light.Data.Mssql
                 var valuesList = new string[insertLen];
                 for (var i = 0; i < insertLen; i++) {
                     var field = fields[i];
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 var values = string.Join(",", valuesList);
@@ -162,7 +162,7 @@ namespace Light.Data.Mssql
                 var valuesList = new string[insertLen];
                 for (var i = 0; i < insertLen; i++) {
                     var field = fields[i];
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
                 var values = string.Join(",", valuesList);

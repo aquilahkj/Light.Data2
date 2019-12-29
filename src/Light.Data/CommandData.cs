@@ -23,7 +23,7 @@ namespace Light.Data
             this.commandText = commandText;
         }
 
-        public CommandType CommandType { get; set; } = CommandType.Text;
+        public CommandType CommandType { get; } = CommandType.Text;
 
         public bool InnerPage { get; set; }
 
@@ -43,22 +43,22 @@ namespace Light.Data
         {
             if (database == null)
                 throw new ArgumentNullException(nameof(database));
-            IDataParameter[] idataParameters = null;
+            IDataParameter[] parameters = null;
             var sql = commandText;
             var dps = state.GetDataParameters();
             var length = dps.Length;
             if (length > 0) {
-                idataParameters = new IDataParameter[length];
+                parameters = new IDataParameter[length];
                 for (var i = 0; i < length; i++) {
                     var dp = dps[i];
-                    var idataParameter = dp.ConvertDbParameter(database, CommandType.Text);
-                    idataParameters[i] = idataParameter;
+                    var parameter = dp.ConvertDbParameter(database, CommandType.Text);
+                    parameters[i] = parameter;
                 }
             }
             var command = database.CreateCommand(sql);
             command.CommandType = CommandType;
-            if (idataParameters != null) {
-                foreach (var param in idataParameters) {
+            if (parameters != null) {
+                foreach (var param in parameters) {
                     command.Parameters.Add(param);
                 }
             }

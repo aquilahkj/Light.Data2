@@ -38,17 +38,16 @@
 
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
-            if (isFullName) {
+            if (isFullName)
+            {
                 if (_aliasTableName != null) {
                     return factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
                 }
-                else {
-                    return factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
-                }
+
+                return factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
             }
-            else {
-                return factory.CreateDataFieldSql(FieldName);
-            }
+
+            return factory.CreateDataFieldSql(FieldName);
         }
 
         public string CreateAliasDataFieldSql(CommandFactory factory, bool isFullName, CreateSqlState state)

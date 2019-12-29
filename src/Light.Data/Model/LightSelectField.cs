@@ -73,25 +73,25 @@ namespace Light.Data
 
         #region async
 
-        public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<List<K>> ToListAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, _region);
             var define = DataDefine.GetDefine(typeof(K));
             return await _context.QueryDataDefineListAsync<K>(define, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, null, null, cancellationToken);
         }
 
-        public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default)
         {
             var list = await ToListAsync(CancellationToken.None);
             return list.ToArray();
         }
 
-        public async override Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> FirstAsync(CancellationToken cancellationToken = default)
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default)
         {
             var region = new Region(index, 1);
             var queryCommand = _context.Database.QuerySingleField(_context, SpecifiedFieldInfo, _query, _order, false, region);

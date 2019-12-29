@@ -6,7 +6,7 @@ namespace Light.Data
     /// <summary>
     /// Store procedure parameter attribute
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class DataParameterAttribute : Attribute
     {
         /// <summary>

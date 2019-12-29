@@ -4,66 +4,79 @@ namespace Light.Data
 {
     internal class BytesFieldMapping : DataFieldMapping
     {
-        public BytesFieldMapping(Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
-            : base(type, fieldName, indexName, mapping, isNullable, dbType)
+        public BytesFieldMapping(string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, bool isIdentity, bool isPrimaryKey)
+            : base(typeof(byte[]), fieldName, indexName, mapping, isNullable, dbType)
         {
+            if (isIdentity)
+            {
+                throw new LightDataException(string.Format(SR.DataMappingUnsupportIdentityFieldType, ObjectType, fieldName, ObjectType));
+            }
 
+            if (isPrimaryKey)
+            {
+                throw new LightDataException(string.Format(SR.DataMappingUnsupportPrimaryKeyFieldType, ObjectType, fieldName, ObjectType));
+            }
         }
 
-        public override object GetInsertData(object entity, bool refreshField)
+        public override bool IsPrimaryKey => false;
+        public override bool IsIdentity => false;
+
+        public override bool IsAutoUpdate => false;
+
+        public override object ToUpdate(object entity, bool refreshField)
         {
             var value = Handler.Get(entity);
             if (Equals(value, null)) {
                 if (IsNullable) {
                     return null;
                 }
-                else {
-                    object result = new byte[0];
-                    if (refreshField) {
-                        Handler.Set(entity, result);
-                    }
-                    return result;
+
+                object result = new byte[0];
+                if (refreshField) {
+                    Handler.Set(entity, result);
                 }
+                return result;
             }
-            else {
-                return value;
-            }
+
+            return value;
         }
+        
+        public override object ToInsert(object entity, bool refreshField)
+        {
+            var value = Handler.Get(entity);
+            if (Equals(value, null)) {
+                if (IsNullable) {
+                    return null;
+                }
 
+                object result = new byte[0];
+                if (refreshField) {
+                    Handler.Set(entity, result);
+                }
+                return result;
+            }
 
-        //public override object ToColumn(object value)
-        //{
-        //    if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value)) {
-        //        if (IsNullable) {
-        //            return null;
-        //        }
-        //        else {
-        //            return new byte[0];
-        //        }
-        //    }
-        //    else {
-        //        return value;
-        //    }
-        //}
+            return value;
+        }
 
         public override object ToParameter(object value)
         {
             if (Equals(value, null) || Equals(value, DBNull.Value)) {
                 return null;
             }
-            else {
-                return value;
-            }
+
+            return value;
         }
 
+        
+        
         public override object ToProperty(object value)
         {
             if (Equals(value, DBNull.Value) || Equals(value, null)) {
                 return null;
             }
-            else {
-                return value;
-            }
+
+            return value;
         }
     }
 }

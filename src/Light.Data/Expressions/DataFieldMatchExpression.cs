@@ -9,7 +9,7 @@
 
 		private readonly DataFieldInfo rightField;
 
-		private QueryPredicate predicate;
+		private readonly QueryPredicate predicate;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DataFieldMatchExpression"/> class.

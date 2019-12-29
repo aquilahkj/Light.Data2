@@ -2,9 +2,9 @@
 {
 	internal class DataFieldOrderExpression : OrderExpression
 	{
-		private DataFieldInfo _fieldInfo;
+		private readonly DataFieldInfo _fieldInfo;
 
-		private OrderType _orderType = OrderType.ASC;
+		private readonly OrderType _orderType = OrderType.ASC;
 
 		public DataFieldOrderExpression (DataFieldInfo fieldInfo, OrderType orderType)
 			: base (fieldInfo.TableMapping)

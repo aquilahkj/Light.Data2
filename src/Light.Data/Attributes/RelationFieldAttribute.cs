@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Relation field attribute.
 	/// </summary>
-	[AttributeUsage (AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
+	[AttributeUsage (AttributeTargets.Property, AllowMultiple = true)]
 	public class RelationFieldAttribute : Attribute
 	{
 		/// <summary>
@@ -21,8 +21,8 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (relateKey)) {
 				throw new ArgumentNullException (nameof (relateKey));
 			}
-			this.MasterKey = masterKey;
-			this.RelateKey = relateKey;
+			MasterKey = masterKey;
+			RelateKey = relateKey;
 		}
 
 		/// <summary>

@@ -301,7 +301,7 @@ namespace Light.Data.Mssql.Test
 
         }
 
-        public override TestContext CreateDataContext()
+        public virtual TestContext CreateDataContext()
         {
             return new TestContext(options);
         }

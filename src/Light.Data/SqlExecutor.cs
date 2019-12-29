@@ -13,13 +13,13 @@ namespace Light.Data
     /// </summary>
     public class SqlExecutor
     {
-        private DbCommand _command;
+        private readonly DbCommand _command;
 
-        private DataContext _context;
+        private readonly DataContext _context;
 
-        private SafeLevel _level = SafeLevel.None;
+        private readonly SafeLevel _level = SafeLevel.None;
 
-        private DataParameter[] _parameters;
+        private readonly DataParameter[] _parameters;
 
         /// <summary>
         /// Gets or sets the command time out.
@@ -192,7 +192,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>The affected rows.</returns>
-        public async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken = default)
         {
             var ret = await _context.ExecuteNonQueryAsync(_command, _level, cancellationToken);
             Callback();
@@ -204,7 +204,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>The execute result.</returns>
-        public async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken = default)
         {
             var ret = await _context.ExecuteScalarAsync(_command, _level, cancellationToken);
             Callback();
@@ -217,7 +217,7 @@ namespace Light.Data
         /// <typeparam name="T">Data type.</typeparam>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>First data</returns>
-        public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> QueryFirstAsync<T>(CancellationToken cancellationToken = default)
         {
             var target = await _context.QueryDataDefineSingleAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, 0, null, null, cancellationToken);
             Callback();
@@ -231,7 +231,7 @@ namespace Light.Data
         /// <param name="region">Query region</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>Data list</returns>
-        private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<List<T>> QueryListAsync<T>(Region region, CancellationToken cancellationToken = default)
         {
             var list = await _context.QueryDataDefineListAsync<T>(DataEntityMapping.GetEntityMapping(typeof(T)), _level, _command, region, null, null, cancellationToken);
             Callback();
@@ -244,7 +244,7 @@ namespace Light.Data
         /// <typeparam name="T">Data type.</typeparam>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>Data list</returns>
-        public async Task<List<T>> QueryListAsync<T>(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<T>> QueryListAsync<T>(CancellationToken cancellationToken = default)
         {
             return await QueryListAsync<T>(null, cancellationToken);
         }
@@ -257,7 +257,7 @@ namespace Light.Data
         /// <param name="size">Size.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>Data list</returns>
-        public async Task<List<T>> QueryListAsync<T>(int start, int size, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<T>> QueryListAsync<T>(int start, int size, CancellationToken cancellationToken = default)
         {
             if (start < 0) {
                 throw new ArgumentOutOfRangeException(nameof(size));

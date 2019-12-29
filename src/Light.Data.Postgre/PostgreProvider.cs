@@ -106,17 +106,17 @@ namespace Light.Data.Postgre
             }
             else
             {
-                var type = value.GetType();
-                if (type.IsEnum)
-                {
-                    var code = Type.GetTypeCode(type);
-                    sp.Value = Convert.ChangeType(value, code);
-                }
-                else
-                {
-                    sp.Value = value;
-                }
-                
+                // var type = value.GetType();
+                // if (type.IsEnum)
+                // {
+                //     var code = Type.GetTypeCode(type);
+                //     sp.Value = Convert.ChangeType(value, code);
+                // }
+                // else
+                // {
+                //     sp.Value = value;
+                // }
+                sp.Value = value;
             }
 
             if (!string.IsNullOrEmpty(dbType))

@@ -29,9 +29,8 @@ namespace Light.Data
             if (checkDb) {
                 return CheckDbSave(refresh, SafeLevel.Default);
             }
-            else {
-                return SimpleSave(refresh);
-            }
+
+            return SimpleSave(refresh);
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace Light.Data
         /// Check the data exists in the database and save data
         /// </summary>
         /// <returns></returns>
-        public async Task<int> SaveAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SaveAsync(CancellationToken cancellationToken = default)
         {
             return await CheckDbSaveAsync(true, SafeLevel.Default, cancellationToken);
         }
@@ -104,14 +103,13 @@ namespace Light.Data
         /// <param name="refresh">Whether to set the default value to null field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
-        public async Task<int> SaveAsync(bool checkDb, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SaveAsync(bool checkDb, bool refresh, CancellationToken cancellationToken = default)
         {
             if (checkDb) {
                 return await CheckDbSaveAsync(refresh, SafeLevel.Default, cancellationToken);
             }
-            else {
-                return await SimpleSaveAsync(refresh, cancellationToken);
-            }
+
+            return await SimpleSaveAsync(refresh, cancellationToken);
         }
 
         /// <summary>
@@ -121,7 +119,7 @@ namespace Light.Data
         /// <param name="refresh">Whether to set the default value to null field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
-        public async Task<int> SaveAsync(SafeLevel safeLevel, bool refresh, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SaveAsync(SafeLevel safeLevel, bool refresh, CancellationToken cancellationToken = default)
         {
             return await CheckDbSaveAsync(refresh, safeLevel, cancellationToken);
         }
@@ -132,7 +130,7 @@ namespace Light.Data
         /// <param name="safeLevel">Translation level</param>
         /// <returns></returns>
         /// <param name="cancellationToken">CancellationToken.</param>
-        public async Task<int> SaveAsync(SafeLevel safeLevel, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SaveAsync(SafeLevel safeLevel, CancellationToken cancellationToken = default)
         {
             return await CheckDbSaveAsync(true, safeLevel, cancellationToken);
         }
@@ -143,12 +141,12 @@ namespace Light.Data
         /// <param name="refresh">Whether to set the default value to null field</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns></returns>
-        public async Task<int> SaveAsync(bool refresh, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SaveAsync(bool refresh, CancellationToken cancellationToken = default)
         {
             return await CheckDbSaveAsync(refresh, SafeLevel.Default, cancellationToken);
         }
 
-        private async Task<int> SimpleSaveAsync(bool refresh, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<int> SimpleSaveAsync(bool refresh, CancellationToken cancellationToken = default)
         {
             var context = GetContext();
             int ret;
@@ -162,7 +160,7 @@ namespace Light.Data
             return ret;
         }
 
-        private async Task<int> CheckDbSaveAsync(bool refresh, SafeLevel level, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<int> CheckDbSaveAsync(bool refresh, SafeLevel level, CancellationToken cancellationToken = default)
         {
             var context = GetContext();
             int ret;
@@ -194,7 +192,7 @@ namespace Light.Data
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<int> EraseAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> EraseAsync(CancellationToken cancellationToken = default)
         {
             var context = GetContext();
             int ret;
@@ -243,9 +241,8 @@ namespace Light.Data
                 _updateFields.CopyTo(array);
                 return array;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         internal void ClearUpdateFields()
@@ -281,7 +278,7 @@ namespace Light.Data
             }
         }
 
-        private object[] rawKeys = null;
+        private object[] rawKeys;
 
         internal void SetRawPrimaryKeys(object[] keys)
         {

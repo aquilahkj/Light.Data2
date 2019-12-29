@@ -8,18 +8,18 @@ namespace Light.Data
 {
     internal abstract class CommandFactory
     {
-        protected string _wildcards = "%";
+        protected string Wildcards { get; } = "%";
 
-        protected bool _havingAlias;
+        protected bool HavingAlias { get; set; }
 
-        protected bool _orderbyAlias;
+        protected bool OrderByAlias { get; set; }
 
-        protected Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string>();
+        protected readonly Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string>();
 
-        protected Dictionary<QueryCollectionPredicate, string> _queryCollectionPredicateDict =
+        protected readonly Dictionary<QueryCollectionPredicate, string> _queryCollectionPredicateDict =
             new Dictionary<QueryCollectionPredicate, string>();
 
-        protected Dictionary<JoinType, string> _joinCollectionPredicateDict = new Dictionary<JoinType, string>();
+        protected readonly Dictionary<JoinType, string> _joinCollectionPredicateDict = new Dictionary<JoinType, string>();
 
 
         protected void InitialPredicate()
@@ -47,21 +47,21 @@ namespace Light.Data
             _joinCollectionPredicateDict[JoinType.RightJoin] = "right join";
         }
 
-        protected CommandCache _batchInsertCache = new CommandCache();
+        protected readonly CommandCache _batchInsertCache = new CommandCache();
 
-        protected CommandCache _baseInsertCache = new CommandCache();
+        protected readonly CommandCache _baseInsertCache = new CommandCache();
 
-        protected CommandCache _baseUpdateCache = new CommandCache();
+        protected readonly CommandCache _baseUpdateCache = new CommandCache();
 
-        protected CommandCache _baseDeleteCache = new CommandCache();
+        protected readonly CommandCache _baseDeleteCache = new CommandCache();
 
-        protected CommandCache _selectByIdCache = new CommandCache();
+        protected readonly CommandCache _selectByIdCache = new CommandCache();
 
-        protected CommandCache _selectByKeyCache = new CommandCache();
+        protected readonly CommandCache _selectByKeyCache = new CommandCache();
 
-        protected CommandCache _existsByKeyCache = new CommandCache();
+        protected readonly CommandCache _existsByKeyCache = new CommandCache();
 
-        protected CommandCache _deleteByKeyCache = new CommandCache();
+        protected readonly CommandCache _deleteByKeyCache = new CommandCache();
 
         public abstract string ParameterPrefix { get; }
 
@@ -153,11 +153,11 @@ namespace Light.Data
                 throw new LightDataException(SR.KeyNotAllowNull);
             }
 
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_selectByIdCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_selectByIdCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     var field = mapping.IdentityField;
@@ -166,16 +166,16 @@ namespace Light.Data
                 }
             }
 
-            var idfield = mapping.IdentityField.DefaultFieldInfo;
-            QueryExpression queryExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, idfield, id);
+            var idField = mapping.IdentityField.DefaultFieldInfo;
+            QueryExpression queryExpression = new LightBinaryQueryExpression(mapping, QueryPredicate.Eq, idField, id);
             var relationMap = mapping.GetRelationMap();
             var selector = relationMap.GetDefaultSelector();
             var region = new Region(0, 1);
             var command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region,
                 state);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _selectByIdCache.SetCommand(cachekey, command.CommandText);
+                _selectByIdCache.SetCommand(cacheKey, command.CommandText);
             }
 
             return command;
@@ -197,11 +197,11 @@ namespace Light.Data
                 }
             }
 
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_selectByKeyCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_selectByKeyCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     var i = 0;
@@ -236,9 +236,9 @@ namespace Light.Data
             var region = new Region(0, 1);
             var command = CreateSelectDataCommand(mapping, relationMap, selector, queryExpression, null, false, region,
                 state);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _selectByKeyCache.SetCommand(cachekey, command.CommandText);
+                _selectByKeyCache.SetCommand(cacheKey, command.CommandText);
             }
 
             return command;
@@ -260,11 +260,11 @@ namespace Light.Data
                 }
             }
 
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_existsByKeyCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_existsByKeyCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     var i = 0;
@@ -295,9 +295,9 @@ namespace Light.Data
             }
 
             var command = CreateExistsCommand(mapping, queryExpression, state);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _existsByKeyCache.SetCommand(cachekey, command.CommandText);
+                _existsByKeyCache.SetCommand(cacheKey, command.CommandText);
             }
 
             return command;
@@ -319,11 +319,11 @@ namespace Light.Data
                 }
             }
 
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_deleteByKeyCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_deleteByKeyCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     var i = 0;
@@ -354,9 +354,9 @@ namespace Light.Data
             }
 
             var command = CreateMassDeleteCommand(mapping, queryExpression, state);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _deleteByKeyCache.SetCommand(cachekey, command.CommandText);
+                _deleteByKeyCache.SetCommand(cacheKey, command.CommandText);
             }
 
             return command;
@@ -365,25 +365,25 @@ namespace Light.Data
         public virtual CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh,
             bool updateIdentity, CreateSqlState state)
         {
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_baseInsertCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_baseInsertCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     foreach (var field in mapping.CreateFieldList)
                     {
-                        var value = field.GetInsertData(entity, refresh);
+                        var value = field.ToInsert(entity, refresh);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
 
                     if (updateIdentity && mapping.IdentityField != null)
                     {
-                        var idensql = CreateIdentitySql(mapping, state);
-                        if (!string.IsNullOrEmpty(idensql))
+                        var identitySql = CreateIdentitySql(mapping, state);
+                        if (!string.IsNullOrEmpty(identitySql))
                         {
-                            command1.CommandText = command1.CommandText + ";" + idensql;
+                            command1.CommandText = command1.CommandText + ";" + identitySql;
                             command1.IdentitySql = true;
                         }
                     }
@@ -404,28 +404,27 @@ namespace Light.Data
             for (var i = 0; i < insertLen; i++)
             {
                 var field = fields[i];
-                var value = field.GetInsertData(entity, refresh);
+                var value = field.ToInsert(entity, refresh);
                 insertList[i] = CreateDataFieldSql(field.Name);
                 valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
             }
 
             var insert = string.Join(",", insertList);
             var values = string.Join(",", valuesList);
-            var sql = string.Format("insert into {0}({1})values({2})", CreateDataTableMappingSql(mapping, state),
-                insert, values);
+            var sql = $"insert into {CreateDataTableMappingSql(mapping, state)}({insert})values({values})";
 
             var command = new CommandData(sql);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _baseInsertCache.SetCommand(cachekey, command.CommandText);
+                _baseInsertCache.SetCommand(cacheKey, command.CommandText);
             }
 
             if (updateIdentity && mapping.IdentityField != null)
             {
-                var idensql = CreateIdentitySql(mapping, state);
-                if (!string.IsNullOrEmpty(idensql))
+                var identitySql = CreateIdentitySql(mapping, state);
+                if (!string.IsNullOrEmpty(identitySql))
                 {
-                    command.CommandText = command.CommandText + ";" + idensql;
+                    command.CommandText = command.CommandText + ";" + identitySql;
                     command.IdentitySql = true;
                 }
             }
@@ -443,17 +442,15 @@ namespace Light.Data
 
             IList<DataFieldMapping> columnFields;
             object[] keys = null;
-            DataTableEntity tableEntity = null;
             var defaultUpdate = false;
-            if (mapping.IsDataTableEntity)
+            if (mapping.IsDataTableEntity && entity is DataTableEntity tableEntity)
             {
-                tableEntity = entity as DataTableEntity;
                 keys = tableEntity.GetRawPrimaryKeys();
-                var updatefieldNames = tableEntity.GetUpdateFields();
-                if (updatefieldNames != null && updatefieldNames.Length > 0)
+                var updateFieldNames = tableEntity.GetUpdateFields();
+                if (updateFieldNames != null && updateFieldNames.Length > 0)
                 {
                     var updateFields = new List<DataFieldMapping>();
-                    foreach (var name in updatefieldNames)
+                    foreach (var name in updateFieldNames)
                     {
                         var fm = mapping.FindDataEntityField(name);
                         if (fm == null)
@@ -474,7 +471,7 @@ namespace Light.Data
                         }
                     }
 
-                    foreach (var tm in mapping.TimeStampFieldList)
+                    foreach (var tm in mapping.AutoUpdateFieldList)
                     {
                         if (!updateFields.Contains(tm) &&
                             (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
@@ -503,31 +500,30 @@ namespace Light.Data
             }
             else
             {
-                tableEntity = null;
                 columnFields = mapping.UpdateFieldList;
                 defaultUpdate = true;
             }
 
-            string cachekey = null;
+            string cacheKey = null;
             if (defaultUpdate && state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_baseUpdateCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_baseUpdateCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     foreach (var field in columnFields)
                     {
-                        object value;
-                        if (field.IsTimeStamp)
-                        {
-                            value = field.GetTimeStamp(entity, refresh);
-                        }
-                        else
-                        {
-                            var obj = field.Handler.Get(entity);
-                            value = field.ToParameter(obj);
-                        }
-
+                        // object value;
+                        // if (field.IsTimeStamp)
+                        // {
+                        //     value = field.GetTimeStamp(entity, refresh);
+                        // }
+                        // else
+                        // {
+                        //     var obj = field.Handler.Get(entity);
+                        //     value = field.ToParameter(obj);
+                        // }
+                        var value = field.ToUpdate(entity, refresh);
                         state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                     }
 
@@ -556,19 +552,19 @@ namespace Light.Data
             for (var i = 0; i < updateLen; i++)
             {
                 var field = columnFields[i];
-                object value;
-                if (field.IsTimeStamp)
-                {
-                    value = field.GetTimeStamp(entity, refresh);
-                }
-                else
-                {
-                    var obj = field.Handler.Get(entity);
-                    value = field.ToParameter(obj);
-                }
-
-                updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
-                    state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                // object value;
+                // if (field.IsTimeStamp)
+                // {
+                //     value = field.GetTimeStamp(entity, refresh);
+                // }
+                // else
+                // {
+                //     var obj = field.Handler.Get(entity);
+                //     value = field.ToParameter(obj);
+                // }
+                var value = field.ToUpdate(entity, refresh);
+                updateList[i] =
+                    $"{CreateDataFieldSql(field.Name)}={state.AddDataParameter(this, value, field.DBType, field.ObjectType)}";
             }
 
             for (var i = 0; i < keyLen; i++)
@@ -577,18 +573,17 @@ namespace Light.Data
                 var obj = keys == null ? field.Handler.Get(entity) : keys[i];
                 //object obj = field.Handler.Get(entity);
                 var value = field.ToParameter(obj);
-                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
-                    state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                whereList[i] =
+                    $"{CreateDataFieldSql(field.Name)}={state.AddDataParameter(this, value, field.DBType, field.ObjectType)}";
             }
 
-            var update = string.Join(",", updateList);
-            var where = string.Join(" and ", whereList);
-            var sql = string.Format("update {0} set {1} where {2}", CreateDataTableMappingSql(mapping, state), update,
-                where);
+            var updateString = string.Join(",", updateList);
+            var whereString = string.Join(" and ", whereList);
+            var sql = $"update {CreateDataTableMappingSql(mapping, state)} set {updateString} where {whereString}";
             var command = new CommandData(sql);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _baseUpdateCache.SetCommand(cachekey, command.CommandText);
+                _baseUpdateCache.SetCommand(cacheKey, command.CommandText);
             }
 
             return command;
@@ -598,11 +593,11 @@ namespace Light.Data
         public virtual CommandData CreateBaseDeleteCommand(DataTableEntityMapping mapping, object entity,
             CreateSqlState state)
         {
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0 && !state.UseDirectNull)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_baseDeleteCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_baseDeleteCache.TryGetCommand(cacheKey, out var cache))
                 {
                     var command1 = new CommandData(cache);
                     foreach (var field in mapping.PrimaryKeyFields)
@@ -629,16 +624,16 @@ namespace Light.Data
                 var field = keyFields[i];
                 var obj = field.Handler.Get(entity);
                 var value = field.ToParameter(obj);
-                whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
-                    state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                whereList[i] =
+                    $"{CreateDataFieldSql(field.Name)}={state.AddDataParameter(this, value, field.DBType, field.ObjectType)}";
             }
 
-            var where = string.Join(" and ", whereList);
-            var sql = string.Format("delete from {0} where {1}", CreateDataTableMappingSql(mapping, state), where);
+            var whereString = string.Join(" and ", whereList);
+            var sql = $"delete from {CreateDataTableMappingSql(mapping, state)} where {whereString}";
             var command = new CommandData(sql);
-            if (cachekey != null)
+            if (cacheKey != null)
             {
-                _baseDeleteCache.SetCommand(cachekey, command.CommandText);
+                _baseDeleteCache.SetCommand(cacheKey, command.CommandText);
             }
 
             return command;
@@ -646,7 +641,7 @@ namespace Light.Data
 
         public virtual CommandData CreateTruncateTableCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            var sql = string.Format("truncate table {0};", CreateDataTableMappingSql(mapping, state));
+            var sql = $"truncate table {CreateDataTableMappingSql(mapping, state)};";
             var command = new CommandData(sql);
             return command;
         }
@@ -655,12 +650,12 @@ namespace Light.Data
 
         #region 主命令语句块
 
-        public virtual string GetGroupByString(AggregateGroupBy groupby, bool isFullField, CreateSqlState state)
+        public virtual string GetGroupByString(AggregateGroupBy groupBy, bool isFullField, CreateSqlState state)
         {
             string queryString = null;
-            if (groupby.FieldCount > 0)
+            if (groupBy.FieldCount > 0)
             {
-                queryString = string.Format(" group by {0}", groupby.CreateGroupByString(this, isFullField, state));
+                queryString = $" group by {groupBy.CreateGroupByString(this, isFullField, state)}";
             }
 
             return queryString;
@@ -668,16 +663,16 @@ namespace Light.Data
 
         public virtual string GetHavingString(QueryExpression query, bool isFullField, CreateSqlState state)
         {
-            string queryString = null;
-            if (_havingAlias)
+            string queryString;
+            if (HavingAlias)
             {
                 state.UseFieldAlias = true;
-                queryString = string.Format(" having {0}", query.CreateSqlString(this, isFullField, state));
+                queryString = $" having {query.CreateSqlString(this, isFullField, state)}";
                 state.UseFieldAlias = false;
             }
             else
             {
-                queryString = string.Format(" having {0}", query.CreateSqlString(this, isFullField, state));
+                queryString = $" having {query.CreateSqlString(this, isFullField, state)}";
             }
 
             return queryString;
@@ -685,49 +680,41 @@ namespace Light.Data
 
         public virtual string GetQueryString(QueryExpression query, bool isFullField, CreateSqlState state)
         {
-            var queryString = string.Format(" where {0}", query.CreateSqlString(this, isFullField, state));
+            var queryString = $" where {query.CreateSqlString(this, isFullField, state)}";
             return queryString;
         }
 
         public virtual string GetOrderString(OrderExpression order, bool isFullField, CreateSqlState state)
         {
-            var orderString = string.Format(" order by {0}", order.CreateSqlString(this, isFullField, state));
+            var orderString = $" order by {order.CreateSqlString(this, isFullField, state)}";
             return orderString;
         }
 
-        public virtual string GetAggregateOrderString(OrderExpression order, bool isFullField, CreateSqlState state)
+        public virtual string GetAggregateOrderString(OrderExpression orderExpression, bool isFullField, CreateSqlState state)
         {
             state.UseFieldAlias = true;
-            var orderString = string.Format(" order by {0}", order.CreateSqlString(this, isFullField, state));
+            var orderString = $" order by {orderExpression.CreateSqlString(this, isFullField, state)}";
             state.UseFieldAlias = false;
             return orderString;
         }
 
-        public virtual string GetOnString(DataFieldExpression on, CreateSqlState state)
+        public virtual string GetOnString(DataFieldExpression onExpression, CreateSqlState state)
         {
-            var onString = string.Format(" on {0}", on.CreateSqlString(this, true, state));
+            var onString = $" on {onExpression.CreateSqlString(this, true, state)}";
             return onString;
         }
 
         public virtual CommandData CreateSelectCommand(DataEntityMapping mapping, ISelector selector,
             QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
         {
-            string select;
-            if (selector == null)
-            {
-                select = "*";
-            }
-            else
-            {
-                select = selector.CreateSelectString(this, false, state);
-            }
+            var selectString = selector == null ? "*" : selector.CreateSelectString(this, false, state);
 
             if (distinct)
             {
-                select = CreateDistinctSql() + select;
+                selectString = CreateDistinctSql() + selectString;
             }
 
-            var commandData = CreateSelectBaseCommand(mapping, select, query, order, region, state);
+            var commandData = CreateSelectBaseCommand(mapping, selectString, query, order, region, state);
             return commandData;
         }
 
@@ -778,23 +765,23 @@ namespace Light.Data
             return commandData;
         }
 
-        public virtual CommandData CreateSelectSingleFieldCommand(DataFieldInfo fieldinfo, QueryExpression query,
+        public virtual CommandData CreateSelectSingleFieldCommand(DataFieldInfo fieldInfo, QueryExpression query,
             OrderExpression order, bool distinct, Region region, CreateSqlState state)
         {
-            var select = fieldinfo.CreateSqlString(this, false, state);
+            var selectString = fieldInfo.CreateSqlString(this, false, state);
             if (distinct)
             {
-                select = CreateDistinctSql() + select;
+                selectString = CreateDistinctSql() + selectString;
             }
 
-            return CreateSelectBaseCommand(fieldinfo.TableMapping, select, query, order, region, state);
+            return CreateSelectBaseCommand(fieldInfo.TableMapping, selectString, query, order, region, state);
         }
 
         public virtual CommandData CreateSelectBaseCommand(DataEntityMapping mapping, string customSelect,
             QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
         {
             var sql = new StringBuilder();
-            sql.AppendFormat("select {0} from {1}", customSelect, CreateDataTableMappingSql(mapping, state));
+            sql.Append($"select {customSelect} from {CreateDataTableMappingSql(mapping, state)}");
             if (query != null)
             {
                 sql.Append(GetQueryString(query, false, state));
@@ -839,16 +826,16 @@ namespace Light.Data
                     tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
                 }
 
-                var modelsql = model.CreateSqlString(this, state);
-                tables.Append(modelsql);
-                if (model.Connect != null && model.Connect.On != null)
+                var modelSql = model.CreateSqlString(this, state);
+                tables.Append(modelSql);
+                if (model.Connect?.On != null)
                 {
                     tables.Append(GetOnString(model.Connect.On, state));
                 }
             }
 
             var sql = new StringBuilder();
-            sql.AppendFormat("select {0} from {1}", customSelect, tables);
+            sql.Append($"select {customSelect} from {tables}");
             if (query != null)
             {
                 sql.Append(GetQueryString(query, true, state));
@@ -869,7 +856,7 @@ namespace Light.Data
         {
             var sql = new StringBuilder();
             var selectString = selector.CreateSelectString(this, false, state);
-            sql.AppendFormat("select {0} from {1}", selectString, CreateDataTableMappingSql(mapping, state));
+            sql.Append($"select {selectString} from {CreateDataTableMappingSql(mapping, state)}");
             if (query != null)
             {
                 sql.Append(GetQueryString(query, false, state));
@@ -947,7 +934,7 @@ namespace Light.Data
             CreateSqlState state)
         {
             var sql = new StringBuilder();
-            sql.AppendFormat("delete from {0}", CreateDataTableMappingSql(mapping, state));
+            sql.Append($"delete from {CreateDataTableMappingSql(mapping, state)}");
             if (query != null)
             {
                 sql.Append(GetQueryString(query, false, state));
@@ -962,7 +949,7 @@ namespace Light.Data
         {
             var sql = new StringBuilder();
             var setString = updator.CreateSqlString(this, false, state);
-            sql.AppendFormat("update {0} set {1}", CreateDataTableMappingSql(mapping, state), setString);
+            sql.Append($"update {CreateDataTableMappingSql(mapping, state)} set {setString}");
             if (query != null)
             {
                 sql.Append(GetQueryString(query, false, state));
@@ -976,8 +963,6 @@ namespace Light.Data
             DataEntityMapping selectMapping, QueryExpression query, OrderExpression order, CreateSqlState state)
         {
             var sql = new StringBuilder();
-            string insertString;
-            string selectString;
             ReadOnlyCollection<DataFieldMapping> insertFields;
             ReadOnlyCollection<DataFieldMapping> selectFields;
             if (insertTableMapping.HasIdentity)
@@ -994,7 +979,7 @@ namespace Light.Data
                     }
                     else
                     {
-                        throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
+                        throw new LightDataException(SR.SelectFieldsCountNotEqualInsertFieldCount);
                     }
                 }
                 else
@@ -1006,7 +991,7 @@ namespace Light.Data
                     }
                     else
                     {
-                        throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
+                        throw new LightDataException(SR.SelectFieldsCountNotEqualInsertFieldCount);
                     }
                 }
             }
@@ -1019,7 +1004,7 @@ namespace Light.Data
                 }
                 else
                 {
-                    throw new LightDataException(SR.SelectFieldsCountNotEquidInsertFieldCount);
+                    throw new LightDataException(SR.SelectFieldsCountNotEqualInsertFieldCount);
                 }
             }
 
@@ -1029,7 +1014,7 @@ namespace Light.Data
                 insertFieldNames[i] = CreateDataFieldSql(insertFields[i].Name);
             }
 
-            insertString = string.Join(",", insertFieldNames);
+            var insertString = string.Join(",", insertFieldNames);
 
             var selectFieldNames = new string[selectFields.Count];
             for (var i = 0; i < insertFields.Count; i++)
@@ -1037,10 +1022,9 @@ namespace Light.Data
                 selectFieldNames[i] = CreateDataFieldSql(selectFields[i].Name);
             }
 
-            selectString = string.Join(",", selectFieldNames);
-            sql.AppendFormat("insert into {0}({1})", CreateDataTableMappingSql(insertTableMapping, state),
-                insertString);
-            sql.AppendFormat("select {0} from {1}", selectString, CreateDataTableMappingSql(selectMapping, state));
+            var selectString = string.Join(",", selectFieldNames);
+            sql.Append($"insert into {CreateDataTableMappingSql(insertTableMapping, state)}({insertString})");
+            sql.Append($"select {selectString} from {CreateDataTableMappingSql(selectMapping, state)}");
             if (query != null)
             {
                 sql.Append(GetQueryString(query, false, state));
@@ -1067,8 +1051,7 @@ namespace Light.Data
             }
 
             var insertString = string.Join(",", insertFieldNames);
-            var sql = string.Format("insert into {0}({1})",
-                CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString);
+            var sql = $"insert into {CreateDataTableMappingSql(insertSelector.InsertMapping, state)}({insertString})";
             selectCommandData.CommandText = sql + selectCommandData.CommandText;
             return selectCommandData;
         }
@@ -1086,8 +1069,7 @@ namespace Light.Data
             }
 
             var insertString = string.Join(",", insertFieldNames);
-            var sql = string.Format("insert into {0}({1})",
-                CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString);
+            var sql = $"insert into {CreateDataTableMappingSql(insertSelector.InsertMapping, state)}({insertString})";
             selectCommandData.CommandText = sql + selectCommandData.CommandText;
             return selectCommandData;
         }
@@ -1107,9 +1089,8 @@ namespace Light.Data
 
             var insertString = string.Join(",", insertFieldNames);
             var selectString = insertSelector.CreateSelectString(this, false, state);
-            var sql = string.Format("insert into {0}({1})select {2} from ({3}) as A",
-                CreateDataTableMappingSql(insertSelector.InsertMapping, state), insertString, selectString,
-                selectCommandData.CommandText);
+            var sql =
+                $"insert into {CreateDataTableMappingSql(insertSelector.InsertMapping, state)}({insertString})select {selectString} from ({selectCommandData.CommandText}) as A";
             selectCommandData.CommandText = sql;
             return selectCommandData;
         }
@@ -1129,7 +1110,6 @@ namespace Light.Data
                 throw new ArgumentNullException(nameof(entitys));
             }
 
-            var totalCount = entitys.Count;
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
             var insertLen = fields.Count;
             if (insertLen == 0)
@@ -1138,11 +1118,11 @@ namespace Light.Data
             }
 
             string insertSql = null;
-            string cachekey = null;
+            string cacheKey = null;
             if (state.Seed == 0)
             {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_batchInsertCache.TryGetCommand(cachekey, out var cache))
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_batchInsertCache.TryGetCommand(cacheKey, out var cache))
                 {
                     insertSql = cache;
                 }
@@ -1158,10 +1138,10 @@ namespace Light.Data
                 }
 
                 var insert = string.Join(",", insertList);
-                insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
-                if (cachekey != null)
+                insertSql = $"insert into {CreateDataTableMappingSql(mapping, state)}({insert})";
+                if (cacheKey != null)
                 {
-                    _batchInsertCache.SetCommand(cachekey, insertSql);
+                    _batchInsertCache.SetCommand(cacheKey, insertSql);
                 }
             }
 
@@ -1174,7 +1154,7 @@ namespace Light.Data
                     var field = fields[i];
                     //object obj = field.Handler.Get(entity);
                     //object value = field.ToColumn(obj);
-                    var value = field.GetInsertData(entity, refresh);
+                    var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
 
@@ -1205,7 +1185,6 @@ namespace Light.Data
             IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
             var keyLen = keyFields.Count;
 
-            var totalCount = entitys.Count;
             var createCount = 0;
 
             var totalSql = new StringBuilder();
@@ -1214,16 +1193,14 @@ namespace Light.Data
             {
                 IList<DataFieldMapping> columnFields;
                 object[] keys = null;
-                DataTableEntity tableEntity = null;
-                if (mapping.IsDataTableEntity)
+                if (mapping.IsDataTableEntity && entity is DataTableEntity tableEntity)
                 {
-                    tableEntity = entity as DataTableEntity;
                     keys = tableEntity.GetRawPrimaryKeys();
-                    var updatefieldNames = tableEntity.GetUpdateFields();
-                    if (updatefieldNames != null && updatefieldNames.Length > 0)
+                    var updateFieldNames = tableEntity.GetUpdateFields();
+                    if (updateFieldNames != null && updateFieldNames.Length > 0)
                     {
                         var updateFields = new List<DataFieldMapping>();
-                        foreach (var name in updatefieldNames)
+                        foreach (var name in updateFieldNames)
                         {
                             var fm = mapping.FindDataEntityField(name);
                             if (fm == null)
@@ -1244,7 +1221,7 @@ namespace Light.Data
                             }
                         }
 
-                        foreach (var tm in mapping.TimeStampFieldList)
+                        foreach (var tm in mapping.AutoUpdateFieldList)
                         {
                             if (!updateFields.Contains(tm) &&
                                 (tm.FunctionControl & FunctionControl.Update) == FunctionControl.Update)
@@ -1272,7 +1249,6 @@ namespace Light.Data
                 }
                 else
                 {
-                    tableEntity = null;
                     columnFields = mapping.UpdateFieldList;
                 }
 
@@ -1287,19 +1263,19 @@ namespace Light.Data
                 for (var i = 0; i < updateLen; i++)
                 {
                     var field = columnFields[i];
-                    object value;
-                    if (field.IsTimeStamp)
-                    {
-                        value = field.GetTimeStamp(entity, refresh);
-                    }
-                    else
-                    {
-                        var obj = field.Handler.Get(entity);
-                        value = field.ToParameter(obj);
-                    }
-
-                    updateList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
-                        state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                    // object value;
+                    // if (field.IsTimeStamp)
+                    // {
+                    //     value = field.GetTimeStamp(entity, refresh);
+                    // }
+                    // else
+                    // {
+                    //     var obj = field.Handler.Get(entity);
+                    //     value = field.ToParameter(obj);
+                    // }
+                    var value = field.ToUpdate(entity, refresh);
+                    updateList[i] =
+                        $"{CreateDataFieldSql(field.Name)}={state.AddDataParameter(this, value, field.DBType, field.ObjectType)}";
                 }
 
                 for (var i = 0; i < keyLen; i++)
@@ -1308,14 +1284,13 @@ namespace Light.Data
                     var obj = keys == null ? field.Handler.Get(entity) : keys[i];
                     //object obj = field.Handler.Get(entity);
                     var value = field.ToParameter(obj);
-                    whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
-                        state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                    whereList[i] =
+                        $"{CreateDataFieldSql(field.Name)}={state.AddDataParameter(this, value, field.DBType, field.ObjectType)}";
                 }
 
-                var update = string.Join(",", updateList);
-                var where = string.Join(" and ", whereList);
-                totalSql.AppendFormat("update {0} set {1} where {2};", CreateDataTableMappingSql(mapping, state),
-                    update, where);
+                var updateString = string.Join(",", updateList);
+                var whereString = string.Join(" and ", whereList);
+                totalSql.Append($"update {CreateDataTableMappingSql(mapping, state)} set {updateString} where {whereString};");
                 createCount++;
             }
 
@@ -1358,8 +1333,8 @@ namespace Light.Data
                     keys[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
 
-                totalSql.AppendFormat("delete from {0} where {1} in ({2});", CreateDataTableMappingSql(mapping, state),
-                    CreateDataFieldSql(field.Name), string.Join(",", keys));
+                totalSql.Append(
+                    $"delete from {CreateDataTableMappingSql(mapping, state)} where {CreateDataFieldSql(field.Name)} in ({string.Join(",", keys)});");
             }
             else
             {
@@ -1371,13 +1346,12 @@ namespace Light.Data
                         var field = keyFields[i];
                         var obj = field.Handler.Get(entity);
                         var value = field.ToParameter(obj);
-                        whereList[i] = string.Format("{0}={1}", CreateDataFieldSql(field.Name),
-                            state.AddDataParameter(this, value, field.DBType, field.ObjectType));
+                        whereList[i] =
+                            $"{CreateDataFieldSql(field.Name)}={state.AddDataParameter(this, value, field.DBType, field.ObjectType)}";
                     }
 
-                    var where = string.Join(" and ", whereList);
-                    totalSql.AppendFormat("delete from {0} where {1};", CreateDataTableMappingSql(mapping, state),
-                        where);
+                    var whereString = string.Join(" and ", whereList);
+                    totalSql.Append($"delete from {CreateDataTableMappingSql(mapping, state)} where {whereString};");
                 }
             }
 
@@ -1393,10 +1367,8 @@ namespace Light.Data
                 var command = new CommandData(sql);
                 return command;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         #endregion
@@ -1418,35 +1390,23 @@ namespace Light.Data
         public virtual string CreateSingleParamSql(object fieldName, QueryPredicate predicate, bool isReverse,
             string name)
         {
-            var sb = new StringBuilder();
             var op = GetQueryPredicate(predicate);
-            if (!isReverse)
-            {
-                sb.AppendFormat("{0}{2}{1}", fieldName, name, op);
-            }
-            else
-            {
-                sb.AppendFormat("{1}{2}{0}", fieldName, name, op);
-            }
+            var ret = isReverse
+                ? string.Concat(fieldName, op, name)
+                : string.Concat(name, op, fieldName);
 
-            return sb.ToString();
+            return ret;
         }
 
         public virtual string CreateRelationTableSql(object fieldName, QueryPredicate predicate, bool isReverse,
             string relationFieldName)
         {
-            var sb = new StringBuilder();
             var op = GetQueryPredicate(predicate);
-            if (!isReverse)
-            {
-                sb.AppendFormat("{0}{2}{1}", fieldName, relationFieldName, op);
-            }
-            else
-            {
-                sb.AppendFormat("{1}{2}{0}", fieldName, relationFieldName, op);
-            }
+            var ret = isReverse
+                ? string.Concat(relationFieldName, op, fieldName)
+                : string.Concat(fieldName, op, relationFieldName);
 
-            return sb.ToString();
+            return ret;
         }
 
         public virtual string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate,
@@ -1477,15 +1437,15 @@ namespace Light.Data
 
         public virtual string CreateNotQuerySql(string whereString)
         {
-            return string.Format("not({0})", whereString);
+            return $"not({whereString})";
         }
 
         public virtual string CreateSubQuerySql(object fieldName, QueryCollectionPredicate predicate,
-            string queryfieldName, string queryTableName, string whereString)
+            string queryFieldName, string queryTableName, string whereString)
         {
             var sb = new StringBuilder();
             var op = GetQueryCollectionPredicate(predicate);
-            sb.AppendFormat("{0} {3} (select {1} from {2}", fieldName, queryfieldName, queryTableName, op);
+            sb.AppendFormat("{0} {3} (select {1} from {2}", fieldName, queryFieldName, queryTableName, op);
             if (!string.IsNullOrEmpty(whereString))
             {
                 sb.AppendFormat(" where {0}", whereString);
@@ -1516,29 +1476,26 @@ namespace Light.Data
             {
                 return string.Format("{0}{2}{1}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
             }
-            else
-            {
-                return string.Format("{1}{2}{0}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
-            }
+
+            return string.Format("{1}{2}{0}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
         }
 
         public virtual string CreateNotSql(object value)
         {
-            var sql = string.Format("not({0})", value);
+            var sql = $"not({value})";
             return sql;
         }
 
         public virtual string CreateOutputNotSql(object value)
         {
-            var sql = string.Format("not({0})", value);
-            // var sql = string.Format("case when not({0})=1 then 1 else 0 end", value);
+            var sql = $"not({value})";
             return sql;
         }
 
         public virtual string CreateConcatSql(params object[] values)
         {
             var value1 = string.Join("+", values);
-            var sql = string.Format("({0})", value1);
+            var sql = $"({value1})";
             return sql;
         }
 
@@ -1559,14 +1516,7 @@ namespace Light.Data
             {
                 if (i > 0)
                 {
-                    if (isNot)
-                    {
-                        sb.Append(" and ");
-                    }
-                    else
-                    {
-                        sb.Append(" or ");
-                    }
+                    sb.Append(isNot ? " and " : " or ");
                 }
 
                 if (!isReverse)
@@ -1593,17 +1543,17 @@ namespace Light.Data
 
         public virtual string CreateNullQuerySql(object fieldName, bool isNull)
         {
-            return string.Format("{0} is{1} null", fieldName, isNull ? string.Empty : " not");
+            return $"{fieldName} is{(isNull ? string.Empty : " not")} null";
         }
 
         public virtual string CreateBooleanQuerySql(object fieldName, bool isTrue)
         {
-            return string.Format("{0}={1}", fieldName, isTrue ? "1" : "0");
+            return $"{fieldName}={(isTrue ? "1" : "0")}";
         }
 
         public virtual string CreateOrderBySql(object fieldName, OrderType orderType)
         {
-            return string.Format("{0} {1}", fieldName, orderType.ToString().ToLower());
+            return $"{fieldName} {orderType.ToString().ToLower()}";
         }
 
         public virtual string CreateRandomOrderBySql(DataEntityMapping mapping, string aliasName, bool fullFieldName)
@@ -1633,7 +1583,7 @@ namespace Light.Data
 
         public virtual string CreateCountAllSql(string expressionSql)
         {
-            return string.Format("count(case when {0} then 1 else null end)", expressionSql);
+            return $"count(case when {expressionSql} then 1 else null end)";
         }
 
         public virtual string CreateConditionCountSql(string expressionSql, object fieldName, bool isDistinct)
@@ -1671,37 +1621,37 @@ namespace Light.Data
 
         public virtual string CreateMaxSql(object fieldName)
         {
-            return string.Format("max({0})", fieldName);
+            return $"max({fieldName})";
         }
 
         public virtual string CreateConditionMaxSql(string expressionSql, object fieldName)
         {
-            return string.Format("max(case when {0} then {1} else null end)", expressionSql, fieldName);
+            return $"max(case when {expressionSql} then {fieldName} else null end)";
         }
 
         public virtual string CreateMinSql(object fieldName)
         {
-            return string.Format("min({0})", fieldName);
+            return $"min({fieldName})";
         }
 
         public virtual string CreateConditionMinSql(string expressionSql, object fieldName)
         {
-            return string.Format("min(case when {0} then {1} else null end)", expressionSql, fieldName);
+            return $"min(case when {expressionSql} then {fieldName} else null end)";
         }
 
         public virtual string CreateAliasFieldSql(string field, string alias)
         {
-            return string.Format("{0} as {1}", field, CreateDataFieldSql(alias));
+            return $"{field} as {CreateDataFieldSql(alias)}";
         }
 
         public virtual string CreateAliasTableSql(string field, string alias)
         {
-            return string.Format("{0} as {1}", field, CreateDataFieldSql(alias));
+            return $"{field} as {CreateDataFieldSql(alias)}";
         }
 
         public virtual string CreateAliasQuerySql(string query, string alias)
         {
-            return string.Format("({0}) as {1}", query, CreateDataFieldSql(alias));
+            return $"({query}) as {CreateDataFieldSql(alias)}";
         }
 
         public virtual string CreateDataFieldSql(string fieldName)
@@ -1720,20 +1670,18 @@ namespace Light.Data
             {
                 return CreateDataTableSql(name);
             }
-            else
-            {
-                return CreateDataTableSql(mapping.TableName);
-            }
+
+            return CreateDataTableSql(mapping.TableName);
         }
 
         public virtual string CreateFullDataFieldSql(DataEntityMapping mapping, string fieldName, CreateSqlState state)
         {
-            return string.Format("{0}.{1}", CreateDataTableMappingSql(mapping, state), CreateDataFieldSql(fieldName));
+            return $"{CreateDataTableMappingSql(mapping, state)}.{CreateDataFieldSql(fieldName)}";
         }
 
         public virtual string CreateFullDataFieldSql(string tableName, string fieldName)
         {
-            return string.Format("{0}.{1}", CreateDataTableSql(tableName), CreateDataFieldSql(fieldName));
+            return $"{CreateDataTableSql(tableName)}.{CreateDataFieldSql(fieldName)}";
         }
 
         public virtual string CreateMatchSql(object field, bool starts, bool ends)
@@ -1850,114 +1798,100 @@ namespace Light.Data
         {
             if (forward)
             {
-                return string.Format("({0}+{1})", field, value);
+                return $"({field}+{value})";
             }
-            else
-            {
-                return string.Format("({0}+{1})", value, field);
-            }
+
+            return $"({value}+{field})";
         }
 
         public virtual string CreatePlusSql(object field, object value, bool forward)
         {
             if (forward)
             {
-                return string.Format("({0}+{1})", field, value);
+                return $"({field}+{value})";
             }
-            else
-            {
-                return string.Format("({0}+{1})", value, field);
-            }
+
+            return $"({value}+{field})";
         }
 
         public virtual string CreateMinusSql(object field, object value, bool forward)
         {
             if (forward)
             {
-                return string.Format("({0}-{1})", field, value);
+                return $"({field}-{value})";
             }
-            else
-            {
-                return string.Format("({0}-{1})", value, field);
-            }
+
+            return $"({value}-{field})";
         }
 
         public virtual string CreateMultiplySql(object field, object value, bool forward)
         {
             if (forward)
             {
-                return string.Format("({0}*{1})", field, value);
+                return $"({field}*{value})";
             }
-            else
-            {
-                return string.Format("({0}*{1})", value, field);
-            }
+
+            return $"({value}*{field})";
         }
 
         public virtual string CreateDividedSql(object field, object value, bool forward)
         {
             if (forward)
             {
-                return string.Format("({0}/{1})", field, value);
+                return $"({field}/{value})";
             }
-            else
-            {
-                return string.Format("({0}/{1})", value, field);
-            }
+
+            return $"({value}/{field})";
         }
 
         public virtual string CreateModSql(object field, object value, bool forward)
         {
             if (forward)
             {
-                return string.Format("({0}%{1})", field, value);
+                return $"({field}%{value})";
             }
-            else
-            {
-                return string.Format("({0}%{1})", value, field);
-            }
+
+            return $"({value}%{field})";
         }
 
         public virtual string CreatePowerSql(object field, object value, bool forward)
         {
             if (forward)
             {
-                return string.Format("({0}^{1})", field, value);
+                return $"({field}^{value})";
             }
-            else
-            {
-                return string.Format("({0}^{1})", value, field);
-            }
+
+            return $"({value}^{field})";
         }
 
         public virtual string CreatePlusSql(object left, object right)
         {
-            return string.Format("({0}+{1})", left, right);
+            return $"({left}+{right})";
         }
 
         public virtual string CreateMinusSql(object left, object right)
         {
-            return string.Format("({0}-{1})", left, right);
+            return $"({left}-{right})";
         }
 
         public virtual string CreateMultiplySql(object left, object right)
         {
-            return string.Format("({0}*{1})", left, right);
+            return $"({left}*{right})";
         }
 
         public virtual string CreateDividedSql(object left, object right)
         {
-            return string.Format("({0}/{1})", left, right);
+            return $"({left}/{right})";
         }
 
         public virtual string CreateModSql(object left, object right)
         {
-            return string.Format("({0}%{1})", left, right);
+            return $"({left}%{right})";
         }
 
         public virtual string CreatePowerSql(object left, object right)
         {
-            return string.Format("({0}^{1})", left, right);
+            return $"({left}^{right})";
         }
 
         public virtual string CreateCastStringSql(object field, string format)
@@ -1967,97 +1901,97 @@ namespace Light.Data
 
         public virtual string CreateAbsSql(object field)
         {
-            return string.Format("abs({0})", field);
+            return $"abs({field})";
         }
 
         public virtual string CreateSignSql(object field)
         {
-            return string.Format("sign({0})", field);
+            return $"sign({field})";
         }
 
         public virtual string CreateLogSql(object field)
         {
-            return string.Format("log({0})", field);
+            return $"log({field})";
         }
 
         public virtual string CreateLogSql(object field, object value)
         {
-            return string.Format("log({0},{1})", field, value);
+            return $"log({field},{value})";
         }
 
         public virtual string CreateLog10Sql(object field)
         {
-            return string.Format("log10({0})", field);
+            return $"log10({field})";
         }
 
         public virtual string CreateExpSql(object field)
         {
-            return string.Format("exp({0})", field);
+            return $"exp({field})";
         }
 
         public virtual string CreatePowSql(object field, object value)
         {
-            return string.Format("power({0},{1})", field, value);
+            return $"power({field},{value})";
         }
 
         public virtual string CreateSinSql(object field)
         {
-            return string.Format("sin({0})", field);
+            return $"sin({field})";
         }
 
         public virtual string CreateCosSql(object field)
         {
-            return string.Format("cos({0})", field);
+            return $"cos({field})";
         }
 
         public virtual string CreateAsinSql(object field)
         {
-            return string.Format("asin({0})", field);
+            return $"asin({field})";
         }
 
         public virtual string CreateAcosSql(object field)
         {
-            return string.Format("acos({0})", field);
+            return $"acos({field})";
         }
 
         public virtual string CreateTanSql(object field)
         {
-            return string.Format("tan({0})", field);
+            return $"tan({field})";
         }
 
         public virtual string CreateAtanSql(object field)
         {
-            return string.Format("atan({0})", field);
+            return $"atan({field})";
         }
 
         public virtual string CreateAtan2Sql(object field, object value)
         {
-            return string.Format("atan2({0},{1})", field, value);
+            return $"atan2({field},{value})";
         }
 
         public virtual string CreateCeilingSql(object field)
         {
-            return string.Format("ceiling({0})", field);
+            return $"ceiling({field})";
         }
 
         public virtual string CreateFloorSql(object field)
         {
-            return string.Format("floor({0})", field);
+            return $"floor({field})";
         }
 
         public virtual string CreateRoundSql(object field, object value)
         {
-            return string.Format("round({0},{1})", field, value);
+            return $"round({field},{value})";
         }
 
         public virtual string CreateTruncateSql(object field)
         {
-            return string.Format("truncate({0},0)", field);
+            return $"truncate({field},0)";
         }
 
         public virtual string CreateSqrtSql(object field)
         {
-            return string.Format("Sqrt({0})", field);
+            return $"Sqrt({field})";
         }
 
         public virtual string CreateMaxSql(object left, object right)
@@ -2072,7 +2006,7 @@ namespace Light.Data
 
         public virtual string CreateConditionSql(string querySql, object ifTrue, object IfFalse)
         {
-            return string.Format("case when {0} then {1} else {2} end", querySql, ifTrue, IfFalse);
+            return $"case when {querySql} then {ifTrue} else {IfFalse} end";
         }
 
         #endregion
@@ -2092,10 +2026,8 @@ namespace Light.Data
             {
                 return ParameterPrefix + name;
             }
-            else
-            {
-                return name;
-            }
+
+            return name;
         }
 
         public virtual string CreateDistinctSql(bool isDistinct)
@@ -2115,7 +2047,7 @@ namespace Light.Data
 
         public virtual string CreateStringWrap(object value)
         {
-            return string.Format("'{0}'", value);
+            return $"'{value}'";
         }
 
         public virtual string CreateSelectFieldConcat(IEnumerable<string> values)

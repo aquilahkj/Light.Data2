@@ -159,6 +159,9 @@
   <data name="DataMappingUnsupportIdentityFieldType" xml:space="preserve">
     <value>The type '{0}' field '{1}' error,unsupport identity field type '{2}'</value>
   </data>
+  <data name="DataMappingUnsupportPrimaryKeyFieldType" xml:space="preserve">
+    <value>The type '{0}' field '{1}' error,unsupport primary key field type '{2}'</value>
+  </data>
   <data name="NotContainNonPrimaryKeyFields" xml:space="preserve">
     <value>The type '{0}' does not contain non-primary key fields</value>
   </data>
@@ -174,8 +177,8 @@
   <data name="NotContainPrimaryKeyFields" xml:space="preserve">
     <value>The type '{0}' does not contain primary key fields</value>
   </data>
-  <data name="SelectFieldsCountNotEquidInsertFieldCount" xml:space="preserve">
-    <value>The select fields count not equid the insert field count</value>
+  <data name="SelectFieldsCountNotEqualInsertFieldCount" xml:space="preserve">
+    <value>The select fields count not equal the insert field count</value>
   </data>
   <data name="SpecifiedConfigNotExists" xml:space="preserve">
     <value>The specified config '{0}' is not exists</value>
@@ -209,6 +212,9 @@
   </data>
   <data name="EnumDefaultValueType" xml:space="preserve">
     <value>The type '{0}' enum field '{1}' default value '{2}' error</value>
+  </data>
+  <data name="DefaultValueError" xml:space="preserve">
+    <value>The type '{0}' field '{1}' default value '{2}' error</value>
   </data>
   <data name="ConfigurationHasBeenInitialized" xml:space="preserve">
     <value>The configuration has been initialized</value>

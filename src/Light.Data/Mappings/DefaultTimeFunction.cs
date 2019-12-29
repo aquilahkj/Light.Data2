@@ -8,7 +8,7 @@ namespace Light.Data
     /// </summary>
     internal sealed class DefaultTimeFunction
     {
-        private static Dictionary<DefaultTime, DefaultTimeFunction> dict = new Dictionary<DefaultTime, DefaultTimeFunction>();
+        private static readonly Dictionary<DefaultTime, DefaultTimeFunction> dict = new Dictionary<DefaultTime, DefaultTimeFunction>();
 
         static DefaultTimeFunction()
         {
@@ -26,7 +26,7 @@ namespace Light.Data
             return function;
         }
 
-        private Func<object> func;
+        private readonly Func<object> func;
 
         private DefaultTimeFunction(Func<object> func)
         {
@@ -34,7 +34,7 @@ namespace Light.Data
 
         }
 
-        private static bool removeMillisecond = false;
+        private static bool removeMillisecond;
 
         internal static bool RemoveMillisecond {
             get => removeMillisecond;
@@ -54,9 +54,8 @@ namespace Light.Data
             if (removeMillisecond) {
                 return new DateTime(time.Ticks / 10000000L * 10000000L);
             }
-            else {
-                return time;
-            }
+
+            return time;
         }
 
         private static object GetToday()
@@ -71,9 +70,8 @@ namespace Light.Data
             if (removeMillisecond) {
                 return new DateTime(time.Ticks / 10000000L * 10000000L);
             }
-            else {
-                return time;
-            }
+
+            return time;
         }
 
         private static object GetUtcToday()

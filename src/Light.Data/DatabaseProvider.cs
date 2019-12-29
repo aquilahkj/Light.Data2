@@ -14,7 +14,7 @@ namespace Light.Data
 
         protected DatabaseProvider(string configName, ConfigParamSet configParams)
         {
-            this.ConfigName = configName;
+            ConfigName = configName;
             var batchInsertCount = configParams.GetParamValue("batchInsertCount");
             if (batchInsertCount != null) {
                 if (int.TryParse(batchInsertCount, out var value) && value > 0)
@@ -160,7 +160,8 @@ namespace Light.Data
             var queryState = new QueryState();
             queryState.SetRelationMap(relationMap);
             queryState.SetSelector(selector);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage,
                 State = queryState
@@ -180,7 +181,8 @@ namespace Light.Data
                 }
             }
             queryState.SetSelector(selector);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage,
                 State = queryState
@@ -193,7 +195,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateSelectSingleFieldCommand(fieldInfo, query, order, distinct, region, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -209,7 +212,8 @@ namespace Light.Data
             var command = commandData.CreateCommand(this, state);
             var queryState = new QueryState();
             queryState.SetSelector(selector);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage,
                 State = queryState
@@ -222,7 +226,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateAggregateCountCommand(mapping, query, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -234,7 +239,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateAggregateJoinCountCommand(models, query, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -246,7 +252,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateAggregateFunctionCommand(field, aggregateType, query, distinct, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -258,7 +265,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateExistsCommand(mapping, query, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -270,7 +278,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateTruncateTableCommand(mapping, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 InnerPage = commandData.InnerPage
             };
@@ -282,7 +291,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateSelectInsertCommand(insertMapping, selectMapping, query, order, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -321,7 +331,8 @@ namespace Light.Data
                 commandData = _factory.CreateSelectInsertCommand(selector, mapping, query, order, distinct, state);
             }
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -332,7 +343,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateSelectInsertCommand(selector, models, query, order, distinct, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -341,11 +353,12 @@ namespace Light.Data
         public virtual QueryCommand SelectInsertWithAggregate(DataContext context, InsertSelector selector, AggregateModel model, QueryExpression query, QueryExpression having, OrderExpression order)
         {
             var state = new CreateSqlState(context);
-            var aselector = model.GetSelector();
+            var aggSelector = model.GetSelector();
             var groupBy = model.GetGroupBy();
-            var commandData = _factory.CreateSelectInsertCommand(selector, model.EntityMapping, aselector, groupBy, query, having, order, state);
+            var commandData = _factory.CreateSelectInsertCommand(selector, model.EntityMapping, aggSelector, groupBy, query, having, order, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -356,7 +369,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateMassDeleteCommand(mapping, query, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -367,7 +381,8 @@ namespace Light.Data
             var state = new CreateSqlState(context);
             var commandData = _factory.CreateMassUpdateCommand(mapping, updator, query, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -378,28 +393,28 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateBaseInsertCommand(mapping, data, refresh, updateIdentity, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command,
                 IdentitySql = commandData.IdentitySql
             };
             return queryCommand;
         }
 
-        public virtual QueryCommand InsertIdentiy(DataContext context, DataTableEntityMapping mapping)
+        public virtual QueryCommand InsertIdentity(DataContext context, DataTableEntityMapping mapping)
         {
             var state = new CreateSqlState(context);
-            CommandData commandData = null;
             if (mapping.IdentityField != null) {
-                commandData = _factory.CreateIdentityCommand(mapping, state);
+                var commandData = _factory.CreateIdentityCommand(mapping, state);
                 var command = commandData.CreateCommand(this);
-                var queryCommand = new QueryCommand() {
+                var queryCommand = new QueryCommand
+                {
                     Command = command
                 };
                 return queryCommand;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         public virtual void UpdateDataIdentity(DataTableEntityMapping mapping, object data, object id)
@@ -420,7 +435,8 @@ namespace Light.Data
                 return null;
             }
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -431,7 +447,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateBaseDeleteCommand(mapping, data, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -442,7 +459,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateBatchInsertWithIdentityCommand(mapping, datas, refresh, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -453,7 +471,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateBatchInsertCommand(mapping, datas, refresh, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -467,7 +486,8 @@ namespace Light.Data
                 return null;
             }
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -478,7 +498,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateBatchDeleteCommand(mapping, datas, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -489,7 +510,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateSelectByIdCommand(mapping, id, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -500,7 +522,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateSelectByKeyCommand(mapping, keys, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -511,7 +534,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateExistsByKeyCommand(mapping, keys, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;
@@ -522,7 +546,8 @@ namespace Light.Data
             var state = new CreateSqlState(context, false);
             var commandData = _factory.CreateDeleteKeyCommand(mapping, keys, state);
             var command = commandData.CreateCommand(this, state);
-            var queryCommand = new QueryCommand() {
+            var queryCommand = new QueryCommand
+            {
                 Command = command
             };
             return queryCommand;

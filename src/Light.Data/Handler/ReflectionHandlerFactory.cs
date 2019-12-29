@@ -15,7 +15,7 @@ namespace Light.Data
 		private static readonly Dictionary<PropertyInfo, SetValueHandler> mPropertySetHandlers = new Dictionary<PropertyInfo, SetValueHandler>();
 
 		private static GetValueHandler CreateFieldGetHandler(FieldInfo field) {
-			var method = new DynamicMethod("", typeof(object), new Type[] { typeof(object) }, field.DeclaringType);
+			var method = new DynamicMethod("", typeof(object), new[] { typeof(object) }, field.DeclaringType);
 			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.Emit(OpCodes.Ldfld, field);
@@ -25,7 +25,7 @@ namespace Light.Data
 		}
 
 		private static SetValueHandler CreateFieldSetHandler(FieldInfo field) {
-			var method = new DynamicMethod("", null, new Type[] { typeof(object), typeof(object) }, field.DeclaringType);
+			var method = new DynamicMethod("", null, new[] { typeof(object), typeof(object) }, field.DeclaringType);
 			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.Emit(OpCodes.Ldarg_1);
@@ -48,7 +48,7 @@ namespace Light.Data
 
 		private static FastMethodHandler CreateMethodHandler(MethodInfo methodInfo) {
 			int num;
-			var method = new DynamicMethod(string.Empty, typeof(object), new Type[] {
+			var method = new DynamicMethod(string.Empty, typeof(object), new[] {
 				typeof(object),
 				typeof(object[])
 			}, methodInfo.DeclaringType.GetTypeInfo().Module);
@@ -113,7 +113,7 @@ namespace Light.Data
 		}
 
 		private static GetValueHandler CreatePropertyGetHandler(PropertyInfo property) {
-			var method = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
+			var method = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
 			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.EmitCall(OpCodes.Callvirt, property.GetMethod, null);
@@ -123,7 +123,7 @@ namespace Light.Data
 		}
 
 		private static SetValueHandler CreatePropertySetHandler(PropertyInfo property) {
-			var method = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
+			var method = new DynamicMethod(string.Empty, null, new[] { typeof(object), typeof(object) }, property.DeclaringType.GetTypeInfo().Module);
 			var iLGenerator = method.GetILGenerator();
 			iLGenerator.Emit(OpCodes.Ldarg_0);
 			iLGenerator.Emit(OpCodes.Ldarg_1);

@@ -18,27 +18,27 @@ namespace Light.Data
 
         #endregion
 
-        protected QueryExpression _query;
+        protected readonly QueryExpression _query;
 
         public override QueryExpression QueryExpression => _query;
 
-        protected OrderExpression _order;
+        protected readonly OrderExpression _order;
 
         public override OrderExpression OrderExpression => _order;
 
-        protected bool _distinct;
+        protected readonly bool _distinct;
 
         public override bool Distinct => _distinct;
 
-        protected JoinSetting _joinSetting;
+        protected readonly JoinSetting _joinSetting;
 
         public override JoinSetting JoinSetting => _joinSetting;
 
-        protected Region _region;
+        protected readonly Region _region;
 
         public override Region Region => _region;
 
-        protected SafeLevel _level;
+        protected readonly SafeLevel _level;
 
         public override SafeLevel Level => _level;
 
@@ -332,24 +332,24 @@ namespace Light.Data
 
         #region async
 
-        public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<List<K>> ToListAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, _region);
             return await _context.QueryDataDefineListAsync<K>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, Dele, cancellationToken);
         }
 
-        public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default)
         {
             var list = await ToListAsync(cancellationToken);
             return list.ToArray();
         }
 
-        public async override Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> FirstAsync(CancellationToken cancellationToken = default)
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default)
         {
             var region = new Region(index, 1);
             var queryCommand = _context.Database.QueryEntityData(_context, Mapping, Selector, _query, _order, false, region);

@@ -21,11 +21,12 @@ namespace Light.Data
                 return null;
             }
 
-            var dataBase = (DatabaseProvider)Activator.CreateInstance(type, setting.Name, setting.ConfigParam) as DatabaseProvider;
+            var dataBase = (DatabaseProvider)Activator.CreateInstance(type, setting.Name, setting.ConfigParam);
             if (dataBase == null) {
                 throw new LightDataException(string.Format(SR.TypeIsNotDatabaseType, type.FullName));
             }
-            var contextOptions = new DataContextOptions() {
+            var contextOptions = new DataContextOptions
+            {
                 Connection = connection,
                 Database = dataBase
             };

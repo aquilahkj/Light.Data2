@@ -49,13 +49,13 @@ namespace Light.Data
 		public override LambdaPathType ParsePath (string fullPath)
 		{
 			var index = fullPath.IndexOf (".", StringComparison.Ordinal);
-			if (index == -1) {
+			if (index == -1)
+			{
 				if (fullPath == aggregateName) {
 					return LambdaPathType.Parameter;
 				}
-				else {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
-				}
+
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
 			var name = fullPath.Substring (0, index);
 			var path = fullPath.Substring (index + 1);
@@ -65,9 +65,8 @@ namespace Light.Data
 			if (aggregateModel.CheckName (path)) {
 				return LambdaPathType.Field;
 			}
-			else {
-				return LambdaPathType.None;
-			}
+
+			return LambdaPathType.None;
 		}
 	}
 }

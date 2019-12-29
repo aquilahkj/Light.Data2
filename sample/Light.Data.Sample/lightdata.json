@@ -2,13 +2,12 @@
   "lightData": {
     "connections": [
       {
-        "name": "mssql_2012",
-        "connectionString": "Data Source=mssql_test;User ID=sa;Password=1qazxsw23edC;Initial Catalog=Data_Test;",
-        "providerName": "Light.Data.Mssql.MssqlProvider,Light.Data.Mssql",
+        "name": "mysql",
+        "connectionString": "server=mysql_test;Port=3306;User Id=root;password=1qazxsw23edC;database=Data_Test;Allow Zero Datetime=True;charset=utf8;Min Pool Size=1;Max Pool Size=5;SslMode=None;",
+        "providerName": "Light.Data.Mysql.MysqlProvider,Light.Data.Mysql",
         "configParams": {
-          "version": "11.0",
-          "batchInsertCount": 1000,
-          "batchDeleteCount": 1000
+          "strictMode": true,
+          "batchInsertCount": 10
         }
       }
     ]

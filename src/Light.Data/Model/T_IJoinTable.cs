@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Light.Data
 {
@@ -135,13 +135,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -149,7 +149,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -501,13 +501,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -515,7 +515,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -867,13 +867,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -881,7 +881,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1233,13 +1233,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -1247,7 +1247,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1599,13 +1599,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -1613,7 +1613,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -1965,13 +1965,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -1979,7 +1979,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -2331,13 +2331,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -2345,7 +2345,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -2697,13 +2697,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -2711,7 +2711,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -3063,13 +3063,13 @@ namespace Light.Data
 		/// Gets the datas count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> CountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the datas long count.
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken.</param>
-		Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+		Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Select fields data insert to the specified table K.
@@ -3077,7 +3077,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <param name="cancellationToken">CancellationToken.</param>
 		/// <typeparam name="K">Data type.</typeparam>
-		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+		Task<int> SelectInsertAsync<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression, CancellationToken cancellationToken = default);
 
 
 	}

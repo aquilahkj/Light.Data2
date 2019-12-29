@@ -5,7 +5,7 @@ namespace Light.Data
 {
     internal abstract class DynamicFieldMapping : FieldMapping
     {
-        public static DynamicFieldMapping CreateDynmaicFieldMapping(PropertyInfo property, DynamicCustomMapping mapping)
+        public static DynamicFieldMapping CreateDynamicFieldMapping(PropertyInfo property, DynamicDataMapping mapping)
         {
             DynamicFieldMapping fieldMapping;
             var type = property.PropertyType;
@@ -21,33 +21,53 @@ namespace Light.Data
             }
 
             if (type.IsArray) {
-                throw new LightDataException(string.Format(SR.DataMappingUnsupportFieldType, property.DeclaringType, property.Name, type));
-            }
-            else if (type.IsGenericParameter || typeInfo.IsGenericTypeDefinition) {
-                throw new LightDataException(string.Format(SR.DataMappingUnsupportFieldType, property.DeclaringType, property.Name, type));
-            }
-            else if (typeInfo.IsEnum) {
-                var enumFieldMapping = new DynamicEnumFieldMapping(type, fieldName, mapping);
-                fieldMapping = enumFieldMapping;
-            }
-            else {
-                var code = Type.GetTypeCode(type);
-                if (code == TypeCode.Empty) {
-                    throw new LightDataException(string.Format(SR.DataMappingUnsupportFieldType, property.DeclaringType, property.Name, type));
+                if (type.FullName == "System.Byte[]")
+                {
+                    fieldMapping = new BytesDynamicFieldMapping(fieldName, mapping);
                 }
-                else if (code == TypeCode.Object) {
-                    var objectFieldMapping = new DynamicObjectFieldMapping(type, fieldName, mapping);
-                    fieldMapping = objectFieldMapping;
-                }
-                else {
-                    var primitiveFieldMapping = new DynamicPrimitiveFieldMapping(type, fieldName, mapping);
-                    fieldMapping = primitiveFieldMapping;
+                else
+                {
+                    throw new LightDataException(string.Format(SR.DataMappingUnsupportFieldType, property.DeclaringType,
+                        property.Name, type));
                 }
             }
+            else if (type == typeof(Guid))
+            {
+                fieldMapping = new GuidDynamicFieldMapping(fieldName, mapping);
+            }
+            else if (type == typeof(string))
+            {
+                fieldMapping = new StringDynamicFieldMapping(fieldName, mapping);
+            }
+            else if (type == typeof(DateTime))
+            {
+                fieldMapping = new DateTimeDynamicFieldMapping(fieldName, mapping);
+            }
+            else if (type == typeof(decimal))
+            {
+                fieldMapping = new DecimalDynamicFieldMapping(fieldName, mapping);
+            }
+            else if (typeInfo.IsEnum)
+            {
+                fieldMapping = new EnumDynamicFieldMapping(type, fieldName, mapping);
+            }
+            else if (type.IsPrimitive)
+            {
+                fieldMapping = new PrimitiveDynamicFieldMapping(type, fieldName, mapping);
+            }
+            else if (type == typeof(DBNull))
+            {
+                throw new LightDataException(string.Format(SR.DataDefineUnsupportFieldType, type));
+            }
+            else
+            {
+                fieldMapping = new ObjectDynamicFieldMapping(type, fieldName, mapping);
+            }
+            
             return fieldMapping;
         }
 
-        protected DynamicFieldMapping(Type type, string fieldName, DynamicCustomMapping mapping, bool isNullable)
+        protected DynamicFieldMapping(Type type, string fieldName, DynamicDataMapping mapping, bool isNullable)
             : base(type, fieldName, fieldName, mapping, isNullable, null)
         {
 

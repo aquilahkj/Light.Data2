@@ -296,20 +296,20 @@ namespace Light.Data
         /// </summary>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>The list.</returns>
-        Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<K>> ToListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get data array.
         /// </summary>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <returns>The array.</returns>
-        Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get first instance.
         /// </summary>
         /// <param name="cancellationToken">CancellationToken.</param>
-        Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<K> FirstAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Elements at index.
@@ -317,7 +317,7 @@ namespace Light.Data
         /// <returns>The <see cref="!:K"/>.</returns>
         /// <param name="index">Index.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
+        Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default);
 
         #endregion
     }

@@ -25,8 +25,8 @@ namespace Light.Data
 				throw new ArgumentNullException (nameof (masterKey));
 			if (string.IsNullOrEmpty (relateKey))
 				throw new ArgumentNullException (nameof (relateKey));
-			this.MasterKey = masterKey;
-			this.RelateKey = relateKey;
+			MasterKey = masterKey;
+			RelateKey = relateKey;
 		}
 	}
 }

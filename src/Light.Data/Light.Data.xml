@@ -5198,7 +5198,7 @@
             </summary>
             <returns>The data.</returns>
             <param name="context">Context.</param>
-            <param name="datareader">Datareader.</param>
+            <param name="datareader">DataReader.</param>
             <param name="state">State.</param>
         </member>
         <member name="T:Light.Data.CollectionRelationFieldMapping">
@@ -5351,7 +5351,7 @@
             </summary>
             <returns>The data.</returns>
             <param name="context">Context.</param>
-            <param name="datareader">Datareader.</param>
+            <param name="datareader">DataReader.</param>
             <param name="state">State.</param>
         </member>
         <member name="T:Light.Data.RelationPair">

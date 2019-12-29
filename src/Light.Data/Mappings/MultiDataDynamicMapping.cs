@@ -4,9 +4,9 @@ using System.Data;
 
 namespace Light.Data
 {
-	internal class DynamicMultiDataMapping : DataMapping
+	internal class MultiDataDynamicMapping : DataMapping
 	{
-		public static DynamicMultiDataMapping CreateDynamicMultiDataMapping (Type type, List<IJoinModel> models)
+		public static MultiDataDynamicMapping CreateMultiDataDynamicMapping (Type type, List<IJoinModel> models)
 		{
 			var array = new Tuple<string, IJoinTableMapping> [models.Count];
 			for (var i = 0; i < models.Count; i++) {
@@ -14,14 +14,14 @@ namespace Light.Data
 				var tuple = new Tuple<string, IJoinTableMapping> (model.AliasTableName, model.JoinMapping);
 				array [i] = tuple;
 			}
-			var mapping = new DynamicMultiDataMapping (type, array);
+			var mapping = new MultiDataDynamicMapping (type, array);
 			return mapping;
 		}
 
 		private readonly IJoinTableMapping [] mappings;
 		private readonly string [] aliasNames;
 
-		public DynamicMultiDataMapping (Type type, Tuple<string, IJoinTableMapping> [] targetMappings)
+		public MultiDataDynamicMapping (Type type, Tuple<string, IJoinTableMapping> [] targetMappings)
 			: base (type)
 		{
 			mappings = new IJoinTableMapping [targetMappings.Length];
@@ -41,13 +41,13 @@ namespace Light.Data
 			return objects;
 		}
 
-		public override object LoadData (DataContext context, IDataReader datareader, object state)
+		public override object LoadData (DataContext context, IDataReader dataReader, object state)
 		{
 			var queryState = state as QueryState;
 			var objects = new object [mappings.Length];
 			for (var i = 0; i < mappings.Length; i++) {
 				var aliasName = aliasNames [i];
-				objects [i] = mappings [i].LoadAliasJoinTableData (context, datareader, queryState, aliasName);
+				objects [i] = mappings [i].LoadAliasJoinTableData (context, dataReader, queryState, aliasName);
 			}
 			return objects;
 		}

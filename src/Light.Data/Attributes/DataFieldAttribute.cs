@@ -5,7 +5,7 @@ namespace Light.Data
     /// <summary>
     /// Data field attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class DataFieldAttribute : Attribute
     {
         /// <summary>
@@ -14,7 +14,7 @@ namespace Light.Data
         /// <param name="name">Name.</param>
         public DataFieldAttribute(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         /// <summary>

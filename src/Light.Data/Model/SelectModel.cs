@@ -2,19 +2,19 @@
 
 namespace Light.Data
 {
-	internal class SelectModel
+	internal sealed class SelectModel
 	{
-		public SelectModel (DataEntityMapping entityMapping, CustomMapping outputMapping)
+		public SelectModel (DataEntityMapping entityMapping, CustomDataMapping outputDataMapping)
 		{
 			EntityMapping = entityMapping;
-			_customOuputMapping = outputMapping;
+			_customDataOutputMapping = outputDataMapping;
 		}
 
-		private CustomMapping _customOuputMapping;
+		private readonly CustomDataMapping _customDataOutputMapping;
         
-		public DataMapping OutputMapping => _customOuputMapping;
+		public DataMapping OutputMapping => _customDataOutputMapping;
 
-		public IJoinTableMapping JoinTableMapping => _customOuputMapping;
+		public IJoinTableMapping JoinTableMapping => _customDataOutputMapping;
 
 		public DataEntityMapping EntityMapping { get; }
 
@@ -31,7 +31,7 @@ namespace Light.Data
 			}
 		}
 
-		public virtual DataFieldInfo [] GetDataFieldInfos ()
+		public DataFieldInfo [] GetDataFieldInfos ()
 		{
 			var infos = new DataFieldInfo [_selectDict.Count];
 			var index = 0;
@@ -44,13 +44,12 @@ namespace Light.Data
 
 		public DataFieldInfo GetFieldData (string name)
 		{
-            if (_selectDict.TryGetValue(name, out var info)) {
+			if (_selectDict.TryGetValue(name, out var info)) {
                 return info;
             }
-            else {
-                return null;
-            }
-        }
+
+			return null;
+		}
 
         public bool CheckName (string name)
 		{
@@ -59,11 +58,11 @@ namespace Light.Data
 
 		public Selector CreateSelector ()
 		{
-			var selecor = new SpecifiedSelector ();
+			var selector = new SpecifiedSelector ();
 			foreach (var item in _selectDict.Values) {
-				selecor.SetSelectField (item);
+				selector.SetSelectField (item);
 			}
-			return selecor;
+			return selector;
 		}
 	}
 }

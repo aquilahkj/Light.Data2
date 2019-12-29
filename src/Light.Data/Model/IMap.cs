@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Light.Data
 {
 	internal interface IMap

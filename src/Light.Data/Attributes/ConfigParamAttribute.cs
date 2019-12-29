@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Extend parameter attribute.
 	/// </summary>
-	[AttributeUsage (AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
+	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
 	public abstract class ConfigParamAttribute: Attribute
 	{
 		/// <summary>
@@ -27,8 +27,8 @@ namespace Light.Data
 		/// <param name="value">Value.</param>
 		protected ConfigParamAttribute (string name, string value)
 		{
-			this.Name = name;
-			this.Value = value;
+			Name = name;
+			Value = value;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Light.Data
 {
 	internal class SelectMap : IMap
@@ -19,13 +20,7 @@ namespace Light.Data
 
 		public bool CheckIsField (string path)
 		{
-			string name;
-			if (path.StartsWith (".", StringComparison.Ordinal)) {
-				name = path.Substring (1);
-			}
-			else {
-				name = path;
-			}
+			var name = path.StartsWith (".", StringComparison.Ordinal) ? path.Substring (1) : path;
 			return _model.CheckName (name);
 		}
 
@@ -36,33 +31,21 @@ namespace Light.Data
 
 		public DataFieldInfo GetFieldInfoForPath (string path)
 		{
-			string name;
-			if (path.StartsWith (".", StringComparison.Ordinal)) {
-				name = path.Substring (1);
-			}
-			else {
-				name = path;
-			}
+			var name = path.StartsWith (".", StringComparison.Ordinal) ? path.Substring (1) : path;
 			var info = _model.GetFieldData (name);
 			if (!Equals (info, null)) {
 				return info;
 			}
-			else {
-				throw new LightDataException (string.Format (SR.CanNotFindTheSpecifiedFieldViaPath, path));
-			}
+
+			throw new LightDataException (string.Format (SR.CanNotFindTheSpecifiedFieldViaPath, path));
 		}
 
 		public ISelector CreateSelector (string [] paths)
 		{
 			var selector = new Selector ();
-			foreach (var path in paths) {
-				string name;
-				if (path.StartsWith (".", StringComparison.Ordinal)) {
-					name = path.Substring (1);
-				}
-				else {
-					name = path;
-				}
+			foreach (var path in paths)
+			{
+				var name = path.StartsWith (".", StringComparison.Ordinal) ? path.Substring (1) : path;
 				if (name == string.Empty) {
 					var nameInfos = _model.GetDataFieldInfos ();
 					foreach (var fieldInfo in nameInfos) {

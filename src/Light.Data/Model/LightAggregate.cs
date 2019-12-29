@@ -13,12 +13,12 @@ namespace Light.Data
         public override IEnumerator<K> GetEnumerator()
         {
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, Model, _query, _having, _order, _region);
-            return _context.QueryDataDefineReader<K>(Model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null).GetEnumerator();
+            return _context.QueryDataDefineReader<K>(Model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null).GetEnumerator();
         }
 
         #endregion
 
-        private QueryExpression _query;
+        private readonly QueryExpression _query;
 
         public override QueryExpression QueryExpression => _query;
 
@@ -119,7 +119,7 @@ namespace Light.Data
         public override List<K> ToList()
         {
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, Model, _query, _having, _order, _region);
-            return _context.QueryDataDefineList<K>(Model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null);
+            return _context.QueryDataDefineList<K>(Model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null);
         }
 
         public override K[] ToArray()
@@ -136,7 +136,7 @@ namespace Light.Data
         {
             var region = new Region(index, 1);
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, Model, _query, _having, _order, region);
-            return _context.QueryDataDefineSingle<K>(Model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
+            return _context.QueryDataDefineSingle<K>(Model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
         }
 
         public override int SelectInsert<P>(Expression<Func<K, P>> expression)
@@ -468,31 +468,31 @@ namespace Light.Data
 
         #region async
 
-        public async override Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<List<K>> ToListAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, Model, _query, _having, _order, _region);
-            return await _context.QueryDataDefineListAsync<K>(Model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null, cancellationToken);
+            return await _context.QueryDataDefineListAsync<K>(Model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null, cancellationToken);
         }
 
-        public async override Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default)
         {
             var list = await ToListAsync(cancellationToken);
             return list.ToArray();
         }
 
-        public async override Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> FirstAsync(CancellationToken cancellationToken = default)
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default)
         {
             var region = new Region(index, 1);
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, Model, _query, _having, _order, region);
-            return await _context.QueryDataDefineSingleAsync<K>(Model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
+            return await _context.QueryDataDefineSingleAsync<K>(Model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
         }
 
-        public async override Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> SelectInsertAsync<P>(Expression<Func<K, P>> expression, CancellationToken cancellationToken = default)
         {
             var selector = LambdaExpressionExtend.CreateAggregateInsertSelector(expression, Model);
             var queryCommand = _context.Database.SelectInsertWithAggregate(_context, selector, Model, _query, _having, _order);

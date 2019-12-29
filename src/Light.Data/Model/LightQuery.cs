@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Light.Data
 {
-    internal partial class LightQuery<T> : QueryBase<T>
+    internal class LightQuery<T> : QueryBase<T>
     {
         #region IEnumerable implementation
 
@@ -119,14 +119,8 @@ namespace Light.Data
 
         public override IQuery<T> Take(int count)
         {
-            int start;
             var size = count;
-            if (_region == null) {
-                start = 0;
-            }
-            else {
-                start = _region.Start;
-            }
+            var start = _region?.Start ?? 0;
             _region = new Region(start, size);
             return this;
         }
@@ -134,13 +128,7 @@ namespace Light.Data
         public override IQuery<T> Skip(int index)
         {
             var start = index;
-            int size;
-            if (_region == null) {
-                size = int.MaxValue;
-            }
-            else {
-                size = _region.Size;
-            }
+            var size = _region?.Size ?? int.MaxValue;
             _region = new Region(start, size);
             return this;
         }
@@ -551,11 +539,10 @@ namespace Light.Data
             var model = LambdaExpressionExtend.CreateAggregateModel(expression);
             model.OnlyAggregate = true;
             var region = new Region(0, 1);
-            //target = _context.QueryDynamicAggregateSingle<K>(model, _query, null, _order, region, _level, null);
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, model, _query, null, _order, region);
-            var target = _context.QueryDataDefineSingle<K>(model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
+            var target = _context.QueryDataDefineSingle<K>(model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null);
             if (target == null) {
-                var obj = model.OutputMapping.InitialData();
+                var obj = model.OutputDataMapping.InitialData();
                 target = (K)obj;
             }
             return target;
@@ -564,45 +551,45 @@ namespace Light.Data
 
 
         #region async
-        public async override Task<List<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<List<T>> ToListAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.QueryEntityData(_context, Mapping, null, _query, _order, false, _region);
             return await _context.QueryDataDefineListAsync<T>(Mapping, _level, queryCommand.Command, queryCommand.InnerPage ? null : _region, queryCommand.State, null, cancellationToken);
         }
 
-        public async override Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default)
         {
             var list = await ToListAsync(CancellationToken.None);
             return list.ToArray();
         }
 
-        public async override Task<T> FirstAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<T> FirstAsync(CancellationToken cancellationToken = default)
         {
             return await ElementAtAsync(0, cancellationToken);
         }
 
-        public async override Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default)
         {
             var region = new Region(index, 1);
             var queryCommand = _context.Database.QueryEntityData(_context, _mapping, null, _query, _order, false, region);
             return await _context.QueryDataDefineSingleAsync<T>(_mapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
         }
 
-        public async override Task<int> InsertAsync<K>(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> InsertAsync<K>(CancellationToken cancellationToken = default)
         {
             var insertMapping = DataEntityMapping.GetTableMapping(typeof(K));
             var queryCommand = _context.Database.SelectInsert(_context, insertMapping, _mapping, _query, _order);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default)
         {
             var selector = LambdaExpressionExtend.CreateInsertSelector(expression);
             var queryCommand = _context.Database.SelectInsert(_context, selector, _mapping, _query, _order, _distinct);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default)
         {
             var mapping = DataEntityMapping.GetTableMapping(typeof(T));
             var updator = LambdaExpressionExtend.CreateMassUpdateExpression(expression);
@@ -610,28 +597,28 @@ namespace Light.Data
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> DeleteAsync(CancellationToken cancellationToken = default)
         {
             var mapping = DataEntityMapping.GetTableMapping(typeof(T));
             var queryCommand = _context.Database.QueryDelete(_context, mapping, _query);
             return await _context.ExecuteNonQueryAsync(queryCommand.Command, _level, cancellationToken);
         }
 
-        public async override Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> CountAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             var value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt32(value);
         }
 
-        public async override Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<long> LongCountAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.AggregateCount(_context, _mapping, _query);
             var value = await _context.ExecuteScalarAsync(queryCommand.Command, _level, cancellationToken);
             return Convert.ToInt64(value);
         }
 
-        public async override Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
         {
             var queryCommand = _context.Database.Exists(_context, _mapping, _query);
             var define = DataDefine.GetDefine(typeof(int?));
@@ -639,15 +626,15 @@ namespace Light.Data
             return obj.HasValue;
         }
 
-        public async override Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default)
         {
             var model = LambdaExpressionExtend.CreateAggregateModel(expression);
             model.OnlyAggregate = true;
             var region = new Region(0, 1);
             var queryCommand = _context.Database.QueryDynamicAggregate(_context, model, _query, null, _order, region);
-            var target = await _context.QueryDataDefineSingleAsync<K>(model.OutputMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
+            var target = await _context.QueryDataDefineSingleAsync<K>(model.OutputDataMapping, _level, queryCommand.Command, queryCommand.InnerPage ? 0 : region.Start, queryCommand.State, null, cancellationToken);
             if (target == null) {
-                var obj = model.OutputMapping.InitialData();
+                var obj = model.OutputDataMapping.InitialData();
                 target = (K)obj;
             }
             return target;

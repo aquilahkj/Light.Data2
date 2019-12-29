@@ -13,7 +13,7 @@ namespace Light.Data
 
 		ToUpper,
 
-		Trim,
+		Trim
 
 		//Lenght
 

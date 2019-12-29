@@ -46,11 +46,11 @@ namespace Light.Data
             return factory.CreateParamName("P" + Seed);
         }
 
-        private Dictionary<object, ObjectData> dict = new Dictionary<object, ObjectData>();
+        private readonly Dictionary<object, ObjectData> dict = new Dictionary<object, ObjectData>();
 
-        private List<DataParameter> parameters = new List<DataParameter>();
+        private readonly List<DataParameter> parameters = new List<DataParameter>();
 
-        private Dictionary<object, string> aliasDict = new Dictionary<object, string>();
+        private readonly Dictionary<object, string> aliasDict = new Dictionary<object, string>();
 
         public bool UseFieldAlias { get; set; }
 
@@ -69,17 +69,16 @@ namespace Light.Data
                 }
             }
 
-            if (dict.TryGetValue(obj, out var data)) {
+            if (dict.TryGetValue(obj, out var data))
+            {
                 if (isFullName) {
                     return data.Full;
                 }
-                else {
-                    return data.Normal;
-                }
+
+                return data.Normal;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
         public void SetDataSql(object obj, bool isFullName, string sql)

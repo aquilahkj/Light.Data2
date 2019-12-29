@@ -1696,7 +1696,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.QuerySqlList``1(System.String,System.Int32,System.Int32)">
@@ -1734,7 +1734,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.QuerySqlListAsync``1(System.String,System.Int32,System.Int32)">
@@ -1772,7 +1772,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.QuerySqlFirstAsync``1(System.String,System.Threading.CancellationToken)">
@@ -1790,7 +1790,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
@@ -1806,7 +1806,7 @@
             Execute NonQuery with direct sql string
             </summary>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.ExecuteNonQuerySqlStringAsync(System.String,System.Threading.CancellationToken)">
@@ -1822,7 +1822,7 @@
             Execute NonQuery with direct sql string
             </summary>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
@@ -1838,7 +1838,7 @@
             Execute Scalar with direct sql string
             </summary>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.ExecuteScalarSqlStringAsync(System.String,System.Threading.CancellationToken)">
@@ -1854,7 +1854,7 @@
             Execute Scalar with direct sql string
             </summary>
             <param name="sqlString">Sql string.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
@@ -1872,7 +1872,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.QueryStoreProcedureList``1(System.String,System.Int32,System.Int32)">
@@ -1896,24 +1896,26 @@
             <param name="size">Page size</param>
             <returns></returns>
         </member>
-        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String)">
+        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Threading.CancellationToken)">
             <summary>
             Query data list with store procedure
             </summary>
             <typeparam name="T"></typeparam>
             <param name="storeProcedure">Store Procedure name.</param>
+            <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
-        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Object)">
+        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Object,System.Threading.CancellationToken)">
             <summary>
             Query data list with store procedure
             </summary>
             <typeparam name="T"></typeparam>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
+            <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
-        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Int32,System.Int32)">
+        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Query data list with store procedure
             </summary>
@@ -1921,9 +1923,10 @@
             <param name="storeProcedure">Store Procedure name.</param>
             <param name="start">Page start</param>
             <param name="size">Page size</param>
+            <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
-        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Object,System.Int32,System.Int32)">
+        <member name="M:Light.Data.DataContext.QueryStoreProcedureListAsync``1(System.String,System.Object,System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Query data list with store procedure
             </summary>
@@ -1932,6 +1935,7 @@
             <param name="value">Parameters object</param>
             <param name="start">Page start</param>
             <param name="size">Page size</param>
+            <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.QueryStoreProcedureFirst``1(System.String)">
@@ -1948,7 +1952,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.QueryStoreProcedureFirstAsync``1(System.String,System.Threading.CancellationToken)">
@@ -1966,7 +1970,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
@@ -1982,7 +1986,7 @@
             Execute NonQuery with store procedure
             </summary>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.ExecuteNonQueryStoreProcedureAsync(System.String,System.Threading.CancellationToken)">
@@ -1998,7 +2002,7 @@
             Execute NonQuery with store procedure
             </summary>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
@@ -2014,7 +2018,7 @@
             Execute Scalar with store procedure
             </summary>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <returns></returns>
         </member>
         <member name="M:Light.Data.DataContext.ExecuteScalarStoreProcedureAsync(System.String,System.Threading.CancellationToken)">
@@ -2030,7 +2034,7 @@
             Execute Scalar with store procedure
             </summary>
             <param name="storeProcedure">Store Procedure name.</param>
-            <param name="value">Paratemers object</param>
+            <param name="value">Parameters object</param>
             <param name="cancellationToken">CancellationToken.</param>
             <returns></returns>
         </member>
@@ -2050,12 +2054,6 @@
             
             </summary>
             <param name="options"></param>
-        </member>
-        <member name="M:Light.Data.DataContextFactory`1.CreateDataContext">
-            <summary>
-            Create Specified DataContext
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Light.Data.LightDataContextFactory">
             <summary>
@@ -5082,7 +5080,7 @@
         </member>
         <member name="T:Light.Data.FunctionControl">
             <summary>
-            Data fielf function control
+            Data field function control
             </summary>
         </member>
         <member name="F:Light.Data.FunctionControl.Default">
@@ -5198,7 +5196,7 @@
             </summary>
             <returns>The data.</returns>
             <param name="context">Context.</param>
-            <param name="datareader">Datareader.</param>
+            <param name="dataReader">DataReader.</param>
             <param name="state">State.</param>
         </member>
         <member name="T:Light.Data.CollectionRelationFieldMapping">
@@ -5351,7 +5349,7 @@
             </summary>
             <returns>The data.</returns>
             <param name="context">Context.</param>
-            <param name="datareader">Datareader.</param>
+            <param name="dataReader">DataReader.</param>
             <param name="state">State.</param>
         </member>
         <member name="T:Light.Data.RelationPair">

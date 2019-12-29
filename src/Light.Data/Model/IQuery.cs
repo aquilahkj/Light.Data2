@@ -9,7 +9,7 @@ namespace Light.Data
     /// <summary>
     /// Query.
     /// </summary>
-    public partial interface IQuery<T> : IEnumerable<T>
+    public interface IQuery<T> : IEnumerable<T>
     {
         #region IQuery<T> Member
 
@@ -483,25 +483,25 @@ namespace Light.Data
         /// Gets the datas count.
         /// </summary>
         /// <value>The count.</value>
-        Task<int> CountAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> CountAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets the datas long count.
         /// </summary>
         /// <value>The long count.</value>
-        Task<long> LongCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> LongCountAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets the data is exists with query expression.
         /// </summary>
         /// <value><c>true</c> if exists; otherwise, <c>false</c>.</value>
-        Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> ExistsAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get single instance.
         /// </summary>
         /// <returns>instance.</returns>
-        Task<T> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<T> FirstAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Elements at index.
@@ -509,25 +509,25 @@ namespace Light.Data
         /// <returns>instance.</returns>
         /// <param name="index">Index.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
+        Task<T> ElementAtAsync(int index, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// To the list.
         /// </summary>
         /// <returns>The list.</returns>
-        Task<List<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<T>> ToListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// To the array.
         /// </summary>
         /// <returns>The array.</returns>
-        Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<T[]> ToArrayAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// All fields data insert to the special table K.
         /// </summary>
         /// <typeparam name="K">Data type.</typeparam>
-        Task<int> InsertAsync<K>(CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> InsertAsync<K>(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Select fields data insert to the special table K.
@@ -535,19 +535,19 @@ namespace Light.Data
         /// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="K">Data type.</typeparam>
-        Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> SelectInsertAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Update datas.
         /// </summary>
         /// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
-        Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> UpdateAsync(Expression<Func<T, T>> expression, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete datas
         /// </summary>
-        Task<int> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> DeleteAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Aggregates the fields.
@@ -556,7 +556,7 @@ namespace Light.Data
         /// <param name="expression">Expression.</param>
         /// <param name="cancellationToken">CancellationToken.</param>
         /// <typeparam name="K">Data type.</typeparam>
-        Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default(CancellationToken));
+        Task<K> AggregateFieldAsync<K>(Expression<Func<T, K>> expression, CancellationToken cancellationToken = default);
 
         #endregion
 

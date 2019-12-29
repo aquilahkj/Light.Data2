@@ -43,9 +43,9 @@ namespace Light.Data
             FormatText
         }
 
-        private static Dictionary<Type, Dictionary<string, GetPropertyHandler>> TypeDict = new Dictionary<Type, Dictionary<string, GetPropertyHandler>>();
+        private static readonly Dictionary<Type, Dictionary<string, GetPropertyHandler>> TypeDict = new Dictionary<Type, Dictionary<string, GetPropertyHandler>>();
 
-        private static Dictionary<string, Section[]> SectionDict = new Dictionary<string, Section[]>();
+        private static readonly Dictionary<string, Section[]> SectionDict = new Dictionary<string, Section[]>();
 
         private static readonly TextFormatProvider textFormatProvider = new TextFormatProvider();
 
@@ -143,13 +143,13 @@ namespace Light.Data
                             sb.AppendFormat(s.Value, data);
                         }
                     }
-                    else {
+                    else
+                    {
                         if (notAllowNullValue || !s.Nullable) {
                             throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
                         }
-                        else {
-                            sb.AppendFormat(s.Value, string.Empty);
-                        }
+
+                        sb.AppendFormat(s.Value, string.Empty);
                     }
                 }
             }
@@ -181,13 +181,13 @@ namespace Light.Data
                             sb.AppendFormat(s.Value, data);
                         }
                     }
-                    else {
+                    else
+                    {
                         if (notAllowNullValue || !s.Nullable) {
                             throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
                         }
-                        else {
-                            sb.AppendFormat(s.Value, string.Empty);
-                        }
+
+                        sb.AppendFormat(s.Value, string.Empty);
                     }
                 }
             }
@@ -227,10 +227,9 @@ namespace Light.Data
                             if (notAllowNullValue || !s.Nullable) {
                                 throw new FormatException(string.Format("The value of \'{0}\' is null.", s.Name));
                             }
-                            else {
-                                parameter = new DataParameter(name, data);
-                                dict.Add(s.Name, parameter);
-                            }
+
+                            parameter = new DataParameter(name, data);
+                            dict.Add(s.Name, parameter);
                         }
                     }
                     sb.Append(parameter.ParameterName);
@@ -264,13 +263,13 @@ namespace Light.Data
                 }
             }
             var index = name.IndexOf(".", StringComparison.Ordinal);
-            if (index == -1) {
+            if (index == -1)
+            {
                 if (dict.TryGetValue(name, out var handler)) {
                     return handler.Get(obj);
                 }
-                else {
-                    return null;
-                }
+
+                return null;
             }
             else {
                 var typeName = name.Substring(0, index);
@@ -279,13 +278,11 @@ namespace Light.Data
                     if (subObj == null) {
                         return null;
                     }
-                    else {
-                        return LoadObject(subObj, name.Substring(index + 1));
-                    }
+
+                    return LoadObject(subObj, name.Substring(index + 1));
                 }
-                else {
-                    return null;
-                }
+
+                return null;
             }
         }
 
@@ -304,7 +301,6 @@ namespace Light.Data
                 if (c == '{') {
                     if (chars[i + 1] == '{') {
                         i++;
-                        continue;
                     }
                     else {
                         if (i > 0) {
@@ -336,14 +332,14 @@ namespace Light.Data
                                 if (j == start) {
                                     throw new FormatException(string.Format("Input string was not in a correct format, index is {0}, char is '{1}'", j, e));
                                 }
-                                else if (j < safeLen && chars[j + 1] == '}') {
+
+                                if (j < safeLen && chars[j + 1] == '}') {
                                     if (split == -1) {
                                         throw new FormatException(string.Format("Input string was not in a correct format, index is {0}, char is '{1}'", j, e));
                                     }
-                                    else {
-                                        j++;
-                                        continue;
-                                    }
+
+                                    j++;
+                                    continue;
                                 }
                                 if (chars[j - 1] == '.') {
                                     throw new FormatException(string.Format("Input param name was not a valid word, index is {0}, char is '{1}'", j - 1, '.'));
@@ -351,10 +347,10 @@ namespace Light.Data
                                 end = j;
                                 break;
                             }
-                            else if (e == '{') {
+
+                            if (e == '{') {
                                 if (split > -1 && j < safeLen && chars[j + 1] == '{') {
                                     j++;
-                                    continue;
                                 }
                                 else {
                                     throw new FormatException(string.Format("Input string was not in a correct format, index is {0}, char is '{1}'", j, e));
@@ -366,7 +362,8 @@ namespace Light.Data
                                         if (j == start) {
                                             throw new FormatException(string.Format("Input string was not a correct format, index is {0}, char is '{1}'", j, e));
                                         }
-                                        else if (chars[j - 1] == '.') {
+
+                                        if (chars[j - 1] == '.') {
                                             throw new FormatException(string.Format("Input param name was not a valid word, index is {0}, char is '{1}'", j - 1, '.'));
                                         }
                                         split = j;
@@ -376,14 +373,10 @@ namespace Light.Data
                                     }
                                 }
                                 else if ((e >= 48 && e <= 57) || (e >= 65 && e <= 90) || (e >= 97 && e <= 122) || e == '_') {
-                                    continue;
                                 }
                                 else if (e == '.') {
                                     if (chars[j + 1] == '.') {
                                         throw new FormatException(string.Format("Input param name was not a valid word, index is {0}, char is '{1}'", j + 1, '.'));
-                                    }
-                                    else {
-                                        continue;
                                     }
                                 }
                                 else {
@@ -424,7 +417,6 @@ namespace Light.Data
                 else if (c == '}') {
                     if (chars[i + 1] == '}') {
                         i++;
-                        continue;
                     }
                     else {
                         throw new FormatException(string.Format("Input string was not in a correct format, index is {0}, char is '{1}'", i, c));
@@ -477,58 +469,57 @@ namespace Light.Data
         {
             if (arg == null)
                 throw new ArgumentNullException(nameof(arg));
-            if (format == null) {
+            if (format == null)
+            {
                 if (arg is IFormattable formatteable) {
                     return formatteable.ToString(format, provider);
                 }
-                else {
-                    return arg.ToString();
-                }
+
+                return arg.ToString();
             }
-            else {
-                var result = new StringBuilder();
-                var len = format.Length;
-                var i = 0;
-                int tokenLen;
-                var flag = false;
-                while (i < format.Length) {
-                    var ch = format[i];
-                    int nextChar;
-                    switch (ch) {
-                        case '#':
-                            tokenLen = ParseRepeatPattern(format, i, ch);
-                            var data = TransData(arg, tokenLen);
-                            result.Append(data);
-                            flag = true;
-                            break;
-                        case '\\':
-                            nextChar = ParseNextChar(format, i);
-                            if (nextChar >= 0) {
-                                result.Append(((char)nextChar));
-                                tokenLen = 2;
-                            }
-                            else {
-                                throw new FormatException("Input string was not in a correct format.");
-                            }
-                            break;
-                        default:
-                            result.Append(ch);
-                            tokenLen = 1;
-                            break;
-                    }
-                    i += tokenLen;
+
+            var result = new StringBuilder();
+            var len = format.Length;
+            var i = 0;
+            int tokenLen;
+            var flag = false;
+            while (i < format.Length) {
+                var ch = format[i];
+                int nextChar;
+                switch (ch) {
+                    case '#':
+                        tokenLen = ParseRepeatPattern(format, i, ch);
+                        var data = TransData(arg, tokenLen);
+                        result.Append(data);
+                        flag = true;
+                        break;
+                    case '\\':
+                        nextChar = ParseNextChar(format, i);
+                        if (nextChar >= 0) {
+                            result.Append(((char)nextChar));
+                            tokenLen = 2;
+                        }
+                        else {
+                            throw new FormatException("Input string was not in a correct format.");
+                        }
+                        break;
+                    default:
+                        result.Append(ch);
+                        tokenLen = 1;
+                        break;
                 }
-                if (flag) {
-                    return result.ToString();
+                i += tokenLen;
+            }
+            if (flag) {
+                return result.ToString();
+            }
+
+            {
+                if (arg is IFormattable formatteable) {
+                    return formatteable.ToString(format, provider);
                 }
-                else {
-                    if (arg is IFormattable formatteable) {
-                        return formatteable.ToString(format, provider);
-                    }
-                    else {
-                        return arg.ToString();
-                    }
-                }
+
+                return arg.ToString();
             }
         }
 
@@ -541,9 +532,8 @@ namespace Light.Data
             if (data.Length >= tokenLen) {
                 return data;
             }
-            else {
-                return data.PadRight(tokenLen);
-            }
+
+            return data.PadRight(tokenLen);
         }
 
         internal static int ParseNextChar(string format, int pos)

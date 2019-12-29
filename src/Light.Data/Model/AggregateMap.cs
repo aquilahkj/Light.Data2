@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Light.Data
 {
 	internal class AggregateMap : IMap
@@ -10,7 +11,7 @@ namespace Light.Data
 			_model = model;
 		}
 
-		public Type Type => _model.OutputMapping.ObjectType;
+		public Type Type => _model.OutputDataMapping.ObjectType;
 
 		public bool CheckIsEntityCollection (string path)
 		{
@@ -47,9 +48,8 @@ namespace Light.Data
 			if (!Equals (info, null)) {
 				return info;
 			}
-			else {
-				throw new LightDataException (string.Format (SR.CanNotFindTheSpecifiedFieldViaPath, path));
-			}
+
+			throw new LightDataException (string.Format (SR.CanNotFindTheSpecifiedFieldViaPath, path));
 		}
 
 		public ISelector CreateSelector (string [] paths)

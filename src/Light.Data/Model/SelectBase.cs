@@ -39,7 +39,7 @@ namespace Light.Data
 
         private ISelector _selector;
 
-        private LambdaExpression _expression;
+        private readonly LambdaExpression _expression;
 
         private SelectModel _model;
 
@@ -158,12 +158,12 @@ namespace Light.Data
         public abstract IJoinTable<K, T1> RightJoin<T1>(ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression, JoinSetting joinSetting);
 
 
-        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<List<K>> ToListAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K[]> ToArrayAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K> FirstAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<K> ElementAtAsync(int index, CancellationToken cancellationToken = default);
     }
 }

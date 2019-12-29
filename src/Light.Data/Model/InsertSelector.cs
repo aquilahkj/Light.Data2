@@ -9,13 +9,13 @@ namespace Light.Data
 
 		public InsertSelector (DataTableEntityMapping insertMapping, DataEntityMapping selectMapping)
 		{
-			this.SelectMapping = selectMapping;
-			this.InsertMapping = insertMapping;
+			SelectMapping = selectMapping;
+			InsertMapping = insertMapping;
 		}
 
 		public InsertSelector (DataTableEntityMapping insertMapping)
 		{
-			this.InsertMapping = insertMapping;
+			InsertMapping = insertMapping;
 		}
 
 		internal DataTableEntityMapping InsertMapping { get; }

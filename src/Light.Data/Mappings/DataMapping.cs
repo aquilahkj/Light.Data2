@@ -26,9 +26,6 @@ namespace Light.Data
 		public Type ObjectType
 		{
 			get;
-			//protected set {
-			//	objectType = value;
-			//}
 		}
 
 		public TypeInfo ObjectTypeInfo { get; }
@@ -41,7 +38,7 @@ namespace Light.Data
 
 		#region IFieldCollection 成员
 
-		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
+		public abstract object LoadData (DataContext context, IDataReader dataReader, object state);
 
 		public abstract object InitialData ();
 

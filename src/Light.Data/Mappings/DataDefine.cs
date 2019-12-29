@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 
 namespace Light.Data
 {
@@ -10,16 +10,16 @@ namespace Light.Data
     /// </summary>
     internal abstract class DataDefine : IDataDefine
     {
-        private static object _synobj = new object();
+        private static readonly object locker = new object();
 
-        private static Dictionary<Type, DataDefine> _defaultDefine = new Dictionary<Type, DataDefine>();
+        private static readonly Dictionary<Type, DataDefine> _defaultDefine = new Dictionary<Type, DataDefine>();
 
         public static DataDefine GetDefine(Type type)
         {
             var defines = _defaultDefine;
             defines.TryGetValue(type, out var define);
             if (define == null) {
-                lock (_synobj) {
+                lock (locker) {
                     defines.TryGetValue(type, out define);
                     if (define == null) {
                         define = CreateMapping(type);
@@ -47,49 +47,62 @@ namespace Light.Data
             DataDefine define;
             if (type.IsArray) {
                 if (type.FullName == "System.Byte[]") {
-                    define = new BytesDataDefine(type, true);
+                    define = new BytesDataDefine(true);
                 }
                 else {
-                    throw new LightDataException(string.Format(SR.DataDefineUnsupportFieldType, type));
+                    define = new ObjectDataDefine(type, true);
                 }
             }
-            else if (type.IsGenericParameter || typeInfo.IsGenericTypeDefinition) {
-                throw new LightDataException(string.Format(SR.DataDefineUnsupportFieldType, type));
+            // else if (type.IsGenericParameter || typeInfo.IsGenericTypeDefinition) {
+            //     throw new LightDataException(string.Format(SR.DataDefineUnsupportFieldType, type));
+            // }
+            else if (type == typeof(Guid))
+            {
+                define = new GuidDataDefine(isNullable);
             }
-            else if (typeInfo.IsEnum) {
+            else if (type == typeof(string))
+            {
+                define = new StringDataDefine(true);
+            }
+            else if (type == typeof(DateTime))
+            {
+                define = new DateTimeDataDefine(isNullable);
+            }
+            else if (type == typeof(decimal))
+            {
+                define = new DecimalDataDefine(isNullable);
+            }
+            else if (typeInfo.IsEnum)
+            {
                 define = new EnumDataDefine(type, isNullable);
             }
-            else {
-                var code = Type.GetTypeCode(type);
-                switch (code) {
-                    case TypeCode.Empty:
-                    case TypeCode.Object:
-                        throw new LightDataException(string.Format(SR.DataDefineUnsupportFieldType, type));
-                    case TypeCode.String:
-                        define = new PrimitiveDataDefine(type, true);
-                        break;
-                    default:
-                        define = new PrimitiveDataDefine(type, isNullable);
-                        break;
-                }
+            else if (type.IsPrimitive)
+            {
+                define = new PrimitiveDataDefine(type, isNullable);
+            }
+            else if (type == typeof(DBNull))
+            {
+                throw new LightDataException(string.Format(SR.DataDefineUnsupportFieldType, type));
+            }
+            else
+            {
+                define = new ObjectDataDefine(type, true);
             }
             return define;
         }
 
-        protected Type _objectType;
-
-        public Type ObjectType => _objectType;
+        public Type ObjectType { get; }
 
         protected DataDefine(Type type, bool isNullable)
         {
-            _objectType = type;
+            ObjectType = type;
             IsNullable = isNullable;
         }
 
         public bool IsNullable { get; }
 
-        public abstract object LoadData(DataContext context, IDataReader datareader, object state);
+        public abstract object LoadData(DataContext context, IDataReader dataReader, object state);
 
-        public abstract object LoadData(DataContext context, IDataReader datareader, string fieldName, object state);
+        public abstract object LoadData(DataContext context, IDataReader dataReader, string fieldName, object state);
     }
 }

@@ -43,7 +43,7 @@
                     }
                     sql = factory.CreateNullQuerySql(leftSql, predicate);
                 }
-                else if (right is bool) {
+                else if (right is bool ret) {
                     bool predicate;
                     if (_predicate == QueryPredicate.Eq) {
                         predicate = true;
@@ -54,10 +54,12 @@
                     else {
                         throw new LightDataException(string.Format(SR.UnsupportPredicate, _predicate, "bool"));
                     }
-                    var ret = (bool)right;
+
                     sql = factory.CreateBooleanQuerySql(leftSql, ret, predicate, false);
                 }
-                else {
+                else
+                {
+                    right = right.EnumCheck();
                     var name = state.AddDataParameter(factory, leftInfo.ToParameter(right));
                     sql = factory.CreateSingleParamSql(leftSql, _predicate, name);
                 }
@@ -78,7 +80,7 @@
                     }
                     sql = factory.CreateNullQuerySql(rightSql, predicate);
                 }
-                else if (left is bool) {
+                else if (left is bool ret) {
                     bool predicate;
                     if (_predicate == QueryPredicate.Eq) {
                         predicate = true;
@@ -89,10 +91,11 @@
                     else {
                         throw new LightDataException(string.Format(SR.UnsupportPredicate, _predicate, "bool"));
                     }
-                    var ret = (bool)left;
+
                     sql = factory.CreateBooleanQuerySql(rightSql, ret, predicate, true);
                 }
                 else {
+                    left = left.EnumCheck();
                     var name = state.AddDataParameter(factory, rightInfo.ToParameter(left));
                     sql = factory.CreateSingleParamSql(name, _predicate, rightSql);
                 }

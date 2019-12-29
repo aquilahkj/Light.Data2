@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace Light.Data
 {
 	internal class DataTableMapperSetting
@@ -11,7 +12,7 @@ namespace Light.Data
 
 		public DataTableMapperSetting(DataTableMapperConfig dataTableMapConfig)
 		{
-			this.DataTableMapConfig = dataTableMapConfig;
+			DataTableMapConfig = dataTableMapConfig;
 		}
 
 		public void AddDataFieldMapConfig(string fieldName, DataFieldMapperConfig config)

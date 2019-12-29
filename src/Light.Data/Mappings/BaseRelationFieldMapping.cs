@@ -7,19 +7,19 @@ namespace Light.Data
 	/// </summary>
 	internal abstract class BaseRelationFieldMapping
 	{
-		readonly protected PropertyHandler handler;
+		protected readonly PropertyHandler handler;
 
-		readonly protected RelationKey [] keyPairs;
+		protected readonly RelationKey [] keyPairs;
 
-		readonly protected Type relateType;
+		protected readonly Type relateType;
 
-		readonly protected string fieldName;
+		protected readonly string fieldName;
 
-		readonly protected DataEntityMapping masterEntityMapping;
+		protected readonly DataEntityMapping masterEntityMapping;
 
-		readonly protected DataFieldMapping [] masterFieldMappings;
+		protected readonly DataFieldMapping [] masterFieldMappings;
 
-		readonly protected DataFieldInfo [] masterInfos;
+		protected readonly DataFieldInfo [] masterInfos;
 
 		public PropertyHandler Handler => handler;
 
@@ -126,17 +126,18 @@ namespace Light.Data
 			if (keyPairs.Length != mapping.keyPairs.Length) {
 				return false;
 			}
-			for (var i = 0; i < keyPairs.Length; i++) {
-				var ismatch = false;
-				var master = keyPairs [i];
-				for (var j = 0; j < mapping.keyPairs.Length; j++) {
-					var relate = mapping.keyPairs [j];
+			foreach (var t in keyPairs)
+			{
+				var isMatch = false;
+				var master = t;
+				foreach (var relate in mapping.keyPairs)
+				{
 					if (master.IsReverseMatch (relate)) {
-						ismatch = true;
+						isMatch = true;
 						break;
 					}
 				}
-				if (!ismatch) {
+				if (!isMatch) {
 					return false;
 				}
 			}
@@ -156,17 +157,18 @@ namespace Light.Data
 			if (keyPairs.Length != mapping.keyPairs.Length) {
 				return false;
 			}
-			for (var i = 0; i < keyPairs.Length; i++) {
-				var ismatch = false;
-				var master = keyPairs [i];
-				for (var j = 0; j < mapping.keyPairs.Length; j++) {
-					var relate = mapping.keyPairs [j];
+			foreach (var t in keyPairs)
+			{
+				var isMatch = false;
+				var master = t;
+				foreach (var relate in mapping.keyPairs)
+				{
 					if (master.IsMatch (relate)) {
-						ismatch = true;
+						isMatch = true;
 						break;
 					}
 				}
-				if (!ismatch) {
+				if (!isMatch) {
 					return false;
 				}
 			}

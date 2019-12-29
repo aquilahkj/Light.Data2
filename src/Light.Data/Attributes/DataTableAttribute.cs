@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data table attribute.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public class DataTableAttribute : Attribute
 	{
 		/// <summary>
@@ -14,7 +14,7 @@ namespace Light.Data
 		/// <param name="tableName">Table name.</param>
 		public DataTableAttribute(string tableName) : this()
 		{
-			this.TableName = tableName;
+			TableName = tableName;
 		}
 
 		/// <summary>
