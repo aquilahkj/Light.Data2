@@ -15,13 +15,7 @@ namespace Light.Data.Mssql
             MssqlCommandFactory mssqlCommandFactory = null;
             if (!string.IsNullOrWhiteSpace(version)) {
                 var arr = version.Split('.');
-                string vc;
-                if (arr.Length > 1) {
-                    vc = string.Concat(arr[0].Trim(), ".", arr[1].Trim());
-                }
-                else {
-                    vc = arr[0].Trim();
-                }
+                var vc = arr.Length > 1 ? string.Concat(arr[0].Trim(), ".", arr[1].Trim()) : arr[0].Trim();
                 if (decimal.TryParse(vc, out var v)) {
                     if (v >= 11) {
                         mssqlCommandFactory = new MssqlCommandFactory_2012();
@@ -94,16 +88,16 @@ namespace Light.Data.Mssql
                     }
                 }
             }
-            else if (value is SByte) {
+            else if (value is sbyte) {
                 sp.Value = Convert.ToInt16(value);
             }
-            else if (value is UInt16) {
+            else if (value is ushort) {
                 sp.Value = Convert.ToInt32(value);
             }
-            else if (value is UInt32) {
+            else if (value is uint) {
                 sp.Value = Convert.ToInt64(value);
             }
-            else if (value is UInt64) {
+            else if (value is ulong) {
                 sp.Value = Convert.ToDecimal(value);
             }
             else {
@@ -115,8 +109,8 @@ namespace Light.Data.Mssql
                         if (!dbTypeDict.TryGetValue(dbType, out info)) {
                             info = new DbTypeInfo();
                             try {
-                                if (ParseSqlDbType(dbType, out var sqltype)) {
-                                    info.SqlDbType = sqltype;
+                                if (ParseSqlDbType(dbType, out var sqlType)) {
+                                    info.SqlDbType = sqlType;
                                 }
                                 else if (Utility.ParseDbType(dbType, out var dType)) {
                                     info.DbType = dType;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Data;
 using System.Collections;
 
 namespace Light.Data.Postgre
@@ -12,7 +11,7 @@ namespace Light.Data.Postgre
 
         private readonly DateTimeFormater dateTimeFormater = new DateTimeFormater();
 
-        private readonly string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
+        private const string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
 
         public PostgreCommandFactory()
         {
@@ -28,237 +27,294 @@ namespace Light.Data.Postgre
         public override CommandData CreateTruncateTableCommand(DataTableEntityMapping mapping, CreateSqlState state)
         {
             var data = base.CreateTruncateTableCommand(mapping, state);
-            if (mapping.IdentityField != null) {
-                var restartSeq = string.Format("alter sequence \"{0}\" restart;", GetIndentitySeq(mapping, state));
+            if (mapping.IdentityField != null)
+            {
+                var restartSeq = $"alter sequence \"{GetIdentitySeq(mapping, state)}\" restart;";
                 data.CommandText += restartSeq;
             }
+
             return data;
         }
 
         public override string CreateBooleanQuerySql(object fieldName, bool isTrue)
         {
-            return string.Format("{0}={1}", fieldName, isTrue ? "true" : "false");
+            return $"{fieldName}={(isTrue ? "true" : "false")}";
         }
 
         public override string CreateDataFieldSql(string fieldName)
         {
-            if (_strictMode) {
-                return string.Format("\"{0}\"", fieldName);
+            if (_strictMode)
+            {
+                return $"\"{fieldName}\"";
             }
-            else {
+            else
+            {
                 return base.CreateDataFieldSql(fieldName);
             }
         }
 
         public override string CreateDataTableSql(string tableName)
         {
-            if (_strictMode) {
-                return string.Format("\"{0}\"", tableName);
+            if (_strictMode)
+            {
+                return $"\"{tableName}\"";
             }
-            else {
+            else
+            {
                 return base.CreateDataTableSql(tableName);
             }
         }
 
         public override string CreateDividedSql(object field, object value, bool forward)
         {
-            if (forward) {
-                return string.Format("({0}::float/{1})", field, value);
+            if (forward)
+            {
+                return $"({field}::float/{value})";
             }
-            else {
-                return string.Format("({0}/{1}::float)", value, field);
+            else
+            {
+                return $"({value}/{field}::float)";
             }
         }
 
-        public override CommandData CreateSelectBaseCommand(DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
+        public override CommandData CreateSelectBaseCommand(DataEntityMapping mapping, string customSelect,
+            QueryExpression query, OrderExpression order, Region region, CreateSqlState state) //, bool distinct)
         {
             var command = base.CreateSelectBaseCommand(mapping, customSelect, query, order, region, state);
-            if (region != null) {
-                if (region.Start == 0) {
-                    command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
+            if (region != null)
+            {
+                if (region.Start == 0)
+                {
+                    command.CommandText = $"{command.CommandText} limit {region.Size}";
                 }
-                else {
-                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
+                else
+                {
+                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start,
+                        region.Size);
                 }
+
                 command.InnerPage = true;
             }
+
             return command;
         }
 
-        public override CommandData CreateSelectJoinTableBaseCommand(string customSelect, List<IJoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+        public override CommandData CreateSelectJoinTableBaseCommand(string customSelect, List<IJoinModel> modelList,
+            QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
         {
             var command = base.CreateSelectJoinTableBaseCommand(customSelect, modelList, query, order, region, state);
-            if (region != null) {
-                if (region.Start == 0) {
-                    command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
-                }
-                else {
-                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
-                }
+            if (region != null)
+            {
+                command.CommandText = region.Start == 0
+                    ? $"{command.CommandText} limit {region.Size}"
+                    : string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
                 command.InnerPage = true;
             }
+
             return command;
         }
 
-        public override CommandData CreateAggregateTableCommand(DataEntityMapping mapping, AggregateSelector selector, AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order, Region region, CreateSqlState state)
+        public override CommandData CreateAggregateTableCommand(DataEntityMapping mapping, AggregateSelector selector,
+            AggregateGroupBy groupBy, QueryExpression query, QueryExpression having, OrderExpression order,
+            Region region, CreateSqlState state)
         {
-            var command = base.CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, region, state);
-            if (region != null) {
-                if (region.Start == 0) {
-                    command.CommandText = string.Format("{0} limit {1}", command.CommandText, region.Size);
-                }
-                else {
-                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
-                }
+            var command =
+                base.CreateAggregateTableCommand(mapping, selector, groupBy, query, having, order, region, state);
+            if (region != null)
+            {
+                command.CommandText = region.Start == 0
+                    ? $"{command.CommandText} limit {region.Size}"
+                    : $"{command.CommandText} limit {region.Size} offset {region.Start}";
+
                 command.InnerPage = true;
             }
+
             return command;
         }
 
-        public override CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh, bool updateIdentity, CreateSqlState state)
+        public override CommandData CreateBaseInsertCommand(DataTableEntityMapping mapping, object entity, bool refresh,
+            bool updateIdentity, CreateSqlState state)
         {
             var command = base.CreateBaseInsertCommand(mapping, entity, refresh, false, state);
-            if (updateIdentity && mapping.IdentityField != null) {
-                var idensql = string.Format("returning {0}", CreateDataFieldSql(mapping.IdentityField.Name));
-                command.CommandText = command.CommandText + idensql;
+            if (updateIdentity && mapping.IdentityField != null)
+            {
+                var idenSql = $"returning {CreateDataFieldSql(mapping.IdentityField.Name)}";
+                command.CommandText += idenSql;
                 command.IdentitySql = true;
             }
+
             return command;
         }
 
-        public override CommandData CreateBatchInsertWithIdentityCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        public override CommandData CreateBatchInsertWithIdentityCommand(DataTableEntityMapping mapping, IList entitys,
+            bool refresh, CreateSqlState state)
         {
-            if (entitys == null || entitys.Count == 0) {
+            if (entitys == null || entitys.Count == 0)
+            {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            var totalCount = entitys.Count;
+
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
             var insertLen = fields.Count;
-            if (insertLen == 0) {
+            if (insertLen == 0)
+            {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
-            if (!mapping.HasIdentity) {
+
+            if (!mapping.HasIdentity)
+            {
                 throw new LightDataException(string.Format(SR.NoIdentityField, mapping.ObjectType));
             }
+
             string insertSql = null;
-            string cachekey = null;
-            if (state.Seed == 0) {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_batchInsertCache.TryGetCommand(cachekey, out var cache)) {
+            string cacheKey = null;
+            if (state.Seed == 0)
+            {
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_batchInsertCache.TryGetCommand(cacheKey, out var cache))
+                {
                     insertSql = cache;
                 }
             }
-            if (insertSql == null) {
+
+            if (insertSql == null)
+            {
                 var insertList = new string[insertLen];
-                for (var i = 0; i < insertLen; i++) {
+                for (var i = 0; i < insertLen; i++)
+                {
                     var field = fields[i];
                     insertList[i] = CreateDataFieldSql(field.Name);
                 }
+
                 var insert = string.Join(",", insertList);
-                insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
-                if (cachekey != null) {
-                    _batchInsertCache.SetCommand(cachekey, insertSql);
+                insertSql = $"insert into {CreateDataTableMappingSql(mapping, state)}({insert})";
+                if (cacheKey != null)
+                {
+                    _batchInsertCache.SetCommand(cacheKey, insertSql);
                 }
             }
+
             var totalSql = new StringBuilder();
 
             totalSql.AppendFormat("{0}values", insertSql);
             var cur = 0;
             var end = entitys.Count;
-            foreach (var entity in entitys) {
+            foreach (var entity in entitys)
+            {
                 var valuesList = new string[insertLen];
-                for (var i = 0; i < insertLen; i++) {
+                for (var i = 0; i < insertLen; i++)
+                {
                     var field = fields[i];
                     var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
+
                 var values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);
                 cur++;
-                if (cur < end) {
+                if (cur < end)
+                {
                     totalSql.Append(',');
                 }
-                else {
+                else
+                {
                     totalSql.AppendFormat("returning {0} as id;", CreateDataFieldSql(mapping.IdentityField.Name));
                 }
             }
+
             var command = new CommandData(totalSql.ToString());
             return command;
         }
 
-        public override CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys, bool refresh, CreateSqlState state)
+        public override CommandData CreateBatchInsertCommand(DataTableEntityMapping mapping, IList entitys,
+            bool refresh, CreateSqlState state)
         {
-            if (entitys == null || entitys.Count == 0) {
+            if (entitys == null || entitys.Count == 0)
+            {
                 throw new ArgumentNullException(nameof(entitys));
             }
-            var totalCount = entitys.Count;
+
             IList<DataFieldMapping> fields = mapping.CreateFieldList;
             var insertLen = fields.Count;
-            if (insertLen == 0) {
+            if (insertLen == 0)
+            {
                 throw new LightDataException(string.Format(SR.NotContainNonIdentityKeyFields, mapping.ObjectType));
             }
+
             string insertSql = null;
-            string cachekey = null;
-            if (state.Seed == 0) {
-                cachekey = CommandCache.CreateKey(mapping, state);
-                if (_batchInsertCache.TryGetCommand(cachekey, out var cache)) {
+            string cacheKey = null;
+            if (state.Seed == 0)
+            {
+                cacheKey = CommandCache.CreateKey(mapping, state);
+                if (_batchInsertCache.TryGetCommand(cacheKey, out var cache))
+                {
                     insertSql = cache;
                 }
             }
-            if (insertSql == null) {
+
+            if (insertSql == null)
+            {
                 var insertList = new string[insertLen];
-                for (var i = 0; i < insertLen; i++) {
+                for (var i = 0; i < insertLen; i++)
+                {
                     var field = fields[i];
                     insertList[i] = CreateDataFieldSql(field.Name);
                 }
+
                 var insert = string.Join(",", insertList);
-                insertSql = string.Format("insert into {0}({1})", CreateDataTableMappingSql(mapping, state), insert);
-                if (cachekey != null) {
-                    _batchInsertCache.SetCommand(cachekey, insertSql);
+                insertSql = $"insert into {CreateDataTableMappingSql(mapping, state)}({insert})";
+                if (cacheKey != null)
+                {
+                    _batchInsertCache.SetCommand(cacheKey, insertSql);
                 }
             }
+
             var totalSql = new StringBuilder();
 
             totalSql.AppendFormat("{0}values", insertSql);
             var cur = 0;
             var end = entitys.Count;
-            foreach (var entity in entitys) {
+            foreach (var entity in entitys)
+            {
                 var valuesList = new string[insertLen];
-                for (var i = 0; i < insertLen; i++) {
+                for (var i = 0; i < insertLen; i++)
+                {
                     var field = fields[i];
                     var value = field.ToInsert(entity, refresh);
                     valuesList[i] = state.AddDataParameter(this, value, field.DBType, field.ObjectType);
                 }
+
                 var values = string.Join(",", valuesList);
                 totalSql.AppendFormat("({0})", values);
                 cur++;
-                if (cur < end) {
-                    totalSql.Append(',');
-                }
-                else {
-                    totalSql.Append(';');
-                }
+                totalSql.Append(cur < end ? ',' : ';');
             }
+
             var command = new CommandData(totalSql.ToString());
             return command;
         }
 
-        public override string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate, IEnumerable<object> list)
+        public override string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate,
+            IEnumerable<object> list)
         {
-            if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
+            if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn)
+            {
                 return base.CreateCollectionParamsQuerySql(fieldName, predicate, list);
             }
+
             var op = GetQueryCollectionPredicate(predicate);
 
             var i = 0;
             var sb = new StringBuilder();
             sb.AppendFormat("{0} {1} (", fieldName, op);
-            foreach (var item in list) {
+            foreach (var item in list)
+            {
                 if (i > 0)
                     sb.Append(" union all ");
                 sb.AppendFormat("select {0}", item);
                 i++;
             }
+
             sb.Append(")");
             return sb.ToString();
         }
@@ -270,52 +326,67 @@ namespace Light.Data.Postgre
 
         public override string CreateIdentitySql(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            if (mapping.IdentityField != null) {
-                return string.Format("select currval('\"{0}\"');", GetIndentitySeq(mapping, state));
+            if (mapping.IdentityField != null)
+            {
+                return $"select currval('\"{GetIdentitySeq(mapping, state)}\"');";
             }
-            else {
+            else
+            {
                 return string.Empty;
             }
         }
 
-        private static string GetIndentitySeq(DataTableEntityMapping mapping, CreateSqlState state)
+        private static string GetIdentitySeq(DataTableEntityMapping mapping, CreateSqlState state)
         {
-            if (mapping.IdentityField == null) {
+            if (mapping.IdentityField == null)
+            {
                 throw new LightDataException(SR.NoIdentityField);
             }
+
             string seq;
             var postgreIdentity = mapping.ExtentParams.GetParamValue("PostgreIdentitySeq");
-            if (!string.IsNullOrEmpty(postgreIdentity)) {
+            if (!string.IsNullOrEmpty(postgreIdentity))
+            {
                 seq = postgreIdentity;
             }
-            else {
-                if (!state.TryGetAliasTableName(mapping, out var name)) {
+            else
+            {
+                if (!state.TryGetAliasTableName(mapping, out var name))
+                {
                     name = mapping.TableName;
                 }
-                seq = string.Format("{0}_{1}_seq", name, mapping.IdentityField.Name);
+
+                seq = $"{name}_{mapping.IdentityField.Name}_seq";
             }
+
             return seq;
         }
 
         public override string CreateMatchSql(object field, bool starts, bool ends)
         {
             var sb = new StringBuilder();
-            if (starts) {
+            if (starts)
+            {
                 sb.AppendFormat("'{0}'||", Wildcards);
             }
+
             sb.Append(field);
-            if (ends) {
+            if (ends)
+            {
                 sb.AppendFormat("||'{0}'", Wildcards);
             }
+
             return sb.ToString();
         }
 
         public override string CreateBooleanQuerySql(object field, bool isTrue, bool isEqual, bool isReverse)
         {
-            if (!isReverse) {
+            if (!isReverse)
+            {
                 return string.Format("{0}{2}{1}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
             }
-            else {
+            else
+            {
                 return string.Format("{1}{2}{0}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
             }
         }
@@ -323,45 +394,42 @@ namespace Light.Data.Postgre
         public override string CreateConcatSql(params object[] values)
         {
             var value1 = string.Join("||", values);
-            var sql = string.Format("({0})", value1);
+            var sql = $"({value1})";
             return sql;
         }
 
         public override string CreateDualConcatSql(object field, object value, bool forward)
         {
-            if (forward) {
-                return string.Format("({0}||{1})", field, value);
+            if (forward)
+            {
+                return $"({field}||{value})";
             }
-            else {
-                return string.Format("({0}||{1})", value, field);
+            else
+            {
+                return $"({value}||{field})";
             }
         }
 
         public override string CreateDateSql(object field)
         {
-            return string.Format("date({0})", field);
+            return $"date({field})";
         }
 
         public override string CreateDateTimeFormatSql(object field, string format)
         {
-            string sqlformat;
-            if (string.IsNullOrEmpty(format)) {
-                sqlformat = defaultDateTime;
-            }
-            else {
-                sqlformat = dateTimeFormater.FormatData(format);
-            }
-            return string.Format("to_char({0},'{1}')", field, sqlformat);
+            var sqlFormat = string.IsNullOrEmpty(format) ? defaultDateTime : dateTimeFormater.FormatData(format);
+
+            return $"to_char({field},'{sqlFormat}')";
         }
 
         public override string CreateTruncateSql(object field)
         {
-            return string.Format("trunc({0}::numeric)", field);
+            return $"trunc({field}::numeric)";
         }
 
         public override string CreateLogSql(object field)
         {
-            return string.Format("ln({0}::numeric)", field);
+            return $"ln({field}::numeric)";
         }
 
         public override string CreateLogSql(object field, object value)
@@ -371,162 +439,168 @@ namespace Light.Data.Postgre
 
         public override string CreateLog10Sql(object field)
         {
-            return string.Format("log({0}::numeric)", field);
+            return $"log({field}::numeric)";
         }
 
         public override string CreateExpSql(object field)
         {
-            return string.Format("exp({0}::numeric)", field);
+            return $"exp({field}::numeric)";
         }
 
         public override string CreatePowSql(object field, object value)
         {
-            return string.Format("power({0}::numeric,{1}::numeric)", field, value);
+            return $"power({field}::numeric,{value}::numeric)";
         }
 
         public override string CreateSinSql(object field)
         {
-            return string.Format("sin({0}::numeric)", field);
+            return $"sin({field}::numeric)";
         }
 
         public override string CreateCosSql(object field)
         {
-            return string.Format("cos({0}::numeric)", field);
+            return $"cos({field}::numeric)";
         }
 
         public override string CreateAsinSql(object field)
         {
-            return string.Format("asin({0}::numeric)", field);
+            return $"asin({field}::numeric)";
         }
 
         public override string CreateAcosSql(object field)
         {
-            return string.Format("acos({0}::numeric)", field);
+            return $"acos({field}::numeric)";
         }
 
         public override string CreateTanSql(object field)
         {
-            return string.Format("tan({0}::numeric)", field);
+            return $"tan({field}::numeric)";
         }
 
         public override string CreateAtanSql(object field)
         {
-            return string.Format("atan({0}::numeric)", field);
+            return $"atan({field}::numeric)";
         }
 
         public override string CreateAtan2Sql(object field, object value)
         {
-            return string.Format("atan2({0}::numeric,{1}::numeric)", field, value);
+            return $"atan2({field}::numeric,{value}::numeric)";
         }
 
         public override string CreateCeilingSql(object field)
         {
-            return string.Format("ceiling({0}::numeric)", field);
+            return $"ceiling({field}::numeric)";
         }
 
         public override string CreateFloorSql(object field)
         {
-            return string.Format("floor({0}::numeric)", field);
+            return $"floor({field}::numeric)";
         }
 
         public override string CreateRoundSql(object field, object value)
         {
-            return string.Format("round({0}::numeric,{1}::int4)", field, value);
+            return $"round({field}::numeric,{value}::int4)";
         }
 
         public override string CreateSqrtSql(object field)
         {
-            return string.Format("Sqrt({0}::numeric)", field);
+            return $"Sqrt({field}::numeric)";
         }
 
         public override string CreateYearSql(object field)
         {
-            return string.Format("extract(year from {0})::int4", field);
+            return $"extract(year from {field})::int4";
         }
 
         public override string CreateMonthSql(object field)
         {
-            return string.Format("extract(month from {0})::int4", field);
+            return $"extract(month from {field})::int4";
         }
 
         public override string CreateDaySql(object field)
         {
-            return string.Format("extract(day from {0})::int4", field);
+            return $"extract(day from {field})::int4";
         }
 
         public override string CreateHourSql(object field)
         {
-            return string.Format("extract(hour from {0})::int4", field);
+            return $"extract(hour from {field})::int4";
         }
 
         public override string CreateMinuteSql(object field)
         {
-            return string.Format("extract(minute from {0})::int4", field);
+            return $"extract(minute from {field})::int4";
         }
 
         public override string CreateSecondSql(object field)
         {
-            return string.Format("extract(second from {0})::int4", field);
+            return $"extract(second from {field})::int4";
         }
 
         public override string CreateWeekSql(object field)
         {
-            return string.Format("extract(week from {0})::int4", field);
+            return $"extract(week from {field})::int4";
         }
 
         public override string CreateWeekDaySql(object field)
         {
-            return string.Format("extract(dow from {0})::int4", field);
+            return $"extract(dow from {field})::int4";
         }
 
         public override string CreateYearDaySql(object field)
         {
-            return string.Format("extract(doy from {0})::int4", field);
+            return $"extract(doy from {field})::int4";
         }
 
         public override string CreateLengthSql(object field)
         {
-            return string.Format("length({0})", field);
+            return $"length({field})";
         }
 
         public override string CreateSubStringSql(object field, object start, object size)
         {
-            if (object.Equals(size, null)) {
-                return string.Format("substr({0},{1}+1)", field, start);
+            if (Equals(size, null))
+            {
+                return $"substr({field},{start}+1)";
             }
-            else {
-                return string.Format("substr({0},{1}+1,{2})", field, start, size);
+            else
+            {
+                return $"substr({field},{start}+1,{size})";
             }
         }
 
         public override string CreateIndexOfSql(object field, object value, object startIndex)
         {
-            if (object.Equals(startIndex, null)) {
-                return string.Format("strpos({0},{1})-1", field, value);
+            if (Equals(startIndex, null))
+            {
+                return $"strpos({field},{value})-1";
             }
-            else {
-                return string.Format("(case when strpos(substr({0},{2}+1),{1})>0 then strpos(substr({0},{2}+1),{1})+{2}-1 else -1 end)", field, value, startIndex);
+            else
+            {
+                return string.Format(
+                    "(case when strpos(substr({0},{2}+1),{1})>0 then strpos(substr({0},{2}+1),{1})+{2}-1 else -1 end)",
+                    field, value, startIndex);
             }
         }
 
         public override string CreateReplaceSql(object field, object oldValue, object newValue)
         {
-            return string.Format("replace({0},{1},{2})", field, oldValue, newValue);
+            return $"replace({field},{oldValue},{newValue})";
         }
 
         public override string CreateToLowerSql(object field)
         {
-            return string.Format("lower({0})", field);
+            return $"lower({field})";
         }
 
         public override string CreateToUpperSql(object field)
         {
-            return string.Format("upper({0})", field);
+            return $"upper({field})";
         }
 
         public override string CreateTrimSql(object field)
         {
-            return string.Format("trim({0})", field);
+            return $"trim({field})";
         }
 
         public override string CreateDataBaseTimeSql()

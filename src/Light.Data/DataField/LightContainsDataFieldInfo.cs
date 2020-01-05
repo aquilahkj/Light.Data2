@@ -37,7 +37,7 @@ namespace Light.Data
             var values = (IEnumerable)LambdaExpressionExtend.ConvertLambdaObject(_collection);
             var list = new List<string>();
             foreach (var item in values) {
-                list.Add(state.AddDataParameter(factory, _baseFieldInfo.ToParameter(item.EnumCheck())));
+                list.Add(state.AddDataParameter(factory, _baseFieldInfo.ToParameter(item.AdjustValue())));
             }
 
             if (list.Count > 0)

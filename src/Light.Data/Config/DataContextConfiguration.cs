@@ -14,7 +14,7 @@ namespace Light.Data
 
         private static readonly object locker = new object();
 
-        private static string gobalConfigFilePath;
+        private static string globalConfigFilePath;
 
         /// <summary>
         /// Sets the config file path.
@@ -29,7 +29,7 @@ namespace Light.Data
                 throw new LightDataException(SR.ConfigurationHasBeenInitialized);
             }
             lock (locker) {
-                gobalConfigFilePath = filePath;
+                globalConfigFilePath = filePath;
                 instance = null;
             }
         }
@@ -40,23 +40,23 @@ namespace Light.Data
         /// <value>The global.</value>
         public static DataContextConfiguration Global {
             get {
-                var myinstance = instance;
-                if (myinstance == null) {
+                var myInstance = instance;
+                if (myInstance == null) {
                     lock (locker) {
                         if (instance == null) {
                             LightDataOptions options = null;
-                            if (string.IsNullOrWhiteSpace(gobalConfigFilePath)) {
-                                gobalConfigFilePath = "lightdata.json";
+                            if (string.IsNullOrWhiteSpace(globalConfigFilePath)) {
+                                globalConfigFilePath = "lightdata.json";
                             }
                             FileInfo fileInfo;
                             if (UseEntryAssemblyDirectory) {
-                                fileInfo = FileHelper.GetFileInfo(gobalConfigFilePath, out var absolute);
+                                fileInfo = FileHelper.GetFileInfo(globalConfigFilePath, out var absolute);
                                 if (!fileInfo.Exists && !absolute) {
-                                    fileInfo = new FileInfo(gobalConfigFilePath);
+                                    fileInfo = new FileInfo(globalConfigFilePath);
                                 }
                             }
                             else {
-                                fileInfo = new FileInfo(gobalConfigFilePath);
+                                fileInfo = new FileInfo(globalConfigFilePath);
                             }
                             if (fileInfo.Exists) {
                                 using (var reader = fileInfo.OpenText()) {
@@ -70,10 +70,10 @@ namespace Light.Data
                             }
                             instance = new DataContextConfiguration(options);
                         }
-                        myinstance = instance;
+                        myInstance = instance;
                     }
                 }
-                return myinstance;
+                return myInstance;
             }
         }
 
@@ -120,7 +120,7 @@ namespace Light.Data
 
         private void Internal_DataContextConfiguration(LightDataOptions optionList)
         {
-            if (optionList != null && optionList.Connections != null && optionList.Connections.Length > 0) {
+            if (optionList?.Connections != null && optionList.Connections.Length > 0) {
                 foreach (var connection in optionList.Connections) {
                     var setting = new ConnectionSetting
                     {

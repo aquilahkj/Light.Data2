@@ -6,13 +6,6 @@ namespace Light.Data
 {
     internal class CreateSqlState
     {
-        //readonly CommandFactory _factory;
-
-        //public CreateSqlState(CommandFactory factory)
-        //{
-        //    this._factory = factory;
-        //}
-
         private readonly DataContext context;
 
         public CreateSqlState(DataContext context)

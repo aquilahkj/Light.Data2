@@ -58,7 +58,7 @@ namespace Light.Data.Postgre
         }
 
         public override IDataParameter CreateParameter(string name, object value, string dbType,
-            System.Data.ParameterDirection direction, Type dataType, CommandType commandType)
+            ParameterDirection direction, Type dataType, CommandType commandType)
         {
             var parameterName = name;
             if (commandType == CommandType.StoredProcedure)
@@ -106,16 +106,6 @@ namespace Light.Data.Postgre
             }
             else
             {
-                // var type = value.GetType();
-                // if (type.IsEnum)
-                // {
-                //     var code = Type.GetTypeCode(type);
-                //     sp.Value = Convert.ChangeType(value, code);
-                // }
-                // else
-                // {
-                //     sp.Value = value;
-                // }
                 sp.Value = value;
             }
 
@@ -130,9 +120,9 @@ namespace Light.Data.Postgre
                             info = new DbTypeInfo();
                             try
                             {
-                                if (ParseSqlDbType(dbType, out var sqltype))
+                                if (ParseSqlDbType(dbType, out var sqlType))
                                 {
-                                    info.NpgsqlDbType = sqltype;
+                                    info.NpgsqlDbType = sqlType;
                                 }
                                 else if (Utility.ParseDbType(dbType, out var dType))
                                 {
@@ -201,7 +191,7 @@ namespace Light.Data.Postgre
         {
             type = NpgsqlDbType.Varchar;
             var index = dbType.IndexOf('(');
-            var typeString = string.Empty;
+            string typeString;
             if (index < 0)
             {
                 typeString = dbType;

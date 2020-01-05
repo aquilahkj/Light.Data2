@@ -4,7 +4,7 @@
 	{
 		private readonly DataFieldInfo _fieldInfo;
 
-		private readonly OrderType _orderType = OrderType.ASC;
+		private readonly OrderType _orderType;
 
 		public DataFieldOrderExpression (DataFieldInfo fieldInfo, OrderType orderType)
 			: base (fieldInfo.TableMapping)

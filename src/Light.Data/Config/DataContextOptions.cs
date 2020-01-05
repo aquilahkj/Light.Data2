@@ -12,14 +12,10 @@ namespace Light.Data
             if (setting == null) {
                 throw new ArgumentNullException(nameof(setting));
             }
-            Type type;
+
             var connection = setting.ConnectionString;
 
-            type = Type.GetType(setting.ProviderName, true);
-
-            if (type == null) {
-                return null;
-            }
+            var type = Type.GetType(setting.ProviderName, true);
 
             var dataBase = (DatabaseProvider)Activator.CreateInstance(type, setting.Name, setting.ConfigParam);
             if (dataBase == null) {

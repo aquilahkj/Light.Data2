@@ -172,7 +172,7 @@ namespace Light.Data
 			return sb.ToString();
 		}
 
-		private int ParseValue(char[] chars, int i, int max, char c) {
+		private static int ParseValue(char[] chars, int i, int max, char c) {
 			if (chars.Length < i + max) {
 				return 0;
 			}

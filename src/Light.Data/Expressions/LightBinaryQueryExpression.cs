@@ -59,7 +59,7 @@
                 }
                 else
                 {
-                    right = right.EnumCheck();
+                    right = right.AdjustValue();
                     var name = state.AddDataParameter(factory, leftInfo.ToParameter(right));
                     sql = factory.CreateSingleParamSql(leftSql, _predicate, name);
                 }
@@ -95,7 +95,7 @@
                     sql = factory.CreateBooleanQuerySql(rightSql, ret, predicate, true);
                 }
                 else {
-                    left = left.EnumCheck();
+                    left = left.AdjustValue();
                     var name = state.AddDataParameter(factory, rightInfo.ToParameter(left));
                     sql = factory.CreateSingleParamSql(name, _predicate, rightSql);
                 }

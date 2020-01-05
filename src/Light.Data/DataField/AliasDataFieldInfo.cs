@@ -40,7 +40,8 @@
         {
             if (isFullName)
             {
-                if (_aliasTableName != null) {
+                if (_aliasTableName != null)
+                {
                     return factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
                 }
 
@@ -53,15 +54,14 @@
         public string CreateAliasDataFieldSql(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
             string field;
-            if (isFullName) {
-                if (_aliasTableName != null) {
-                    field = factory.CreateFullDataFieldSql(_aliasTableName, FieldName);
-                }
-                else {
-                    field = factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
-                }
+            if (isFullName)
+            {
+                field = _aliasTableName != null
+                    ? factory.CreateFullDataFieldSql(_aliasTableName, FieldName)
+                    : factory.CreateFullDataFieldSql(TableMapping, FieldName, state);
             }
-            else {
+            else
+            {
                 field = factory.CreateDataFieldSql(FieldName);
             }
 
@@ -69,4 +69,3 @@
         }
     }
 }
-

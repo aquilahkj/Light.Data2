@@ -46,9 +46,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than all elememts in the collection.
+		/// The specified field greater than all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if all was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if all was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -59,9 +59,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than all elememts in the collection.
+		/// The specified field greater than all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if all was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if all was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -73,9 +73,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than all elememts in the collection.
+		/// The specified field less than all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if all was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if all was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -86,9 +86,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than all elememts in the collection.
+		/// The specified field less than all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if all was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if all was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -100,9 +100,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than any elememts in the collection.
+		/// The specified field greater than any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if any was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if any was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -113,9 +113,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than any elememts in the collection.
+		/// The specified field greater than any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if any was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if any was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -127,9 +127,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than any elememts in the collection.
+		/// The specified field less than any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if any was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if any was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -140,9 +140,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than any elememts in the collection.
+		/// The specified field less than any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if any was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if any was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -154,9 +154,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than or equal all elememts in the collection.
+		/// The specified field greater than or equal all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq all was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq all was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -167,9 +167,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than or equal all elememts in the collection.
+		/// The specified field greater than or equal all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq all was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq all was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -181,9 +181,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than or equal all elememts in the collection.
+		/// The specified field less than or equal all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq all was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq all was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -194,9 +194,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than or equal all elememts in the collection.
+		/// The specified field less than or equal all elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq all was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq all was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -208,9 +208,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than or equal any elememts in the collection.
+		/// The specified field greater than or equal any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq any was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq any was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -221,9 +221,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field greater than or equal any elememts in the collection.
+		/// The specified field greater than or equal any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq any was gted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq any was gt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>
@@ -235,9 +235,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than or equal any elememts in the collection.
+		/// The specified field less than or equal any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq any was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq any was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <typeparam name="T">Data type.</typeparam>
@@ -248,9 +248,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// The specified field less than or equal any elememts in the collection.
+		/// The specified field less than or equal any elements in the collection.
 		/// </summary>
-		/// <returns><c>true</c>, if eq any was lted, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if eq any was lt, <c>false</c> otherwise.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="selectField">Select field.</param>
 		/// <param name="expression">Expression.</param>

@@ -11,7 +11,7 @@
 
 		private ConcatOperatorType _operatorType = ConcatOperatorType.AND;
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			var expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
 
@@ -26,17 +26,20 @@
 				return null;
 			}
 
-			if (expression1 == null && expression2 != null) {
+			if (expression1 == null) {
 				return expression2;
 			}
 
-			if (expression1 != null && expression2 == null) {
+			if (expression2 == null) {
 				return expression1;
 			}
-			var newExpression = new DataFieldExpression ();
-			newExpression._expression1 = expression1;
-			newExpression._expression2 = expression2;
-			newExpression._operatorType = operatorType;
+
+			var newExpression = new DataFieldExpression
+			{
+				_expression1 = expression1, 
+				_expression2 = expression2, 
+				_operatorType = operatorType
+			};
 			return newExpression;
 		}
 

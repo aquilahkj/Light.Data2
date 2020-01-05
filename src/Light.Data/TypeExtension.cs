@@ -25,18 +25,8 @@ namespace Light.Data
             BasicTypes.Add(typeof(DateTime), default(DateTime));
             BasicTypes.Add(typeof(Guid), default(Guid));
         }
-        
-        // public static bool IsPrimitiveType(this Type type)
-        // {
-        //     return PrimitiveTypes.ContainsKey(type);
-        // }
 
-        // public static bool CheckAndGetPrimitiveTypeDefaultValue(this Type type, out object value)
-        // {
-        //     return BasicTypes.TryGetValue(type, out value);
-        // }
-
-        public static object EnumCheck(this object value)
+        public static object AdjustValue(this object value)
         {
             if (value != null)
             {

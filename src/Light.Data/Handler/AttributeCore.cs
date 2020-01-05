@@ -10,24 +10,24 @@ namespace Light.Data
 
 		}
 
-		public static T[] GetMethodAttributes<T>(MethodInfo mi, bool inhert) where T : Attribute
+		public static T[] GetMethodAttributes<T>(MethodInfo mi, bool inherit) where T : Attribute
 		{
-			return (T[])mi.GetCustomAttributes(typeof(T), inhert);
+			return (T[])mi.GetCustomAttributes(typeof(T), inherit);
 		}
 
-		public static T[] GetParemeterAttributes<T>(ParameterInfo pi, bool inhert) where T : Attribute
+		public static T[] GetParameterAttributes<T>(ParameterInfo pi, bool inherit) where T : Attribute
 		{
-			return (T[])pi.GetCustomAttributes(typeof(T), inhert);
+			return (T[])pi.GetCustomAttributes(typeof(T), inherit);
 		}
 
-		public static T[] GetPropertyAttributes<T>(PropertyInfo pi, bool inhert) where T : Attribute
+		public static T[] GetPropertyAttributes<T>(PropertyInfo pi, bool inherit) where T : Attribute
 		{
-			return (T[])pi.GetCustomAttributes(typeof(T), inhert);
+			return (T[])pi.GetCustomAttributes(typeof(T), inherit);
 		}
 
-		public static T[] GetTypeAttributes<T>(Type type, bool inhert) where T : Attribute
+		public static T[] GetTypeAttributes<T>(Type type, bool inherit) where T : Attribute
 		{
-			return (T[])type.GetTypeInfo().GetCustomAttributes(typeof(T), inhert);
+			return (T[])type.GetTypeInfo().GetCustomAttributes(typeof(T), inherit);
 		}
 
 		public static T[] GetAssemblyAttributes<T>(Assembly assembly) where T : Attribute

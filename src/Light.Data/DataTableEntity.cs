@@ -67,23 +67,16 @@ namespace Light.Data
         private int SimpleSave(bool refresh)
         {
             var context = GetContext();
-            int ret;
             var mapping = DataEntityMapping.GetTableMapping(GetType());
-            if (_hasLoadData) {
-                ret = context.Update(mapping, this, refresh);
-            }
-            else {
-                ret = context.Insert(mapping, this, refresh);
-            }
+            var ret = _hasLoadData ? context.Update(mapping, this, refresh) : context.Insert(mapping, this, refresh);
             return ret;
         }
 
         private int CheckDbSave(bool refresh, SafeLevel level)
         {
             var context = GetContext();
-            int ret;
             var mapping = DataEntityMapping.GetTableMapping(GetType());
-            ret = context.InsertOrUpdate(mapping, this, level, refresh);
+            var ret = context.InsertOrUpdate(mapping, this, level, refresh);
             return ret;
         }
 
@@ -163,9 +156,8 @@ namespace Light.Data
         private async Task<int> CheckDbSaveAsync(bool refresh, SafeLevel level, CancellationToken cancellationToken = default)
         {
             var context = GetContext();
-            int ret;
             var mapping = DataEntityMapping.GetTableMapping(GetType());
-            ret = await context.InsertOrUpdateAsync(mapping, this, level, refresh, cancellationToken);
+            var ret = await context.InsertOrUpdateAsync(mapping, this, level, refresh, cancellationToken);
             return ret;
         }
 
@@ -213,9 +205,7 @@ namespace Light.Data
         {
             _hasLoadData = false;
             rawKeys = null;
-            if (_updateFields != null) {
-                _updateFields.Clear();
-            }
+            _updateFields?.Clear();
         }
 
         private HashSet<string> _updateFields;

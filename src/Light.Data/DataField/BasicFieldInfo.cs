@@ -36,10 +36,7 @@ namespace Light.Data
                 DataField = new CustomFieldMapping(name, tableMapping);
             }
             else {
-                DataField = TableMapping.FindDataEntityField(name);
-                if (DataField == null) {
-                    DataField = new CustomFieldMapping(name, tableMapping);
-                }
+                DataField = TableMapping.FindDataEntityField(name) ?? new CustomFieldMapping(name, tableMapping);
             }
         }
 
@@ -55,15 +52,6 @@ namespace Light.Data
         /// Gets the name of the field.
         /// </summary>
         /// <value>The name of the field.</value>
-        public virtual string FieldName {
-            get
-            {
-                if (DataField != null) {
-                    return DataField.Name;
-                }
-
-                return null;
-            }
-        }
+        public virtual string FieldName => DataField?.Name;
     }
 }

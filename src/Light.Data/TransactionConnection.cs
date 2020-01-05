@@ -42,9 +42,7 @@ namespace Light.Data
 
         private void SetupTransaction()
         {
-            if (_transaction != null) {
-                _transaction.Dispose();
-            }
+            _transaction?.Dispose();
             if (Level == SafeLevel.None) {
                 _transaction = null;
             }
@@ -119,8 +117,9 @@ namespace Light.Data
                     ExecuteFlag = false;
                     _transaction.Rollback();
                 }
-                catch {
-
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.Message);
                 }
             }
         }

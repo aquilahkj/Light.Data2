@@ -5,31 +5,6 @@ namespace Light.Data
     /// <summary>
     /// Data field info.
     /// </summary>
-    internal class DataFieldInfo<T> : DataFieldInfo
-    {
-        /// <summary>
-        /// Create the specified name.
-        /// </summary>
-        /// <returns>The create.</returns>
-        /// <param name="name">Name.</param>
-        public static DataFieldInfo<T> Create(string name)
-        {
-            if (string.IsNullOrEmpty(name)) {
-                throw new ArgumentNullException(nameof(name));
-            }
-            return new DataFieldInfo<T>(name);
-        }
-
-        private DataFieldInfo(string name)
-            : base(typeof(T), name)
-        {
-
-        }
-    }
-
-    /// <summary>
-    /// Data field info.
-    /// </summary>
     internal class DataFieldInfo : BasicFieldInfo
     {
         /// <summary>

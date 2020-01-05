@@ -11,23 +11,22 @@
     <Copyright>Copyright © 2017</Copyright>
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
-    <AssemblyVersion>2.1.4.2</AssemblyVersion>
-    <FileVersion>2.1.4.2</FileVersion>
+    <AssemblyVersion>2.1.4.3</AssemblyVersion>
+    <FileVersion>2.1.4.3</FileVersion>
     <PackageReleaseNotes>Light.Data.Mssql for SqlServer
 Light.Data.Mysql for Mysql
 Light.Data.Postgre for Postgre</PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <PackageVersion>2.1.4.2</PackageVersion>
+    <PackageVersion>2.1.4.3</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType></DebugType>
     <DocumentationFile>bin\Release\netstandard2.0\Light.Data.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\Aquila\Documents\Projects\light_data_v2\src\Light.Data\Light.Data.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Light.Data.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,17 +39,17 @@ Light.Data.Postgre for Postgre</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Model\T_IJoinTable.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>T_IJoinTable.cs</LastGenOutput>
-    </None>
-    <None Update="Model\T_LightJoinTable.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>T_LightJoinTable.cs</LastGenOutput>
-    </None>
     <None Update="Model\T_LightSelectJoin.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>T_LightSelectJoin.cs</LastGenOutput>
+    </None>
+    <None Update="T_IJoinTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_IJoinTable.cs</LastGenOutput>
+    </None>
+    <None Update="T_LightJoinTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_LightJoinTable.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -59,16 +58,6 @@ Light.Data.Postgre for Postgre</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Model\T_IJoinTable.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>T_IJoinTable.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Model\T_LightJoinTable.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>T_LightJoinTable.tt</DependentUpon>
-    </Compile>
     <Compile Update="Model\T_LightSelectJoin.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -78,6 +67,14 @@ Light.Data.Postgre for Postgre</PackageReleaseNotes>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SR.resx</DependentUpon>
+    </Compile>
+    <Compile Update="T_IJoinTable.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>T_IJoinTable.tt</DependentUpon>
+    </Compile>
+    <Compile Update="T_LightJoinTable.cs">
+      <DependentUpon>T_LightJoinTable.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

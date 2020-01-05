@@ -23,7 +23,7 @@
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
 		/// <param name="state">State.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			var expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
 			var expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);

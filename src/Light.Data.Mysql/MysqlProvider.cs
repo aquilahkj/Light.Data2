@@ -87,8 +87,8 @@ namespace Light.Data.Mysql
                         if (!dbTypeDict.TryGetValue(dbType, out info)) {
                             info = new DbTypeInfo();
                             try {
-                                if (ParseSqlDbType(dbType, out var sqltype)) {
-                                    info.MySqlDbType = sqltype;
+                                if (ParseSqlDbType(dbType, out var sqlType)) {
+                                    info.MySqlDbType = sqlType;
                                 }
                                 else if (Utility.ParseDbType(dbType, out var dType)) {
                                     info.DbType = dType;
@@ -138,46 +138,46 @@ namespace Light.Data.Mysql
         private bool ConvertDbType(Type type, out MySqlDbType sqlType)
         {
             var ret = true;
-            if (type == typeof(Byte[])) {
+            if (type == typeof(byte[])) {
                 sqlType = MySqlDbType.VarBinary;
             }
-            else if (type == typeof(String)) {
+            else if (type == typeof(string)) {
                 sqlType = MySqlDbType.VarChar;
             }
-            else if (type == typeof(Boolean)) {
+            else if (type == typeof(bool)) {
                 sqlType = MySqlDbType.Bit;
             }
-            else if (type == typeof(Byte)) {
+            else if (type == typeof(byte)) {
                 sqlType = MySqlDbType.UByte;
             }
-            else if (type == typeof(SByte)) {
+            else if (type == typeof(sbyte)) {
                 sqlType = MySqlDbType.Byte;
             }
-            else if (type == typeof(Int16)) {
+            else if (type == typeof(short)) {
                 sqlType = MySqlDbType.Int16;
             }
-            else if (type == typeof(Int32)) {
+            else if (type == typeof(int)) {
                 sqlType = MySqlDbType.Int32;
             }
-            else if (type == typeof(Int64)) {
+            else if (type == typeof(long)) {
                 sqlType = MySqlDbType.Int64;
             }
-            else if (type == typeof(UInt16)) {
+            else if (type == typeof(ushort)) {
                 sqlType = MySqlDbType.UInt16;
             }
-            else if (type == typeof(UInt32)) {
+            else if (type == typeof(uint)) {
                 sqlType = MySqlDbType.UInt32;
             }
-            else if (type == typeof(UInt64)) {
+            else if (type == typeof(ulong)) {
                 sqlType = MySqlDbType.UInt64;
             }
-            else if (type == typeof(Single)) {
+            else if (type == typeof(float)) {
                 sqlType = MySqlDbType.Float;
             }
-            else if (type == typeof(Double)) {
+            else if (type == typeof(double)) {
                 sqlType = MySqlDbType.Double;
             }
-            else if (type == typeof(Decimal)) {
+            else if (type == typeof(decimal)) {
                 sqlType = MySqlDbType.Decimal;
             }
             else if (type == typeof(DateTime)) {
@@ -194,7 +194,7 @@ namespace Light.Data.Mysql
         {
             type = MySqlDbType.VarChar;
             var index = dbType.IndexOf('(');
-            var typeString = string.Empty;
+            string typeString;
             if (index < 0) {
                 typeString = dbType;
             }

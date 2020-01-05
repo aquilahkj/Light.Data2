@@ -29,7 +29,6 @@ namespace Light.Data
                         var list = new List<DataParameterMapping>();
                         foreach (var property in properties)
                         {
-                            var handler = new PropertyHandler(property);
                             string name = null;
                             var direction = ParameterDirection.Input;
                             var attributes =

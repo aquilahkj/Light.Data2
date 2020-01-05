@@ -14,7 +14,5 @@ namespace Light.Data
 			get;
 			set;
 		}
-
-		internal abstract string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state);
 	}
 }

@@ -42,17 +42,17 @@
 			}
 			else if (!Equals (ifTrueInfo, null)) {
 				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, state);
-				var ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse).EnumCheck();
+				var ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse).AdjustValue();
 				ifFalse = state.AddDataParameter (factory, ifFalseObject);
 			}
 			else if (!Equals (ifFalseInfo, null)) {
 				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, state);
-				var ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue).EnumCheck();
+				var ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue).AdjustValue();
 				ifTrue = state.AddDataParameter (factory, ifTrueObject);
 			}
 			else {
-				var ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue).EnumCheck();
-				var ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse).EnumCheck();
+				var ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue).AdjustValue();
+				var ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse).AdjustValue();
 				ifTrue = state.AddDataParameter (factory, ifTrueObject);
 				ifFalse = state.AddDataParameter (factory, ifFalseObject);
 			}

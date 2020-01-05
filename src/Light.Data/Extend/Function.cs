@@ -1548,7 +1548,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1558,7 +1558,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1568,7 +1568,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1578,7 +1578,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1628,7 +1628,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1638,7 +1638,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1648,7 +1648,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>
@@ -1658,7 +1658,7 @@ namespace Light.Data
         }
 
         /// <summary>
-        /// Distincts the long sum.
+        /// Distinct the long sum.
         /// </summary>
         /// <returns>The long sum.</returns>
         /// <param name="field">Field.</param>

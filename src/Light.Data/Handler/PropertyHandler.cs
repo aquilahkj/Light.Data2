@@ -8,7 +8,7 @@ namespace Light.Data
 
 	internal delegate object ObjectInstanceHandler();
 
-	internal delegate object FastMethodHandler(object target, object[] paramters);
+	internal delegate object FastMethodHandler(object target, object[] parameters);
 
 	internal class PropertyHandler
 	{
@@ -26,9 +26,9 @@ namespace Light.Data
 		public GetValueHandler Get { get; }
 
 
-		public bool IndexProperty { get; set; }
+		public bool IndexProperty { get; }
 
-		public PropertyInfo Property { get; set; }
+		public PropertyInfo Property { get; }
 
 		public SetValueHandler Set { get; }
 	}

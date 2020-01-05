@@ -10,7 +10,8 @@
 
         private readonly QueryCollectionPredicate _predicate;
 
-        public LightSubQueryDataFieldInfo(DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryCollectionPredicate predicate, QueryExpression expression)
+        public LightSubQueryDataFieldInfo(DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField,
+            QueryCollectionPredicate predicate, QueryExpression expression)
             : base(mapping)
         {
             _field = field;
@@ -22,7 +23,8 @@
         internal override string CreateSqlString(CommandFactory factory, bool isFullName, CreateSqlState state)
         {
             var sql = state.GetDataSql(this, isFullName);
-            if (sql != null) {
+            if (sql != null)
+            {
                 return sql;
             }
 
@@ -32,9 +34,11 @@
             var field = _field.CreateSqlString(factory, isFullName, state);
 
             string query = null;
-            if (_expression != null) {
+            if (_expression != null)
+            {
                 query = _expression.CreateSqlString(factory, true, state);
             }
+
             sql = factory.CreateSubQuerySql(field, _predicate, selectField, tableName, query);
 
             state.SetDataSql(this, isFullName, sql);
