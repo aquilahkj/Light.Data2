@@ -73,13 +73,13 @@ namespace Light.Data.Mssql
 
         public override string CreateAvgSql(object fieldName, bool isDistinct)
         {
-            return string.Format("avg({1}convert(float,{0}))", fieldName, isDistinct ? "distinct " : "");
+            return $"avg({CreateDistinctDefine(isDistinct)}convert(float,{fieldName}))";
         }
 
         public override string CreateConditionAvgSql(string expressionSql, object fieldName, bool isDistinct)
         {
-            return string.Format("avg({2}case when {0} then convert(float,{1}) else null end)", expressionSql,
-                fieldName, isDistinct ? "distinct " : "");
+            return
+                $"avg({CreateDistinctDefine(isDistinct)}case when {expressionSql} then convert(float,{fieldName}) else null end)";
         }
 
         public override string CreateMatchSql(object field, bool starts, bool ends)
@@ -87,13 +87,13 @@ namespace Light.Data.Mssql
             var sb = new StringBuilder();
             if (starts)
             {
-                sb.AppendFormat("'{0}'+", Wildcards);
+                sb.Append($"'{Wildcards}'+");
             }
 
             sb.Append(field);
             if (ends)
             {
-                sb.AppendFormat("+'{0}'", Wildcards);
+                sb.Append($"+'{Wildcards}'");
             }
 
             return sb.ToString();
@@ -291,8 +291,8 @@ namespace Light.Data.Mssql
                 if (region.Start == 0)
                 {
                     var sql = new StringBuilder();
-                    sql.AppendFormat("select top {2} {0} from {1}", customSelect,
-                        CreateDataTableMappingSql(mapping, state), region.Size);
+                    sql.Append(
+                        $"select top {region.Size} {customSelect} from {CreateDataTableMappingSql(mapping, state)}");
                     if (query != null)
                     {
                         sql.Append(GetQueryString(query, false, state));
@@ -318,15 +318,14 @@ namespace Light.Data.Mssql
                     var sql = new StringBuilder();
                     sql.Append("select * from (");
                     var totalSize = region.Start + (long) region.Size;
-                    sql.AppendFormat("select top {4} {0},row_number() over (order by {2}) as {3} from {1}",
-                        customSelect, CreateDataTableMappingSql(mapping, state),
-                        order.CreateSqlString(this, false, state), rName, totalSize);
+                    sql.Append(
+                        $"select top {totalSize} {customSelect},row_number() over (order by {order.CreateSqlString(this, false, state)}) as {rName} from {CreateDataTableMappingSql(mapping, state)}");
                     if (query != null)
                     {
                         sql.Append(GetQueryString(query, false, state));
                     }
 
-                    sql.AppendFormat(") as RT where {0}>{1}", rName, region.Start);
+                    sql.Append($") as RT where {rName}>{region.Start}");
                     var commandData = new CommandData(sql.ToString()) {InnerPage = true};
                     return commandData;
                 }
@@ -347,7 +346,7 @@ namespace Light.Data.Mssql
                     {
                         if (model.Connect != null)
                         {
-                            tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
+                            tables.Append($" {_joinCollectionPredicateDict[model.Connect.Type]} ");
                         }
 
                         var modelSql = model.CreateSqlString(this, state);
@@ -359,7 +358,7 @@ namespace Light.Data.Mssql
                     }
 
                     var sql = new StringBuilder();
-                    sql.AppendFormat("select top {2} {0} from {1}", customSelect, tables, region.Size);
+                    sql.Append($"select top {region.Size} {customSelect} from {tables}");
                     if (query != null)
                     {
                         sql.Append(GetQueryString(query, true, state));
@@ -382,7 +381,7 @@ namespace Light.Data.Mssql
                     {
                         if (model.Connect != null)
                         {
-                            tables.AppendFormat(" {0} ", _joinCollectionPredicateDict[model.Connect.Type]);
+                            tables.Append($" {_joinCollectionPredicateDict[model.Connect.Type]} ");
                         }
 
                         var modelSql = model.CreateSqlString(this, state);
@@ -396,14 +395,14 @@ namespace Light.Data.Mssql
                     var sql = new StringBuilder();
                     sql.Append("select * from (");
                     var totalSize = region.Start + (long) region.Size;
-                    sql.AppendFormat("select top {4} {0},row_number() over (order by {2}) as {3} from {1}",
-                        customSelect, tables, order.CreateSqlString(this, true, state), rName, totalSize);
+                    sql.Append(
+                        $"select top {totalSize} {customSelect},row_number() over (order by {order.CreateSqlString(this, true, state)}) as {rName} from {tables}");
                     if (query != null)
                     {
                         sql.Append(GetQueryString(query, false, state));
                     }
 
-                    sql.AppendFormat(") as RT where {0}>{1}", rName, region.Start);
+                    sql.Append($") as RT where {rName}>{region.Start}");
                     var commandData = new CommandData(sql.ToString()) {InnerPage = true};
                     return commandData;
                 }
@@ -422,8 +421,8 @@ namespace Light.Data.Mssql
                 {
                     var sql = new StringBuilder();
                     var selectString = selector.CreateSelectString(this, false, state);
-                    sql.AppendFormat("select top {2} {0} from {1}", selectString,
-                        CreateDataTableMappingSql(mapping, state), region.Size);
+                    sql.Append(
+                        $"select top {region.Size} {selectString} from {CreateDataTableMappingSql(mapping, state)}");
                     if (query != null)
                     {
                         sql.Append(GetQueryString(query, false, state));
@@ -460,9 +459,8 @@ namespace Light.Data.Mssql
                     var selectString = selector.CreateSelectString(this, false, state);
                     sql.Append("select * from (");
                     var totalSize = region.Start + (long) region.Size;
-                    sql.AppendFormat("select top {4} {0},row_number() over (order by {2}) as {3} from {1}",
-                        selectString, CreateDataTableMappingSql(mapping, state),
-                        order.CreateSqlString(this, false, state), rName, totalSize);
+                    sql.Append(
+                        $"select top {totalSize} {selectString},row_number() over (order by {order.CreateSqlString(this, false, state)}) as {rName} from {CreateDataTableMappingSql(mapping, state)}");
                     if (query != null)
                     {
                         sql.Append(GetQueryString(query, false, state));
@@ -478,7 +476,7 @@ namespace Light.Data.Mssql
                         sql.Append(GetHavingString(having, false, state));
                     }
 
-                    sql.AppendFormat(") as RT where {0}>{1}", rName, region.Start);
+                    sql.Append($") as RT where {rName}>{region.Start}");
                     var commandData = new CommandData(sql.ToString()) {InnerPage = true};
                     return commandData;
                 }
@@ -502,6 +500,11 @@ namespace Light.Data.Mssql
             }
 
             return string.Empty;
+        }
+        
+        public override string CreateBooleanConstantSql(bool value)
+        {
+            return value ? "1=1" : "1=0";
         }
     }
 }

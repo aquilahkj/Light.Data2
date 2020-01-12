@@ -11,12 +11,12 @@
     <PackageLicenseUrl>https://github.com/aquilahkj/Light.Data2/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/aquilahkj/Light.Data2/</PackageProjectUrl>
     <PackageTags>Database, Data, ORM, ADO.NET, SQL, POSTGRE</PackageTags>
-    <AssemblyVersion>2.1.4.2</AssemblyVersion>
+    <AssemblyVersion>2.1.4.4</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>LightData.snk</AssemblyOriginatorKeyFile>
-    <PackageVersion>2.1.4.2</PackageVersion>
-    <FileVersion>2.1.4.2</FileVersion>
+    <PackageVersion>2.1.4.4</PackageVersion>
+    <FileVersion>2.1.4.4</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

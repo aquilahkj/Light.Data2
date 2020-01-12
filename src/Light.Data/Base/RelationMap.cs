@@ -77,7 +77,7 @@ namespace Light.Data
                 foreach (var relation in relations) {
                     var mInfo = relation.MasterInfo;
                     var rInfo = relation.RelateInfo;
-                    var keyExpression = new DataFieldMatchExpression(mInfo, rInfo, QueryPredicate.Eq);
+                    var keyExpression = new DataFieldOnMatchExpression(mInfo, rInfo, QueryPredicate.Eq);
                     expression = DataFieldExpression.And(expression, keyExpression);
                 }
                 var infoList = new List<DataFieldInfo>();

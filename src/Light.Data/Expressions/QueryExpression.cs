@@ -27,7 +27,7 @@
 		{
 			var expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
 			var expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
-			return factory.CreateConcatExpressionSql (expressionString1, expressionString2, _operatorType);
+			return factory.CreateConcatQueryExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
 		/// <summary>

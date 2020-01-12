@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Data field match expression.
 	/// </summary>
-	internal class DataFieldMatchExpression : DataFieldExpression
+	internal class DataFieldOnMatchExpression : DataFieldExpression
 	{
 		private readonly DataFieldInfo leftField;
 
@@ -12,12 +12,12 @@
 		private readonly QueryPredicate predicate;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DataFieldMatchExpression"/> class.
+		/// Initializes a new instance of the <see cref="DataFieldOnMatchExpression"/> class.
 		/// </summary>
 		/// <param name="leftField">Left field.</param>
 		/// <param name="rightField">Right field.</param>
 		/// <param name="predicate">Predicate.</param>
-		internal DataFieldMatchExpression (DataFieldInfo leftField, DataFieldInfo rightField, QueryPredicate predicate)
+		internal DataFieldOnMatchExpression (DataFieldInfo leftField, DataFieldInfo rightField, QueryPredicate predicate)
 		{
 			this.leftField = leftField;
 			this.rightField = rightField;

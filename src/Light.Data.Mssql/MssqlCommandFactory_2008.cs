@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 
 namespace Light.Data.Mssql
@@ -133,7 +132,7 @@ namespace Light.Data.Mssql
                 }
 
                 var values = string.Join(",", valuesList);
-                totalSql.AppendFormat("({0})", values);
+                totalSql.Append($"({values})");
                 cur++;
                 totalSql.Append(cur < end ? ',' : ';');
             }
@@ -187,7 +186,7 @@ namespace Light.Data.Mssql
 
             var totalSql = new StringBuilder();
 
-            totalSql.AppendFormat("{0}values", insertSql);
+            totalSql.Append($"{insertSql}values");
             var cur = 0;
             var end = entitys.Count;
             foreach (var entity in entitys)
@@ -201,7 +200,7 @@ namespace Light.Data.Mssql
                 }
 
                 var values = string.Join(",", valuesList);
-                totalSql.AppendFormat("({0})", values);
+                totalSql.Append($"({values})");
                 cur++;
                 totalSql.Append(cur < end ? ',' : ';');
             }

@@ -17,7 +17,7 @@
 
 			var expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
 
-			return factory.CreateConcatExpressionSql (expressionString1, expressionString2, _operatorType);
+			return factory.CreateConcatQueryExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
 		internal static DataFieldExpression Concat (DataFieldExpression expression1, ConcatOperatorType operatorType, DataFieldExpression expression2)

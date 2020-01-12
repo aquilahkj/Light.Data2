@@ -1402,7 +1402,7 @@ namespace Light.Data
                 if (!TryParseQueryExpression(conditionObj.Test, state, out var query))
                 {
                     var value = ConvertObject(conditionObj.Test);
-                    query = new LightConstantQueryExpression(value);
+                    query = new LightBooleanConstantQueryExpression(value);
                 }
 
                 object ifTrueValue;
@@ -1990,14 +1990,14 @@ namespace Light.Data
                     {
                         var rightValue = ConvertObject(binaryObj.Right);
                         resultExpression = QueryExpression.Concat(leftExpression, catchType,
-                            new LightConstantQueryExpression(rightValue));
+                            new LightBooleanConstantQueryExpression(rightValue));
                         return true;
                     }
 
                     if (right)
                     {
                         var leftValue = ConvertObject(binaryObj.Left);
-                        resultExpression = QueryExpression.Concat(new LightConstantQueryExpression(leftValue),
+                        resultExpression = QueryExpression.Concat(new LightBooleanConstantQueryExpression(leftValue),
                             catchType, rightExpression);
                         return true;
                     }
@@ -2284,7 +2284,7 @@ namespace Light.Data
 
                     if (left && right)
                     {
-                        return new DataFieldMatchExpression(leftFieldInfo, rightFieldInfo, queryPredicate);
+                        return new DataFieldOnMatchExpression(leftFieldInfo, rightFieldInfo, queryPredicate);
                     }
 
                     throw new LambdaParseException(LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);

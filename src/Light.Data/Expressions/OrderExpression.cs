@@ -109,7 +109,7 @@ namespace Light.Data
                 array[i] = _orderExpressions[i].CreateSqlString(factory, isFullName, state);
             }
 
-            return factory.CreateConcatExpressionSql(array);
+            return factory.CreateConcatOrderExpressionSql(array);
         }
 
         internal bool MultiOrder { get; set; }

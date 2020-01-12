@@ -2,13 +2,13 @@
 
 namespace Light.Data
 {
-	internal class LightConstantQueryExpression : QueryExpression, ISupportNotDefine
+	internal class LightBooleanConstantQueryExpression : QueryExpression, ISupportNotDefine
 	{
 		private readonly object _value;
 
 		private bool _not;
 
-		public LightConstantQueryExpression (object value)
+		public LightBooleanConstantQueryExpression (object value)
 			: base (DataEntityMapping.Default)
 		{
 			_value = value;

@@ -83,15 +83,9 @@ namespace Light.Data.Postgre
             var command = base.CreateSelectBaseCommand(mapping, customSelect, query, order, region, state);
             if (region != null)
             {
-                if (region.Start == 0)
-                {
-                    command.CommandText = $"{command.CommandText} limit {region.Size}";
-                }
-                else
-                {
-                    command.CommandText = string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start,
-                        region.Size);
-                }
+                command.CommandText = region.Start == 0
+                    ? $"{command.CommandText} limit {region.Size}"
+                    : $"{command.CommandText} limit {region.Size} offset {region.Start}";
 
                 command.InnerPage = true;
             }
@@ -107,7 +101,7 @@ namespace Light.Data.Postgre
             {
                 command.CommandText = region.Start == 0
                     ? $"{command.CommandText} limit {region.Size}"
-                    : string.Format("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
+                    : $"{command.CommandText} limit {region.Size} offset {region.Start}";
                 command.InnerPage = true;
             }
 
@@ -196,7 +190,7 @@ namespace Light.Data.Postgre
 
             var totalSql = new StringBuilder();
 
-            totalSql.AppendFormat("{0}values", insertSql);
+            totalSql.Append($"{insertSql}values");
             var cur = 0;
             var end = entitys.Count;
             foreach (var entity in entitys)
@@ -210,7 +204,7 @@ namespace Light.Data.Postgre
                 }
 
                 var values = string.Join(",", valuesList);
-                totalSql.AppendFormat("({0})", values);
+                totalSql.Append($"({values})");
                 cur++;
                 if (cur < end)
                 {
@@ -218,7 +212,7 @@ namespace Light.Data.Postgre
                 }
                 else
                 {
-                    totalSql.AppendFormat("returning {0} as id;", CreateDataFieldSql(mapping.IdentityField.Name));
+                    totalSql.Append($"returning {CreateDataFieldSql(mapping.IdentityField.Name)} as id;");
                 }
             }
 
@@ -271,7 +265,7 @@ namespace Light.Data.Postgre
 
             var totalSql = new StringBuilder();
 
-            totalSql.AppendFormat("{0}values", insertSql);
+            totalSql.Append($"{insertSql}values");
             var cur = 0;
             var end = entitys.Count;
             foreach (var entity in entitys)
@@ -285,7 +279,7 @@ namespace Light.Data.Postgre
                 }
 
                 var values = string.Join(",", valuesList);
-                totalSql.AppendFormat("({0})", values);
+                totalSql.Append($"({values})");
                 cur++;
                 totalSql.Append(cur < end ? ',' : ';');
             }
@@ -295,7 +289,7 @@ namespace Light.Data.Postgre
         }
 
         public override string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate,
-            IEnumerable<object> list)
+            IEnumerable<string> list)
         {
             if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn)
             {
@@ -306,12 +300,12 @@ namespace Light.Data.Postgre
 
             var i = 0;
             var sb = new StringBuilder();
-            sb.AppendFormat("{0} {1} (", fieldName, op);
+            sb.Append($"{fieldName} {op} (");
             foreach (var item in list)
             {
                 if (i > 0)
                     sb.Append(" union all ");
-                sb.AppendFormat("select {0}", item);
+                sb.Append($"select {item}");
                 i++;
             }
 
@@ -330,10 +324,8 @@ namespace Light.Data.Postgre
             {
                 return $"select currval('\"{GetIdentitySeq(mapping, state)}\"');";
             }
-            else
-            {
-                return string.Empty;
-            }
+
+            return string.Empty;
         }
 
         private static string GetIdentitySeq(DataTableEntityMapping mapping, CreateSqlState state)
@@ -367,13 +359,13 @@ namespace Light.Data.Postgre
             var sb = new StringBuilder();
             if (starts)
             {
-                sb.AppendFormat("'{0}'||", Wildcards);
+                sb.Append($"'{Wildcards}'||");
             }
 
             sb.Append(field);
             if (ends)
             {
-                sb.AppendFormat("||'{0}'", Wildcards);
+                sb.Append($"||'{Wildcards}'");
             }
 
             return sb.ToString();
@@ -383,11 +375,11 @@ namespace Light.Data.Postgre
         {
             if (!isReverse)
             {
-                return string.Format("{0}{2}{1}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
+                return $"{field}{(isEqual ? "=" : "!=")}{(isTrue ? "true" : "false")}";
             }
             else
             {
-                return string.Format("{1}{2}{0}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
+                return $"{(isTrue ? "true" : "false")}{(isEqual ? "=" : "!=")}{field}";
             }
         }
 
@@ -434,7 +426,7 @@ namespace Light.Data.Postgre
 
         public override string CreateLogSql(object field, object value)
         {
-            return string.Format("log({1}::numeric,{0}::numeric)", field, value);
+            return $"log({value}::numeric,{field}::numeric)";
         }
 
         public override string CreateLog10Sql(object field)
@@ -577,9 +569,8 @@ namespace Light.Data.Postgre
             }
             else
             {
-                return string.Format(
-                    "(case when strpos(substr({0},{2}+1),{1})>0 then strpos(substr({0},{2}+1),{1})+{2}-1 else -1 end)",
-                    field, value, startIndex);
+                return
+                    $"(case when strpos(substr({field},{startIndex}+1),{value})>0 then strpos(substr({field},{startIndex}+1),{value})+{startIndex}-1 else -1 end)";
             }
         }
 

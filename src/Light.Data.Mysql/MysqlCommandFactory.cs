@@ -162,8 +162,7 @@ namespace Light.Data.Mysql
                 }
 
                 var values = string.Join(",", valuesList);
-                totalSql.AppendFormat("{0}values({1});insert into `temptb`(`id`) select last_insert_id();", insertSql,
-                    values);
+                totalSql.Append($"{insertSql}values({values});insert into `temptb`(`id`) select last_insert_id();");
             }
 
             totalSql.Append("select `id` from `temptb`;");
@@ -230,7 +229,7 @@ namespace Light.Data.Mysql
                 }
 
                 var values = string.Join(",", valuesList);
-                totalSql.AppendFormat("({0})", values);
+                totalSql.Append($"({values})");
                 cur++;
                 totalSql.Append(cur < end ? ',' : ';');
             }
@@ -241,7 +240,7 @@ namespace Light.Data.Mysql
 
 
         public override string CreateCollectionParamsQuerySql(object fieldName, QueryCollectionPredicate predicate,
-            IEnumerable<object> list)
+            IEnumerable<string> list)
         {
             if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn)
             {
@@ -288,13 +287,13 @@ namespace Light.Data.Mysql
             sb.Append("concat(");
             if (starts)
             {
-                sb.AppendFormat("'{0}',", Wildcards);
+                sb.Append($"'{Wildcards}',");
             }
 
             sb.Append(field);
             if (ends)
             {
-                sb.AppendFormat(",'{0}'", Wildcards);
+                sb.Append($",'{Wildcards}'");
             }
 
             sb.Append(")");
@@ -398,10 +397,10 @@ namespace Light.Data.Mysql
         {
             if (Equals(startIndex, null))
             {
-                return string.Format("locate({1},{0})-1", field, value);
+                return $"locate({value},{field})-1";
             }
 
-            return string.Format("locate({1},{0},{2}+1)-1", field, value, startIndex);
+            return $"locate({value},{field},{startIndex}+1)-1";
         }
 
         public override string CreateReplaceSql(object field, object oldValue, object newValue)
@@ -443,7 +442,7 @@ namespace Light.Data.Mysql
 
         public override string CreateLogSql(object field, object value)
         {
-            return string.Format("log({1},{0})", field, value);
+            return $"log({value},{field})";
         }
 
         public override string CreateDataBaseTimeSql()
