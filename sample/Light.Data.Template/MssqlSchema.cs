@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,41 +89,44 @@ order by
             List<Table> tables = new List<Table>();
             foreach (TableNameSet tableNameSet in DbSetting.GetTables()) {
                 string tableCommandStr = String.Format(tableCommandText, tableNameSet.TableName);
-                SqlConnection tableConn = new SqlConnection(_connectionString);
-                tableConn.Open();
-                SqlCommand tableCommand = new SqlCommand(tableCommandStr, tableConn);
-                SqlDataAdapter tableAd = new SqlDataAdapter(tableCommand);
-                DataSet tableDs = new DataSet();
-                tableAd.Fill(tableDs);
-                DataTable tableColumns = tableDs.Tables[0];
-                tableConn.Close();
-                if (tableColumns.Rows.Count == 0) {
-                    continue;
-                }
-                string tableComment = Convert.ToString(tableColumns.Rows[0]["CommentText"]);
-                string tableCode = Convert.ToString(tableColumns.Rows[0]["TableCode"]);
-                string columnCommandStr = String.Format(columnCommandText, this._dataBaseName, tableNameSet.TableName);
-                SqlConnection columnConn = new SqlConnection(_connectionString);
-                columnConn.Open();
-                SqlCommand columnCommand = new SqlCommand(columnCommandStr, tableConn);
-                SqlDataAdapter columnAd = new SqlDataAdapter(columnCommand);
-                DataSet columnDs = new DataSet();
-                columnAd.Fill(columnDs);
-                DataTable columnColumns = columnDs.Tables[0];
-                tableConn.Close();
+                using (var tableConn = new SqlConnection(_connectionString)) {
+                    tableConn.Open();
+                    using (var tableCommand = new SqlCommand(tableCommandStr, tableConn))
+                    using (var tableAd = new SqlDataAdapter(tableCommand)) {
+                        var tableDs = new DataSet();
+                        tableAd.Fill(tableDs);
+                        DataTable tableColumns = tableDs.Tables[0];
+                        if (tableColumns.Rows.Count == 0) {
+                            continue;
+                        }
+                        string tableComment = Convert.ToString(tableColumns.Rows[0]["CommentText"]);
+                        string tableCode = Convert.ToString(tableColumns.Rows[0]["TableCode"]);
+                        string columnCommandStr = String.Format(columnCommandText, this._dataBaseName, tableNameSet.TableName);
+                        using (var columnConn = new SqlConnection(_connectionString)) {
+                            columnConn.Open();
+                            using (var columnCommand = new SqlCommand(columnCommandStr, columnConn))
+                            using (var columnAd = new SqlDataAdapter(columnCommand)) {
+                                var columnDs = new DataSet();
+                                columnAd.Fill(columnDs);
+                                DataTable columnColumns = columnDs.Tables[0];
+                                columnConn.Close();
 
-                Table table = new Table(tableNameSet.AliasName, tableNameSet.TableName);
-                if (String.IsNullOrEmpty(tableComment)) {
-                    tableComment = tableNameSet.TableName;
-                }
-                table.CommentText = tableComment;
-                foreach (DataRow item in columnColumns.Rows) {
-                    Column column = CreateColumn(table, item);
-                    if (column != null) {
-                        table.SetColumn(column);
+                                Table table = new Table(tableNameSet.AliasName, tableNameSet.TableName);
+                                if (String.IsNullOrEmpty(tableComment)) {
+                                    tableComment = tableNameSet.TableName;
+                                }
+                                table.CommentText = tableComment;
+                                foreach (DataRow item in columnColumns.Rows) {
+                                    Column column = CreateColumn(table, item);
+                                    if (column != null) {
+                                        table.SetColumn(column);
+                                    }
+                                }
+                                tables.Add(table);
+                            }
+                        }
                     }
                 }
-                tables.Add(table);
             }
             return tables;
         }

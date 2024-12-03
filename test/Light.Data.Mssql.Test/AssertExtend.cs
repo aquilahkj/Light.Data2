@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using Xunit;
 using Xunit.Sdk;
 
 namespace Light.Data.Mssql.Test
@@ -17,27 +18,34 @@ namespace Light.Data.Mssql.Test
             private PropertyInfo mProperty;
             private string mName;
 
-            public GetValueHandler Get {
-                get {
+            public GetValueHandler Get
+            {
+                get
+                {
                     return this.mGetValue;
                 }
             }
 
-            public PropertyInfo Property {
-                get {
+            public PropertyInfo Property
+            {
+                get
+                {
                     return this.mProperty;
                 }
             }
 
-            public string Name {
-                get {
+            public string Name
+            {
+                get
+                {
                     return this.mName;
                 }
             }
 
             public GetPropertyHandler(PropertyInfo property)
             {
-                if (property.CanRead) {
+                if (property.CanRead)
+                {
                     this.mGetValue = PropertyGetHandler(property);
                 }
                 this.mProperty = property;
@@ -49,11 +57,14 @@ namespace Light.Data.Mssql.Test
             public static GetValueHandler PropertyGetHandler(PropertyInfo property)
             {
                 GetValueHandler handler;
-                if (mPropertyGetHandlers.ContainsKey(property)) {
+                if (mPropertyGetHandlers.ContainsKey(property))
+                {
                     return mPropertyGetHandlers[property];
                 }
-                lock (mPropertyGetHandlers) {
-                    if (mPropertyGetHandlers.ContainsKey(property)) {
+                lock (mPropertyGetHandlers)
+                {
+                    if (mPropertyGetHandlers.ContainsKey(property))
+                    {
                         return mPropertyGetHandlers[property];
                     }
                     handler = CreatePropertyGetHandler(property);
@@ -75,7 +86,8 @@ namespace Light.Data.Mssql.Test
 
             private static void EmitBoxIfNeeded(ILGenerator il, Type type)
             {
-                if (type.GetTypeInfo().IsValueType) {
+                if (type.GetTypeInfo().IsValueType)
+                {
                     il.Emit(OpCodes.Box, type);
                 }
             }
@@ -94,71 +106,99 @@ namespace Light.Data.Mssql.Test
         private static void AreObjectsEqual(object expected, object actual, string expectedName, string actualName, bool checkType)
         {
             // 若为相同为空
-            if (Object.Equals(expected, null) && Object.Equals(actual, null)) {
+            if (Object.Equals(expected, null) && Object.Equals(actual, null))
+            {
                 return;
             }
             // 若为相同引用，则通过验证
-            if (Object.ReferenceEquals(expected, actual)) {
+            if (Object.ReferenceEquals(expected, actual))
+            {
                 return;
             }
 
-            if (!Object.Equals(expected, null) && Object.Equals(actual, null)) {
-                throw new AssertActualExpectedException(expected, actual, "actual value is null", expectedName, actualName);
+            if (!Object.Equals(expected, null) && Object.Equals(actual, null))
+            {
+                //throw new AssertActualExpectedException(expected, actual, "actual value is null", expectedName, actualName);
+                throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), string.Format("{0} actual value is null", actualName));
+
             }
-            else if (Object.Equals(expected, null) && !Object.Equals(actual, null)) {
-                throw new AssertActualExpectedException(expected, actual, "expected value is null", expectedName, actualName);
+            else if (Object.Equals(expected, null) && !Object.Equals(actual, null))
+            {
+                //throw new AssertActualExpectedException(expected, actual, "expected value is null", expectedName, actualName);
+                throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), string.Format("{0} expected value is null", expectedName));
+
             }
 
             Type expectedType = expected.GetType();
             Type actualType = actual.GetType();
-            if (checkType) {
+            if (checkType)
+            {
                 // 判断类型是否相同
-                if (!Object.Equals(expectedType, actualType)) {
-                    throw new AssertActualExpectedException(expected, actual, "actual type is not equal expected type", expectedName, actualName);
+                if (!Object.Equals(expectedType, actualType))
+                {
+                    //throw new AssertActualExpectedException(expected, actual, "actual type is not equal expected type", expectedName, actualName);
+                    throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), string.Format("{0} actual type is not equal expected type", expectedName));
                 }
             }
             TypeCode typeCode = Type.GetTypeCode(expectedType);
             TypeCode typeCode2 = Type.GetTypeCode(actualType);
-            if (!Object.Equals(typeCode, typeCode2)) {
-                throw new AssertActualExpectedException(typeCode, typeCode2, "actual typecode is not equal expected typecode", expectedName, actualName);
+            if (!Object.Equals(typeCode, typeCode2))
+            {
+                //throw new AssertActualExpectedException(typeCode, typeCode2, "actual typecode is not equal expected typecode", expectedName, actualName);
+                throw NotEqualException.ForEqualValues(convertToString(typeCode), convertToString(typeCode2), string.Format("{0} actual typecode is not equal expected typecode", expectedName));
             }
 
-            if (typeCode == TypeCode.Object) {
-                if (expected is IEnumerable ie1) {
+            if (typeCode == TypeCode.Object)
+            {
+                if (expected is IEnumerable ie1)
+                {
                     IEnumerable ie2 = actual as IEnumerable;
-                    if (ie2 == null) {
-                        throw new AssertActualExpectedException(expected, actual, "actual type is not IEnumerable type", expectedName, actualName);
+                    if (ie2 == null)
+                    {
+                        //throw new AssertActualExpectedException(expected, actual, "actual type is not IEnumerable type", expectedName, actualName);
+                        throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), string.Format("{0} actual type is not IEnumerable type", actualName));
                     }
                     ArrayList list1 = new ArrayList();
                     ArrayList list2 = new ArrayList();
-                    foreach (object item in ie1) {
+                    foreach (object item in ie1)
+                    {
                         list1.Add(item);
                     }
-                    foreach (object item in ie2) {
+                    foreach (object item in ie2)
+                    {
                         list2.Add(item);
                     }
-                    if (list1.Count != list2.Count) {
-                        throw new AssertActualExpectedException(list1.Count, list2.Count, "actual count is not equal expected count", expectedName, actualName);
+                    if (list1.Count != list2.Count)
+                    {
+                        //throw new AssertActualExpectedException(list1.Count, list2.Count, "actual count is not equal expected count", expectedName, actualName);
+                        throw NotEqualException.ForEqualCollections(convertToString(list1.Count), convertToString(list2.Count), string.Format("{0} actual count is not equal expected count", expectedName));
                     }
-                    for (int i = 0; i < list1.Count; i++) {
+                    for (int i = 0; i < list1.Count; i++)
+                    {
                         AreObjectsEqual(list1[i], list2[i], string.Format("{0}[{1}]", expectedName, i), string.Format("{0}[{1}]", actualName, i), checkType);
                     }
                 }
-                else {
+                else
+                {
                     PropertyInfo[] expectedProperties = expectedType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-                    foreach (PropertyInfo property in expectedProperties) {
+                    foreach (PropertyInfo property in expectedProperties)
+                    {
                         string propertyName = property.Name;
                         string expectedPropertyName = string.Format("{0}.{1}", expectedName, propertyName);
                         string actualPropertyName = string.Format("{0}.{1}", actualName, propertyName);
                         var expectedHandle = GetPropertyHandler.PropertyGetHandler(property);
                         object obj1 = expectedHandle(expected);
                         PropertyInfo property2 = actualType.GetProperty(propertyName);
-                        if (property2 == null) {
-                            throw new AssertActualExpectedException(expected, actual, string.Format("actual property {0} is not exists", propertyName), expectedName, actualName);
+                        if (property2 == null)
+                        {
+                            //throw new AssertActualExpectedException(expected, actual, string.Format("actual property {0} is not exists", propertyName), expectedName, actualName);
+                            throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), string.Format("actual property {0} is not exists", propertyName));
                         }
-                        if (!Object.Equals(property.PropertyType, property2.PropertyType)) {
-                            throw new AssertActualExpectedException(property.PropertyType, property2.PropertyType, string.Format("actual property {0} type is not equal expected property {0} type", propertyName), expectedPropertyName, actualPropertyName);
+                        if (!Object.Equals(property.PropertyType, property2.PropertyType))
+                        {
+                            //throw new AssertActualExpectedException(property.PropertyType, property2.PropertyType, string.Format("actual property {0} type is not equal expected property {0} type", propertyName), expectedPropertyName, actualPropertyName);
+                            throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), string.Format("actual property {0} type is not equal expected property {0} type", propertyName));
                         }
                         var actualHandle = GetPropertyHandler.PropertyGetHandler(property2);
                         object obj2 = actualHandle(actual);
@@ -166,30 +206,50 @@ namespace Light.Data.Mssql.Test
                     }
                 }
             }
-            else if (typeCode == TypeCode.Empty) {
+            else if (typeCode == TypeCode.Empty)
+            {
                 return;
             }
-            else {
-                if (typeCode == TypeCode.Double) {
+            else
+            {
+                if (typeCode == TypeCode.Double)
+                {
                     double d1 = Math.Round((double)expected, 4);
                     double d2 = Math.Round((double)actual, 4);
-                    if (d1.CompareTo(d2) != 0) {
-                        throw new AssertActualExpectedException(expected, actual, "actual value is not equal expected value", expectedName, actualName);
+                    if (d1.CompareTo(d2) != 0)
+                    {
+                        //Assert.Throws(expected, actual, "actual value is not equal expected value", expectedName, actualName);
+                        throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), expectedName);
                     }
                 }
-                else if (typeCode == TypeCode.Single) {
+                else if (typeCode == TypeCode.Single)
+                {
                     double d1 = Math.Round((float)expected, 4);
                     double d2 = Math.Round((float)actual, 4);
-                    if (d1.CompareTo(d2) != 0) {
-                        throw new AssertActualExpectedException(expected, actual, "actual value is not equal expected value", expectedName, actualName);
+                    if (d1.CompareTo(d2) != 0)
+                    {
+                        //throw new AssertActualExpectedException(expected, actual, "actual value is not equal expected value", expectedName, actualName);
+                        throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), expectedName);
                     }
                 }
-                else {
-                    if (!Object.Equals(expected, actual)) {
-                        throw new AssertActualExpectedException(expected, actual, "actual value is not equal expected value", expectedName, actualName);
+                else
+                {
+                    if (!Object.Equals(expected, actual))
+                    {
+                        //throw new AssertActualExpectedException(expected, actual, "actual value is not equal expected value", expectedName, actualName);
+                        throw NotEqualException.ForEqualValues(convertToString(expected), convertToString(actual), expectedName);
                     }
                 }
             }
+        }
+
+        private static string convertToString(Object value)
+        {
+            if (value == null)
+            {
+                return "null";
+            }
+            return value.ToString();
         }
     }
 }
