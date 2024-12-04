@@ -16,9 +16,8 @@ namespace Light.Data
                 return null;
             }
 
-            var data = value as string;
-            value = JsonSerializer.Deserialize(data, ObjectType);
-            return value;
+            var data = JsonSerializer.Deserialize(value as string, ObjectType);
+            return data;
         }
     }
 }

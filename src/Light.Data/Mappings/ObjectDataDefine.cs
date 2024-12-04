@@ -25,8 +25,8 @@ namespace Light.Data
                 return null;
             }
 
-            var json = JsonSerializer.Serialize(value);
-            return JsonSerializer.Deserialize<object>(json);
+            var data = JsonSerializer.Deserialize(value as string, ObjectType);
+            return data;
         }
 
         public override object LoadData(DataContext context, IDataReader dataReader, string name, object state)
@@ -41,8 +41,8 @@ namespace Light.Data
                 return null;
             }
 
-            var json = JsonSerializer.Serialize(value);
-            return JsonSerializer.Deserialize<object>(json);
+            var data = JsonSerializer.Deserialize(value as string, ObjectType);
+            return data;
         }
     }
 }

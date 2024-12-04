@@ -49,12 +49,8 @@ namespace Light.Data
                 return null;
             }
 
-            var data = value as string;
-            var options = new JsonSerializerOptions { 
-                PropertyNameCaseInsensitive = true 
-            };
-            value = JsonSerializer.Deserialize(data, ObjectType, options);
-            return value;
+            var data = JsonSerializer.Deserialize(value as string, ObjectType);
+            return data;
         }
         
         public override object ToUpdate(object entity, bool refreshField)
