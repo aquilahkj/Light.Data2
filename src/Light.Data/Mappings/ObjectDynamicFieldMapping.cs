@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Light.Data
 {
@@ -17,7 +17,7 @@ namespace Light.Data
             }
 
             var data = value as string;
-            value = JsonConvert.DeserializeObject(data, ObjectType);
+            value = JsonSerializer.Deserialize(data, ObjectType);
             return value;
         }
     }

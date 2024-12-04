@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Light.Data
 {
@@ -27,7 +27,7 @@ namespace Light.Data
             
             if (!isNullable) {
                 var value = Activator.CreateInstance(type);
-                _defaultValue = JsonConvert.SerializeObject(value);
+                _defaultValue = JsonSerializer.Serialize(value);
             }
         }
 
@@ -39,7 +39,7 @@ namespace Light.Data
                 return null;
             }
 
-            var data = JsonConvert.SerializeObject(value);
+            var data = JsonSerializer.Serialize(value);
             return data;
         }
 
@@ -50,7 +50,10 @@ namespace Light.Data
             }
 
             var data = value as string;
-            value = JsonConvert.DeserializeObject(data, ObjectType);
+            var options = new JsonSerializerOptions { 
+                PropertyNameCaseInsensitive = true 
+            };
+            value = JsonSerializer.Deserialize(data, ObjectType, options);
             return value;
         }
         
@@ -69,7 +72,7 @@ namespace Light.Data
                 return _defaultValue;
             }
 
-            var data = JsonConvert.SerializeObject(value);
+            var data = JsonSerializer.Serialize(value);
             return data;
         }
         
@@ -88,7 +91,7 @@ namespace Light.Data
                 return _defaultValue;
             }
 
-            var data = JsonConvert.SerializeObject(value);
+            var data = JsonSerializer.Serialize(value);
             return data;
         }
 

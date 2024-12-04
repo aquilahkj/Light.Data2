@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Light.Data
 {
@@ -61,11 +62,7 @@ namespace Light.Data
                             if (fileInfo.Exists) {
                                 using (var reader = fileInfo.OpenText()) {
                                     var content = reader.ReadToEnd();
-                                    var dom = JObject.Parse(content);
-                                    var section = dom.GetValue("lightData");
-                                    if (section != null) {
-                                        options = section.ToObject<LightDataOptions>();
-                                    }
+                                    options = ParseConfigFile(content);
                                 }
                             }
                             instance = new DataContextConfiguration(options);
@@ -96,12 +93,8 @@ namespace Light.Data
             if (fileInfo.Exists) {
                 using (var reader = fileInfo.OpenText()) {
                     var content = reader.ReadToEnd();
-                    var dom = JObject.Parse(content);
-                    var section = dom.GetValue("lightData");
-                    if (section != null) {
-                        var options = section.ToObject<LightDataOptions>();
-                        Internal_DataContextConfiguration(options);
-                    }
+                    var options = ParseConfigFile(content);
+                    Internal_DataContextConfiguration(options);
                 }
             }
             else {
@@ -182,6 +175,16 @@ namespace Light.Data
             }
 
             throw new LightDataException(string.Format(SR.SpecifiedConfigNotExists, name));
+        }
+
+        private static LightDataOptions ParseConfigFile(string content)
+        {
+            var jsonNode = JsonNode.Parse(content);
+            var section = jsonNode["lightData"];
+            if (section != null) {
+                return section.Deserialize<LightDataOptions>();
+            }
+            return null;
         }
     }
 }

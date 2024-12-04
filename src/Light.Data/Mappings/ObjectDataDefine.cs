@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Light.Data
 {
@@ -25,7 +25,8 @@ namespace Light.Data
                 return null;
             }
 
-            return JsonConvert.SerializeObject(value);
+            var json = JsonSerializer.Serialize(value);
+            return JsonSerializer.Deserialize<object>(json);
         }
 
         public override object LoadData(DataContext context, IDataReader dataReader, string name, object state)
@@ -40,7 +41,8 @@ namespace Light.Data
                 return null;
             }
 
-            return JsonConvert.SerializeObject(value);;
+            var json = JsonSerializer.Serialize(value);
+            return JsonSerializer.Deserialize<object>(json);
         }
     }
 }

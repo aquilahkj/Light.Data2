@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Light.Data
 {
@@ -64,12 +65,12 @@ namespace Light.Data
             if (fileInfo.Exists) {
                 using (var reader = fileInfo.OpenText()) {
                     var content = reader.ReadToEnd();
-                    var dom = JObject.Parse(content);
-                    var section = dom.GetValue("lightDataMapper");
+                    var jsonNode = JsonNode.Parse(content);
+                    var section = jsonNode["lightDataMapper"];
                     if (section == null) {
                         return;
                     }
-                    var optionList = section.ToObject<LightMapperOptions>();
+                    var optionList = section.Deserialize<LightMapperOptions>();
                     if (optionList?.DataTypes != null && optionList.DataTypes.Length > 0) {
                         var typeIndex = 0;
                         foreach (var typeConfig in optionList.DataTypes) {
